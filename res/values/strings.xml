@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Tracker!</string>
+    <string name="hello">Hello World, Shuttle Tracker!</string>
     <string name="app_name">Shuttle Tracker</string>
 </resources>
