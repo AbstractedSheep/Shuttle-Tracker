@@ -3,11 +3,14 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+<<<<<<< HEAD
 	<classpathentry kind="lib" path="lib/osmdroid-android-1.10.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/Shuttle-Tracker/lib/osmdroid-android-docs-1.10.zip!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/slf4j-android-1.5.8.jar"/>
+=======
+>>>>>>> 7b9e6a3689f6e6d2f5c55eaf9e76e27444c9eff5
 	<classpathentry kind="output" path="bin"/>
 </classpath>
