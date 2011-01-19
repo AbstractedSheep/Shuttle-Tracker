@@ -15,5 +15,6 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Shuttle-Tracker-Shared"/>
+	<classpathentry kind="lib" path="/Shuttle-Tracker-Android/lib/jackson-core-asl-1.7.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

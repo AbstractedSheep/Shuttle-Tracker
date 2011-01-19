@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import org.codehaus.jackson.*;
 
 public class JSONExtractor{
 	
@@ -38,7 +39,7 @@ public class JSONExtractor{
 		String inputLine;
 		
 		while ((inputLine = in.readLine()) != null) 
-		System.out.println(inputLine);
+			System.out.println(inputLine);
 		in.close();
 	}
 	//XXX: data shows up in one line, need to make a new method/class to parse json data.
@@ -49,7 +50,7 @@ public class JSONExtractor{
 		String inputLine;
 		
 		while ((inputLine = in.readLine()) != null) 
-		System.out.println(inputLine);
+			System.out.println(inputLine);
 		in.close();
 	}
 	
