@@ -7,7 +7,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import org.codehaus.jackson.*;
-
+/**
+ * The purpose of this class is to extract the jsons from the rpi shuttle server and process the data.
+ * @author jonnau
+ *
+ */
 public class JSONExtractor{
 	private URL routeURL;
 	private URL shuttleURL;
@@ -48,6 +52,11 @@ public class JSONExtractor{
 			}
 		}
 	}
+	/**
+	 * processes the JSON line by line for the station stop data.
+	 * @throws JsonParseException
+	 * @throws IOException
+	 */
 	private void readStopData() throws JsonParseException, IOException {
 		// TODO This code is repetitive, but it works.
 		while(parser.nextToken() != JsonToken.END_ARRAY){
@@ -58,7 +67,8 @@ public class JSONExtractor{
 							System.out.println(parser.getCurrentName() + " " + parser.getText());
 					}
 					System.out.println();
-					//skip the end array token star array token and so forth.
+					//skip the end array token start array token and so forth.
+					//TODO: put this in a loop
 					parser.nextToken(); //end array token
 					parser.nextToken();
 					parser.nextToken();
@@ -69,9 +79,23 @@ public class JSONExtractor{
 			}
 		}
 	}
-	
-	private void readRoutesData() {
-		
+	/**
+	 * processes the JSON line by line for the route data.
+	 * @throws JsonParseException
+	 * @throws IOException
+	 */
+	private void readRoutesData() throws JsonParseException, IOException {
+		while(parser.nextToken() != JsonToken.END_ARRAY){
+			if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null) {
+				if(parser.getCurrentName().equals("coords")){
+					while(parser.nextToken() != JsonToken.END_ARRAY){
+						if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null)
+							System.out.println(parser.getCurrentName() + " " + parser.getText());
+					}
+				}
+			}
+			System.out.println(parser.getCurrentName() + " " + parser.getText());
+		}
 	}
 	public void readShuttleData() throws IOException {
 		BufferedReader in = new BufferedReader(
