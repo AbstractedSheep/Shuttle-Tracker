@@ -9,17 +9,18 @@ import java.net.URLConnection;
 import org.codehaus.jackson.*;
 
 public class JSONExtractor{
-	
+	private URL routeURL;
+	private URL shuttleURL;
 	private URLConnection routeConnector, shuttleConnector;
+	private JsonParser parser;
+	private JsonFactory f;
 	
 	public JSONExtractor() {
-		URL routeURL = null;
-		URL shuttleURL = null;
+		f = new JsonFactory();
 		try {
-			//gets routes and stops
+			//get link to stops and shuttles
 			routeURL = new URL("http://shuttles.rpi.edu/displays/netlink.js");
 			shuttleURL = new URL("http://shuttles.rpi.edu/vehicles/current.js");
-			
 			//open connection to site in order to get the data.
 			this.routeConnector = routeURL.openConnection();
 			this.shuttleConnector = shuttleURL.openConnection();
@@ -33,16 +34,45 @@ public class JSONExtractor{
 	}
 	//XXX: data shows up in one line, need to make a new method/class to parse json data.
 	public void readRouteData() throws IOException {
-		BufferedReader in = new BufferedReader(
-                new InputStreamReader(
-                routeConnector.getInputStream()));
 		String inputLine;
-		
-		while ((inputLine = in.readLine()) != null) 
-			System.out.println(inputLine);
-		in.close();
+		parser = f.createJsonParser(routeURL);
+		parser.nextToken();
+		while(parser.nextToken() != JsonToken.END_OBJECT){
+			parser.nextToken();
+			inputLine = parser.getCurrentName() + " " + parser.getCurrentToken().toString();
+			if(parser.getCurrentName() != null) {
+				if(parser.getCurrentName().equals("stops"))
+					readStopData();
+				else
+					readRoutesData();
+			}
+		}
 	}
-	//XXX: data shows up in one line, need to make a new method/class to parse json data.
+	private void readStopData() throws JsonParseException, IOException {
+		// TODO This code is repetitive, but it works.
+		while(parser.nextToken() != JsonToken.END_ARRAY){
+			if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null){
+				if(parser.getCurrentName().equals("routes")){
+					while(parser.nextToken() != JsonToken.END_ARRAY) {
+						if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null)
+							System.out.println(parser.getCurrentName() + " " + parser.getText());
+					}
+					System.out.println();
+					//skip the end array token star array token and so forth.
+					parser.nextToken(); //end array token
+					parser.nextToken();
+					parser.nextToken();
+				}
+				if(parser.getCurrentName().equals("routes"))
+					return;
+				System.out.println(parser.getCurrentName() + " " + parser.getText());
+			}
+		}
+	}
+	
+	private void readRoutesData() {
+		
+	}
 	public void readShuttleData() throws IOException {
 		BufferedReader in = new BufferedReader(
                 new InputStreamReader(
