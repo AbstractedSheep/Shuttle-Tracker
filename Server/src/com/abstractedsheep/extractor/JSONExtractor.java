@@ -1,14 +1,17 @@
 package com.abstractedsheep.extractor;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
-import org.codehaus.jackson.*;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+
+import com.abstractedsheep.shuttletracker.shared.Route;
+import com.abstractedsheep.shuttletracker.shared.Stop;
 /**
  * The purpose of this class is to extract the jsons from the rpi shuttle server and process the data.
  * @author jonnau
@@ -17,10 +20,12 @@ import org.codehaus.jackson.*;
 public class JSONExtractor{
 	private URL routeURL;
 	private URL shuttleURL;
-	private URLConnection routeConnector, shuttleConnector; //no longer needed due to the addition of Jackson.
 	private JsonParser parser;
 	private JsonFactory f; //not required globally
-	private ArrayList<String> extractedValueList;
+	private ArrayList<String> extractedValueList; //will hold values from the JSON
+	//these two variables are not used atm, but would store the data from the json.
+	private ArrayList<Stop> stopList;
+	private ArrayList<Route> routeList;
 	
 	public JSONExtractor() {
 		f = new JsonFactory();
@@ -28,28 +33,27 @@ public class JSONExtractor{
 			//get link to stops and shuttles
 			routeURL = new URL("http://shuttles.rpi.edu/displays/netlink.js");
 			shuttleURL = new URL("http://shuttles.rpi.edu/vehicles/current.js");
-			//open connection to site in order to get the data.
-			this.routeConnector = routeURL.openConnection();
-			this.shuttleConnector = shuttleURL.openConnection();
+			
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		extractedValueList = new ArrayList<String>();
 	}
-	//XXX: data shows up in one line, need to make a new method/class to parse json data.
+	
+	//TODO: data shows up in one line, need to make a new method/class to parse json data.
+	/**
+	 * the purpose of this method is to extract the data from the routes json and store the values in
+	 * StopList and RouteList.
+	 */
 	public void readRouteData() throws IOException {
-		String inputLine;
 		parser = f.createJsonParser(routeURL);
 		parser.nextToken();
 		while(parser.nextToken() != JsonToken.END_OBJECT){
 			//parser.nextToken();
 			if(parser.getCurrentToken() == null)
 				break;
-			inputLine = parser.getCurrentName() + " " + parser.getCurrentToken().toString();
+			
 			if(parser.getCurrentName() != null) {
 				//this JSON is split into two arrays, one for stops and one for the routes (east vs west).
 				if(parser.getCurrentName().equals("stops"))
@@ -68,18 +72,21 @@ public class JSONExtractor{
 	 * @throws IOException
 	 */
 	private void readStopData() throws JsonParseException, IOException {
-		// TODO This code is repetitive, but it works.
+		// XXX This code is repetitive, but it works.
 		while(parser.nextToken() != JsonToken.END_ARRAY){ //keep reading the stops array until you have reached the end of it.
 			if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null){
-				//each stop belongs to either the west route or the east route. Since this information is also
-				//stored in an array, another loop is needed to extract this info.
+				
 				this.extractedValueList.add(parser.getText()); // a VALUE_NAME token's getText() will return a number or name
 				System.out.println(parser.getCurrentName() + " " + parser.getText());
+				
+				//each stop belongs to either the west route or the east route. Since this information is also
+				//stored in an array, another loop is needed to extract this info.
 				if(parser.getCurrentName().equals("routes")){
+					
 					extractedValueList.remove(extractedValueList.size() - 1);
 					while(parser.nextToken() != JsonToken.END_ARRAY) {
+						
 						if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null){
-							//TODO: replace with code to put this data into an arraylist.
 							this.extractedValueList.add(parser.getText());
 							System.out.println(parser.getCurrentName() + " " + parser.getText());
 						}
@@ -90,7 +97,7 @@ public class JSONExtractor{
 					System.out.println();
 					//skip the end array token start array token and so forth.
 					//TODO: put this in a loop
-					parser.nextToken(); //end array token
+					parser.nextToken();
 					parser.nextToken();
 					parser.nextToken();
 				}
@@ -108,12 +115,22 @@ public class JSONExtractor{
 	private void readRoutesData() throws JsonParseException, IOException {
 		while(parser.getCurrentToken() != null && parser.nextToken() != JsonToken.END_OBJECT){
 			if(parser.getCurrentName() != null && !parser.getCurrentToken().equals(JsonToken.FIELD_NAME)) {
+				
+				this.extractedValueList.add(parser.getText());
 				System.out.println(parser.getCurrentName() + " " + parser.getText());
+				
 				if(parser.getCurrentName().equals("coords")){
+					extractedValueList.remove(extractedValueList.size() - 1);
+					
 					while(parser.nextToken() != JsonToken.END_ARRAY){
-						if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null)
+						
+						if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null){
+							
+							this.extractedValueList.add(parser.getText());
 							System.out.println(parser.getCurrentName() + " " + parser.getText());
+						}
 					}
+					extractedValueList.removeAll(extractedValueList);
 					System.out.println();
 					//skip the end array token start array token and so forth.
 					//TODO: put this in a loop
@@ -126,16 +143,7 @@ public class JSONExtractor{
 	}
 	//FIXME: since you get the shuttle data from current.js, this method is currently not in use and contains
 	//		 garbage code.
-	public void readShuttleData() throws IOException {
-		BufferedReader in = new BufferedReader(
-                new InputStreamReader(
-                shuttleConnector.getInputStream()));
-		String inputLine;
-		
-		while ((inputLine = in.readLine()) != null) 
-			System.out.println(inputLine);
-		in.close();
-	}
+	public void readShuttleData() throws IOException {	}
 	
 	public static void main(String[] args) {
 		JSONExtractor ex = new JSONExtractor();
