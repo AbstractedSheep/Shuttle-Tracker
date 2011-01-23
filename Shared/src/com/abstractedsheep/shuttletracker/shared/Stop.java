@@ -18,6 +18,10 @@ name East Campus
 public class Stop {
 	private double lon, lat;
 	private String name, shortName;
+	/**
+	 * The routes that this stop is on is stored within another array in the json and the route contains
+	 * an integer id number as well as a name (e.g. West Route)
+	 */
 	private HashMap<Integer, String> routeMap;
 	
 	public Stop(){
