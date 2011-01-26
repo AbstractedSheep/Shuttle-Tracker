@@ -22,7 +22,7 @@ public class JSONExtractor{
 	private URL shuttleURL;
 	private JsonParser parser;
 	private JsonFactory f; //not required globally
-	private ArrayList<String> extractedValueList; //will hold values from the JSON
+	private ArrayList<String> extractedValueList, extractedValueList2; //will hold values from the JSON
 	//these two variables are not used atm, but would store the data from the json.
 	private ArrayList<Stop> stopList;
 	private ArrayList<Route> routeList;
@@ -39,6 +39,7 @@ public class JSONExtractor{
 			e.printStackTrace();
 		}
 		extractedValueList = new ArrayList<String>();
+		extractedValueList2 = new ArrayList<String>();
 	}
 	
 	//TODO: data shows up in one line, need to make a new method/class to parse json data.
@@ -143,12 +144,30 @@ public class JSONExtractor{
 	}
 	//FIXME: since you get the shuttle data from current.js, this method is currently not in use and contains
 	//		 garbage code.
-	public void readShuttleData() throws IOException {	}
+	public void readShuttleData() throws IOException {
+		parser = f.createJsonParser(shuttleURL);
+		parser.nextToken();
+		while(parser.nextToken() != JsonToken.END_ARRAY){ //keep reading the stops array until you have reached the end of it.
+			if(parser.getCurrentName() != null && !parser.getCurrentToken().equals(JsonToken.FIELD_NAME)){
+				if(!parser.getCurrentName().equals("vehicle") && !parser.getCurrentName().equals("latest_position") &&
+						!parser.getCurrentName().equals("icon")) {
+					System.out.println(parser.getCurrentName() + " " + parser.getText());
+					this.extractedValueList2.add(parser.getText());
+					if(extractedValueList2.size() >= 9) {
+						System.out.println();
+						//get Shuttle object
+					}
+					this.extractedValueList2.retainAll(extractedValueList2);
+				}
+			}
+		}
+	}
 	
 	public static void main(String[] args) {
 		JSONExtractor ex = new JSONExtractor();
 		try{
-			ex.readRouteData();
+			//ex.readRouteData();
+			ex.readShuttleData();
 		} catch(IOException e) {}
 	}
 }
