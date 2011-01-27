@@ -153,11 +153,11 @@ public class JSONExtractor{
 						!parser.getCurrentName().equals("icon")) {
 					System.out.println(parser.getCurrentName() + " " + parser.getText());
 					this.extractedValueList2.add(parser.getText());
-					if(extractedValueList2.size() >= 9) {
+					if(extractedValueList2.size() == 9) {
 						System.out.println();
 						//get Shuttle object
+						this.extractedValueList2.removeAll(extractedValueList2);
 					}
-					this.extractedValueList2.retainAll(extractedValueList2);
 				}
 			}
 		}
