@@ -12,6 +12,7 @@ public class Shuttle {
 	private int shuttleId;
 	private int routeId;
 	private HashMap<String, Shuttle.Point> stops;
+	private HashMap<String, Integer> stopETA;
 	private String cardinalPoint;
 	private int speed;
 	private Point currentLocation;
@@ -24,6 +25,7 @@ public class Shuttle {
 		this.shuttleId = -1;
 		this.routeId = -1;
 		this.stops = new HashMap<String, Shuttle.Point>();
+		this.stopETA = new HashMap<String, Integer>();
 		this.cardinalPoint = "North";
 		this.speed = 0;
 		this.currentLocation = new Point();
@@ -36,6 +38,7 @@ public class Shuttle {
 		this.shuttleId = shuttleId;
 		this.routeId = routeId;
 		this.stops = new HashMap<String, Shuttle.Point>();
+		this.stopETA = new HashMap<String, Integer>();
 		this.cardinalPoint = "North";
 		this.speed = 0;
 		this.currentLocation = new Point();
@@ -64,6 +67,8 @@ public class Shuttle {
 	public String getCardinalPoint() { return cardinalPoint; }
 	public void setCardinalPoint(String cardinalPoint) { this.cardinalPoint = cardinalPoint; }
 
+	public HashMap<String, Integer> getStopETA() { return stopETA; }
+
 	// These next two methods are not required by Jackson
 	// They are here to add data to stops
 	public void addStop(String stopName, Point p) { 
@@ -79,12 +84,40 @@ public class Shuttle {
 	 * distance to the stop based on the given route information.
 	 * @param stopName - desired stop name
 	 * @param route - contains a list of coordinates for the route
-	 * @return time to reach destination or -1 if shuttle is not on this route
+	 * @return time to reach destination or -1 if the stop does not exist on the shuttle's route
 	 */
 	public int getETAToStop(String stopName, ArrayList<Route> routeList) {
-		return 0;
+		int distance = 0;
+		
+		//If only to get the ETA to a particular stop, return the time, but for all general intentions
+		//it might be better to save the times in a HashMap as it may make writing to a file easier.
+		Point p = stops.get(stopName);
+		if (p == null)
+			return -1;
+		else {
+			int time = (int) ((calculateDistance(p) / this.speed) * 60);
+			this.stopETA.put(stopName, time);
+			return time;
+		}
 	}
 	
+	/**calculates the straight line distance between the given stop location and the shuttle's location
+	 * The formula used to calculate this distance is the haversine formula
+	 * {@link http://www.movable-type.co.uk/scripts/latlong.html}
+	 * @param p - stop's location
+	 * @return distance to stop
+	 */
+	private double calculateDistance(Point p) {
+		int earthRadius = 3959; //radius in miles
+		double changeInLat = this.currentLocation.lat - p.lat;
+		double changeInLong = this.currentLocation.lon - p.lon;
+		double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
+					(Math.cos(p.lon) * Math.cos(currentLocation.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
+		
+		return earthRadius * c;
+	}
+
 	// If you create a class within a class, make sure it is static
 	// This class follows the same rules as above
 	public static class Point {

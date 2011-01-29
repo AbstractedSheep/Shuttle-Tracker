@@ -49,7 +49,8 @@ public class JSONParser {
 		shuttle.setCurrentLocation(new Shuttle.Point(Double.parseDouble(list.get(3)), Double.parseDouble(list.get(4))));
 		shuttle.setSpeed(Integer.parseInt(list.get(5)));
 		shuttle.setCardinalPoint(list.get(list.size() - 1));
-		
+		//TODO: determine whether this shuttle goes on the west route or east route since the shuttle
+		//		might not go to all of the listed stops.
 		for(Stop stop : stopList) {
 			shuttle.addStop(stop.getName(), stop.getLat(), stop.getLon());
 		}

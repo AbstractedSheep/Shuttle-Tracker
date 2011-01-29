@@ -2,6 +2,8 @@ package com.abstractedsheep.ShuttleTrackerServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.abstractedsheep.extractor.*;
 
 /**
@@ -45,8 +47,9 @@ public class ShuttleTrackerServer implements Runnable{
 			try {
 				jsExtractor.readShuttleData();
 				this.shuttleList = jsExtractor.getShuttleList();
-				//do ETA calculations
+				//do ETA calculations and print to file
 				calculateETA();
+				JSONSender.printToFile(shuttleList);
 				//have the thread sleep for 15 seconds (approximate update time)
 				Thread.sleep(15 * 1000);
 				
@@ -67,22 +70,27 @@ public class ShuttleTrackerServer implements Runnable{
 			try {
 				jsExtractor.readShuttleData();
 				this.shuttleList = jsExtractor.getShuttleList();
-				//do ETA calculations
-				Thread.sleep(15 * 1000);
+				//do ETA calculations and print them to a file
+				calculateETA();
+				JSONSender.printToFile(shuttleList);
+				//Thread.sleep(15 * 1000);
+				break;
 				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	private void calculateETA() {
-		for(Stop stop : stopList) {
-			for(Shuttle shuttle : shuttleList) {
+	/**
+	 * Calculates the time for each shuttle to arrive at each stop. If a shuttle does not go to that stop
+	 * (i.e. that stop is not part of the shuttle's route), then a -1 is returned. The values are then stored in a list
+	 * to later be used to save the data to a file.
+	 */
+	private void calculateETA() {		
+		for(Shuttle shuttle : shuttleList) {
+			for(Stop stop : stopList) {
 				shuttle.getETAToStop(stop.getName(), routeList);
 			}
 		}
@@ -106,8 +114,7 @@ public class ShuttleTrackerServer implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		new ShuttleTrackerServer();
 	}
 
 }
