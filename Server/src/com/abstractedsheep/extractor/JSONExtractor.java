@@ -118,10 +118,10 @@ public class JSONExtractor{
 					
 						this.routeList.add(JSONParser.listToRoute(extractedValueList));
 						extractedValueList.removeAll(extractedValueList);
-						System.out.println();
+						//System.out.println();
 					}
 				}
-				System.out.println(parser.getCurrentName() + " " + parser.getText());
+				//System.out.println(parser.getCurrentName() + " " + parser.getText());
 			}
 		}
 	}
@@ -134,28 +134,20 @@ public class JSONExtractor{
 			if(parser.getCurrentName() != null && !parser.getCurrentToken().equals(JsonToken.FIELD_NAME)){
 				if(!parser.getCurrentName().equals("vehicle") && !parser.getCurrentName().equals("latest_position") &&
 						!parser.getCurrentName().equals("icon")) {
-					System.out.println(parser.getCurrentName() + " " + parser.getText());
+					//System.out.println(parser.getCurrentName() + " " + parser.getText());
 					this.extractedValueList2.add(parser.getText());
 				}
 				
 				if(parser.getCurrentName().equals("vehicle") && parser.getText().equals("}")) {
-					System.out.println();
+					//System.out.println();
 					this.shuttleList.add(JSONParser.listToShuttle(extractedValueList2, stopList));
-					//get Shuttle object
 					this.extractedValueList2.removeAll(extractedValueList2);
 				}
 			}
 		}
 	}
 	
-	public static void main(String[] args) {
-		JSONExtractor ex = new JSONExtractor();
-		try{
-			ex.readRouteData();
-			//ex.readShuttleData();
-		} catch(IOException e) {}
-	}
-
+	//getters for the three lists
 	public ArrayList<Stop> getStopList() {
 		return this.stopList;
 	}
@@ -166,5 +158,13 @@ public class JSONExtractor{
 
 	public ArrayList<Shuttle> getShuttleList() {
 		return this.shuttleList;
+	}
+	
+	public static void main(String[] args) {
+		JSONExtractor ex = new JSONExtractor();
+		try{
+			//ex.readRouteData();
+			ex.readShuttleData();
+		} catch(IOException e) {}
 	}
 }
