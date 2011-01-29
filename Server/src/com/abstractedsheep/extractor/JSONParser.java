@@ -6,7 +6,6 @@ package com.abstractedsheep.extractor;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.abstractedsheep.shuttletracker.shared.Stop;
 
 /**
  * @author jonnau
