@@ -52,8 +52,8 @@
 
 #import "KMLParser.h"
 
-@interface KMLViewerViewController : UIViewController {
-    IBOutlet MKMapView *map;
+@interface KMLViewerViewController : UIViewController <MKMapViewDelegate> {
+    MKMapView *map;
     KMLParser *kml;
 }
 

@@ -1,4 +1,6 @@
 /*
+ Original header:
+ 
      File: KMLParser.m 
  Abstract: 
  Implements a limited KML parser.
@@ -12,46 +14,14 @@
   
   Version: 1.1 
   
- Disclaimer: IMPORTANT:  This Apple software is supplied to you by Apple 
- Inc. ("Apple") in consideration of your agreement to the following 
- terms, and your use, installation, modification or redistribution of 
- this Apple software constitutes acceptance of these terms.  If you do 
- not agree with these terms, please do not use, install, modify or 
- redistribute this Apple software. 
-  
- In consideration of your agreement to abide by the following terms, and 
- subject to these terms, Apple grants you a personal, non-exclusive 
- license, under Apple's copyrights in this original Apple software (the 
- "Apple Software"), to use, reproduce, modify and redistribute the Apple 
- Software, with or without modifications, in source and/or binary forms; 
- provided that if you redistribute the Apple Software in its entirety and 
- without modifications, you must retain this notice and the following 
- text and disclaimers in all such redistributions of the Apple Software. 
- Neither the name, trademarks, service marks or logos of Apple Inc. may 
- be used to endorse or promote products derived from the Apple Software 
- without specific prior written permission from Apple.  Except as 
- expressly stated in this notice, no other rights or licenses, express or 
- implied, are granted by Apple herein, including but not limited to any 
- patent rights that may be infringed by your derivative works or by other 
- works in which the Apple Software may be incorporated. 
-  
- The Apple Software is provided by Apple on an "AS IS" basis.  APPLE 
- MAKES NO WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION 
- THE IMPLIED WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS 
- FOR A PARTICULAR PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND 
- OPERATION ALONE OR IN COMBINATION WITH YOUR PRODUCTS. 
-  
- IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL 
- OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, 
- MODIFICATION AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED 
- AND WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), 
- STRICT LIABILITY OR OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE 
- POSSIBILITY OF SUCH DAMAGE. 
+ 
   
  Copyright (C) 2010 Apple Inc. All Rights Reserved. 
   
+ Shuttle-Tracker header:
+ 
+ Version 1.0
+ Copyright (C) 2011 Brendon Justin
  */
 
 #import "KMLParser.h"
@@ -293,6 +263,43 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
 
 @end
 
+//	A KMLNetworkLink points to another KML file on a network
+@interface KMLNetworkLink : KMLElement {
+	NSString *name;
+	NSString *description;
+	int refreshVisibility;
+	NSURL *networkUrl;
+	
+	struct {
+		int inName:1;
+		int inDescription:1;
+		int inRefreshVisibility:1;
+		int inLink:1;
+	} flags;
+}
+
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *description;
+@property (nonatomic, readonly) int refreshVisibility;
+@property (nonatomic, readonly) NSURL *networkUrl;
+
+- (void)beginName;
+- (void)endName;
+
+- (void)beginDescription;
+- (void)endDescription;
+
+- (void)beginRefreshVisibility;
+- (void)endRefreshVisibility;
+
+- (void)beginLink;
+- (void)endLink;
+
+@end
+
+#pragma mark -
+#pragma mark KMLParser
+
 @implementation KMLParser
 
 - (id)init
@@ -300,6 +307,9 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
     if (self = [super init]) {
         _styles = [[NSMutableDictionary alloc] init];
         _placemarks = [[NSMutableArray alloc] init];
+		_networkLinks = [[NSMutableArray alloc] init];
+		
+		_networkLink = nil;
     }
     return self;
 }
@@ -308,6 +318,11 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
 {
     [_styles release];
     [_placemarks release];
+	
+	for (KMLNetworkLink *link in _networkLinks) {
+		[link release];
+	}
+	[_networkLinks release];
     [super dealloc];
 }
 
@@ -371,6 +386,12 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
     return [points autorelease];
 }
 
+- (NSURL *)shuttleDataUrl
+{
+//	return _shuttleUrl.shuttleDataUrl;
+	return [[_networkLinks lastObject] networkUrl];
+}
+
 - (MKAnnotationView *)viewForAnnotation:(id <MKAnnotation>)point
 {
     // Find the KMLPlacemark object that owns this point and get
@@ -405,7 +426,8 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
     NSString *ident = [attributeDict objectForKey:@"id"];
     
     KMLStyle *style = [_placemark style] ? [_placemark style] : _style;
-    
+	
+	
     // Style and sub-elements
     if (ELTYPE(Style)) {
         if (_placemark) {
@@ -426,12 +448,27 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
     } else if (ELTYPE(outline)) {
         [style beginOutline];
     }
+	//	Network link sub-elements
+	else if (_networkLink) {
+		if (ELTYPE(Name)) {
+			[_networkLink beginName];
+		}
+		else if (ELTYPE(Description)) {
+			[_networkLink beginDescription];
+		}
+		else if (ELTYPE(refreshVisibility)) {
+			[_networkLink beginRefreshVisibility];
+		}
+		else if (ELTYPE(href)) {
+			[_networkLink beginLink];
+		}
+	}
     // Placemark and sub-elements
     else if (ELTYPE(Placemark)) {
         _placemark = [[KMLPlacemark alloc] initWithIdentifier:ident];
-    } else if (ELTYPE(Name)) {
+    } else if (ELTYPE(name)) {
         [_placemark beginName];
-    } else if (ELTYPE(Description)) {
+    } else if (ELTYPE(description)) {
         [_placemark beginDescription];
     } else if (ELTYPE(styleUrl)) {
         [_placemark beginStyleUrl];
@@ -450,7 +487,10 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
     } else if (ELTYPE(LinearRing)) {
         [_placemark.polygon beginLinearRing];
     }
-    
+	//	Network links
+	else if (ELTYPE(NetworkLink)) {
+		_networkLink = [[KMLNetworkLink alloc] init];
+	}
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName
@@ -482,6 +522,27 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
     } else if (ELTYPE(outline)) {
         [style endOutline];
     }
+	//	Network link sub-elements
+	else if (_networkLink) {
+		if (ELTYPE(name)) {
+			[_networkLink endName];
+		}
+		else if (ELTYPE(description)) {
+			[_networkLink endDescription];
+		}
+		else if (ELTYPE(refreshVisibility)) {
+			[_networkLink endRefreshVisibility];
+		}
+		else if (ELTYPE(href)) {
+			[_networkLink endLink];
+		}
+		//	Network links
+		else if (ELTYPE(NetworkLink)) {
+			[_networkLinks addObject:_networkLink];
+//			[_networkLink release];
+			_networkLink = nil;
+		}
+	}
     // Placemark and sub-elements
     else if (ELTYPE(Placemark)) {
         if (_placemark) {
@@ -510,12 +571,28 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
     } else if (ELTYPE(LinearRing)) {
         [_placemark.polygon endLinearRing];
     }
-    
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string
 {
-    KMLElement *element = _placemark ? (KMLElement *)_placemark : (KMLElement *)_style;
+//    KMLElement *element = _placemark ? (KMLElement *)_placemark : (KMLElement *)_style;
+//    [element addString:string];
+
+//	KMLElement *element = _placemark ? (KMLElement *)_placemark : _networkLink ? (KMLElement *)_networkLink : (KMLElement *)_style;
+//    [element addString:string];
+	
+	KMLElement *element;
+	
+	if (_placemark) {
+		element = _placemark;
+	}
+	else if (_networkLink) {
+		element = _networkLink;
+	}
+	else {
+		element = _style;
+	}
+	
     [element addString:string];
 }
 
@@ -1010,6 +1087,19 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
         }
     }
     return annotationView;
+	
+	//	Use for shuttles
+//	if (!annotationView) {
+//        id <MKAnnotation> annotation = [self point];
+//        if (annotation) {
+//            MKAnnotationView *pin =
+//			[[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:nil];
+//            pin.canShowCallout = YES;
+//			pin.image = [UIImage imageNamed:@"shuttle_icon.png"];
+//            annotationView = pin;
+//        }
+//    }
+//    return annotationView;
 }
 
 @end
@@ -1039,4 +1129,61 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
 
 @end
 
+@implementation KMLNetworkLink
+
+@synthesize	name;
+@synthesize	description;
+@synthesize	refreshVisibility;
+@synthesize	networkUrl;
+	
+
+- (BOOL)canAddString {
+	return flags.inName | flags.inDescription | flags.inRefreshVisibility | flags.inLink;
+}
+
+- (void)beginName {
+	flags.inName = YES;
+}
+
+- (void)endName {
+	flags.inName = NO;
+	
+	name = [accum copy];
+	[self clearString];
+}
+
+- (void)beginDescription {
+	flags.inDescription = YES;
+}
+
+- (void)endDescription {
+	flags.inDescription = NO;
+	
+	description = [accum copy];
+	[self clearString];
+}
+
+- (void)beginRefreshVisibility {
+	flags.inRefreshVisibility = YES;
+}
+
+- (void)endRefreshVisibility {
+	flags.inRefreshVisibility = NO;
+	
+	refreshVisibility = [accum intValue];
+	[self clearString];
+}
+
+- (void)beginLink {
+	flags.inLink = YES;
+}
+
+- (void)endLink {
+	flags.inLink = NO;
+	
+	networkUrl = [NSURL URLWithString:[accum copy]];
+	[self clearString];
+}
+
+@end
 
