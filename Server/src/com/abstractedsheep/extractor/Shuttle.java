@@ -14,6 +14,7 @@ public class Shuttle {
 	private HashMap<String, Shuttle.Point> stops;
 	private HashMap<String, Integer> stopETA;
 	private String cardinalPoint;
+	private String shuttleName;
 	private int speed;
 	private Point currentLocation;
 	
@@ -26,6 +27,7 @@ public class Shuttle {
 		this.routeId = -1;
 		this.stops = new HashMap<String, Shuttle.Point>();
 		this.stopETA = new HashMap<String, Integer>();
+		this.shuttleName = "Bus 42";
 		this.cardinalPoint = "North";
 		this.speed = 0;
 		this.currentLocation = new Point();
@@ -39,6 +41,7 @@ public class Shuttle {
 		this.routeId = routeId;
 		this.stops = new HashMap<String, Shuttle.Point>();
 		this.stopETA = new HashMap<String, Integer>();
+		this.shuttleName = "Bus 42";
 		this.cardinalPoint = "North";
 		this.speed = 0;
 		this.currentLocation = new Point();
@@ -58,7 +61,7 @@ public class Shuttle {
 	public void setStops(HashMap<String, Point> stops) { this.stops = stops; }
 	
 	public int getSpeed() { return speed; }
-	public void setSpeed(int newSpd) { this.speed = newSpd; }
+	public void setSpeed(int newSpd) { this.speed = (speed > 0) ? newSpd : 25; }
 	
 	public Point getCurrentLocation() { return this.currentLocation; }
 	public void setCurrentLocation(Point newLocation) { this.currentLocation = newLocation; }
@@ -66,6 +69,9 @@ public class Shuttle {
 	
 	public String getCardinalPoint() { return cardinalPoint; }
 	public void setCardinalPoint(String cardinalPoint) { this.cardinalPoint = cardinalPoint; }
+	
+	public String getName() { return shuttleName; }
+	public void setName(String newName) { this.shuttleName = newName; }
 
 	public HashMap<String, Integer> getStopETA() { return stopETA; }
 
@@ -86,16 +92,15 @@ public class Shuttle {
 	 * @param route - contains a list of coordinates for the route
 	 * @return time to reach destination or -1 if the stop does not exist on the shuttle's route
 	 */
-	public int getETAToStop(String stopName, ArrayList<Route> routeList) {
-		int distance = 0;
-		
+	public int getETAToStop(String stopName, ArrayList<Route> routeList) {		
 		//If only to get the ETA to a particular stop, return the time, but for all general intentions
 		//it might be better to save the times in a HashMap as it may make writing to a file easier.
 		Point p = stops.get(stopName);
 		if (p == null)
 			return -1;
 		else {
-			int time = (int) ((calculateDistance(p) / this.speed) * 60);
+			double distance = (calculateDistance(p));
+			int time = (int) ((distance / this.speed) * 60);
 			this.stopETA.put(stopName, time);
 			return time;
 		}
@@ -108,14 +113,14 @@ public class Shuttle {
 	 * @return distance to stop
 	 */
 	private double calculateDistance(Point p) {
-		int earthRadius = 3959; //radius in miles
+		double earthRadius = 3961.3; //radius in miles
 		double changeInLat = this.currentLocation.lat - p.lat;
 		double changeInLong = this.currentLocation.lon - p.lon;
 		double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
 					(Math.cos(p.lon) * Math.cos(currentLocation.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
 		
-		return earthRadius * c;
+		return (earthRadius * c);
 	}
 
 	// If you create a class within a class, make sure it is static

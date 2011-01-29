@@ -125,8 +125,7 @@ public class JSONExtractor{
 			}
 		}
 	}
-	//FIXME: since you get the shuttle data from current.js, this method is currently not in use and contains
-	//		 garbage code.
+	
 	public void readShuttleData() throws IOException {
 		parser = f.createJsonParser(shuttleURL);
 		parser.nextToken();

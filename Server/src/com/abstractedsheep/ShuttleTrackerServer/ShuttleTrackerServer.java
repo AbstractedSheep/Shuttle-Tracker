@@ -10,7 +10,7 @@ import com.abstractedsheep.extractor.*;
  * @author jonnau
  * 
  */
-public class ShuttleTrackerServer implements Runnable{
+public class ShuttleTrackerServer{
 	private JSONExtractor jsExtractor;
 	private ArrayList<Stop> stopList;
 	private ArrayList<Shuttle> shuttleList;
@@ -27,16 +27,12 @@ public class ShuttleTrackerServer implements Runnable{
 		startThread();
 	}
 	
-	/*TODO: see below todo comment; startThread will get the shuttle data
-	 * 		on a separate thread.
-	 */
 	private void startThread() {
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				//read the shuttle data
 				readDynamicData();
-				//calculate the ETA and then print it to a file
 			}
 		});
 		
@@ -57,26 +53,6 @@ public class ShuttleTrackerServer implements Runnable{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	//TODO: now that I think about it, it seems stupid to have a server object to run on a separate thread.
-	@Override
-	public void run() {
-		while(true) {
-			try {
-				jsExtractor.readShuttleData();
-				this.shuttleList = jsExtractor.getShuttleList();
-				//do ETA calculations and print them to a file
-				calculateETA();
-				JSONSender.printToFile(shuttleList);
-				//Thread.sleep(15 * 1000);
-				break;
-				
-			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
