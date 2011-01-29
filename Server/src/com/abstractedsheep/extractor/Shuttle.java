@@ -6,11 +6,15 @@
 package com.abstractedsheep.extractor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Shuttle {
 	private int shuttleId;
 	private int routeId;
-	private ArrayList<Point> stops;
+	private HashMap<String, Shuttle.Point> stops;
+	private String cardinalPoint;
+	private int speed;
+	private Point currentLocation;
 	
 	// Jackson requires a constructor with no parameters to be available
 	// Also notice 'this.' preceding the variables, this makes it clear that the variable
@@ -19,7 +23,10 @@ public class Shuttle {
 	public Shuttle() {
 		this.shuttleId = -1;
 		this.routeId = -1;
-		this.stops = new ArrayList<Shuttle.Point>();
+		this.stops = new HashMap<String, Shuttle.Point>();
+		this.cardinalPoint = "North";
+		this.speed = 0;
+		this.currentLocation = new Point();
 	}
 	
 	// This constructor is not required by Jackson, but it makes manually creating a new point a
@@ -28,7 +35,10 @@ public class Shuttle {
 		// Here, 'this.' is necessary because we have a local variable named the same as the global
 		this.shuttleId = shuttleId;
 		this.routeId = routeId;
-		this.stops = new ArrayList<Shuttle.Point>();
+		this.stops = new HashMap<String, Shuttle.Point>();
+		this.cardinalPoint = "North";
+		this.speed = 0;
+		this.currentLocation = new Point();
 	}
 	
 	
@@ -41,18 +51,38 @@ public class Shuttle {
 	public void setRouteId(int routeId) { this.routeId = routeId; }
 	public int getRouteId() { return routeId; }
 	
-	public ArrayList<Point> getStops() { return stops; }
-	public void setStops(ArrayList<Point> stops) { this.stops = stops; }
+	public HashMap<String, Point> getStops() { return stops; }
+	public void setStops(HashMap<String, Point> stops) { this.stops = stops; }
+	
+	public int getSpeed() { return speed; }
+	public void setSpeed(int newSpd) { this.speed = newSpd; }
+	
+	public Point getCurrentLocation() { return this.currentLocation; }
+	public void setCurrentLocation(Point newLocation) { this.currentLocation = newLocation; }
 	
 	
+	public String getCardinalPoint() { return cardinalPoint; }
+	public void setCardinalPoint(String cardinalPoint) { this.cardinalPoint = cardinalPoint; }
+
 	// These next two methods are not required by Jackson
 	// They are here to add data to stops
-	public void addStop(Point p) { 
-		stops.add(p);
+	public void addStop(String stopName, Point p) { 
+		stops.put(stopName, p);
 	}
 	
-	public void addStop(double lat, double lon) {
-		addStop(new Point(lat, lon));
+	public void addStop(String stopName, double lat, double lon) {
+		addStop(stopName, new Point(lat, lon));
+	}
+	
+	/**
+	 * Method determines ETA to the given stop based on the current speed and the
+	 * distance to the stop based on the given route information.
+	 * @param stopName - desired stop name
+	 * @param route - contains a list of coordinates for the route
+	 * @return time to reach destination or -1 if shuttle is not on this route
+	 */
+	public int getETAToStop(String stopName, ArrayList<Route> routeList) {
+		return 0;
 	}
 	
 	// If you create a class within a class, make sure it is static

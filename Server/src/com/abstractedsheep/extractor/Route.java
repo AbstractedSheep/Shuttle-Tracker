@@ -19,52 +19,22 @@ longitude -73.68052
  */
 
 public class Route {
-	Color color;
 	int idNum;
 	String routeName;
-	ArrayList<Double> latList;
-	ArrayList<Double> longList;
+	ArrayList<Point> coordinateList;
 	
 	public Route() {
-		this.color = Color.white;
 		idNum = 0;
 		routeName = "West";
-		this.latList = new ArrayList<Double>();
-		this.longList = new ArrayList<Double>();
+		this.coordinateList = new ArrayList<Point>();
 	}
 	
-	public Route(Color color, int idNum, String routeName) {
-		this.color = color;
+	public Route(int idNum, String routeName) {
 		this.idNum = idNum;
 		this.routeName = routeName;
-		this.latList = new ArrayList<Double>();
-		this.longList = new ArrayList<Double>();
+		this.coordinateList = new ArrayList<Point>();
 	}
-
-	public Route(Color color, int idNum, String routeName,
-			ArrayList<Double> latList, ArrayList<Double> longList) {
-		super();
-		this.color = color;
-		this.idNum = idNum;
-		this.routeName = routeName;
-		this.latList = latList;
-		this.longList = longList;
-	}
-
-	/**
-	 * @return the color
-	 */
-	public Color getColor() {
-		return color;
-	}
-
-	/**
-	 * @param color the color to set
-	 */
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
+	
 	/**
 	 * @return the idNum
 	 */
@@ -85,28 +55,14 @@ public class Route {
 	public String getRouteName() {
 		return routeName;
 	}
-
-	/**
-	 * @return the latList
-	 */
-	public ArrayList<Double> getLatList() {
-		return latList;
-	}
-
-	/**
-	 * @return the longList
-	 */
-	public ArrayList<Double> getLongList() {
-		return longList;
-	}
-
+	
 	public void putCoordinate(double lon, double lat) {
-		latList.add(lat);
-		longList.add(lon);
+		Point p = new Point();
+		p.setLocation(lon, lat);
+		this.coordinateList.add(p);
 	}
 	
 	public void putCoordinate(Point coordinate) {
-		latList.add(coordinate.getY());
-		longList.add(coordinate.getX());
+		this.coordinateList.add(coordinate);
 	}
 }

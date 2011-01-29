@@ -94,10 +94,7 @@ public class JSONExtractor{
 						//TODO: at this point, you should have all of the necessary data in the list for one stop, so call the parser
 						//		and remove all elements from this list.
 						this.extractedValueList.removeAll(extractedValueList);
-						System.out.println();
 					}
-				} else {
-					System.out.println(parser.getCurrentName() + " " + parser.getText());
 				}
 			}
 		}
@@ -108,31 +105,23 @@ public class JSONExtractor{
 	 * @throws IOException
 	 */
 	private void readRoutesData() throws JsonParseException, IOException {
-		while(parser.getCurrentToken() != null && parser.nextToken() != JsonToken.END_OBJECT){
+		while(true){
+			parser.nextToken();
 			if(parser.getCurrentName() != null && !parser.getCurrentToken().equals(JsonToken.FIELD_NAME)) {
-				
+				if(parser.getCurrentName().equals("routes") && parser.getText().equals("]"))
+					break;
 				this.extractedValueList.add(parser.getText());
-				System.out.println(parser.getCurrentName() + " " + parser.getText());
 				
 				if(parser.getCurrentName().equals("coords")){
 					extractedValueList.remove(extractedValueList.size() - 1);
+					if(parser.getText().equals("]"))  {
 					
-					while(parser.nextToken() != JsonToken.END_ARRAY){
-						
-						if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null){
-							
-							this.extractedValueList.add(parser.getText());
-							System.out.println(parser.getCurrentName() + " " + parser.getText());
-						}
+						this.routeList.add(JSONParser.listToRoute(extractedValueList));
+						extractedValueList.removeAll(extractedValueList);
+						System.out.println();
 					}
-					extractedValueList.removeAll(extractedValueList);
-					System.out.println();
-					//skip the end array token start array token and so forth.
-					//TODO: put this in a loop
-					parser.nextToken(); //end array token
-					parser.nextToken();
-					//parser.nextToken();
 				}
+				System.out.println(parser.getCurrentName() + " " + parser.getText());
 			}
 		}
 	}
@@ -151,6 +140,7 @@ public class JSONExtractor{
 				
 				if(parser.getCurrentName().equals("vehicle") && parser.getText().equals("}")) {
 					System.out.println();
+					this.shuttleList.add(JSONParser.listToShuttle(extractedValueList2, stopList));
 					//get Shuttle object
 					this.extractedValueList2.removeAll(extractedValueList2);
 				}
@@ -161,8 +151,20 @@ public class JSONExtractor{
 	public static void main(String[] args) {
 		JSONExtractor ex = new JSONExtractor();
 		try{
-			//ex.readRouteData();
-			ex.readShuttleData();
+			ex.readRouteData();
+			//ex.readShuttleData();
 		} catch(IOException e) {}
+	}
+
+	public ArrayList<Stop> getStopList() {
+		return this.stopList;
+	}
+
+	public ArrayList<Route> getRouteList() {
+		return this.routeList;
+	}
+
+	public ArrayList<Shuttle> getShuttleList() {
+		return this.shuttleList;
 	}
 }
