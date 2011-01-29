@@ -3,6 +3,7 @@
  */
 package com.abstractedsheep.extractor;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,5 +33,26 @@ public class JSONParser {
 		
 		stop.setRouteMap(map);
 		return stop;
+	}
+	
+	public static Route listToRoute(ArrayList<String> list) {
+		Route route = new Route(Integer.parseInt(list.get(1)), list.get(2));
+		for(int i = 4; i < list.size() - 1; i += 2) {
+			route.putCoordinate(Double.parseDouble(list.get(i + 1)), Double.parseDouble(list.get(i)));
+		}
+		return route;
+	}
+	
+	public static Shuttle listToShuttle(ArrayList<String> list, ArrayList<Stop> stopList) {
+		Shuttle shuttle = new Shuttle();
+		shuttle.setShuttleId(Integer.parseInt(list.get(0)));
+		shuttle.setCurrentLocation(new Shuttle.Point(Double.parseDouble(list.get(3)), Double.parseDouble(list.get(4))));
+		shuttle.setSpeed(Integer.parseInt(list.get(5)));
+		shuttle.setCardinalPoint(list.get(list.size() - 1));
+		
+		for(Stop stop : stopList) {
+			shuttle.addStop(stop.getName(), stop.getLat(), stop.getLon());
+		}
+		return shuttle;
 	}
 }
