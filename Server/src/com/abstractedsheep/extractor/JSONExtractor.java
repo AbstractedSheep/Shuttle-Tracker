@@ -10,8 +10,6 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
-import com.abstractedsheep.shuttletracker.shared.Route;
-import com.abstractedsheep.shuttletracker.shared.Stop;
 /**
  * The purpose of this class is to extract the jsons from the rpi shuttle server and process the data.
  * @author jonnau
@@ -26,6 +24,7 @@ public class JSONExtractor{
 	//these two variables are not used atm, but would store the data from the json.
 	private ArrayList<Stop> stopList;
 	private ArrayList<Route> routeList;
+	private ArrayList<Shuttle> shuttleList;
 	
 	public JSONExtractor() {
 		f = new JsonFactory();
@@ -40,6 +39,9 @@ public class JSONExtractor{
 		}
 		extractedValueList = new ArrayList<String>();
 		extractedValueList2 = new ArrayList<String>();
+		stopList = new ArrayList<Stop>();
+		routeList = new ArrayList<Route>();
+		shuttleList = new ArrayList<Shuttle>();
 	}
 	
 	//TODO: data shows up in one line, need to make a new method/class to parse json data.
@@ -55,7 +57,7 @@ public class JSONExtractor{
 			if(parser.getCurrentToken() == null)
 				break;
 			
-			if(parser.getCurrentName() != null) {
+			if(parser.getCurrentName() != null && parser.getCurrentToken() != JsonToken.FIELD_NAME) {
 				//this JSON is split into two arrays, one for stops and one for the routes (east vs west).
 				if(parser.getCurrentName().equals("stops"))
 					readStopData();
@@ -74,37 +76,29 @@ public class JSONExtractor{
 	 */
 	private void readStopData() throws JsonParseException, IOException {
 		// XXX This code is repetitive, but it works.
-		while(parser.nextToken() != JsonToken.END_ARRAY){ //keep reading the stops array until you have reached the end of it.
+		//parser.nextToken();
+		while(true){ //keep reading the stops array until you have reached the end of it.
+			parser.nextToken();
 			if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null){
-				
+				//exit out of stop array
+				if(parser.getCurrentName().equals("stops") && parser.getText().equals("]"))
+					break;
 				this.extractedValueList.add(parser.getText()); // a VALUE_NAME token's getText() will return a number or name
-				System.out.println(parser.getCurrentName() + " " + parser.getText());
 				
 				//each stop belongs to either the west route or the east route. Since this information is also
 				//stored in an array, another loop is needed to extract this info.
 				if(parser.getCurrentName().equals("routes")){
-					
-					extractedValueList.remove(extractedValueList.size() - 1);
-					while(parser.nextToken() != JsonToken.END_ARRAY) {
-						
-						if(!parser.getCurrentToken().equals(JsonToken.FIELD_NAME) && parser.getCurrentName() != null){
-							this.extractedValueList.add(parser.getText());
-							System.out.println(parser.getCurrentName() + " " + parser.getText());
-						}
+					this.extractedValueList.remove(extractedValueList.size() - 1);
+					if(parser.getText().equals("]")){
+						stopList.add(JSONParser.listToStop(extractedValueList));
+						//TODO: at this point, you should have all of the necessary data in the list for one stop, so call the parser
+						//		and remove all elements from this list.
+						this.extractedValueList.removeAll(extractedValueList);
+						System.out.println();
 					}
-					//TODO: at this point, you should have all of the necessary data in the list for one stop, so call the parser
-					//		and remove all elements from this list.
-					this.extractedValueList.removeAll(extractedValueList);
-					System.out.println();
-					//skip the end array token start array token and so forth.
-					//TODO: put this in a loop
-					parser.nextToken();
-					parser.nextToken();
-					parser.nextToken();
+				} else {
+					System.out.println(parser.getCurrentName() + " " + parser.getText());
 				}
-				//you have reached the end of the stops array, return and start parsing the route data.
-				if(parser.getCurrentName().equals("routes"))
-					return;
 			}
 		}
 	}
@@ -153,11 +147,12 @@ public class JSONExtractor{
 						!parser.getCurrentName().equals("icon")) {
 					System.out.println(parser.getCurrentName() + " " + parser.getText());
 					this.extractedValueList2.add(parser.getText());
-					if(extractedValueList2.size() == 9) {
-						System.out.println();
-						//get Shuttle object
-						this.extractedValueList2.removeAll(extractedValueList2);
-					}
+				}
+				
+				if(parser.getCurrentName().equals("vehicle") && parser.getText().equals("}")) {
+					System.out.println();
+					//get Shuttle object
+					this.extractedValueList2.removeAll(extractedValueList2);
 				}
 			}
 		}
