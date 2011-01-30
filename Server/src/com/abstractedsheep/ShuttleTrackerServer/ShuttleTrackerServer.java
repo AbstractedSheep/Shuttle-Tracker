@@ -45,7 +45,7 @@ public class ShuttleTrackerServer{
 				this.shuttleList = jsExtractor.getShuttleList();
 				//do ETA calculations and print to file
 				calculateETA();
-				JSONSender.printAsJSON(shuttleList);
+				JSONSender.saveToFileAsJSON(shuttleList);
 				//have the thread sleep for 15 seconds (approximate update time)
 				Thread.sleep(15 * 1000);
 				
