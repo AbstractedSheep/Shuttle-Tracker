@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.parsers.*;
 
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.*;
+
 import com.abstractedsheep.extractor.Shuttle;
 
 public class JSONSender {
@@ -51,5 +56,34 @@ public class JSONSender {
 			} catch(IOException ex) {}
 		}
 		
+	}
+	
+	public static void printAsJSON(ArrayList<Shuttle> shuttleList) {
+		try {
+			JsonFactory f = new JsonFactory();
+			JsonGenerator gen = f.createJsonGenerator(new FileWriter(new File("shuttleOutputData.txt")));
+			HashMap<String, Integer> map = null;
+			
+			//gen.writeArrayFieldStart("ShuttleETA");
+			for(Shuttle shuttle : shuttleList) {
+				gen.writeStartObject();
+				gen.writeObjectFieldStart(shuttle.getName());
+				gen.writeNumberField("Longitude", shuttle.getCurrentLocation().getLon());
+				gen.writeNumberField("Latitude", shuttle.getCurrentLocation().getLat());
+				gen.writeArrayFieldStart("ETA");
+				map = shuttle.getStopETA();
+				for(String stop : map.keySet()) {
+					gen.writeString(stop + " " + map.get((stop)) + " " + shuttle.getStops().get(stop).toString());
+				}
+				
+				gen.writeEndArray();
+				gen.writeEndObject();
+			}
+			//gen.writeEndArray();
+			gen.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
