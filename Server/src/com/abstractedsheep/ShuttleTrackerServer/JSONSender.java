@@ -31,8 +31,8 @@ public class JSONSender {
 			HashMap<String, Integer> map = null;
 			
 			//gen.writeArrayFieldStart("ShuttleETA");
+			gen.writeStartObject();
 			for(Shuttle shuttle : shuttleList) {
-				gen.writeStartObject();
 				gen.writeObjectFieldStart(shuttle.getName());
 				gen.writeNumberField("Longitude", shuttle.getCurrentLocation().getLon());
 				gen.writeNumberField("Latitude", shuttle.getCurrentLocation().getLat());
@@ -43,8 +43,8 @@ public class JSONSender {
 				}
 				
 				gen.writeEndArray();
-				gen.writeEndObject();
 			}
+			gen.writeEndObject();
 			//gen.writeEndArray();
 			gen.close();
 		} catch (IOException e) {
