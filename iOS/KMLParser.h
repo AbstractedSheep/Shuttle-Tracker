@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  Original header:
  
@@ -47,5 +48,26 @@
 
 - (MKAnnotationView *)viewForAnnotation:(id <MKAnnotation>)point;
 - (MKOverlayView *)viewForOverlay:(id <MKOverlay>)overlay;
+=======
+//
+//  KMLParser.h
+//  Shuttle-Tracker
+//
+//  Created by Brendon Justin on 1/29/11.
+//  Copyright 2011 Naga Softworks, LLC. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@class KMLStyle, KMLPlacemark;
+
+@interface KMLParser : NSObject {
+	NSMutableArray *styles;
+	NSMutableArray *placemarks;
+}
+
+@property (nonatomic, readonly) NSMutableArray *styles;
+@property (nonatomic, readonly) NSMutableArray *placemarks;
+>>>>>>> 1a1e98a56557589ef89eec72561638ed9393636a
 
 @end

@@ -308,7 +308,11 @@
 			<integer value="3100" key="NS.object.0"/>
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
+<<<<<<< HEAD
 		<string key="IBDocument.LastKnownRelativeProjectPath">../iPhone.xcodeproj</string>
+=======
+		<string key="IBDocument.LastKnownRelativeProjectPath">../Shuttle-Tracker.xcodeproj</string>
+>>>>>>> 1a1e98a56557589ef89eec72561638ed9393636a
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<string key="IBCocoaTouchPluginVersion">105</string>
 	</data>

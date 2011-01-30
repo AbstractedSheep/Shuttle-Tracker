@@ -10,7 +10,7 @@ import java.io.*;
 import org.codehaus.jackson.*;
 import org.codehaus.jackson.map.*;
 
-import com.abstractedsheep.shuttletracker.shared.Shuttle;
+import com.abstractedsheep.extractor.Shuttle;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -37,9 +37,9 @@ public class Tracker extends Activity {
 	        
 	        // Test data for shuttle class
 	        Shuttle s = new Shuttle(2, 0);
-	        s.addStop(20.22930, -67.29415);
-	        s.addStop(20.22927, -67.29424);
-	        s.addStop(16, 5);
+//	        s.addStop(20.22930, -67.29415);
+//	        s.addStop(20.22927, -67.29424);
+//	        s.addStop(16, 5);
 	        
 	        // Convert the shuttle to JSON and place the result in the output stream
 			mapper.writeValue(baos, s);
