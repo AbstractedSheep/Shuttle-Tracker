@@ -43,8 +43,8 @@ public class JSONSender {
 				}
 				
 				gen.writeEndArray();
+				gen.writeEndObject();
 			}
-			gen.writeEndObject();
 			//gen.writeEndArray();
 			gen.close();
 		} catch (IOException e) {
