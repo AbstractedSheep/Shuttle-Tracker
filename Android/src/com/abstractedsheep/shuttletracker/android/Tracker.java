@@ -5,71 +5,128 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.map.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
-import com.abstractedsheep.shuttletracker.shared.Shuttle;
+import org.osmdroid.tileprovider.MapTile;
+import org.osmdroid.tileprovider.MapTileProviderBasic;
+import org.osmdroid.tileprovider.constants.OpenStreetMapTileProviderConstants;
+import org.osmdroid.tileprovider.modules.IFilesystemCache;
+import org.osmdroid.tileprovider.modules.MapTileDownloader;
+import org.osmdroid.tileprovider.modules.MapTileFilesystemProvider;
+import org.osmdroid.tileprovider.tilesource.ITileSource;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.PathOverlay;
+import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.HandlerBase;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import com.abstractedsheep.kml.ObjectFactory;
+import com.ximpleware.VTDGen;
+import com.ximpleware.VTDNav;
+
+import de.micromata.opengis.kml.v_2_2_0.Kml;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 public class Tracker extends Activity {
+	private MapView map;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.map);
+         
+        initMap();
         
-        // Show the layout specified in /res/layout/main.xml
-        setContentView(R.layout.main);
+        LinearLayout ll = (LinearLayout)findViewById(R.id.mapLayout);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        ll.addView(map, lp);     
         
-        // ObjectMapper's functions can throw one of three exceptions, all of which are required to be caught
-        // Although I have not implemented proper exception handling (an exception will crash the application),
-        // this will satisfy the Java compiler
-        try {
-	        // ObjectMapper can be reused for all serializing and deserializing without reinstantiation
-	        ObjectMapper mapper = new ObjectMapper();
-	        // findViewById is used to get a reference to the text view with the id 'hello' in /res/layout/main.xml
-	        TextView tv = (TextView)findViewById(R.id.hello);
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        
-	        // Test data for shuttle class
-	        Shuttle s = new Shuttle(2, 0);
-	        s.addStop(20.22930, -67.29415);
-	        s.addStop(20.22927, -67.29424);
-	        s.addStop(16, 5);
-	        
-	        // Convert the shuttle to JSON and place the result in the output stream
-			mapper.writeValue(baos, s);
-	
-			// Put the output data into an input stream for reading back
-	        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-	        
-	        // Clear s so we know that the ObjectMapper put the new data in, and that it is not just the old data
-	        s = null;
-	        
-	        // Read the JSON into a variable, the second parameter here must be the same class as the JSON was created from
-	        // For JSON that we didn't create ourselves i.e. from the shuttle tracker site, we're better off using the manual
-	        // deserialization which is documented on the Jackson wiki
-	        // Also note that the ObjectMapper will have trouble if the class is not structured properly, so check the
-	        // Shuttle.java file in Shuttle-Tracker-Shared
-			s = mapper.readValue(bais, Shuttle.class);
-			
-			// Display the data in s so we can confirm that it is correct
-	        tv.setText(s.getRouteId() + " " + s.getShuttleId() + " " + s.getStops().toString());
-		} catch (JsonGenerationException e) {
-			// Exception.printStackTrace() is a good debugging tool that makes the error message and stack trace
-			// show up in the DDMS Log. Other ways to print to the log for debugging are available through the
-			// android.util.Log class. The function letters indicate the log level (w = Warning, d = Debug,
-			// v = Verbose, e = Error, i = Information). When using the Log class, keep the tag consistent throughout
-			// the entire application
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+        //PathOverlay poWest = new PathOverlay(Color.argb(180, 255, 127, 39), this);
+        //PathOverlay poEast = new PathOverlay(Color.argb(180, 0, 255, 0), this);
+        
+        List<PathOverlay> routes = parseRoutes("http://shuttles.rpi.edu/displays/netlink.kml", map);
+
+        for (PathOverlay po : routes) {
+        	map.getOverlays().add(po);
+        }
+        
+        ScaleBarOverlay sbo = new ScaleBarOverlay(this);
+        sbo.setImperial();
+        
+        map.getOverlays().add(sbo);
+    }
+    
+    private void initMap() {
+    	MapTileProviderBasic mtp = new MapTileProviderBasic(this, TileSourceFactory.MAPNIK);
+        map = new MapView(this, null, 256, mtp);
+        map.setBuiltInZoomControls(true);
+        map.setMultiTouchControls(true);
+        map.setUseDataConnection(true);
+        map.getController().setZoom(15);
+        map.getController().setCenter(new GeoPoint(42729640, -73681280));
+    }
+    
+    private List<PathOverlay> parseRoutes(String kmlUrl, MapView map) {
+    	VTDGen vg = new VTDGen();
+    	if (vg.parseHttpUrl(kmlUrl, true)) {
+    		VTDNav vn = vg.getNav();
+    		
+    		if (vn.matchElement("Folder")) {
+    			
+    		}
+    	}
+    	
+    	
+
+		NodeList nl = ele.getElementsByTagName("coordinates");
+		String s = nl.item(0).getChildNodes().item(0).getNodeValue();
+		
+		String[] lines = s.split("\n");
+		for (String line : lines) {
+			if (line.contains(",")) {
+				String[] coords = line.split(",");
+				poWest.addPoint(new GeoPoint(Double.parseDouble(coords[1]), Double.parseDouble(coords[0])));
+			}
+		}
+		
+		s = nl.item(1).getChildNodes().item(0).getNodeValue();
+		
+		lines = s.split("\n");
+		for (String line : lines) {
+			if (line.contains(",")) {
+				String[] coords = line.split(",");
+				poEast.addPoint(new GeoPoint(Double.parseDouble(coords[1]), Double.parseDouble(coords[0])));
+			}
 		}
     }
+        
+    
+
 }
