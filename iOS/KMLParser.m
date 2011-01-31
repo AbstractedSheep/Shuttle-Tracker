@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  Original header:
  
@@ -594,10 +595,61 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
 	}
 	
     [element addString:string];
+=======
+//
+//  KMLParser.m
+//  Shuttle-Tracker
+//
+//  Created by Brendon Justin on 1/29/11.
+//  Copyright 2011 Naga Softworks, LLC. All rights reserved.
+//
+
+#import "KMLParser.h"
+
+
+//	Generic placemark; note that subclasses should implement some kind of coordinate storage
+@interface KMLPlacemark
+{
+	NSString *name;
+	NSString *idTag;
+	NSString *description;
+}
+
+@property (nonatomic, retain) NSString *name;
+@property (nonatomic, retain) NSString *idTag;
+@property (nonatomic, retain) NSString *description;
+
+@end
+
+@interface KMLRoute : KMLPlacemark
+{
+	NSMutableArray *lineString;
+}
+
+@property (nonatomic, retain) NSMutableArray *lineString;
+
+
+@end
+
+@interface KMLPoint : KMLPlacemark
+{
+	CGPoint point;
+}
+
+@property (nonatomic, retain) CGPoint point;
+
+
+@end
+
+@interface KMLStop : KMLPoint
+{
+	
+>>>>>>> 1a1e98a56557589ef89eec72561638ed9393636a
 }
 
 @end
 
+<<<<<<< HEAD
 // Begin the implementations of KMLElement and subclasses.  These objects
 // act as state machines during parsing time and then once the document is
 // fully parsed they act as an object graph for describing the placemarks and
@@ -640,10 +692,16 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
 {
     [accum release];
     accum = nil;
+=======
+@interface KMLShuttle : KMLPoint
+{
+	
+>>>>>>> 1a1e98a56557589ef89eec72561638ed9393636a
 }
 
 @end
 
+<<<<<<< HEAD
 @implementation KMLStyle 
 
 - (BOOL)canAddString
@@ -755,6 +813,35 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
 {
     return nil;
 }
+=======
+@implementation KMLParser
+
+@synthesize styles;
+@synthesize placemarks;
+
+- (id)init {
+	if ((self == [super init])) {
+		placemarks = [[NSMutableArray alloc] init];
+		styles = [[NSMutableArray alloc] init];
+	}
+	
+	return self;
+}
+
+@implementation KMLPlacemark
+
+@synthesize name;
+@synthesize idTag;
+@synthesize description;
+
+
+@end
+
+@implementation KMLRoute
+
+@synthesize lineString;
+
+>>>>>>> 1a1e98a56557589ef89eec72561638ed9393636a
 
 @end
 
@@ -762,6 +849,7 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
 
 @synthesize point;
 
+<<<<<<< HEAD
 - (void)endCoordinates
 {
     flags.inCoords = NO;
@@ -1184,6 +1272,20 @@ static void strToCoords(NSString *str, CLLocationCoordinate2D **coordsOut, NSUIn
 	networkUrl = [NSURL URLWithString:[accum copy]];
 	[self clearString];
 }
+=======
+
+@end
+
+
+@implementation KMLStop
+
+
+@end
+
+@implementation KMLShuttle
+
+
+>>>>>>> 1a1e98a56557589ef89eec72561638ed9393636a
 
 @end
 

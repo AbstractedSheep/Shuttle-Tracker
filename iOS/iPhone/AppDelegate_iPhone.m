@@ -1,14 +1,24 @@
 //
 //  AppDelegate_iPhone.m
+<<<<<<< HEAD
 //  iPhone
 //
 //  Created by Brendon Justin on 1/27/11.
+=======
+//  Shuttle-Tracker
+//
+//  Created by Brendon Justin on 1/29/11.
+>>>>>>> 1a1e98a56557589ef89eec72561638ed9393636a
 //  Copyright 2011 Naga Softworks, LLC. All rights reserved.
 //
 
 #import "AppDelegate_iPhone.h"
+<<<<<<< HEAD
 #import "MapViewController_CM.h"
 #import "KMLViewerViewController.h"
+=======
+#import "MapViewController.h"
+>>>>>>> 1a1e98a56557589ef89eec72561638ed9393636a
 
 @implementation AppDelegate_iPhone
 
@@ -21,10 +31,15 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
     // Override point for customization after application launch.
+<<<<<<< HEAD
     //MapViewController_CM *mapVC = [[MapViewController_CM alloc] init];
     KMLViewerViewController *mapVC = [[KMLViewerViewController alloc] init];
     
     [self.window addSubview:mapVC.view];
+=======
+    MapViewController *mapVC = [[MapViewController alloc] init];
+	[self.window addSubview:mapVC.view];
+>>>>>>> 1a1e98a56557589ef89eec72561638ed9393636a
     [self.window makeKeyAndVisible];
     
     return YES;

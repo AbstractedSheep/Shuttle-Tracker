@@ -2,13 +2,15 @@ package com.abstractedsheep.ShuttleTrackerServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.abstractedsheep.extractor.*;
 
 /**
  * @author jonnau
  * 
  */
-public class ShuttleTrackerServer implements Runnable{
+public class ShuttleTrackerServer{
 	private JSONExtractor jsExtractor;
 	private ArrayList<Stop> stopList;
 	private ArrayList<Shuttle> shuttleList;
@@ -25,16 +27,12 @@ public class ShuttleTrackerServer implements Runnable{
 		startThread();
 	}
 	
-	/*TODO: see below todo comment; startThread will get the shuttle data
-	 * 		on a separate thread.
-	 */
 	private void startThread() {
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				//read the shuttle data
 				readDynamicData();
-				//calculate the ETA and then print it to a file
 			}
 		});
 		
@@ -45,8 +43,9 @@ public class ShuttleTrackerServer implements Runnable{
 			try {
 				jsExtractor.readShuttleData();
 				this.shuttleList = jsExtractor.getShuttleList();
-				//do ETA calculations
+				//do ETA calculations and print to file
 				calculateETA();
+				JSONSender.saveToFileAsJSON(shuttleList);
 				//have the thread sleep for 15 seconds (approximate update time)
 				Thread.sleep(15 * 1000);
 				
@@ -60,29 +59,14 @@ public class ShuttleTrackerServer implements Runnable{
 		}
 	}
 	
-	//TODO: now that I think about it, it seems stupid to have a server object to run on a separate thread.
-	@Override
-	public void run() {
-		while(true) {
-			try {
-				jsExtractor.readShuttleData();
-				this.shuttleList = jsExtractor.getShuttleList();
-				//do ETA calculations
-				Thread.sleep(15 * 1000);
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	private void calculateETA() {
-		for(Stop stop : stopList) {
-			for(Shuttle shuttle : shuttleList) {
+	/**
+	 * Calculates the time for each shuttle to arrive at each stop. If a shuttle does not go to that stop
+	 * (i.e. that stop is not part of the shuttle's route), then a -1 is returned. The values are then stored in a list
+	 * to later be used to save the data to a file.
+	 */
+	private void calculateETA() {		
+		for(Shuttle shuttle : shuttleList) {
+			for(Stop stop : stopList) {
 				shuttle.getETAToStop(stop.getName(), routeList);
 			}
 		}
@@ -106,8 +90,7 @@ public class ShuttleTrackerServer implements Runnable{
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		new ShuttleTrackerServer();
 	}
 
 }
