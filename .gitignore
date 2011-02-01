@@ -1,2 +1,7 @@
-.DS_STORE
+.DS_Store
+
+build/
+
+*~
+*.swp
 
