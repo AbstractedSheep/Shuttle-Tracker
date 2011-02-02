@@ -14,6 +14,9 @@ import org.osmdroid.tileprovider.MapTileProviderBasic;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlay.OnItemGestureListener;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.PathOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 
@@ -34,7 +37,7 @@ import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
-public class Tracker extends Activity {
+public class Tracker extends Activity implements OnItemGestureListener<OverlayItem> {
 	private MapView map;
 	
     /** Called when the activity is first created. */
@@ -52,18 +55,25 @@ public class Tracker extends Activity {
         
         
         List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/displays/netlink.kml");
-
+        List<OverlayItem> items = new ArrayList<OverlayItem>();
+        OverlayItem oi;
         PathOverlay po;
         
         for (Placemark p : placemarks) {
         	if (p.type == Placemark.LINE_STRING) {
-        		po = new PathOverlay(Color.argb(255, 10, 134, 13), this);
+        		po = new PathOverlay(p.style.color, this);
         		for (GeoPoint gp : p.coords) {
         			po.addPoint(gp);
         		}
         		map.getOverlays().add(po);
-        	}       	
+        	} else if (p.type == Placemark.POINT) {
+        		oi = new OverlayItem(p.name, p.description, p.coords.get(0));
+        		items.add(oi);
+        	}
         }
+                
+        ItemizedOverlay<OverlayItem> io = new ItemizedOverlay<OverlayItem>(this, items, this);
+        map.getOverlays().add(io);
         
         ScaleBarOverlay sbo = new ScaleBarOverlay(this);
         sbo.setImperial();
@@ -149,13 +159,15 @@ public class Tracker extends Activity {
     						do {
     							temp = vn.toString(vn.getCurrentIndex());
     							if ((temp.equalsIgnoreCase("styleUrl"))) {
-    								tempPlacemark.style = styles.get(temp.substring(1));
+    								tempPlacemark.style = styles.get(vn.toString(vn.getText()).substring(1));
     							} else if (temp.equalsIgnoreCase("LineString") || temp.equalsIgnoreCase("Point")) {
     								tempPlacemark.setAttribute("type", temp);
     								if (vn.toElement(VTDNav.FC, "coordinates")) {
     									tempPlacemark.parseCoordinates(vn.toString(vn.getText()));
     									vn.toElement(VTDNav.P);
     								}
+    							} else {
+    								tempPlacemark.setAttribute(temp, vn.toString(vn.getText()));
     							}
     						} while (vn.toElement(VTDNav.NS));
     						vn.toElement(VTDNav.P);
@@ -184,6 +196,16 @@ public class Tracker extends Activity {
 		
     	return placemarks;
     }
+
+	public boolean onItemLongPress(int index, OverlayItem item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean onItemSingleTapUp(int index, OverlayItem item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
         
     
 

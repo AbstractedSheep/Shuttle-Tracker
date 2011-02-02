@@ -10,18 +10,18 @@ public class Style {
 	
 	public void setAttribute(String name, String value) {
 		if (name.equalsIgnoreCase("color")) {
-			byte[] colors = hexStringToByteArray(value);
-			color = Color.argb(colors[0], colors[1], colors[2], colors[3]);
+			int[] colors = hexStringToByteArray(value);
+			this.color = Color.argb(colors[0], colors[1], colors[2], colors[3]);
 		} else if (name.equalsIgnoreCase("width")) {
-			width = Integer.parseInt(value);
+			this.width = Integer.parseInt(value);
 		}
 	}
 	
-	public static byte[] hexStringToByteArray(String s) {
+	public static int[] hexStringToByteArray(String s) {
 	    int len = s.length();
-	    byte[] data = new byte[len / 2];
+	    int[] data = new int[len / 2];
 	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+	        data[i / 2] = (int) ((Character.digit(s.charAt(i), 16) << 4)
 	                             + Character.digit(s.charAt(i+1), 16));
 	    }
 	    return data;

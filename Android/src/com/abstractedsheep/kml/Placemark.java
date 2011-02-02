@@ -27,14 +27,14 @@ public class Placemark {
 	 */
 	public void setAttribute(String name, String value) {
 		if (name.equalsIgnoreCase("name")) {
-			name = value;
+			this.name = value;
 		} else if (name.equalsIgnoreCase("description")) {
-			description = value;
+			this.description = value;
 		} else if (name.equalsIgnoreCase("type")) {
 			if (value.equalsIgnoreCase("LineString")) {
-				type = LINE_STRING;
+				this.type = LINE_STRING;
 			} else if (value.equalsIgnoreCase("Point")) {
-				type = POINT;
+				this.type = POINT;
 			}
 		}
 	}
@@ -49,7 +49,7 @@ public class Placemark {
 		for (String line : lines) {
 			if (line.contains(",")) {
 				String[] splitCoords = line.split(",");			
-				coords.add(new GeoPoint(Double.parseDouble(splitCoords[1]), Double.parseDouble(splitCoords[0])));
+				this.coords.add(new GeoPoint(Double.parseDouble(splitCoords[1]), Double.parseDouble(splitCoords[0])));
 			}
 		}
 	}
