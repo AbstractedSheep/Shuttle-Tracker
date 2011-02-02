@@ -28,6 +28,7 @@ import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -49,13 +50,19 @@ public class Tracker extends Activity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
         ll.addView(map, lp);     
         
-        //PathOverlay poWest = new PathOverlay(Color.argb(180, 255, 127, 39), this);
-        //PathOverlay poEast = new PathOverlay(Color.argb(180, 0, 255, 0), this);
         
-        List<PathOverlay> routes = parseRoutes("http://shuttles.rpi.edu/displays/netlink.kml");
+        List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/displays/netlink.kml");
 
-        for (PathOverlay po : routes) {
-        	map.getOverlays().add(po);
+        PathOverlay po;
+        
+        for (Placemark p : placemarks) {
+        	if (p.type == Placemark.LINE_STRING) {
+        		po = new PathOverlay(Color.argb(255, 10, 134, 13), this);
+        		for (GeoPoint gp : p.coords) {
+        			po.addPoint(gp);
+        		}
+        		map.getOverlays().add(po);
+        	}       	
         }
         
         ScaleBarOverlay sbo = new ScaleBarOverlay(this);
@@ -83,21 +90,22 @@ public class Tracker extends Activity {
      * @param kmlUrl The HTTP path to the KML route file
      * @return A list of PathOverlays that can be added to a map view
      */
-    private List<PathOverlay> parseRoutes(String kmlUrl) {
-    	List<PathOverlay> routes = new ArrayList<PathOverlay>();
+    private List<Placemark> parsePlacemarks(String kmlUrl) {
     	HashMap<String, Style> styles = new HashMap<String, Style>();
     	List<Placemark> placemarks = new ArrayList<Placemark>();
     	Placemark tempPlacemark;
     	Style tempStyle;
     	String id;
+    	String temp;
     	byte[] doc = new byte[32000];
     	   	
     	try {
-    		
+    		// Open a connection to the server
     		URL url = new URL(kmlUrl);
         	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         	InputStream is = conn.getInputStream();
         	
+        	// Read the KML file
         	int i = 0;
         	int b = 0;
         	while ((b = is.read()) != -1) {
@@ -105,19 +113,15 @@ public class Tracker extends Activity {
         		i++;
         	}
         	
-        	FileOutputStream fos = new FileOutputStream("/sdcard/kml");
-        	for (int j = 0; j <= i; j++) {
-        		fos.write((int) doc[j]);
-        	}
-        	
-        	fos.close();
-        	
+        	// Initialize the parser
 	    	VTDGen vg = new VTDGen();
 	    	vg.setDoc(doc, 0, i);
 	    	vg.parse(true);
     		VTDNav vn = vg.getNav();
     		
+    		// Quick and dirty parsing code, only parses LineStyles, LineStrings, and Points
     		if (vn.matchElement("Folder")) {
+    			// Style parsing
     			if (vn.toElement(VTDNav.FC, "Style"))
     			do {
     				id = vn.toString(vn.getAttrVal("id"));
@@ -127,57 +131,58 @@ public class Tracker extends Activity {
     						do {
     							tempStyle.setAttribute(vn.toString(vn.getCurrentIndex()), vn.toString(vn.getText()));
     						} while (vn.toElement(VTDNav.NS));
+    						vn.toElement(VTDNav.P);
     					}
+    					vn.toElement(VTDNav.P);
     				}
     				styles.put(id, tempStyle);
     			} while (vn.toElement(VTDNav.NS, "Style"));
+    			vn.toElement(VTDNav.P);
+    			
+    			// Placemark parsing
+    			if (vn.toElement(VTDNav.FC, "Placemark")) {
+        			do {
+        				tempPlacemark = new Placemark();
+        				tempPlacemark.id = vn.toString(vn.getAttrVal("id"));
+
+    					if (vn.toElement(VTDNav.FC)) {
+    						do {
+    							temp = vn.toString(vn.getCurrentIndex());
+    							if ((temp.equalsIgnoreCase("styleUrl"))) {
+    								tempPlacemark.style = styles.get(temp.substring(1));
+    							} else if (temp.equalsIgnoreCase("LineString") || temp.equalsIgnoreCase("Point")) {
+    								tempPlacemark.setAttribute("type", temp);
+    								if (vn.toElement(VTDNav.FC, "coordinates")) {
+    									tempPlacemark.parseCoordinates(vn.toString(vn.getText()));
+    									vn.toElement(VTDNav.P);
+    								}
+    							}
+    						} while (vn.toElement(VTDNav.NS));
+    						vn.toElement(VTDNav.P);
+    					}
+    					placemarks.add(tempPlacemark);
+        			} while (vn.toElement(VTDNav.NS, "Placemark"));
+        			vn.toElement(VTDNav.P);
+    			}
     		}
     		
     	} catch (NavException e) {
     		e.printStackTrace();
     	} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (EncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (EOFException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (EntityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	return routes;
-
-		/*
-		NodeList nl = ele.getElementsByTagName("coordinates");
-		String s = nl.item(0).getChildNodes().item(0).getNodeValue();
 		
-		String[] lines = s.split("\n");
-		for (String line : lines) {
-			if (line.contains(",")) {
-				String[] coords = line.split(",");
-				poWest.addPoint(new GeoPoint(Double.parseDouble(coords[1]), Double.parseDouble(coords[0])));
-			}
-		}
-		
-		s = nl.item(1).getChildNodes().item(0).getNodeValue();
-		
-		lines = s.split("\n");
-		for (String line : lines) {
-			if (line.contains(",")) {
-				String[] coords = line.split(",");
-				poEast.addPoint(new GeoPoint(Double.parseDouble(coords[1]), Double.parseDouble(coords[0])));
-			}
-		}
-		*/
+    	return placemarks;
     }
         
     
