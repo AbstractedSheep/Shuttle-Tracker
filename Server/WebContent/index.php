@@ -1,5 +1,5 @@
 <!-- This is the the web interface to the shuttle ETA system. It displays the ETA in a formatted table.-->
- 
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
@@ -17,7 +17,7 @@
 <meta name="revisit-after" content="15 days">
 <title>When is the shuttle getting here?</title>
 
-<link rel="stylesheet" type="text/css" href="css\my.css">
+<link rel="stylesheet" type="text/css" href="css/my.css">
 
 
 </head>
@@ -27,16 +27,22 @@
     <p>Blitman: 1:31</p>
 <table>
 <?php
-    $shuttleOutput = file("c:\\shuttleOutputData.txt");
-    //var_dump($shuttleOutput);  
+include("apps/data_service.php");
 
-    // The following is sample data. It will read in the real ETA data when I get it via file or URL.
+$dataService = new DataService();
+$data = $dataService->getData(1);
+var_dump($data);
+
+    // The following is sample data. It will read in the real ETA data when I get it via the data service URL.
 ?>
     <tr>
         <th>Stop</th>
         <th>ETA</th>
     </tr>
     
+    <?
+
+?>
     <tr>
     <td>Blitman</td>
     <td>1:30</td>
@@ -55,7 +61,7 @@
     <tr>
     <td>Other stop</td>
     <td>0:01</td>
-    </tr>
+    </tr> 
     
 </table>
 <br />
