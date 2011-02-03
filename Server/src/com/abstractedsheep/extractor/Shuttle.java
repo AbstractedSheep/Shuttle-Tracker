@@ -17,6 +17,7 @@ public class Shuttle {
 	private String shuttleName;
 	private int speed;
 	private Point currentLocation;
+	private boolean isWestShuttle;
 	
 	// Jackson requires a constructor with no parameters to be available
 	// Also notice 'this.' preceding the variables, this makes it clear that the variable
@@ -31,6 +32,7 @@ public class Shuttle {
 		this.cardinalPoint = "North";
 		this.speed = 0;
 		this.currentLocation = new Point();
+		this.isWestShuttle = true;
 	}
 	
 	// This constructor is not required by Jackson, but it makes manually creating a new point a
@@ -45,6 +47,7 @@ public class Shuttle {
 		this.cardinalPoint = "North";
 		this.speed = 0;
 		this.currentLocation = new Point();
+		this.isWestShuttle = true;
 	}
 	
 	
@@ -74,6 +77,11 @@ public class Shuttle {
 	public void setName(String newName) { this.shuttleName = newName; }
 
 	public HashMap<String, Integer> getStopETA() { return stopETA; }
+	
+	public String getRouteName() { return (isWestShuttle) ? "West Route" : "East Route"; }
+	public void setRoute(String routename) {
+		isWestShuttle = (routename.equals("West Route")) ? true : false;
+		}
 
 	// These next two methods are not required by Jackson
 	// They are here to add data to stops
@@ -146,5 +154,44 @@ public class Shuttle {
 		public void setLon(double lon) { this.lon = lon; }
 		
 		public String toString() { return "(" + this.lat + ", " + this.lon + ")"; }
+	}
+	
+	/**
+	 * The purpose of this inner class is to calculate the distance and time for the shuttle to
+	 * get to the desired stop.
+	 * @author jonnau
+	 *
+	 */
+	private class routeFinder {
+		Route route;
+		Point current;
+		
+		/**
+		 * 
+		 * @param r - shuttle's route
+		 * @param loc - current location of shuttle
+		 */
+		public routeFinder(Route r, Point loc) {
+			this.route = r;
+			this.current = loc;
+		}
+		
+		/**
+		 * calculates distance from stop
+		 * @param stop - desired stop
+		 * @return distance to stop.
+		 */
+		public double getDistanceToStop(Stop stop) {
+			return 0.0;
+		}
+		
+		/**
+		 * calculates arrival time to stop
+		 * @param stop - desired stop
+		 * @return time to stop.
+		 */
+		public int getTimeToStop(Stop stop) {
+			return 0;
+		}
 	}
 }
