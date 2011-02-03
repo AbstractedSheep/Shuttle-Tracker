@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="#FFFFFF">
+<TextView 
+  android:text="Title" 
+  android:layout_alignParentLeft="true" 
+  android:id="@+id/balloon_title" 
+  android:layout_width="wrap_content" 
+  android:layout_height="wrap_content"
+  android:textSize="12pt"
+  android:textColor="#000000" />
+<TextView 
+  android:text="Description" 
+  android:layout_below="@+id/balloon_title" 
+  android:id="@+id/balloon_text" 
+  android:layout_width="wrap_content" 
+  android:layout_height="wrap_content" 
+  android:layout_alignLeft="@+id/balloon_title"
+  android:textSize="8pt"
+  android:textColor="#000000" />
+</RelativeLayout>

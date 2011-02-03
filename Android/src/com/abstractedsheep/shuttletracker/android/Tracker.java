@@ -29,7 +29,7 @@ import android.os.Bundle;
 import android.view.animation.BounceInterpolator;
 
 public class Tracker extends MapActivity {
-	public static String MAPS_API_KEY = "01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og";
+	public static String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 	private MapView map;
 	
     /** Called when the activity is first created. */
@@ -41,7 +41,7 @@ public class Tracker extends MapActivity {
         setContentView(map);
         
         List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/displays/netlink.kml");
-        StopsItemizedOverlay stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), this);
+        StopsItemizedOverlay stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), this, this.map, this.getLayoutInflater());
         PathOverlay routesOverlay;
         
         for (Placemark p : placemarks) {
