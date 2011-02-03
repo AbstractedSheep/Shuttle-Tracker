@@ -1,7 +1,6 @@
 package com.abstractedsheep.kml;
 
 import android.graphics.Color;
-import android.util.Log;
 
 public class Style {
 	public int color;
@@ -11,7 +10,7 @@ public class Style {
 	public void setAttribute(String name, String value) {
 		if (name.equalsIgnoreCase("color")) {
 			int[] colors = hexStringToByteArray(value);
-			this.color = Color.argb(colors[0], colors[1], colors[2], colors[3]);
+			this.color = Color.argb(colors[0], colors[3], colors[2], colors[1]);
 		} else if (name.equalsIgnoreCase("width")) {
 			this.width = Integer.parseInt(value);
 		}

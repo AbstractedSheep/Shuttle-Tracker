@@ -1,6 +1,6 @@
 package com.abstractedsheep.shuttletracker.android;
 
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -10,18 +10,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.osmdroid.tileprovider.MapTileProviderBasic;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlay.OnItemGestureListener;
-import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.PathOverlay;
-import org.osmdroid.views.overlay.ScaleBarOverlay;
-
 import com.abstractedsheep.kml.Placemark;
 import com.abstractedsheep.kml.Style;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapView;
+import com.google.android.maps.MapView.LayoutParams;
+import com.google.android.maps.OverlayItem;
 import com.ximpleware.EOFException;
 import com.ximpleware.EncodingException;
 import com.ximpleware.EntityException;
@@ -30,68 +25,52 @@ import com.ximpleware.ParseException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 
-import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
+import android.view.animation.BounceInterpolator;
 
-public class Tracker extends Activity implements OnItemGestureListener<OverlayItem> {
+public class Tracker extends MapActivity {
+	public static String MAPS_API_KEY = "01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og";
 	private MapView map;
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.map);
-         
+        
         initMap();
-        
-        // Add the map to the layout
-        LinearLayout ll = (LinearLayout)findViewById(R.id.mapLayout);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-        ll.addView(map, lp);     
-        
+        setContentView(map);
         
         List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/displays/netlink.kml");
-        List<OverlayItem> items = new ArrayList<OverlayItem>();
-        OverlayItem oi;
-        PathOverlay po;
+        StopsItemizedOverlay stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), this);
+        PathOverlay routesOverlay;
         
         for (Placemark p : placemarks) {
         	if (p.type == Placemark.LINE_STRING) {
-        		po = new PathOverlay(p.style.color, this);
+        		routesOverlay = new PathOverlay(p.style);
         		for (GeoPoint gp : p.coords) {
-        			po.addPoint(gp);
+        			routesOverlay.addPoint(gp);
         		}
-        		map.getOverlays().add(po);
+        		map.getOverlays().add(routesOverlay);
         	} else if (p.type == Placemark.POINT) {
-        		oi = new OverlayItem(p.name, p.description, p.coords.get(0));
-        		items.add(oi);
+        		stopsOverlay.addOverlay(p.toOverlayItem());
         	}
         }
-                
-        ItemizedOverlay<OverlayItem> io = new ItemizedOverlay<OverlayItem>(this, items, this);
-        map.getOverlays().add(io);
         
-        ScaleBarOverlay sbo = new ScaleBarOverlay(this);
-        sbo.setImperial();
-        
-        map.getOverlays().add(sbo);
+        map.getOverlays().add(stopsOverlay);
     }
     
     /**
      * Set up the map view with the default configuration
      */
     private void initMap() {
-    	MapTileProviderBasic mtp = new MapTileProviderBasic(this, TileSourceFactory.MAPNIK);
-        map = new MapView(this, null, 256, mtp);
-        map.setBuiltInZoomControls(true);
-        map.setMultiTouchControls(true);
-        map.setUseDataConnection(true);
+    	map = new MapView(this, MAPS_API_KEY);
+    	LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, new GeoPoint(0, 0), 0);
+        map.setLayoutParams(lp);
         map.getController().setZoom(15);
         map.getController().setCenter(new GeoPoint(42729640, -73681280));
+        map.setClickable(true);
+        map.setFocusable(true);
+        map.setBuiltInZoomControls(true);
     }
     
     /**
@@ -197,16 +176,9 @@ public class Tracker extends Activity implements OnItemGestureListener<OverlayIt
     	return placemarks;
     }
 
-	public boolean onItemLongPress(int index, OverlayItem item) {
+	@Override
+	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	public boolean onItemSingleTapUp(int index, OverlayItem item) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-        
-    
-
 }

@@ -3,7 +3,8 @@ package com.abstractedsheep.kml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osmdroid.util.GeoPoint;
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.OverlayItem;
 
 public class Placemark {
 	public static int POINT = 1;
@@ -48,9 +49,20 @@ public class Placemark {
 		String[] lines = coordinates.split("\n");
 		for (String line : lines) {
 			if (line.contains(",")) {
-				String[] splitCoords = line.split(",");			
-				this.coords.add(new GeoPoint(Double.parseDouble(splitCoords[1]), Double.parseDouble(splitCoords[0])));
+				String[] splitCoords = line.split(",");		
+				this.coords.add(new GeoPoint((int)(Double.parseDouble(splitCoords[1]) * 1e6), (int)(Double.parseDouble(splitCoords[0]) * 1e6)));
 			}
 		}
+	}
+	
+	public OverlayItem toOverlayItem() {
+		OverlayItem oi;
+		if (this.coords.size() > 0) {
+			oi = new OverlayItem(this.coords.get(0), this.name, this.description);
+		} else {
+			oi = new OverlayItem(new GeoPoint(0, 0), this.name, this.description);
+		}
+		
+		return oi;
 	}
 }
