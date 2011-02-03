@@ -11,8 +11,9 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int icon=0x7f020000;
-        public static final int stop_marker=0x7f020001;
+        public static final int balloon=0x7f020000;
+        public static final int icon=0x7f020001;
+        public static final int stop_marker=0x7f020002;
     }
     public static final class id {
         public static final int balloon_text=0x7f050001;

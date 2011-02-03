@@ -59,7 +59,10 @@ public class StopsItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		TextView title = (TextView) balloon.findViewById(R.id.balloon_title);
 		title.setText(item.getTitle());
 		TextView desc = (TextView) balloon.findViewById(R.id.balloon_text);
-		desc.setText(item.getSnippet());
+		if (item.getSnippet() == null || item.getSnippet().equals(""))
+			desc.setVisibility(View.GONE);
+		else
+			desc.setText(item.getSnippet());
 		
 		if (this.index >= 0)
 			map.removeViewAt(this.index);
