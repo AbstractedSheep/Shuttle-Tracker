@@ -5,10 +5,10 @@ class DataService
     
     function connect_db()
     {
-        $usr = "usr";
-        $pwd = "pass";
-        $db = "db261968011";
-        $host = "db1696.perfora.net";
+        $usr = "root";
+        $pwd = "salamander_s4";
+        $db = "shuttle_tracker";
+        $host = "127.0.0.1";
         
         $cid = mysql_connect($host, $usr, $pwd);                                    // database connection
         
