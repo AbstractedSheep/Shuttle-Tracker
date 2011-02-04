@@ -162,6 +162,7 @@ public class Shuttle {
 	 * @author jonnau
 	 *
 	 */
+	@SuppressWarnings("unused")
 	private class routeFinder {
 		Route route;
 		Point current;

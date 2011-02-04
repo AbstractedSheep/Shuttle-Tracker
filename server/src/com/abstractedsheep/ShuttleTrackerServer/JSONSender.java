@@ -1,23 +1,24 @@
 
 package com.abstractedsheep.ShuttleTrackerServer;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.xml.parsers.*;
 
 import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.*;
 
 import com.abstractedsheep.extractor.Shuttle;
 
+/**
+ * Connects to http://www.abstractedsheep.com/phpMyAdmin/
+ * username: root
+ * password: **************
+ * @author jonnau
+ *
+ */
 public class JSONSender {
 	
 	/**
