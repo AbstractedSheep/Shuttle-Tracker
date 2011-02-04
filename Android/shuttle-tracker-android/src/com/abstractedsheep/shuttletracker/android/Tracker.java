@@ -41,7 +41,7 @@ public class Tracker extends MapActivity {
         setContentView(map);
         
         List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/displays/netlink.kml");
-        StopsItemizedOverlay stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), this, this.map, this.getLayoutInflater());
+        StopsItemizedOverlay stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map);
         PathOverlay routesOverlay;
         
         for (Placemark p : placemarks) {
