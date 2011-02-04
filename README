@@ -1,5 +1,2 @@
-README AGAIN
-Umesh has read the file.
-Alex has made a wonderful edit to this file and made it much better.
-Files should end in a newline!
+The Shuttle Tracker project is intended to be a mobile equivalent of the RPI Shuttle Tracker website at http://shuttles.rpi.edu/.  A webserver and an Android client, part of the project, are in this repository. The iOS version currently has its own repository, at https://github.com/AbstractedSheep/Shuttle-Tracker-iOS
 
