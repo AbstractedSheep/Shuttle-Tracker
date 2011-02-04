@@ -3,7 +3,6 @@
  */
 package com.abstractedsheep.extractor;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 

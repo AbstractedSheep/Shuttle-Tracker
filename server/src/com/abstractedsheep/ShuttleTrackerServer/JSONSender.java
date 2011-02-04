@@ -12,6 +12,13 @@ import org.codehaus.jackson.JsonGenerator;
 
 import com.abstractedsheep.extractor.Shuttle;
 
+/**
+ * Connects to http://www.abstractedsheep.com/phpMyAdmin/
+ * username: root
+ * password: **************
+ * @author jonnau
+ *
+ */
 public class JSONSender {
 	
 	/**
