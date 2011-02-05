@@ -1,77 +1,61 @@
+/***
+ * Copyright (c) 2010 readyState Software Ltd
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ */
+
 package com.abstractedsheep.shuttletracker.android;
 
 import java.util.ArrayList;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
-import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
 
-public class StopsItemizedOverlay extends ItemizedOverlay<OverlayItem> {
+import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
-	private ArrayList<OverlayItem> overlays = new ArrayList<OverlayItem>();
-	private Context context;
-	private MapView map;
-	private LayoutInflater inflater;
-	private int index = -1;
+public class StopsItemizedOverlay extends BalloonItemizedOverlay<OverlayItem> {
+
+	private ArrayList<OverlayItem> m_overlays = new ArrayList<OverlayItem>();
+	private Context c;
 	
-	public StopsItemizedOverlay(Drawable defaultMarker) {
-		super(boundCenter(defaultMarker));
-	}
-	
-	public StopsItemizedOverlay(Drawable defaultMarker, Context context, MapView map, LayoutInflater li) {
-		super(boundCenter(defaultMarker));
-		this.context = context;
-		this.map = map;
-		this.inflater = li;
+	public StopsItemizedOverlay(Drawable defaultMarker, MapView mapView) {
+		super(boundCenter(defaultMarker), mapView);
+		c = mapView.getContext();
 	}
 
 	public void addOverlay(OverlayItem overlay) {
-		this.overlays.add(overlay);
-		populate();
+	    m_overlays.add(overlay);
+	    populate();
 	}
-	
-	
+
 	@Override
 	protected OverlayItem createItem(int i) {
-		return this.overlays.get(i);
+		return m_overlays.get(i);
 	}
 
 	@Override
 	public int size() {
-		return this.overlays.size();
+		return m_overlays.size();
 	}
-	
-	@Override
-	protected boolean onTap(int index) {
-		OverlayItem item = this.overlays.get(index);
-		View balloon = inflater.inflate(R.layout.balloon, null);
-		MapView.LayoutParams lp = new MapView.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, item.getPoint(), LayoutParams.BOTTOM_CENTER);
-		balloon.setLayoutParams(lp);
-		
-		TextView title = (TextView) balloon.findViewById(R.id.balloon_title);
-		title.setText(item.getTitle());
-		TextView desc = (TextView) balloon.findViewById(R.id.balloon_text);
-		if (item.getSnippet() == null || item.getSnippet().equals(""))
-			desc.setVisibility(View.GONE);
-		else
-			desc.setText(item.getSnippet());
-		
-		if (this.index >= 0)
-			map.removeViewAt(this.index);
-		
-		this.index = map.getChildCount();
-		
-		map.addView(balloon);
 
+	@Override
+	protected boolean onBalloonTap(int index) {
+		Toast.makeText(c, "onBalloonTap for overlay index " + index,
+				Toast.LENGTH_LONG).show();
 		return true;
 	}
-
+	
 }
