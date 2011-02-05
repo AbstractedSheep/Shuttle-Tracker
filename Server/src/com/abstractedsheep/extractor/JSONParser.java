@@ -3,7 +3,6 @@
  */
 package com.abstractedsheep.extractor;
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -52,10 +51,11 @@ public class JSONParser {
 	 * Constructs shuttle object fromt he given list of values.
 	 * @param list - values to construct desired object
 	 * @param stopList - list of stops
+	 * @param routeList 
 	 * @return shuttle object
 	 */
-	public static Shuttle listToShuttle(ArrayList<String> list, ArrayList<Stop> stopList) {
-		Shuttle shuttle = new Shuttle();
+	public static Shuttle listToShuttle(ArrayList<String> list, ArrayList<Stop> stopList, ArrayList<Route> routeList) {
+		Shuttle shuttle = new Shuttle(routeList);
 		shuttle.setShuttleId(Integer.parseInt(list.get(0)));
 		shuttle.setName(list.get(1));
 		shuttle.setCurrentLocation(new Shuttle.Point(Double.parseDouble(list.get(3)), Double.parseDouble(list.get(4))));

@@ -8,6 +8,8 @@ package com.abstractedsheep.extractor;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.abstractedsheep.extractor.Shuttle.Point;
+
 public class Shuttle {
 	private int shuttleId;
 	private int routeId;
@@ -18,12 +20,13 @@ public class Shuttle {
 	private int speed;
 	private Point currentLocation;
 	private boolean isWestShuttle;
+	private RouteFinder finder;
 	
 	// Jackson requires a constructor with no parameters to be available
 	// Also notice 'this.' preceding the variables, this makes it clear that the variable
 	// is a global variable and although it is not necessary to use 'this.' if you do not
 	// have a local variable by the same name, it is still a good idea to include it
-	public Shuttle() {
+	public Shuttle(ArrayList<Route> rt) {
 		this.shuttleId = -1;
 		this.routeId = -1;
 		this.stops = new HashMap<String, Shuttle.Point>();
@@ -33,11 +36,12 @@ public class Shuttle {
 		this.speed = 0;
 		this.currentLocation = new Point();
 		this.isWestShuttle = true;
+		finder = new RouteFinder(rt);
 	}
 	
 	// This constructor is not required by Jackson, but it makes manually creating a new point a
 	// one line operation.
-	public Shuttle(int shuttleId, int routeId) {
+	public Shuttle(int shuttleId, int routeId, ArrayList<Route> rt) {
 		// Here, 'this.' is necessary because we have a local variable named the same as the global
 		this.shuttleId = shuttleId;
 		this.routeId = routeId;
@@ -48,6 +52,7 @@ public class Shuttle {
 		this.speed = 0;
 		this.currentLocation = new Point();
 		this.isWestShuttle = true;
+		finder = new RouteFinder(rt);
 	}
 	
 	
@@ -67,7 +72,10 @@ public class Shuttle {
 	public void setSpeed(int newSpd) { this.speed = (speed > 0) ? newSpd : 25; }
 	
 	public Point getCurrentLocation() { return this.currentLocation; }
-	public void setCurrentLocation(Point newLocation) { this.currentLocation = newLocation; }
+	public void setCurrentLocation(Point newLocation) { 
+		this.currentLocation = newLocation;
+		finder.changeCurrentLocation(currentLocation);
+	}
 	
 	
 	public String getCardinalPoint() { return cardinalPoint; }
@@ -97,7 +105,7 @@ public class Shuttle {
 	 * Method determines ETA to the given stop based on the current speed and the
 	 * distance to the stop based on the given route information.
 	 * @param stopName - desired stop name
-	 * @param route - contains a list of coordinates for the route
+	 * @param routeList - contains a list of coordinates for the route
 	 * @return time to reach destination or -1 if the stop does not exist on the shuttle's route
 	 */
 	public int getETAToStop(String stopName, ArrayList<Route> routeList) {		
@@ -122,13 +130,21 @@ public class Shuttle {
 	 */
 	private double calculateDistance(Point p) {
 		double earthRadius = 3961.3; //radius in miles
-		double changeInLat = this.currentLocation.lat - p.lat;
-		double changeInLong = this.currentLocation.lon - p.lon;
+		Point curr = getCurrentLocation();
+		double changeInLat = curr.lat - p.lat;
+		double changeInLong = curr.lon - p.lon;
 		double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
-					(Math.cos(p.lon) * Math.cos(currentLocation.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
+					(Math.cos(p.lon) * Math.cos(curr.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
 		
 		return (earthRadius * c);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		Shuttle s = (Shuttle) obj;
+		return this.shuttleId == s.getShuttleId();
+		
 	}
 
 	// If you create a class within a class, make sure it is static
@@ -162,20 +178,42 @@ public class Shuttle {
 	 * @author jonnau
 	 *
 	 */
-	private class routeFinder {
-		Route route;
-		Point current;
+	@SuppressWarnings("unused")
+	private static class RouteFinder {
+		ArrayList<Route> routeList;
+		ArrayList<Point> locList;
+		//this value is allowable error in degrees (~5-10 feet)
+		private double tolerance = (5.0 * Math.pow(10, -4));
 		
 		/**
 		 * 
 		 * @param r - shuttle's route
 		 * @param loc - current location of shuttle
 		 */
-		public routeFinder(Route r, Point loc) {
-			this.route = r;
-			this.current = loc;
+		public RouteFinder(Route r, Point loc) {
+			routeList = new ArrayList<Route>();
+			routeList.add(r);
+			this.locList = new ArrayList<Point>();
+			locList.add(loc);
 		}
 		
+		public RouteFinder(ArrayList<Route> rt) {
+			routeList = new ArrayList<Route>();
+			this.locList = new ArrayList<Point>();
+		}
+
+		public void changeCurrentLocation(Point pt) {
+			if(locList.size() > 10)
+				locList.remove(0);
+			locList.add(pt);
+			determineRouteOfShuttle();
+		}
+		
+		private void determineRouteOfShuttle() {
+			//using the given routes, determine which route the
+			//shuttle is following
+		}
+
 		/**
 		 * calculates distance from stop
 		 * @param stop - desired stop

@@ -105,7 +105,7 @@ public class Shuttle {
 	 * Method determines ETA to the given stop based on the current speed and the
 	 * distance to the stop based on the given route information.
 	 * @param stopName - desired stop name
-	 * @param route - contains a list of coordinates for the route
+	 * @param routeList - contains a list of coordinates for the route
 	 * @return time to reach destination or -1 if the stop does not exist on the shuttle's route
 	 */
 	public int getETAToStop(String stopName, ArrayList<Route> routeList) {		
@@ -210,7 +210,8 @@ public class Shuttle {
 		}
 		
 		private void determineRouteOfShuttle() {
-			
+			//using the given routes, determine which route the
+			//shuttle is following
 		}
 
 		/**

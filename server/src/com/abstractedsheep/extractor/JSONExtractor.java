@@ -119,10 +119,8 @@ public class JSONExtractor{
 					
 						this.routeList.add(JSONParser.listToRoute(extractedValueList));
 						extractedValueList.removeAll(extractedValueList);
-						//System.out.println();
 					}
 				}
-				//System.out.println(parser.getCurrentName() + " " + parser.getText());
 			}
 		}
 	}
@@ -138,12 +136,10 @@ public class JSONExtractor{
 			if(parser.getCurrentName() != null && !parser.getCurrentToken().equals(JsonToken.FIELD_NAME)){
 				if(!parser.getCurrentName().equals("vehicle") && !parser.getCurrentName().equals("latest_position") &&
 						!parser.getCurrentName().equals("icon")) {
-					//System.out.println(parser.getCurrentName() + " " + parser.getText());
 					this.extractedValueList2.add(parser.getText());
 				}
 				
 				if(parser.getCurrentName().equals("vehicle") && parser.getText().equals("}")) {
-					//System.out.println();
 					Shuttle s = JSONParser.listToShuttle(extractedValueList2, stopList, routeList);
 					addDataToExistingShuttle(s);
 					this.extractedValueList2.removeAll(extractedValueList2);
@@ -155,8 +151,9 @@ public class JSONExtractor{
 	//pretty sure this is very inefficient
 	private void addDataToExistingShuttle(Shuttle s) {
 		Shuttle s2 = null;
-		
+		//find s in the HashSet
 		for(Shuttle shuttle : shuttleList) {
+			//if s exists, then modify its current location (as s2)
 			if(shuttle.equals(s)) {
 				s2 = shuttle;
 				s2.setCurrentLocation(s.getCurrentLocation());
@@ -164,7 +161,7 @@ public class JSONExtractor{
 				break;
 			}
 		}
-		
+		//add the modified shuttle back to the list (or s if the shuttle does not exist in the set)
 		shuttleList.add(
 				(s2 == null) ? s :	s2);
 	}

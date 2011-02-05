@@ -1,6 +1,5 @@
 package com.abstractedsheep.extractor;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 
