@@ -2,6 +2,7 @@ package com.abstractedsheep.ShuttleTrackerServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.abstractedsheep.extractor.*;
 
@@ -12,13 +13,13 @@ import com.abstractedsheep.extractor.*;
 public class ShuttleTrackerServer{
 	private JSONExtractor jsExtractor;
 	private ArrayList<Stop> stopList;
-	private ArrayList<Shuttle> shuttleList;
+	private HashSet<Shuttle> shuttleList;
 	private ArrayList<Route> routeList;
 	
 	public ShuttleTrackerServer() {
 		this.jsExtractor = new JSONExtractor();
 		this.stopList = new ArrayList<Stop>();
-		this.shuttleList = new ArrayList<Shuttle>();
+		this.shuttleList = new HashSet<Shuttle>();
 		this.routeList = new ArrayList<Route>();
 		//put values in the stop and route lists 
 		getStaticData();
