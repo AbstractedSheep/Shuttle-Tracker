@@ -30,7 +30,7 @@ public class JSONSender {
 	public static void saveToFileAsJSON(HashSet<Shuttle> shuttleList) {
 		try {
 			JsonFactory f = new JsonFactory();
-			JsonGenerator gen = f.createJsonGenerator(new FileWriter(new File("shuttleOutputData.txt")));
+			JsonGenerator gen = f.createJsonGenerator(new FileWriter(new File("shuttleOutputData" + System.currentTimeMillis() + ".txt")));
 			HashMap<String, Integer> map = null;
 			
 			//gen.writeArrayFieldStart("ShuttleETA");
