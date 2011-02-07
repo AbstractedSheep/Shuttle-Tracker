@@ -64,6 +64,41 @@
     
     stops = [routeKmlParser stops];
     [stops retain];
+    
+}
+
+- (void)drawPathWithCoordinates:(NSArray *)coordinates {
+    MKOverlayPathView *pathView = [[MKOverlayPathView alloc] init];
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    BOOL startingPoint = YES;
+    CGPoint point;
+    NSArray *temp;
+    CLLocationCoordinate2D clLoc;
+    
+    for (NSString *coordinate in coordinates) {
+        temp = [coordinate componentsSeparatedByString:@","];
+        
+        if (temp) {
+            //  Get a CoreLocation coordinate from the coordinate string
+            clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:0] floatValue], [[temp objectAtIndex:1] floatValue]);
+            
+            point = [mapView convertCoordinate:clLoc toPointToView:self.view];
+            
+            //  Add the current point to the path representing this route
+            if (startingPoint) {
+                CGPathMoveToPoint(path, NULL, point.x, point.y);
+            } else {
+                CGPathAddLineToPoint(path, NULL, point.x, point.y);
+            }
+        }
+    }
+    
+    //  Close the subpath and add a line from the last point to the first point.
+    CGPathCloseSubpath(path);
+    
+    pathView.path = path;
 }
 /*
 // Override to allow orientations other than the default portrait orientation.
