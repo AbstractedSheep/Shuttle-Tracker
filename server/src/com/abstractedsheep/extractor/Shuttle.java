@@ -13,7 +13,7 @@ import com.abstractedsheep.extractor.Shuttle.Point;
 public class Shuttle {
 	private int shuttleId;
 	private int routeId;
-	private HashMap<String, Shuttle.Point> stops;
+	private HashMap<String, Stop> stops;
 	private HashMap<String, Integer> stopETA;
 	private String cardinalPoint;
 	private String shuttleName;
@@ -21,6 +21,7 @@ public class Shuttle {
 	private Point currentLocation;
 	private boolean isWestShuttle;
 	private RouteFinder finder;
+	private static String routeName;
 	
 	// Jackson requires a constructor with no parameters to be available
 	// Also notice 'this.' preceding the variables, this makes it clear that the variable
@@ -29,7 +30,7 @@ public class Shuttle {
 	public Shuttle(ArrayList<Route> rt) {
 		this.shuttleId = -1;
 		this.routeId = -1;
-		this.stops = new HashMap<String, Shuttle.Point>();
+		this.stops = new HashMap<String, Stop>();
 		this.stopETA = new HashMap<String, Integer>();
 		this.shuttleName = "Bus 42";
 		this.cardinalPoint = "North";
@@ -37,6 +38,7 @@ public class Shuttle {
 		this.currentLocation = new Point();
 		this.isWestShuttle = true;
 		finder = new RouteFinder(rt);
+		routeName = "East Route";
 	}
 	
 	// This constructor is not required by Jackson, but it makes manually creating a new point a
@@ -45,7 +47,7 @@ public class Shuttle {
 		// Here, 'this.' is necessary because we have a local variable named the same as the global
 		this.shuttleId = shuttleId;
 		this.routeId = routeId;
-		this.stops = new HashMap<String, Shuttle.Point>();
+		this.stops = new HashMap<String, Stop>();
 		this.stopETA = new HashMap<String, Integer>();
 		this.shuttleName = "Bus 42";
 		this.cardinalPoint = "North";
@@ -53,6 +55,7 @@ public class Shuttle {
 		this.currentLocation = new Point();
 		this.isWestShuttle = true;
 		finder = new RouteFinder(rt);
+		routeName = "East Route";
 	}
 	
 	
@@ -65,8 +68,8 @@ public class Shuttle {
 	public void setRouteId(int routeId) { this.routeId = routeId; }
 	public int getRouteId() { return routeId; }
 	
-	public HashMap<String, Point> getStops() { return stops; }
-	public void setStops(HashMap<String, Point> stops) { this.stops = stops; }
+	public HashMap<String, Stop> getStops() { return stops; }
+	public void setStops(HashMap<String, Stop> stops) { this.stops = stops; }
 	
 	public int getSpeed() { return speed; }
 	public void setSpeed(int newSpd) { this.speed = (speed > 0) ? newSpd : 25; }
@@ -86,19 +89,16 @@ public class Shuttle {
 
 	public HashMap<String, Integer> getStopETA() { return stopETA; }
 	
-	public String getRouteName() { return (isWestShuttle) ? "West Route" : "East Route"; }
+	public String getRouteName() { return routeName; }
 	public void setRoute(String routename) {
 		isWestShuttle = (routename.equals("West Route")) ? true : false;
 		}
 
 	// These next two methods are not required by Jackson
 	// They are here to add data to stops
-	public void addStop(String stopName, Point p) { 
-		stops.put(stopName, p);
-	}
-	
-	public void addStop(String stopName, double lat, double lon) {
-		addStop(stopName, new Point(lat, lon));
+	public void addStop(String stopName, Stop p) { 
+		if(p.getRouteMap().containsKey(routeName))
+			stops.put(stopName, p);
 	}
 	
 	/**
@@ -111,7 +111,7 @@ public class Shuttle {
 	public int getETAToStop(String stopName, ArrayList<Route> routeList) {		
 		//If only to get the ETA to a particular stop, return the time, but for all general intentions
 		//it might be better to save the times in a HashMap as it may make writing to a file easier.
-		Point p = stops.get(stopName);
+		Point p = stops.get(stopName).getLocation();
 		if (p == null)
 			return -1;
 		else {
@@ -184,6 +184,7 @@ public class Shuttle {
 		ArrayList<Point> locList;
 		//this value is allowable error in degrees (~5-10 feet)
 		private double tolerance = (5.0 * Math.pow(10, -4));
+		private boolean foundRoute;
 		
 		/**
 		 * 
@@ -195,11 +196,13 @@ public class Shuttle {
 			routeList.add(r);
 			this.locList = new ArrayList<Point>();
 			locList.add(loc);
+			foundRoute = false;
 		}
 		
 		public RouteFinder(ArrayList<Route> rt) {
 			routeList = new ArrayList<Route>();
 			this.locList = new ArrayList<Point>();
+			foundRoute = false;
 		}
 
 		public void changeCurrentLocation(Point pt) {
@@ -212,6 +215,52 @@ public class Shuttle {
 		private void determineRouteOfShuttle() {
 			//using the given routes, determine which route the
 			//shuttle is following
+			ArrayList<Shuttle.Point> list = null;
+			Point p1 = null, p2 = null;
+			double[] distanceArray = { 999, 999 };
+			int index = 0;
+			double distance = 0.0;
+			
+			for(Route route : routeList) {
+				list = route.getCoordinateList();
+				for(int i = 0; i < list.size(); i++) {
+					p1 = list.get(i);
+					distance = calculateDistance(p1);
+					
+					if(distanceArray[index] >= distance)
+						distanceArray[index] = distance;
+				}
+				index++;
+			}
+			
+			if(distanceArray[0] != distanceArray[1]) {
+				foundRoute = true;
+				routeName = (distanceArray[0] > distanceArray[1]) ?
+						routeList.get(0).getRouteName() : routeList.get(1).getRouteName();
+			}
+		}
+		
+		/**calculates the straight line distance between the given stop location and the shuttle's location
+		 * The formula used to calculate this distance is the haversine formula
+		 * {@link http://www.movable-type.co.uk/scripts/latlong.html}
+		 * @param p - stop's location
+		 * @return distance to stop
+		 */
+		private double calculateDistance(Point p) {
+			double earthRadius = 3961.3; //radius in miles
+			Point curr = locList.get(locList.size() - 1);
+			double changeInLat = curr.lat - p.lat;
+			double changeInLong = curr.lon - p.lon;
+			double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
+						(Math.cos(p.lon) * Math.cos(curr.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
+			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
+			
+			return (earthRadius * c);
+		}
+
+		private void whichRoute(Point[] differenceArray) {
+			Point p = differenceArray[0], p2 = differenceArray[1];
+			
 		}
 
 		/**
