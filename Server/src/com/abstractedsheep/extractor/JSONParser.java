@@ -64,7 +64,7 @@ public class JSONParser {
 		//TODO: determine whether this shuttle goes on the west route or east route since the shuttle
 		//		might not go to all of the listed stops.
 		for(Stop stop : stopList) {
-			shuttle.addStop(stop.getName(), stop.getLat(), stop.getLon());
+			shuttle.addStop(stop.getName(), stop);
 		}
 		return shuttle;
 	}

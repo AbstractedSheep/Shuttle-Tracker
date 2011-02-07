@@ -60,6 +60,10 @@ public class Stop {
 	public double getLat() {
 		return lat;
 	}
+	
+	public Shuttle.Point getLocation() {
+		return new Shuttle.Point(lat, lon);
+	}
 
 	/**
 	 * @param lat the lat to set

@@ -42,7 +42,7 @@ public class JSONSender {
 				gen.writeArrayFieldStart("ETA");
 				map = shuttle.getStopETA();
 				for(String stop : map.keySet()) {
-					gen.writeString(stop + " " + map.get((stop)) + " " + shuttle.getStops().get(stop).toString());
+					gen.writeString(stop + " " + map.get((stop)) + " " + shuttle.getStops().get(stop).getLocation());
 				}
 				
 				gen.writeEndArray();

@@ -7,21 +7,21 @@ package com.abstractedsheep.extractor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import com.abstractedsheep.extractor.Shuttle.Point;
 
 public class Shuttle {
 	private int shuttleId;
-	private int routeId;
 	private HashMap<String, Stop> stops;
 	private HashMap<String, Integer> stopETA;
 	private String cardinalPoint;
 	private String shuttleName;
 	private int speed;
-	private Point currentLocation;
+	private static Point currentLocation;
 	private boolean isWestShuttle;
 	private RouteFinder finder;
-	private static String routeName;
+	private static int routeID;
 	
 	// Jackson requires a constructor with no parameters to be available
 	// Also notice 'this.' preceding the variables, this makes it clear that the variable
@@ -29,7 +29,6 @@ public class Shuttle {
 	// have a local variable by the same name, it is still a good idea to include it
 	public Shuttle(ArrayList<Route> rt) {
 		this.shuttleId = -1;
-		this.routeId = -1;
 		this.stops = new HashMap<String, Stop>();
 		this.stopETA = new HashMap<String, Integer>();
 		this.shuttleName = "Bus 42";
@@ -38,7 +37,7 @@ public class Shuttle {
 		this.currentLocation = new Point();
 		this.isWestShuttle = true;
 		finder = new RouteFinder(rt);
-		routeName = "East Route";
+		routeID = 1;
 	}
 	
 	// This constructor is not required by Jackson, but it makes manually creating a new point a
@@ -46,7 +45,6 @@ public class Shuttle {
 	public Shuttle(int shuttleId, int routeId, ArrayList<Route> rt) {
 		// Here, 'this.' is necessary because we have a local variable named the same as the global
 		this.shuttleId = shuttleId;
-		this.routeId = routeId;
 		this.stops = new HashMap<String, Stop>();
 		this.stopETA = new HashMap<String, Integer>();
 		this.shuttleName = "Bus 42";
@@ -55,7 +53,7 @@ public class Shuttle {
 		this.currentLocation = new Point();
 		this.isWestShuttle = true;
 		finder = new RouteFinder(rt);
-		routeName = "East Route";
+		routeID = 1;
 	}
 	
 	
@@ -65,8 +63,7 @@ public class Shuttle {
 	public int getShuttleId() { return this.shuttleId; }
 	public void setShuttleId(int shuttleId) { this.shuttleId = shuttleId; }
 	
-	public void setRouteId(int routeId) { this.routeId = routeId; }
-	public int getRouteId() { return routeId; }
+	public int getRouteId() { return routeID; }
 	
 	public HashMap<String, Stop> getStops() { return stops; }
 	public void setStops(HashMap<String, Stop> stops) { this.stops = stops; }
@@ -74,7 +71,7 @@ public class Shuttle {
 	public int getSpeed() { return speed; }
 	public void setSpeed(int newSpd) { this.speed = (speed > 0) ? newSpd : 25; }
 	
-	public Point getCurrentLocation() { return this.currentLocation; }
+	public static Point getCurrentLocation() { return currentLocation; }
 	public void setCurrentLocation(Point newLocation) { 
 		this.currentLocation = newLocation;
 		finder.changeCurrentLocation(currentLocation);
@@ -89,7 +86,7 @@ public class Shuttle {
 
 	public HashMap<String, Integer> getStopETA() { return stopETA; }
 	
-	public String getRouteName() { return routeName; }
+	public String getRouteName() { return (routeID == 1) ? "East Campus" : "West Route"; }
 	public void setRoute(String routename) {
 		isWestShuttle = (routename.equals("West Route")) ? true : false;
 		}
@@ -97,7 +94,7 @@ public class Shuttle {
 	// These next two methods are not required by Jackson
 	// They are here to add data to stops
 	public void addStop(String stopName, Stop p) { 
-		if(p.getRouteMap().containsKey(routeName))
+		if(p.getRouteMap().containsKey(routeID))
 			stops.put(stopName, p);
 	}
 	
@@ -108,29 +105,32 @@ public class Shuttle {
 	 * @param routeList - contains a list of coordinates for the route
 	 * @return time to reach destination or -1 if the stop does not exist on the shuttle's route
 	 */
-	public int getETAToStop(String stopName, ArrayList<Route> routeList) {		
+	public void getETAToStop() {		
 		//If only to get the ETA to a particular stop, return the time, but for all general intentions
 		//it might be better to save the times in a HashMap as it may make writing to a file easier.
-		Point p = stops.get(stopName).getLocation();
-		if (p == null)
-			return -1;
-		else {
-			double distance = (calculateDistance(p));
+		Point p = null;;
+		
+		for(String name : stops.keySet()) {
+			p = stops.get(name).getLocation();
+			double distance = finder.getDistanceToStop(p);
 			int time = (int) ((distance / this.speed) * 60);
-			this.stopETA.put(stopName, time);
-			return time;
+			this.stopETA.put(name, time);
 		}
 	}
 	
+	//TODO: delete the first calculateDistance method and move the second one to RouteFinder
 	/**calculates the straight line distance between the given stop location and the shuttle's location
 	 * The formula used to calculate this distance is the haversine formula
 	 * {@link http://www.movable-type.co.uk/scripts/latlong.html}
 	 * @param p - stop's location
 	 * @return distance to stop
 	 */
-	private double calculateDistance(Point p) {
+	private static double calculateDistance(Point p) {
+		return calculateDistance(p, getCurrentLocation());
+	}
+	
+	private static double calculateDistance(Point p, Point curr) {
 		double earthRadius = 3961.3; //radius in miles
-		Point curr = getCurrentLocation();
 		double changeInLat = curr.lat - p.lat;
 		double changeInLong = curr.lon - p.lon;
 		double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
@@ -170,6 +170,15 @@ public class Shuttle {
 		public void setLon(double lon) { this.lon = lon; }
 		
 		public String toString() { return "(" + this.lat + ", " + this.lon + ")"; }
+		
+		@Override
+		public boolean equals(Object obj) {
+			Point p = (Point) obj;
+			
+			if((p.getLat() == this.getLat()) && (p.getLon() == this.getLon()))
+				return true;
+			return false;
+		}
 	}
 	
 	/**
@@ -185,6 +194,9 @@ public class Shuttle {
 		//this value is allowable error in degrees (~5-10 feet)
 		private double tolerance = (5.0 * Math.pow(10, -4));
 		private boolean foundRoute;
+		//this is the route coordinate closest to the shuttle's position.
+		private Point closestRouteCoor;
+		private int indexOfClosestCoordinate;
 		
 		/**
 		 * 
@@ -192,21 +204,24 @@ public class Shuttle {
 		 * @param loc - current location of shuttle
 		 */
 		public RouteFinder(Route r, Point loc) {
-			routeList = new ArrayList<Route>();
-			routeList.add(r);
+			this.routeList = new ArrayList<Route>();
+			this.routeList.add(r);
 			this.locList = new ArrayList<Point>();
 			locList.add(loc);
 			foundRoute = false;
+			closestRouteCoor = new Point();
 		}
 		
 		public RouteFinder(ArrayList<Route> rt) {
-			routeList = new ArrayList<Route>();
+			routeList = rt;
 			this.locList = new ArrayList<Point>();
 			foundRoute = false;
+			closestRouteCoor = new Point();
 		}
-
+		
+		//TDO: might not be necessary to store the locations, but perhaps necessary to store the speed
 		public void changeCurrentLocation(Point pt) {
-			if(locList.size() > 10)
+			if(locList.size() > 1)
 				locList.remove(0);
 			locList.add(pt);
 			determineRouteOfShuttle();
@@ -217,7 +232,9 @@ public class Shuttle {
 			//shuttle is following
 			ArrayList<Shuttle.Point> list = null;
 			Point p1 = null, p2 = null;
-			double[] distanceArray = { 999, 999 };
+			double[] distanceArray = { 999, 999 }; //TODO: to make the code more robust, turn it into an arraylist?
+			Point[] locationArray = {new Point(), new Point()};
+			int[] indexArray = {0, 0};
 			int index = 0;
 			double distance = 0.0;
 			
@@ -227,40 +244,25 @@ public class Shuttle {
 					p1 = list.get(i);
 					distance = calculateDistance(p1);
 					
-					if(distanceArray[index] >= distance)
+					if(distanceArray[index] >= distance) {
 						distanceArray[index] = distance;
+						locationArray[index] = p1;
+						indexArray[index] = i;
+					}
 				}
 				index++;
 			}
+			if(foundRoute)
+				return;
 			
 			if(distanceArray[0] != distanceArray[1]) {
-				foundRoute = true;
-				routeName = (distanceArray[0] > distanceArray[1]) ?
-						routeList.get(0).getRouteName() : routeList.get(1).getRouteName();
+				this.foundRoute = true;
+				routeID  = (distanceArray[0] < distanceArray[1]) ?
+						routeList.get(0).getIdNum() : routeList.get(1).getIdNum();
+				closestRouteCoor = (distanceArray[0] < distanceArray[1]) ?
+						locationArray[0] : locationArray[1];
+				indexOfClosestCoordinate = indexArray[routeID - 1];
 			}
-		}
-		
-		/**calculates the straight line distance between the given stop location and the shuttle's location
-		 * The formula used to calculate this distance is the haversine formula
-		 * {@link http://www.movable-type.co.uk/scripts/latlong.html}
-		 * @param p - stop's location
-		 * @return distance to stop
-		 */
-		private double calculateDistance(Point p) {
-			double earthRadius = 3961.3; //radius in miles
-			Point curr = locList.get(locList.size() - 1);
-			double changeInLat = curr.lat - p.lat;
-			double changeInLong = curr.lon - p.lon;
-			double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
-						(Math.cos(p.lon) * Math.cos(curr.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
-			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
-			
-			return (earthRadius * c);
-		}
-
-		private void whichRoute(Point[] differenceArray) {
-			Point p = differenceArray[0], p2 = differenceArray[1];
-			
 		}
 
 		/**
@@ -268,17 +270,28 @@ public class Shuttle {
 		 * @param stop - desired stop
 		 * @return distance to stop.
 		 */
-		public double getDistanceToStop(Stop stop) {
-			return 0.0;
-		}
-		
-		/**
-		 * calculates arrival time to stop
-		 * @param stop - desired stop
-		 * @return time to stop.
-		 */
-		public int getTimeToStop(Stop stop) {
-			return 0;
+		public double getDistanceToStop(Point stop) {
+			ArrayList<Point> list = null;
+			double distance = 0.0, distanceToTravel = 0.0;
+			for(Route rt : routeList) {
+				
+				if(rt.getIdNum() == routeID) {
+					list = rt.getCoordinateList();
+					int index = indexOfClosestCoordinate;
+					distanceToTravel = calculateDistance(list.get(index));
+					for(int count = 0; count <= list.size(); count++) {
+						if(index > list.size() - 1)
+							index = 1;
+						distance = calculateDistance(list.get(index), stop);
+						//distance between this coordinate and the stop is great than 15 ft
+						if(distance <= 15)
+							break;
+						distanceToTravel += calculateDistance(list.get(index), list.get(index - 1));
+						index++;
+					}
+				}
+			}
+			return distanceToTravel;
 		}
 	}
 }

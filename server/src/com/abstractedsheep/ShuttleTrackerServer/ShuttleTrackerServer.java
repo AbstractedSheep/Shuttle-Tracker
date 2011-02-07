@@ -68,9 +68,7 @@ public class ShuttleTrackerServer{
 	 */
 	private void calculateETA() {		
 		for(Shuttle shuttle : shuttleList) {
-			for(Stop stop : stopList) {
-				shuttle.getETAToStop(stop.getName(), routeList);
-			}
+			shuttle.getETAToStop();
 		}
 	}
 
