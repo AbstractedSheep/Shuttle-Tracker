@@ -1,0 +1,243 @@
+<Folder>
+  <name>Vehicle Tracking</name>
+  <description>A dynamically updating vehicle tracking map.</description>
+<Style id="route_1">
+  <LineStyle>
+    <color>ff1B50E1</color>
+    <width>4</width>
+  </LineStyle>
+</Style>
+<Placemark id="route_1">
+  <name>West Route</name>
+  <description>
+    <![CDATA[The west campus Red Hawk shuttle will make stops at the Student Union Horseshoe, 15th Street pedestrian bridge – southbound only, corner of 15th Street and Congress Street for Poly Tech Apartment residents, Blitman Residence Commons, West lot, and the Sage Avenue bus shelter. This shuttle route will have a yellow indicator labeled "WEST" on the front of the shuttle. ]]>
+  </description>
+  <styleUrl>#route_1</styleUrl>
+  <LineString>
+    <coordinates>
+-73.67982,42.72276 
+-73.68052,42.72326 
+-73.68076,42.72356 
+-73.68107,42.72421 
+-73.68142,42.72514 
+-73.68164,42.72639 
+-73.68177,42.72658 
+-73.6819,42.72668 
+-73.68379,42.72735 
+-73.68406,42.72748 
+-73.68543,42.72773 
+-73.68585,42.72787 
+-73.68666,42.72823 
+-73.6871,42.72834 
+-73.6871,42.72834 
+-73.68647,42.73113 
+-73.6857145463,42.7336798463 
+-73.6844860945,42.7333331033 
+-73.6835258637,42.7331203283 
+-73.6825495396,42.7328996719 
+-73.6823510562,42.732746 
+-73.6816000376,42.7318830663 
+-73.6814283763,42.7315993594 
+-73.6812352572,42.7314575055 
+-73.680269662,42.731225022 
+-73.6788802777,42.7310082993 
+-73.6766272221,42.7306773031 
+-73.6766257882,42.7305058482 
+-73.6766526103,42.7304290093 
+-73.6766391993,42.7303699024 
+-73.676609695,42.7303127657 
+-73.6765533686,42.7302989741 
+-73.6765533686,42.7302989741 
+-73.6764460802,42.7303226169 
+-73.676392436,42.7303777833 
+-73.6763656139,42.7305235802 
+-73.6763468385,42.7306082998 
+-73.676392436,42.7306752873 
+-73.6767184172,42.7307324693 
+-73.677190486,42.7307836949 
+-73.67762,42.72937 
+-73.67762,42.72937 
+-73.67809,42.72774 
+-73.67807,42.72705 
+-73.67811,42.72682 
+-73.67811,42.7268 
+-73.67868,42.72515 
+-73.67879,42.72464 
+-73.67913,42.72356 
+-73.67937,42.72312 
+-73.67982,42.72276 
+    </coordinates>
+  </LineString>
+</Placemark>
+<Style id="route_2">
+  <LineStyle>
+    <color>ff3AC096</color>
+    <width>4</width>
+  </LineStyle>
+</Style>
+<Placemark id="route_2">
+  <name>East Campus</name>
+  <description>
+    <![CDATA[The east campus Red Hawk shuttle will include stops at the Student Union Horseshoe, Colonie Apartments, East Campus housing & athletic areas, West lot, and the Sage Avenue bus shelter. This shuttle route will have a orange indicator labeled "EAST" on the front of the shuttle.]]>
+  </description>
+  <styleUrl>#route_2</styleUrl>
+  <LineString>
+    <coordinates>
+-73.67719,42.73077 
+-73.67719,42.73077 
+-73.67659,42.73304 
+-73.67659,42.73304 
+-73.67659,42.73304 
+-73.67172,42.73239 
+-73.67172,42.73239 
+-73.67076,42.73567 
+-73.67056,42.7366 
+-73.6701,42.73827 
+-73.66656,42.73777 
+-73.66656,42.73777 
+-73.66707,42.73597 
+-73.66707,42.73597 
+-73.66508,42.73567 
+-73.66508,42.73567 
+-73.66508,42.73564 
+-73.66508,42.73567 
+-73.66508,42.73567 
+-73.66336,42.73545 
+-73.66316,42.73537 
+-73.66316,42.73537 
+-73.66311,42.73521 
+-73.66335,42.73446 
+-73.66353,42.73399 
+-73.66516,42.73268 
+-73.66578,42.73218 
+-73.66676,42.73109 
+-73.667,42.73091 
+-73.66726,42.73088 
+-73.66726,42.73088 
+-73.66825,42.73127 
+-73.66825,42.73127 
+-73.6691,42.73161 
+-73.6697,42.73172 
+-73.6702,42.73179 
+-73.67047,42.73187 
+-73.67064,42.73198 
+-73.67079,42.73221 
+-73.67092,42.73228 
+-73.67846,42.7333 
+-73.68189,42.73395 
+-73.6822284604,42.7339812181 
+-73.682518139,42.7329528093 
+-73.6823035622,42.7328070182 
+-73.682056799,42.7325114946 
+-73.681531086,42.731908622 
+-73.6813433314,42.7316130941 
+-73.6811341191,42.731498823 
+-73.6802972699,42.7313018032 
+-73.6788971568,42.7310772 
+-73.67657,42.7307 
+-73.6766150594,42.7306477042 
+-73.6766070127,42.7306161807 
+-73.6766177416,42.7305688953 
+-73.6766257882,42.7305354015 
+-73.6766713858,42.7303876345 
+-73.676636517,42.7303462597 
+-73.6765506864,42.730306855 
+-73.6765480042,42.730306855 
+-73.6764621735,42.7303186764 
+-73.6764085293,42.730358081 
+-73.6763843894,42.7304329498 
+-73.6763575673,42.7305117588 
+-73.6763414741,42.7306004189 
+-73.6763763428,42.7306772576 
+-73.6765506864,42.7307087811 
+-73.67719,42.73077 
+    </coordinates>
+  </LineString>
+</Placemark>
+<Placemark id="stop_1">
+  <name>Student Union</name>
+  <Point>
+    <coordinates>-73.6765441399,42.7302712352</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_2">
+  <name>BARH</name>
+  <Point>
+    <coordinates>-73.669705848,42.7316602341</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_3">
+  <name>Sunset Terrace</name>
+  <Point>
+    <coordinates>-73.6651957135,42.7326945747</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_4">
+  <name>Beman Lane</name>
+  <Point>
+    <coordinates>-73.6634750765,42.7345435388</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_5">
+  <name>Colonie Apartments</name>
+  <Point>
+    <coordinates>-73.6705348752,42.7363264617</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_6">
+  <name>9th and Sage</name>
+  <Point>
+    <coordinates>-73.6824515003,42.7328677775</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_7">
+  <name>West Hall</name>
+  <Point>
+    <coordinates>-73.6815105775,42.7316223348</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_8">
+  <name>Sage</name>
+  <Point>
+    <coordinates>-73.6790031891,42.7309557796</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_9">
+  <name>Brinsmade Terrace</name>
+  <Point>
+    <coordinates>-73.6658566796,42.7357265852</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_10">
+  <name>Footbridge</name>
+  <Point>
+    <coordinates>-73.6777055364,42.7293609807</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_11">
+  <name>Polytech Apartments</name>
+  <Point>
+    <coordinates>-73.679778884,42.7228252768</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_12">
+  <name>Blitman Residence Commons</name>
+  <Point>
+    <coordinates>-73.6864277539,42.7307421853</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="stop_13">
+  <name>15th and College</name>
+  <Point>
+    <coordinates>-73.6782151561,42.7269197779</coordinates>
+  </Point>
+</Placemark>
+  <NetworkLink>
+    <name>Vehicles</name>
+    <description>Updating every 15 seconds</description>
+    <refreshVisibility>0</refreshVisibility>
+    <Link>
+      <href>http://shuttles.rpi.edu/vehicles/current.kml</href>
+    </Link>
+  </NetworkLink>
+</Folder>
