@@ -9,6 +9,9 @@
 #import "MapViewController.h"
 #import "KMLParser.h"
 
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
+
 @interface MapViewController()
 - (void)routeKmlLoaded;
 
@@ -100,6 +103,7 @@
     
     pathView.path = path;
 }
+
 /*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -128,15 +132,14 @@
 
 #pragma mark -
 #pragma mark MKMapViewDelegate Methods
-/*
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+
+- (MKAnnotationView *)mapView:(MKMapView *)theMapView viewForAnnotation:(id<MKAnnotation>)annotation {
     //  If the annotation is the user's location, return nil so the platform
     //  just uses the blue dot
-    if (annotation == mapView.userLocation)
+    if (annotation == theMapView.userLocation)
         return nil;
     
     return nil;
 }
-*/
 
 @end
