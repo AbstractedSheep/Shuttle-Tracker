@@ -130,14 +130,17 @@ public class Shuttle {
 	}
 	
 	private static double calculateDistance(Point p, Point curr) {
-		double earthRadius = 3961.3; //radius in miles
+		double earthRadius = 6378.7; //radius in miles
 		double changeInLat = curr.lat - p.lat;
 		double changeInLong = curr.lon - p.lon;
+		changeInLat = Math.toRadians(changeInLat);
+		changeInLong = Math.toRadians(changeInLong);
+		
 		double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
 					(Math.cos(p.lon) * Math.cos(curr.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
 		
-		return (earthRadius * c);
+		return (earthRadius * c) * 0.621371192;
 	}
 	
 	@Override
@@ -283,8 +286,8 @@ public class Shuttle {
 						if(index > list.size() - 1)
 							index = 1;
 						distance = calculateDistance(list.get(index), stop);
-						//distance between this coordinate and the stop is great than 15 ft
-						if(distance <= 15)
+						//distance between this coordinate and the stop is greater than 15 ft
+						if(distance <= .0189)
 							break;
 						distanceToTravel += calculateDistance(list.get(index), list.get(index - 1));
 						index++;
