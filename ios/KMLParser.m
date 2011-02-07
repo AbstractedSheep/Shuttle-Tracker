@@ -14,34 +14,14 @@
 
 
 - (id)init {
-	if ((self == [super init])) {
-		_placemarks = [[NSMutableArray alloc] init];
-		_styles = [[NSMutableArray alloc] init];
-        
-        _routes = [[NSMutableArray alloc] init];
-		_stops = [[NSMutableArray alloc] init];
-        
-        currentStyle = nil;
-        currentPlacemark = nil;
-        
-        state.inStyle = NO;
-        state.inPlacemark = NO;
-        
-        accumulation = [[NSMutableString alloc] init];
-        
-        //  The parser will be the one going through the KML file and extracting tags etc.
-        //  TODO: Change to grab KML from the internet
-        parser = [[NSXMLParser alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"]];
-        //  The parser call delegate functions further down in this file
-        [parser setDelegate:self];
-        
-	}
+    //  Init with the default KML, netlink.kml
+    [self initWithContentsOfUrl:[[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"]];
 	
 	return self;
 }
 
 - (id)initWithContentsOfUrl:(NSURL *)url {
-    if ((self == [super init])) {
+    if ((self = [super init])) {
 		_placemarks = [[NSMutableArray alloc] init];
 		_styles = [[NSMutableArray alloc] init];
         
