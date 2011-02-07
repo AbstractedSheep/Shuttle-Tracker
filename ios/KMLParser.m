@@ -194,6 +194,12 @@
         } else if (currentPlacemark.parseState == styleUrlState) {
             currentPlacemark.styleUrl = [string copy];
             
+            for (KMLStyle *style in _styles) {
+                if ([string rangeOfString:style.idTag].location != NSNotFound) {
+                    currentPlacemark.style = style;
+                }
+            }
+            
         } else if (currentPlacemark.parseState == coordinatesState) {
             NSArray *coordinates;
             
@@ -322,12 +328,36 @@
 #pragma mark -
 #pragma mark KML Objects
 
+@implementation KMLStyle
+
+@synthesize idTag;
+@synthesize color;
+@synthesize width;
+@synthesize styleType;
+@synthesize parseState;
+
+- (id)init {
+    if ((self = [super init])) {
+        color = nil;
+        width = 0;
+        
+        styleType = nilStyle;
+        parseState = nilStyleParseState;
+    }
+    
+    return self;
+}
+
+@end
+
+
 @implementation KMLPlacemark
 
 @synthesize name;
 @synthesize idTag;
 @synthesize description;
 @synthesize styleUrl;
+@synthesize style;
 @synthesize placemarkType;
 @synthesize parseState;
 
@@ -336,6 +366,8 @@
         name = nil;
         idTag = nil;
         description = nil;
+        styleUrl = nil;
+        style = nil;
         
         placemarkType = nilType;
         parseState = nilPlacemarkParseState;
@@ -368,27 +400,6 @@
 
 @implementation KMLVehicle
 
-
-@end
-
-@implementation KMLStyle
-
-@synthesize color;
-@synthesize width;
-@synthesize styleType;
-@synthesize parseState;
-
-- (id)init {
-    if ((self = [super init])) {
-        color = nil;
-        width = 0;
-        
-        styleType = nilStyle;
-        parseState = nilStyleParseState;
-    }
-    
-    return self;
-}
 
 @end
 
