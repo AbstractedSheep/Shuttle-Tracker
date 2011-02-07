@@ -133,6 +133,7 @@ public class Shuttle {
 		double earthRadius = 6378.7; //radius in miles
 		double changeInLat = curr.lat - p.lat;
 		double changeInLong = curr.lon - p.lon;
+		//need to convert these values to radians
 		changeInLat = Math.toRadians(changeInLat);
 		changeInLong = Math.toRadians(changeInLong);
 		
