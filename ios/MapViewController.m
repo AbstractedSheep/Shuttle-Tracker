@@ -67,7 +67,7 @@
     
 }
 
-- (void)drawPathWithCoordinates:(NSArray *)coordinates {
+- (void)drawPathWithRoute:(KMLRoute *)route {
     MKOverlayPathView *pathView = [[MKOverlayPathView alloc] init];
     
     CGMutablePathRef path = CGPathCreateMutable();
@@ -77,7 +77,7 @@
     NSArray *temp;
     CLLocationCoordinate2D clLoc;
     
-    for (NSString *coordinate in coordinates) {
+    for (NSString *coordinate in route.lineString) {
         temp = [coordinate componentsSeparatedByString:@","];
         
         if (temp) {
