@@ -16,6 +16,7 @@
 	MKMapView *mapView;
     KMLParser *routeKmlParser;
     
+    NSArray *styles;
     NSArray *routes;
     NSArray *stops;
     NSMutableArray *vehicles;

@@ -9,6 +9,9 @@
 #import "MapViewController.h"
 #import "KMLParser.h"
 
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
+
 @interface MapViewController()
 - (void)routeKmlLoaded;
 
@@ -64,7 +67,43 @@
     
     stops = [routeKmlParser stops];
     [stops retain];
+    
 }
+
+- (void)drawPathWithRoute:(KMLRoute *)route {
+    MKOverlayPathView *pathView = [[MKOverlayPathView alloc] init];
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    BOOL startingPoint = YES;
+    CGPoint point;
+    NSArray *temp;
+    CLLocationCoordinate2D clLoc;
+    
+    for (NSString *coordinate in route.lineString) {
+        temp = [coordinate componentsSeparatedByString:@","];
+        
+        if (temp) {
+            //  Get a CoreLocation coordinate from the coordinate string
+            clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:0] floatValue], [[temp objectAtIndex:1] floatValue]);
+            
+            point = [mapView convertCoordinate:clLoc toPointToView:self.view];
+            
+            //  Add the current point to the path representing this route
+            if (startingPoint) {
+                CGPathMoveToPoint(path, NULL, point.x, point.y);
+            } else {
+                CGPathAddLineToPoint(path, NULL, point.x, point.y);
+            }
+        }
+    }
+    
+    //  Close the subpath and add a line from the last point to the first point.
+    CGPathCloseSubpath(path);
+    
+    pathView.path = path;
+}
+
 /*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -93,15 +132,14 @@
 
 #pragma mark -
 #pragma mark MKMapViewDelegate Methods
-/*
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+
+- (MKAnnotationView *)mapView:(MKMapView *)theMapView viewForAnnotation:(id<MKAnnotation>)annotation {
     //  If the annotation is the user's location, return nil so the platform
     //  just uses the blue dot
-    if (annotation == mapView.userLocation)
+    if (annotation == theMapView.userLocation)
         return nil;
     
     return nil;
 }
-*/
 
 @end

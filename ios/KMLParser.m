@@ -14,34 +14,14 @@
 
 
 - (id)init {
-	if ((self == [super init])) {
-		_placemarks = [[NSMutableArray alloc] init];
-		_styles = [[NSMutableArray alloc] init];
-        
-        _routes = [[NSMutableArray alloc] init];
-		_stops = [[NSMutableArray alloc] init];
-        
-        currentStyle = nil;
-        currentPlacemark = nil;
-        
-        state.inStyle = NO;
-        state.inPlacemark = NO;
-        
-        accumulation = [[NSMutableString alloc] init];
-        
-        //  The parser will be the one going through the KML file and extracting tags etc.
-        //  TODO: Change to grab KML from the internet
-        parser = [[NSXMLParser alloc] initWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"]];
-        //  The parser call delegate functions further down in this file
-        [parser setDelegate:self];
-        
-	}
+    //  Init with the default KML, netlink.kml
+    [self initWithContentsOfUrl:[[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"]];
 	
 	return self;
 }
 
 - (id)initWithContentsOfUrl:(NSURL *)url {
-    if ((self == [super init])) {
+    if ((self = [super init])) {
 		_placemarks = [[NSMutableArray alloc] init];
 		_styles = [[NSMutableArray alloc] init];
         
@@ -214,6 +194,12 @@
         } else if (currentPlacemark.parseState == styleUrlState) {
             currentPlacemark.styleUrl = [string copy];
             
+            for (KMLStyle *style in _styles) {
+                if ([string rangeOfString:style.idTag].location != NSNotFound) {
+                    currentPlacemark.style = style;
+                }
+            }
+            
         } else if (currentPlacemark.parseState == coordinatesState) {
             NSArray *coordinates;
             
@@ -342,12 +328,36 @@
 #pragma mark -
 #pragma mark KML Objects
 
+@implementation KMLStyle
+
+@synthesize idTag;
+@synthesize color;
+@synthesize width;
+@synthesize styleType;
+@synthesize parseState;
+
+- (id)init {
+    if ((self = [super init])) {
+        color = nil;
+        width = 0;
+        
+        styleType = nilStyle;
+        parseState = nilStyleParseState;
+    }
+    
+    return self;
+}
+
+@end
+
+
 @implementation KMLPlacemark
 
 @synthesize name;
 @synthesize idTag;
 @synthesize description;
 @synthesize styleUrl;
+@synthesize style;
 @synthesize placemarkType;
 @synthesize parseState;
 
@@ -356,6 +366,8 @@
         name = nil;
         idTag = nil;
         description = nil;
+        styleUrl = nil;
+        style = nil;
         
         placemarkType = nilType;
         parseState = nilPlacemarkParseState;
@@ -388,27 +400,6 @@
 
 @implementation KMLVehicle
 
-
-@end
-
-@implementation KMLStyle
-
-@synthesize color;
-@synthesize width;
-@synthesize styleType;
-@synthesize parseState;
-
-- (id)init {
-    if ((self = [super init])) {
-        color = nil;
-        width = 0;
-        
-        styleType = nilStyle;
-        parseState = nilStyleParseState;
-    }
-    
-    return self;
-}
 
 @end
 
