@@ -105,22 +105,17 @@ public class Shuttle {
 	 * @param routeList - contains a list of coordinates for the route
 	 * @return time to reach destination or -1 if the stop does not exist on the shuttle's route
 	 */
-	public int getETAToStop(String stopName, ArrayList<Route> routeList) {		
+	public void getETAToStop() {		
 		//If only to get the ETA to a particular stop, return the time, but for all general intentions
 		//it might be better to save the times in a HashMap as it may make writing to a file easier.
 		Point p = null;;
-		try{
-			p = stops.get(stopName).getLocation();
-		} catch(NullPointerException ex) {
-			//if the stop does not exist in the map, then the above line will throw a NPE
-			//since you cannot get data from a null object.
-			return -1;
-		}
 		
-		double distance = finder.getDistanceToStop(p);
-		int time = (int) ((distance / this.speed) * 60);
-		this.stopETA.put(stopName, time);
-		return time;
+		for(String name : stops.keySet()) {
+			p = stops.get(name).getLocation();
+			double distance = finder.getDistanceToStop(p);
+			int time = (int) ((distance / this.speed) * 60);
+			this.stopETA.put(name, time);
+		}
 	}
 	
 	//TODO: delete the first calculateDistance method and move the second one to RouteFinder
