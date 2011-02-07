@@ -42,6 +42,7 @@ public class ShuttleTrackerServer{
 	private void readDynamicData() {
 		while(true) {
 			try {
+				System.out.println("Reading Shuttle data and trying to manipulate it.");
 				jsExtractor.readShuttleData();
 				this.shuttleList = jsExtractor.getShuttleList();
 				//do ETA calculations and print to file
