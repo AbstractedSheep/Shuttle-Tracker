@@ -109,6 +109,7 @@
 @interface KMLRoute : KMLPlacemark
 {
 	NSArray *lineString;
+    KMLStyle *style;
 }
 
 @property (nonatomic, retain) NSArray *lineString;
