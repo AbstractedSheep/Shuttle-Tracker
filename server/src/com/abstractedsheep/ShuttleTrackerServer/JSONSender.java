@@ -68,8 +68,8 @@ public class JSONSender {
 			String dbName = "shuttle_tracker";
 			
 			String url = "jdbc:mysql://" + serverName +  "/" + dbName;
-			String usr = "root";
-			String pass = "salamander_s4";
+			String usr = "";
+			String pass = "";
 			connection = DriverManager.getConnection(url, usr, pass);
 			
 			Statement stmt = connection.createStatement();
