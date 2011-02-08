@@ -55,6 +55,40 @@ public class JSONSender {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * save this data to the database
+	 * @param shuttleList
+	 */
+	public static void saveToDatabase(HashSet<Shuttle> shuttleList) {
+		String driver = "oracle.jdbc.driver.OracleDriver";
+		Connection connection = null;
+		try {
+			Class.forName(driver);
+			String serverName = "127.0.0.1";
+			String dbName = "shuttle_tracker";
+			
+			String url = "jdbc:mysql://" + serverName +  "/" + dbName;
+			String usr = "root";
+			String pass = "salamander_s4";
+			connection = DriverManager.getConnection(url, usr, pass);
+			
+			Statement stmt = connection.createStatement();
+			for(Shuttle shuttle : shuttleList) {
+				for(String stop : shuttle.getStopETA().keySet()){
+					String sql = "UPDATE shuttle_eta SET eta = " + shuttle.getStopETA().get(stop) +
+								 "WHERE shuttle_id = " + shuttle.getShuttleId() + "AND stop_id = " +
+								 shuttle.getStops().get(stop).getShortName();
+					int updateCount = stmt.executeUpdate(sql);
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	private static String getTimeStamp(Integer integer) {
 		String str = new Timestamp(System.currentTimeMillis() + integer).toString();
 		return str.substring(0, str.indexOf('.'));
