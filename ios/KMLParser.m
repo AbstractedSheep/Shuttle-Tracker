@@ -122,6 +122,7 @@
             currentPlacemark = (KMLPlacemark *)[[KMLRoute alloc] init];
             currentPlacemark.placemarkType = routeType;
             
+            [_routes addObject:(KMLRoute *)currentPlacemark];
         } else if (idTag && [idTag rangeOfString:@"stop"].location != NSNotFound) {
             currentPlacemark = (KMLPlacemark *)[[KMLStop alloc] init];
             currentPlacemark.placemarkType = stopType;
@@ -167,7 +168,7 @@
     if (state.inStyle && currentStyle) {
         switch (currentStyle.parseState) {
             case colorState:
-                currentStyle.color = string;
+                currentStyle.colorString = string;
                 break;
                 
             case widthState:
@@ -328,6 +329,11 @@
 #pragma mark -
 #pragma mark KML Objects
 
+@interface KMLStyle ()
+
+- (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString;
+
+@end
 @implementation KMLStyle
 
 @synthesize idTag;
@@ -338,7 +344,8 @@
 
 - (id)init {
     if ((self = [super init])) {
-        color = nil;
+        colorString = nil;
+        color = [UIColor whiteColor];
         width = 0;
         
         styleType = nilStyle;
@@ -346,6 +353,37 @@
     }
     
     return self;
+}
+
+- (NSString *)colorString {
+    return colorString;
+}
+
+- (void)setColorString:(NSString *)newColorString {
+    colorString = newColorString;
+    
+    [colorString retain];
+    
+    color = [self UIColorFromRGBAString:colorString];
+}
+//  Take an NSString formatted as such: RRGGBBAA and return a UIColor
+- (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString {
+    NSScanner *scanner;
+    unsigned int rgbaValue;
+    
+    if (rgbaString) {
+        scanner = [NSScanner scannerWithString:rgbaString];
+        
+        [scanner scanHexInt:&rgbaValue];
+    } else {
+        rgbaValue = 0;
+    }
+    
+    
+    return [UIColor colorWithRed:((float)((rgbaValue & 0xFF000000) >> 16))/255.0
+                           green:((float)((rgbaValue & 0xFF0000) >> 8))/255.0
+                            blue:((float)(rgbaValue & 0xFF00))/255.0
+                           alpha:((float)(rgbaValue & 0xFF))/255.0];
 }
 
 @end

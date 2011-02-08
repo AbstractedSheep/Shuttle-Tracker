@@ -48,7 +48,8 @@
 //  Use to hold style objects, I have only seen these used for routes
 @interface KMLStyle : NSObject {
     NSString *idTag;
-    NSString *color;
+    NSString *colorString;
+    UIColor *color;
     int width;
     
     enum KMLStyles {
@@ -64,7 +65,8 @@
 }
 
 @property (nonatomic, retain) NSString *idTag;
-@property (nonatomic, retain) NSString *color;
+@property (nonatomic, retain) NSString *colorString;
+@property (nonatomic, readonly) UIColor *color;
 @property (nonatomic) int width;
 @property (nonatomic) enum KMLStyles styleType;
 @property (nonatomic) enum KMLStyleParseState parseState;
