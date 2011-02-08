@@ -14,8 +14,10 @@
 
 @interface MapViewController()
 - (void)routeKmlLoaded;
+- (void)drawRoute:(KMLRoute *)route;
 
 @end
+
 
 @implementation MapViewController
 
@@ -68,17 +70,22 @@
     stops = [routeKmlParser stops];
     [stops retain];
     
+    for (KMLRoute *route in routes) {
+        [self drawRoute:route];
+    }
 }
 
-- (void)drawPathWithRoute:(KMLRoute *)route {
-    MKOverlayPathView *pathView = [[MKOverlayPathView alloc] init];
-    
-    CGMutablePathRef path = CGPathCreateMutable();
-    
-    BOOL startingPoint = YES;
-    CGPoint point;
+- (void)drawRoute:(KMLRoute *)route {
+//    MKOverlayPathView *pathView = [[MKOverlayPathView alloc] init];
+//    
+//    CGMutablePathRef path = CGPathCreateMutable();
+//    
+//    CGPoint point;
     NSArray *temp;
     CLLocationCoordinate2D clLoc;
+    CLLocationCoordinate2D *coordinates = malloc(sizeof(CLLocationCoordinate2D) * route.lineString.count);
+    
+    int counter = 0;
     
     for (NSString *coordinate in route.lineString) {
         temp = [coordinate componentsSeparatedByString:@","];
@@ -87,21 +94,44 @@
             //  Get a CoreLocation coordinate from the coordinate string
             clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:0] floatValue], [[temp objectAtIndex:1] floatValue]);
             
-            point = [mapView convertCoordinate:clLoc toPointToView:self.view];
+            coordinates[counter] = clLoc;
+            counter++;
             
-            //  Add the current point to the path representing this route
-            if (startingPoint) {
-                CGPathMoveToPoint(path, NULL, point.x, point.y);
-            } else {
-                CGPathAddLineToPoint(path, NULL, point.x, point.y);
-            }
+//            point = [mapView convertCoordinate:clLoc toPointToView:self.view];
+//            
+//            //  Add the current point to the path representing this route
+//            if (startingPoint) {
+//                CGPathMoveToPoint(path, NULL, point.x, point.y);
+//            } else {
+//                CGPathAddLineToPoint(path, NULL, point.x, point.y);
+//            }
         }
+        
+        [temp release];
     }
     
-    //  Close the subpath and add a line from the last point to the first point.
-    CGPathCloseSubpath(path);
+    MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:counter];
+    [polyLine retain];
     
-    pathView.path = path;
+    [routeLines addObject:polyLine];
+    
+    free(coordinates);
+    
+    MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
+    [routeLineViews addObject:routeView];
+    
+    routeView.lineWidth = route.style.width;
+    routeView.fillColor = route.style.color;
+    routeView.strokeColor = route.style.color;
+    
+    [mapView addOverlay:polyLine];
+    
+//    //  Close the subpath and add a line from the last point to the first point.
+//    CGPathCloseSubpath(path);
+//    
+//    pathView.path = path;
+//    pathView.lineWidth = route.style.width;
+//    pathView.strokeColor = [self UIColorFromRGBAString:route.style.color];
 }
 
 /*
@@ -132,6 +162,23 @@
 
 #pragma mark -
 #pragma mark MKMapViewDelegate Methods
+
+- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id<MKOverlay>)overlay {
+    MKOverlayView* overlayView = nil;
+    
+    int counter = 0;
+    
+    for (MKPolyline *routeLine in routeLines) {
+        if (routeLine == overlay) {
+            overlayView = [routeLineViews objectAtIndex:counter];
+            break;
+        }
+        
+        counter++;
+    }
+    
+    return overlayView;
+}
 
 - (MKAnnotationView *)mapView:(MKMapView *)theMapView viewForAnnotation:(id<MKAnnotation>)annotation {
     //  If the annotation is the user's location, return nil so the platform

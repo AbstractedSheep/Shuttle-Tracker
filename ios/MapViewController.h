@@ -20,6 +20,9 @@
     NSArray *routes;
     NSArray *stops;
     NSMutableArray *vehicles;
+    
+    NSMutableArray *routeLines;
+    NSMutableArray *routeLineViews;
 }
 
 @end
