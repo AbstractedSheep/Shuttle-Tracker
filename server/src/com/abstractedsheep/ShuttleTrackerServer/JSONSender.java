@@ -31,7 +31,7 @@ public class JSONSender {
 		Connection connection = null;
 		try {
 			Class.forName(driver).newInstance();
-			String serverName = "128.113.17.3";
+			String serverName = "128.113.17.3:3306";
 			String dbName = "shuttle_tracker";
 			String url = "jdbc:mysql://" + serverName +  "/" + dbName;
 			String usr = "root";
@@ -41,7 +41,7 @@ public class JSONSender {
 			Statement stmt = connection.createStatement();
 			for(Shuttle shuttle : shuttleList) {
 				for(String stop : shuttle.getStopETA().keySet()){
-					String sql = "UPDATE shuttle_eta SET eta = " + shuttle.getStopETA().get(stop) +
+					String sql = "UPDATE shuttle_eta SET eta = " + getTimeStamp(shuttle.getStopETA().get(stop)) +
 								 "WHERE shuttle_id = " + shuttle.getShuttleId() + "AND stop_id = " +
 								 shuttle.getStops().get(stop).getShortName();
 					int updateCount = stmt.executeUpdate(sql);
