@@ -113,7 +113,7 @@ public class Shuttle {
 		for(String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(p);
-			int time = (int) ((distance / this.speed) * 60);
+			int time = (int) ((distance / this.speed) * 3600000);
 			this.stopETA.put(name, time);
 		}
 	}
@@ -265,7 +265,7 @@ public class Shuttle {
 						routeList.get(0).getIdNum() : routeList.get(1).getIdNum();
 				closestRouteCoor = (distanceArray[0] < distanceArray[1]) ?
 						locationArray[0] : locationArray[1];
-				indexOfClosestCoordinate = indexArray[routeID - 1];
+				indexOfClosestCoordinate = indexArray[routeID - 1] - 2;
 			}
 		}
 
