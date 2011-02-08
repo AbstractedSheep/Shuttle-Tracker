@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.abstractedsheep.kml.Placemark;
 import com.abstractedsheep.kml.Style;
@@ -25,12 +27,22 @@ import com.ximpleware.ParseException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.animation.BounceInterpolator;
 
 public class Tracker extends MapActivity {
-	public static String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	public static String MAPS_API_KEY = "01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og";//"01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 	private MapView map;
+	private UpdateShuttlesTask updateTask;
+	public static boolean threadLock = false;
+	private StopsItemizedOverlay shuttlesOverlay;
+	
+	private Runnable invalidateMap = new Runnable() {
+		public void run() {
+			map.invalidate();
+		}
+	};
 	
     /** Called when the activity is first created. */
     @Override
@@ -40,6 +52,7 @@ public class Tracker extends MapActivity {
         initMap();
         setContentView(map);
         
+        // Parse routes and stops
         List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/displays/netlink.kml");
         StopsItemizedOverlay stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map);
         PathOverlay routesOverlay;
@@ -57,6 +70,12 @@ public class Tracker extends MapActivity {
         }
         
         map.getOverlays().add(stopsOverlay);
+        
+        shuttlesOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_marker), map);
+        map.getOverlays().add(shuttlesOverlay);
+        
+        updateTask = new UpdateShuttlesTask();
+        updateTask.execute((Void[])null);
     }
     
     /**
@@ -111,22 +130,23 @@ public class Tracker extends MapActivity {
     		// Quick and dirty parsing code, only parses LineStyles, LineStrings, and Points
     		if (vn.matchElement("Folder")) {
     			// Style parsing
-    			if (vn.toElement(VTDNav.FC, "Style"))
-    			do {
-    				id = vn.toString(vn.getAttrVal("id"));
-    				tempStyle = new Style();
-    				if (vn.toElement(VTDNav.FC, "LineStyle")) {
-    					if (vn.toElement(VTDNav.FC)) {
-    						do {
-    							tempStyle.setAttribute(vn.toString(vn.getCurrentIndex()), vn.toString(vn.getText()));
-    						} while (vn.toElement(VTDNav.NS));
-    						vn.toElement(VTDNav.P);
-    					}
-    					vn.toElement(VTDNav.P);
-    				}
-    				styles.put(id, tempStyle);
-    			} while (vn.toElement(VTDNav.NS, "Style"));
-    			vn.toElement(VTDNav.P);
+    			if (vn.toElement(VTDNav.FC, "Style")) {
+	    			do {
+	    				id = vn.toString(vn.getAttrVal("id"));
+	    				tempStyle = new Style();
+	    				if (vn.toElement(VTDNav.FC, "LineStyle")) {
+	    					if (vn.toElement(VTDNav.FC)) {
+	    						do {
+	    							tempStyle.setAttribute(vn.toString(vn.getCurrentIndex()), vn.toString(vn.getText()));
+	    						} while (vn.toElement(VTDNav.NS));
+	    						vn.toElement(VTDNav.P);
+	    					}
+	    					vn.toElement(VTDNav.P);
+	    				}
+	    				styles.put(id, tempStyle);
+	    			} while (vn.toElement(VTDNav.NS, "Style"));
+	    			vn.toElement(VTDNav.P);
+    			}
     			
     			// Placemark parsing
     			if (vn.toElement(VTDNav.FC, "Placemark")) {
@@ -178,7 +198,40 @@ public class Tracker extends MapActivity {
 
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	private class UpdateShuttlesTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			while (true) {
+				updateShuttles();
+				try {
+					Thread.sleep(1000);
+					while (threadLock) {
+						Thread.sleep(100);
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+	
+	private void updateShuttles() {
+		threadLock = true;
+        List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/vehicles/current.kml");
+        
+        shuttlesOverlay.removeAllOverlays();
+        
+        for (Placemark p : placemarks) {
+    		shuttlesOverlay.addOverlay(p.toOverlayItem());
+        }
+        
+                
+        runOnUiThread(invalidateMap);
+        threadLock = false;
 	}
 }
