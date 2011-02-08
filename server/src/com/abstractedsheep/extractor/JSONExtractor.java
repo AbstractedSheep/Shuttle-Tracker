@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParseException;
@@ -24,7 +25,7 @@ public class JSONExtractor{
 	//these two variables are not used atm, but would store the data from the json.
 	private ArrayList<Stop> stopList;
 	private ArrayList<Route> routeList;
-	private ArrayList<Shuttle> shuttleList;
+	private HashSet<Shuttle> shuttleList;
 	
 	public JSONExtractor() {
 		f = new JsonFactory();
@@ -41,7 +42,7 @@ public class JSONExtractor{
 		extractedValueList2 = new ArrayList<String>();
 		stopList = new ArrayList<Stop>();
 		routeList = new ArrayList<Route>();
-		shuttleList = new ArrayList<Shuttle>();
+		shuttleList = new HashSet<Shuttle>();
 	}
 	
 	//TODO: data shows up in one line, need to make a new method/class to parse json data.
@@ -118,14 +119,16 @@ public class JSONExtractor{
 					
 						this.routeList.add(JSONParser.listToRoute(extractedValueList));
 						extractedValueList.removeAll(extractedValueList);
-						//System.out.println();
 					}
 				}
-				//System.out.println(parser.getCurrentName() + " " + parser.getText());
 			}
 		}
 	}
 	
+	/**
+	 * extracts the shuttle data from the corresponding json file.
+	 * @throws IOException
+	 */
 	public void readShuttleData() throws IOException {
 		parser = f.createJsonParser(shuttleURL);
 		parser.nextToken();
@@ -133,19 +136,36 @@ public class JSONExtractor{
 			if(parser.getCurrentName() != null && !parser.getCurrentToken().equals(JsonToken.FIELD_NAME)){
 				if(!parser.getCurrentName().equals("vehicle") && !parser.getCurrentName().equals("latest_position") &&
 						!parser.getCurrentName().equals("icon")) {
-					//System.out.println(parser.getCurrentName() + " " + parser.getText());
 					this.extractedValueList2.add(parser.getText());
 				}
 				
 				if(parser.getCurrentName().equals("vehicle") && parser.getText().equals("}")) {
-					//System.out.println();
-					this.shuttleList.add(JSONParser.listToShuttle(extractedValueList2, stopList));
+					Shuttle s = JSONParser.listToShuttle(extractedValueList2, stopList, routeList);
+					addDataToExistingShuttle(s);
 					this.extractedValueList2.removeAll(extractedValueList2);
 				}
 			}
 		}
 	}
 	
+	//pretty sure this is very inefficient
+	private void addDataToExistingShuttle(Shuttle s) {
+		Shuttle s2 = null;
+		//find s in the HashSet
+		for(Shuttle shuttle : shuttleList) {
+			//if s exists, then modify its current location (as s2)
+			if(shuttle.equals(s)) {
+				s2 = shuttle;
+				s2.setCurrentLocation(s.getCurrentLocation());
+				shuttleList.remove(s);
+				break;
+			}
+		}
+		//add the modified shuttle back to the list (or s if the shuttle does not exist in the set)
+		shuttleList.add(
+				(s2 == null) ? s :	s2);
+	}
+
 	//getters for the three lists
 	public ArrayList<Stop> getStopList() {
 		return this.stopList;
@@ -155,7 +175,7 @@ public class JSONExtractor{
 		return this.routeList;
 	}
 
-	public ArrayList<Shuttle> getShuttleList() {
+	public HashSet<Shuttle> getShuttleList() {
 		return this.shuttleList;
 	}
 	

@@ -51,10 +51,11 @@ public class JSONParser {
 	 * Constructs shuttle object fromt he given list of values.
 	 * @param list - values to construct desired object
 	 * @param stopList - list of stops
+	 * @param routeList 
 	 * @return shuttle object
 	 */
-	public static Shuttle listToShuttle(ArrayList<String> list, ArrayList<Stop> stopList) {
-		Shuttle shuttle = new Shuttle();
+	public static Shuttle listToShuttle(ArrayList<String> list, ArrayList<Stop> stopList, ArrayList<Route> routeList) {
+		Shuttle shuttle = new Shuttle(routeList);
 		shuttle.setShuttleId(Integer.parseInt(list.get(0)));
 		shuttle.setName(list.get(1));
 		shuttle.setCurrentLocation(new Shuttle.Point(Double.parseDouble(list.get(3)), Double.parseDouble(list.get(4))));
@@ -63,7 +64,7 @@ public class JSONParser {
 		//TODO: determine whether this shuttle goes on the west route or east route since the shuttle
 		//		might not go to all of the listed stops.
 		for(Stop stop : stopList) {
-			shuttle.addStop(stop.getName(), stop.getLat(), stop.getLon());
+			shuttle.addStop(stop.getName(), stop);
 		}
 		return shuttle;
 	}

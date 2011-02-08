@@ -2,6 +2,8 @@ package com.abstractedsheep.ShuttleTrackerServer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import com.abstractedsheep.extractor.*;
 
@@ -12,13 +14,13 @@ import com.abstractedsheep.extractor.*;
 public class ShuttleTrackerServer{
 	private JSONExtractor jsExtractor;
 	private ArrayList<Stop> stopList;
-	private ArrayList<Shuttle> shuttleList;
+	private HashSet<Shuttle> shuttleList;
 	private ArrayList<Route> routeList;
 	
 	public ShuttleTrackerServer() {
 		this.jsExtractor = new JSONExtractor();
 		this.stopList = new ArrayList<Stop>();
-		this.shuttleList = new ArrayList<Shuttle>();
+		this.shuttleList = new HashSet<Shuttle>();
 		this.routeList = new ArrayList<Route>();
 		//put values in the stop and route lists 
 		getStaticData();
@@ -40,11 +42,12 @@ public class ShuttleTrackerServer{
 	private void readDynamicData() {
 		while(true) {
 			try {
+				System.out.println("Reading Shuttle data and trying to manipulate it.");
 				jsExtractor.readShuttleData();
 				this.shuttleList = jsExtractor.getShuttleList();
 				//do ETA calculations and print to file
 				calculateETA();
-				JSONSender.saveToFileAsJSON(shuttleList);
+				JSONSender.saveToDatabase(shuttleList);
 				//have the thread sleep for 15 seconds (approximate update time)
 				Thread.sleep(15 * 1000);
 				
@@ -65,9 +68,7 @@ public class ShuttleTrackerServer{
 	 */
 	private void calculateETA() {		
 		for(Shuttle shuttle : shuttleList) {
-			for(Stop stop : stopList) {
-				shuttle.getETAToStop(stop.getName(), routeList);
-			}
+			shuttle.getETAToStop();
 		}
 	}
 

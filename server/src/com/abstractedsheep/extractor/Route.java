@@ -1,7 +1,7 @@
 package com.abstractedsheep.extractor;
 
-import java.awt.Point;
 import java.util.ArrayList;
+import com.abstractedsheep.extractor.Shuttle.Point;
 
 /**
  * Sample output from JSONExtractor.java
@@ -56,12 +56,13 @@ public class Route {
 	}
 	
 	public void putCoordinate(double lon, double lat) {
-		Point p = new Point();
-		p.setLocation(lon, lat);
+		Point p = new Shuttle.Point(lat, lon);
 		this.coordinateList.add(p);
 	}
 	
 	public void putCoordinate(Point coordinate) {
 		this.coordinateList.add(coordinate);
 	}
+	
+	public ArrayList<Point> getCoordinateList() { return this.coordinateList; }
 }
