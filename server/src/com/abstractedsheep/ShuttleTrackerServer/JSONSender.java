@@ -60,25 +60,26 @@ public class JSONSender {
 	 * @param shuttleList
 	 */
 	public static void saveToDatabase(HashSet<Shuttle> shuttleList) {
-		String driver = "oracle.jdbc.driver.OracleDriver";
+		String driver = "com.mysql.jdbc.Driver";
 		Connection connection = null;
 		try {
 			Class.forName(driver);
-			String serverName = "127.0.0.1";
+			String serverName = "128.113.17.3";
 			String dbName = "shuttle_tracker";
 			
 			String url = "jdbc:mysql://" + serverName +  "/" + dbName;
-			String usr = "";
-			String pass = "";
+			String usr = "root";
+			String pass = "salamander_s4";
 			connection = DriverManager.getConnection(url, usr, pass);
-			
+			System.out.println("Connected to server");
 			Statement stmt = connection.createStatement();
 			for(Shuttle shuttle : shuttleList) {
 				for(String stop : shuttle.getStopETA().keySet()){
-					String sql = "UPDATE shuttle_eta SET eta = " + shuttle.getStopETA().get(stop) +
+					String sql = "UPDATE shuttle_eta SET eta = " + getTimeStamp(shuttle.getStopETA().get(stop)) +
 								 "WHERE shuttle_id = " + shuttle.getShuttleId() + "AND stop_id = " +
 								 shuttle.getStops().get(stop).getShortName();
 					int updateCount = stmt.executeUpdate(sql);
+					System.out.println(updateCount);
 				}
 			}
 		} catch (ClassNotFoundException e) {
