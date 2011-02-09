@@ -1,8 +1,3 @@
-/*
- * This class is currently set up for demonstration.
- * It is heavily commented for educational purposes.
- */
-
 package com.abstractedsheep.extractor;
 
 import java.util.ArrayList;
@@ -22,7 +17,7 @@ public class Shuttle {
 	private boolean isWestShuttle;
 	private RouteFinder finder;
 	private static int routeID;
-	
+
 	// Jackson requires a constructor with no parameters to be available
 	// Also notice 'this.' preceding the variables, this makes it clear that the variable
 	// is a global variable and although it is not necessary to use 'this.' if you do not
@@ -39,7 +34,7 @@ public class Shuttle {
 		finder = new RouteFinder(rt);
 		routeID = 1;
 	}
-	
+
 	// This constructor is not required by Jackson, but it makes manually creating a new point a
 	// one line operation.
 	public Shuttle(int shuttleId, int routeId, ArrayList<Route> rt) {
@@ -55,37 +50,37 @@ public class Shuttle {
 		finder = new RouteFinder(rt);
 		routeID = 1;
 	}
-	
-	
+
+
 	// Jackson will not work unless all of the variables have accessors and mutators
 	// Since these usually only have one line of code in them, put the entire method
 	// on a single line to increase readability
 	public int getShuttleId() { return this.shuttleId; }
 	public void setShuttleId(int shuttleId) { this.shuttleId = shuttleId; }
-	
+
 	public int getRouteId() { return routeID; }
-	
+
 	public HashMap<String, Stop> getStops() { return stops; }
 	public void setStops(HashMap<String, Stop> stops) { this.stops = stops; }
-	
+
 	public int getSpeed() { return speed; }
 	public void setSpeed(int newSpd) { this.speed = (speed > 0) ? newSpd : 25; }
-	
+
 	public static Point getCurrentLocation() { return currentLocation; }
 	public void setCurrentLocation(Point newLocation) { 
 		this.currentLocation = newLocation;
 		finder.changeCurrentLocation(currentLocation);
 	}
-	
-	
+
+
 	public String getCardinalPoint() { return cardinalPoint; }
 	public void setCardinalPoint(String cardinalPoint) { this.cardinalPoint = cardinalPoint; }
-	
+
 	public String getName() { return shuttleName; }
 	public void setName(String newName) { this.shuttleName = newName; }
 
 	public HashMap<String, Integer> getStopETA() { return stopETA; }
-	
+
 	public String getRouteName() { return (routeID == 1) ? "East Campus" : "West Route"; }
 	public void setRoute(String routename) {
 		isWestShuttle = (routename.equals("West Route")) ? true : false;
@@ -97,7 +92,7 @@ public class Shuttle {
 		if(p.getRouteMap().containsKey(routeID))
 			stops.put(stopName, p);
 	}
-	
+
 	/**
 	 * Method determines ETA to the given stop based on the current speed and the
 	 * distance to the stop based on the given route information.
@@ -109,7 +104,7 @@ public class Shuttle {
 		//If only to get the ETA to a particular stop, return the time, but for all general intentions
 		//it might be better to save the times in a HashMap as it may make writing to a file easier.
 		Point p = null;;
-		
+
 		for(String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(p);
@@ -117,7 +112,7 @@ public class Shuttle {
 			this.stopETA.put(name, time);
 		}
 	}
-	
+
 	//TODO: delete the first calculateDistance method and move the second one to RouteFinder
 	/**calculates the straight line distance between the given stop location and the shuttle's location
 	 * The formula used to calculate this distance is the haversine formula
@@ -128,7 +123,7 @@ public class Shuttle {
 	private static double calculateDistance(Point p) {
 		return calculateDistance(p, getCurrentLocation());
 	}
-	
+
 	private static double calculateDistance(Point p, Point curr) {
 		double earthRadius = 6378.7; //radius in miles
 		double changeInLat = curr.lat - p.lat;
@@ -136,19 +131,19 @@ public class Shuttle {
 		//need to convert these values to radians
 		changeInLat = Math.toRadians(changeInLat);
 		changeInLong = Math.toRadians(changeInLong);
-		
+
 		double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
 					(Math.cos(p.lon) * Math.cos(curr.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
-		
+
 		return (earthRadius * c) * 0.621371192;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		Shuttle s = (Shuttle) obj;
 		return this.shuttleId == s.getShuttleId();
-		
+
 	}
 
 	// If you create a class within a class, make sure it is static
@@ -156,35 +151,35 @@ public class Shuttle {
 	public static class Point {
 		private double lat;
 		private double lon;
-			
+
 		public Point() {
 			lat = 0;
 			lon = 0;
 		}
-				
+
 		public Point(double lat, double lon) {
 			this.lat = lat;
 			this.lon = lon;
 		}	
-				
+
 		public double getLat() { return lat; }	
 		public void setLat(double lat) { this.lat = lat; }
-		
+
 		public double getLon() { return lon; }
 		public void setLon(double lon) { this.lon = lon; }
-		
+
 		public String toString() { return "(" + this.lat + ", " + this.lon + ")"; }
-		
+
 		@Override
 		public boolean equals(Object obj) {
 			Point p = (Point) obj;
-			
+
 			if((p.getLat() == this.getLat()) && (p.getLon() == this.getLon()))
 				return true;
 			return false;
 		}
 	}
-	
+
 	/**
 	 * The purpose of this inner class is to calculate the distance and time for the shuttle to
 	 * get to the desired stop.
@@ -201,7 +196,7 @@ public class Shuttle {
 		//this is the route coordinate closest to the shuttle's position.
 		private Point closestRouteCoor;
 		private int indexOfClosestCoordinate;
-		
+
 		/**
 		 * 
 		 * @param r - shuttle's route
@@ -215,14 +210,14 @@ public class Shuttle {
 			foundRoute = false;
 			closestRouteCoor = new Point();
 		}
-		
+
 		public RouteFinder(ArrayList<Route> rt) {
 			routeList = rt;
 			this.locList = new ArrayList<Point>();
 			foundRoute = false;
 			closestRouteCoor = new Point();
 		}
-		
+
 		//TDO: might not be necessary to store the locations, but perhaps necessary to store the speed
 		public void changeCurrentLocation(Point pt) {
 			if(locList.size() > 1)
@@ -230,7 +225,7 @@ public class Shuttle {
 			locList.add(pt);
 			determineRouteOfShuttle();
 		}
-		
+
 		private void determineRouteOfShuttle() {
 			//using the given routes, determine which route the
 			//shuttle is following
@@ -241,13 +236,13 @@ public class Shuttle {
 			int[] indexArray = {0, 0};
 			int index = 0;
 			double distance = 0.0;
-			
+
 			for(Route route : routeList) {
 				list = route.getCoordinateList();
 				for(int i = 0; i < list.size(); i++) {
 					p1 = list.get(i);
 					distance = calculateDistance(p1);
-					
+
 					if(distanceArray[index] >= distance) {
 						distanceArray[index] = distance;
 						locationArray[index] = p1;
@@ -258,7 +253,7 @@ public class Shuttle {
 			}
 			if(foundRoute)
 				return;
-			
+
 			if(distanceArray[0] != distanceArray[1]) {
 				this.foundRoute = true;
 				routeID  = (distanceArray[0] < distanceArray[1]) ?
@@ -278,7 +273,7 @@ public class Shuttle {
 			ArrayList<Point> list = null;
 			double distance = 0.0, distanceToTravel = 0.0;
 			for(Route rt : routeList) {
-				
+
 				if(rt.getIdNum() == routeID) {
 					list = rt.getCoordinateList();
 					int index = indexOfClosestCoordinate;
