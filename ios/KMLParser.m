@@ -36,7 +36,6 @@
         state.inPlacemark = NO;
         
         accumulation = [[NSMutableString alloc] init];
-        
         //  The parser will be the one going through the KML file and extracting tags etc.
         //  TODO: Change to grab KML from the internet
         parser = [[NSXMLParser alloc] initWithContentsOfURL:url];
@@ -95,6 +94,9 @@
 //  Set the state of the parser, allocate an object if necessary, and set the state of the object.
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI
  qualifiedName:(NSString *)qualifiedName attributes:(NSDictionary *)attributeDict {
+    if (!accumulation) {
+        accumulation = [[NSMutableString alloc] init];
+    }
     
     //  KML elements describing a style
     if ([elementName isEqualToString:@"Style"]) {
@@ -165,14 +167,16 @@
     
 }
 
-- (void)parser:(NSXMLParser *)parser foundIgnorableWhitespace:(NSString *)whitespaceString {
-    //  Note that the first item in the coordinate string is "", and the last is "    \n" (four spaces and a newline)
-    if (currentPlacemark && currentPlacemark.parseState == coordinatesState) {
-        if ([whitespaceString isEqualToString:@"    \n"]) {
-            //  do nothing
-        }
-    }
-}
+
+//  Never gets called even if included?
+//- (void)parser:(NSXMLParser *)parser foundIgnorableWhitespace:(NSString *)whitespaceString {
+//    //  Note that the first item in the coordinate string is "", and the last is "    \n" (four spaces and a newline)
+//    if (currentPlacemark && currentPlacemark.parseState == coordinatesState) {
+//        if ([whitespaceString isEqualToString:@"    \n"]) {
+//            //  do nothing
+//        }
+//    }
+//}
 
 //  Called for CDATA found inside a tag
 - (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock {
@@ -199,9 +203,11 @@
         
     } else if (state.inStyle && currentStyle.parseState == colorState) {
         currentStyle.colorString = accumulation;
+        currentStyle.parseState = nilStyleParseState;
         
     } else if (state.inStyle && currentStyle.parseState == widthState) {
         currentStyle.width = [accumulation intValue];
+        currentStyle.parseState = nilStyleParseState;
         
     }
     //  KML elements describing a placemark
@@ -231,9 +237,11 @@
         currentPlacemark = nil;
     } else if (state.inPlacemark && currentPlacemark.parseState == nameState) {
         currentPlacemark.name = [accumulation copy];
+        currentPlacemark.parseState = nilPlacemarkParseState;
         
     } else if (state.inPlacemark && currentPlacemark.parseState == descriptionState) {
         currentPlacemark.description = [accumulation copy];
+        currentPlacemark.parseState = nilPlacemarkParseState;
         
     } else if (state.inPlacemark && currentPlacemark.parseState == styleUrlState) {
         currentPlacemark.styleUrl = [accumulation copy];
@@ -243,6 +251,8 @@
                 currentPlacemark.style = style;
             }
         }
+        currentPlacemark.parseState = nilPlacemarkParseState;
+        
     } else if (state.inPlacemark && [elementName isEqualToString:@"LineString"] || [elementName isEqualToString:@"Point"]) {
         //  These indicate the type of the following element. Do nothing for both LineString and Point!
         
@@ -258,7 +268,8 @@
                 routePlacemark = (KMLRoute *)currentPlacemark;
                 
                 //  Store the list of coordinates in the route
-                routePlacemark.lineString = [[accumulation substringFromIndex:1] componentsSeparatedByString:@"\n"];
+                //  Note that the coordinate string mysteriously has 6 whitespace characters in front and 11 in back
+                routePlacemark.lineString = [[accumulation substringWithRange:NSMakeRange(6, [accumulation length] - 1 - 11)] componentsSeparatedByString:@"\n"];
                 for (id coords in routePlacemark.lineString){
                     NSLog(@"Coordinates: |%@|", coords);
                 }
@@ -303,10 +314,13 @@
                 break;
                 
         }
+        currentPlacemark.parseState = nilPlacemarkParseState;
+        
     }
 
 
-    
+    [accumulation release];
+    accumulation = nil;
 }
 
 
