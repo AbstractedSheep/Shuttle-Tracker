@@ -27,6 +27,7 @@
         
         _routes = [[NSMutableArray alloc] init];
 		_stops = [[NSMutableArray alloc] init];
+        _vehicles = [[NSMutableArray alloc] init];
         
         currentStyle = nil;
         currentPlacemark = nil;
@@ -151,9 +152,6 @@
         currentPlacemark.parseState = coordinatesState;
         
     }
-    /* else if ([elementName isEqualToString:@"Placemark"]) {
-        
-    } */
 }
 
 
@@ -162,105 +160,19 @@
     NSLog(@"Found characters: %@", string);
     
     //  Append the current string to the string accumulation,
-    //  but currently nothing is done with the accumulation
+    //  to be used in parser:didEndElement:
     [accumulation appendString:string];
     
-    if (state.inStyle && currentStyle) {
-        switch (currentStyle.parseState) {
-            case colorState:
-                currentStyle.colorString = string;
-                break;
-                
-            case widthState:
-                currentStyle.width = [string intValue];
-                break;
-                
-            default:
-                NSLog(@"Style parsing error.  Found characters: %@", string);
-                break;
-                
-        }
-    } else if (state.inPlacemark && currentPlacemark) {
-        KMLRoute *routePlacemark;
-        KMLStop *stopPlacemark;
-        KMLVehicle *vehiclePlacemark;
-        
-        //  The name, description and styleUrl are used by all KMLPlacemark types
-        if (currentPlacemark.parseState == nameState) {
-            currentPlacemark.name = [string copy];
-            
-        } else if (currentPlacemark.parseState == descriptionState) {
-            currentPlacemark.description = [string copy];
-            
-        } else if (currentPlacemark.parseState == styleUrlState) {
-            currentPlacemark.styleUrl = [string copy];
-            
-            for (KMLStyle *style in _styles) {
-                if ([string rangeOfString:style.idTag].location != NSNotFound) {
-                    currentPlacemark.style = style;
-                }
-            }
-            
-        } else if (currentPlacemark.parseState == coordinatesState) {
-            NSArray *coordinates;
-            
-            switch (currentPlacemark.placemarkType) {
-                case routeType:
-                    routePlacemark = (KMLRoute *)currentPlacemark;
-                    
-                    //  Note that the first item in the string is "", and the last is "    \n" (four spaces and a newline)
-                    NSString *tempString = [string substringWithRange:NSMakeRange(1, [string length] - 1 - 5)];
-                    
-                    //  Store the list of coordinates in the route
-                    routePlacemark.lineString = [tempString componentsSeparatedByString:@"\n"];
-                    for (id coords in routePlacemark.lineString){
-                        NSLog(@"Coordinates: |%@|", coords);
-                    }
-                    
-                    break;
-                    
-                case pointType:     //  Should never be used directly, only subclassed.  So do nothing.
-                    NSLog(@"Error, pointType should not be used directly, only subclassed.");
-                    
-                    break;
-                    
-                case stopType:
-                    stopPlacemark = (KMLStop *)currentPlacemark;
-                    coordinates = [string componentsSeparatedByString:@","];
-                    
-                    if (coordinates && [coordinates count] == 2) {
-                        stopPlacemark.coordinates = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
-                                                                               [[coordinates objectAtIndex:1] doubleValue]);                        
-                    }
-                    
-                    break;
-                    
-                case vehicleType:
-                    vehiclePlacemark = (KMLVehicle *)currentPlacemark;
-                    coordinates = [string componentsSeparatedByString:@","];
-                    
-                    if (coordinates && [coordinates count] == 2) {
-                        vehiclePlacemark.coordinates = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
-                                                                                  [[coordinates objectAtIndex:1] doubleValue]);                        
-                    }
-                    
-                    break;
-                    
-                case nilType:   //  Something went wrong if we get here!
-                    NSLog(@"Error, nilType encountered.");
-                    
-                    break;
-                    
-                default:        //  Something unexpected?
-                    NSLog(@"Error, type not found.");
-                    
-                    break;
-                    
-            }
+}
+
+- (void)parser:(NSXMLParser *)parser foundIgnorableWhitespace:(NSString *)whitespaceString {
+    //  Note that the first item in the coordinate string is "", and the last is "    \n" (four spaces and a newline)
+    if (currentPlacemark && currentPlacemark.parseState == coordinatesState) {
+        if ([whitespaceString isEqualToString:@"    \n"]) {
+            //  do nothing
         }
     }
 }
-
 
 //  Called for CDATA found inside a tag
 - (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock {
@@ -277,48 +189,123 @@
 //  Unset the state of the parser, free any objects which are no longer needed, etc.
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
     //  KML elements describing a style
-    if ([elementName isEqualToString:@"Style"]) {
+    if (state.inStyle && [elementName isEqualToString:@"Style"]) {
         state.inStyle = NO;
         [currentStyle release];
         currentStyle = nil;
         
-    } else if (state.inStyle) {
-        currentStyle.styleType = nilStyle;
+    } else if (state.inStyle && [elementName isEqualToString:@"LineStyle"]) {
+        //  Nothing
+        
+    } else if (state.inStyle && currentStyle.parseState == colorState) {
+        currentStyle.colorString = accumulation;
+        
+    } else if (state.inStyle && currentStyle.parseState == widthState) {
+        currentStyle.width = [accumulation intValue];
+        
     }
     //  KML elements describing a placemark
-    else if ([elementName isEqualToString:@"Placemark"]) {
+    else if (state.inPlacemark && [elementName isEqualToString:@"Placemark"]) {
         state.inPlacemark = NO;
         
         NSString *idTag = currentPlacemark.idTag;
         
-        if (idTag && [idTag isEqualToString:@"route"]) {
+        if (idTag && [idTag rangeOfString:@"route"].location != NSNotFound) {
             [_routes addObject:(KMLRoute *)currentPlacemark];
             [(KMLRoute *)currentPlacemark release];
             
-        } else if (idTag && [idTag isEqualToString:@"stop"]) {
+        } else if (idTag && [idTag rangeOfString:@"stop"].location != NSNotFound) {
             [_stops addObject:(KMLStop *)currentPlacemark];
             [(KMLStop *)currentPlacemark release];
             
-        } else if (idTag && [idTag isEqualToString:@"vehicle"]) {
-            
-            
-            
-            //  TODO: Handle shuttles!
-            
+        } else if (idTag && [idTag rangeOfString:@"vehicle"].location != NSNotFound) {
+            //  Handles shuttles
+            [_vehicles addObject:(KMLVehicle *)currentPlacemark];
             [(KMLVehicle *)currentPlacemark release];
             
-            
-            
         } else if (idTag) {
+            NSLog(@"Unrecognized id: %@", idTag);
             assert(0);
         }
         
         currentPlacemark = nil;
+    } else if (state.inPlacemark && currentPlacemark.parseState == nameState) {
+        currentPlacemark.name = [accumulation copy];
         
-    } else if (state.inPlacemark) {
-        currentPlacemark.parseState = nilPlacemarkParseState;
+    } else if (state.inPlacemark && currentPlacemark.parseState == descriptionState) {
+        currentPlacemark.description = [accumulation copy];
         
+    } else if (state.inPlacemark && currentPlacemark.parseState == styleUrlState) {
+        currentPlacemark.styleUrl = [accumulation copy];
+        
+        for (KMLStyle *style in _styles) {
+            if ([accumulation rangeOfString:style.idTag].location != NSNotFound) {
+                currentPlacemark.style = style;
+            }
+        }
+    } else if (state.inPlacemark && [elementName isEqualToString:@"LineString"] || [elementName isEqualToString:@"Point"]) {
+        //  These indicate the type of the following element. Do nothing for both LineString and Point!
+        
+    } else if (state.inPlacemark && currentPlacemark.parseState == coordinatesState) {
+        KMLRoute *routePlacemark;
+        KMLStop *stopPlacemark;
+        KMLVehicle *vehiclePlacemark;
+        
+        NSArray *coordinates;
+        
+        switch (currentPlacemark.placemarkType) {
+            case routeType:
+                routePlacemark = (KMLRoute *)currentPlacemark;
+                
+                //  Store the list of coordinates in the route
+                routePlacemark.lineString = [[accumulation substringFromIndex:1] componentsSeparatedByString:@"\n"];
+                for (id coords in routePlacemark.lineString){
+                    NSLog(@"Coordinates: |%@|", coords);
+                }
+                
+                break;
+                
+            case pointType:     //  Should never be used directly, only subclassed.  So do nothing.
+                NSLog(@"Error, pointType should not be used directly, only subclassed.");
+                
+                break;
+                
+            case stopType:
+                stopPlacemark = (KMLStop *)currentPlacemark;
+                coordinates = [accumulation componentsSeparatedByString:@","];
+                
+                if (coordinates && [coordinates count] == 2) {
+                    stopPlacemark.coordinates = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
+                                                                           [[coordinates objectAtIndex:1] doubleValue]);                        
+                }
+                
+                break;
+                
+            case vehicleType:
+                vehiclePlacemark = (KMLVehicle *)currentPlacemark;
+                coordinates = [accumulation componentsSeparatedByString:@","];
+                
+                if (coordinates && [coordinates count] == 2) {
+                    vehiclePlacemark.coordinates = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
+                                                                              [[coordinates objectAtIndex:1] doubleValue]);                        
+                }
+                
+                break;
+                
+            case nilType:   //  Something went wrong if we get here!
+                NSLog(@"Error, nilType encountered.");
+                
+                break;
+                
+            default:        //  Something unexpected?
+                NSLog(@"Error, type not found.");
+                
+                break;
+                
+        }
     }
+
+
     
 }
 

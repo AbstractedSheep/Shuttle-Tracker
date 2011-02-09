@@ -18,6 +18,8 @@
     NSMutableArray *_routes;
     NSMutableArray *_stops;
     
+    NSMutableArray *_vehicles;
+    
     KMLStyle *currentStyle;
     KMLPlacemark *currentPlacemark;
     
