@@ -1,4 +1,3 @@
-
 package com.abstractedsheep.ShuttleTrackerServer;
 
 import java.sql.Connection;
@@ -29,8 +28,8 @@ public class JSONSender {
 			String serverName = "128.113.17.3:3306";
 			String dbName = "shuttle_tracker";
 			String url = "jdbc:mysql://" + serverName +  "/" + dbName;
-			String usr = "root";
-			String pass = "salamander_s4";
+			String usr = "";
+			String pass = "";
 			connection = DriverManager.getConnection(url, usr, pass);
 			System.out.println("Connected to database");
 			Statement stmt = connection.createStatement();
