@@ -13,13 +13,12 @@ import com.abstractedsheep.extractor.Shuttle.Point;
 
 public class Shuttle {
 	private int shuttleId;
-	private int routeId;
 	private HashMap<String, Stop> stops;
 	private HashMap<String, Integer> stopETA;
 	private String cardinalPoint;
 	private String shuttleName;
 	private int speed;
-	private Point currentLocation;
+	private static Point currentLocation;
 	private boolean isWestShuttle;
 	private RouteFinder finder;
 	private static int routeID;
@@ -30,7 +29,6 @@ public class Shuttle {
 	// have a local variable by the same name, it is still a good idea to include it
 	public Shuttle(ArrayList<Route> rt) {
 		this.shuttleId = -1;
-		this.routeId = -1;
 		this.stops = new HashMap<String, Stop>();
 		this.stopETA = new HashMap<String, Integer>();
 		this.shuttleName = "Bus 42";
@@ -47,7 +45,6 @@ public class Shuttle {
 	public Shuttle(int shuttleId, int routeId, ArrayList<Route> rt) {
 		// Here, 'this.' is necessary because we have a local variable named the same as the global
 		this.shuttleId = shuttleId;
-		this.routeId = routeId;
 		this.stops = new HashMap<String, Stop>();
 		this.stopETA = new HashMap<String, Integer>();
 		this.shuttleName = "Bus 42";
@@ -66,8 +63,7 @@ public class Shuttle {
 	public int getShuttleId() { return this.shuttleId; }
 	public void setShuttleId(int shuttleId) { this.shuttleId = shuttleId; }
 	
-	public void setRouteId(int routeId) { this.routeId = routeId; }
-	public int getRouteId() { return routeId; }
+	public int getRouteId() { return routeID; }
 	
 	public HashMap<String, Stop> getStops() { return stops; }
 	public void setStops(HashMap<String, Stop> stops) { this.stops = stops; }
@@ -75,7 +71,7 @@ public class Shuttle {
 	public int getSpeed() { return speed; }
 	public void setSpeed(int newSpd) { this.speed = (speed > 0) ? newSpd : 25; }
 	
-	public Point getCurrentLocation() { return this.currentLocation; }
+	public static Point getCurrentLocation() { return currentLocation; }
 	public void setCurrentLocation(Point newLocation) { 
 		this.currentLocation = newLocation;
 		finder.changeCurrentLocation(currentLocation);
@@ -133,7 +129,7 @@ public class Shuttle {
 	 * @param p - stop's location
 	 * @return distance to stop
 	 */
-	private double calculateDistance(Point p) {
+	private static double calculateDistance(Point p) {
 		double earthRadius = 3961.3; //radius in miles
 		Point curr = getCurrentLocation();
 		double changeInLat = curr.lat - p.lat;
@@ -243,29 +239,6 @@ public class Shuttle {
 				routeID  = (distanceArray[0] < distanceArray[1]) ?
 						routeList.get(0).getIdNum() : routeList.get(1).getIdNum();
 			}
-		}
-		
-		/**calculates the straight line distance between the given stop location and the shuttle's location
-		 * The formula used to calculate this distance is the haversine formula
-		 * {@link http://www.movable-type.co.uk/scripts/latlong.html}
-		 * @param p - stop's location
-		 * @return distance to stop
-		 */
-		private double calculateDistance(Point p) {
-			double earthRadius = 3961.3; //radius in miles
-			Point curr = locList.get(locList.size() - 1);
-			double changeInLat = curr.lat - p.lat;
-			double changeInLong = curr.lon - p.lon;
-			double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
-						(Math.cos(p.lon) * Math.cos(curr.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
-			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
-			
-			return (earthRadius * c);
-		}
-
-		private void whichRoute(Point[] differenceArray) {
-			Point p = differenceArray[0], p2 = differenceArray[1];
-			
 		}
 
 		/**
