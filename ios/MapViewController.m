@@ -49,18 +49,15 @@
         [self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:YES];
 	});
     
-    //  Use these if the asynchronous loading doesn't work
-//    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:xmlUrl];
-//    [self routeKmlLoaded];
-    
+    //  Show the user's location on the map
     _mapView.showsUserLocation = YES;
     
     //  The student union is at -73.6765441399,42.7302712352
     MKCoordinateRegion region;
-    region.center.longitude = -73.674;
     region.center.latitude = 42.73027;
-    region.span.latitudeDelta = 0.0180;
-    region.span.longitudeDelta = 0.0120;
+    region.center.longitude = -73.6750;
+    region.span.latitudeDelta = 0.0200;
+    region.span.longitudeDelta = 0.0132;
     
     _mapView.region = region;
 }
