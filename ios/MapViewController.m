@@ -12,8 +12,10 @@
 
 @interface MapViewController()
 - (void)routeKmlLoaded;
+- (void)vehicleKmlRefresh;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
+- (void)addVehicle:(KMLVehicle *)vehicle;
 
 @end
 
@@ -29,8 +31,6 @@
     _mapView.delegate = self;
     
 	[self.view addSubview:_mapView];
-	
-	//	Shuttles KML: http://shuttles.rpi.edu/displays/netlink.kml
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -40,13 +40,14 @@
     routeLines = [[NSMutableArray alloc] init];
     routeLineViews = [[NSMutableArray alloc] init];
     
-    NSURL *xmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
+    NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
     
     //  Load the first KML file asynchronously
     dispatch_queue_t loadFirstKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
 	dispatch_async(loadFirstKmlQueue, ^{		
-        routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:xmlUrl];
+        routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
         [self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:YES];
+        [routeKmlParser release];
 	});
     
     //  Show the user's location on the map
@@ -80,6 +81,33 @@
     for (KMLStop *stop in stops) {
         [self performSelectorOnMainThread:@selector(addStop:) withObject:stop waitUntilDone:YES];
     }
+    
+    if (routeKmlParser.vehiclesUrl) {
+        
+        NSURL *shuttleKmlUrl = [[NSBundle mainBundle] URLForResource:@"current" withExtension:@"kml"];
+        
+        dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
+        dispatch_async(loadVehicleKmlQueue, ^{		
+//            vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlParser.vehiclesUrl];
+            vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:shuttleKmlUrl];
+            [self performSelectorOnMainThread:@selector(vehicleKmlRefresh) withObject:nil waitUntilDone:YES];
+//            [vehiclesKmlParser release];
+        });
+        
+    }
+    
+}
+
+- (void)vehicleKmlRefresh {
+    [vehiclesKmlParser parse];
+    
+    vehicles = vehiclesKmlParser.vehicles;
+    
+    for (KMLVehicle *vehicle in vehicles) {
+        [self addVehicle:vehicle];
+    }
+    
+    [vehicles release];
 }
 
 - (void)addRoute:(KMLRoute *)route {
@@ -113,8 +141,6 @@
     routeView.lineWidth = route.style.width;
     routeView.fillColor = route.style.color;
     routeView.strokeColor = route.style.color;
-//    routeView.fillColor = [UIColor redColor];
-//    routeView.strokeColor = [UIColor redColor];
     
     [_mapView addOverlay:polyLine];
 }
@@ -124,6 +150,9 @@
     
 }
 
+- (void)addVehicle:(KMLVehicle *)vehicle {
+    [_mapView addAnnotation:vehicle];
+}
 /*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -183,6 +212,9 @@
         pinAnnotationView.canShowCallout = YES;
         
         return pinAnnotationView;
+    } else if ([annotation isKindOfClass:[KMLVehicle class]]) {
+        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
+        vehicleAnnotationView.image = [UIImage imageWithContentsOfFile:@"shuttle_icon.png"];
     }
     
     return nil;
