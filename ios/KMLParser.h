@@ -145,14 +145,14 @@
 
 @end
 
-@interface KMLStop : KMLPoint <MKAnnotation>
+@interface KMLStop : KMLPoint
 {
 	
 }
 
 @end
 
-@interface KMLVehicle : KMLPoint <MKAnnotation>
+@interface KMLVehicle : KMLPoint
 {
 	
 }

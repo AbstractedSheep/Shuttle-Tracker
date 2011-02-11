@@ -214,7 +214,7 @@
         return pinAnnotationView;
     } else if ([annotation isKindOfClass:[KMLVehicle class]]) {
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        vehicleAnnotationView.image = [UIImage imageWithContentsOfFile:@"shuttle_icon.png"];
+        vehicleAnnotationView.image = [UIImage imageWithContentsOfFile:@"shuttle_icon"];
     }
     
     return nil;
