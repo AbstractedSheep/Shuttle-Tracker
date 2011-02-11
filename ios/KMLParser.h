@@ -43,6 +43,7 @@
 //@property (nonatomic, readonly) NSArray *placemarks;
 @property (nonatomic, copy) NSArray *routes;
 @property (nonatomic, copy) NSArray *stops;
+@property (nonatomic, copy) NSArray *vehicles;
 @property (nonatomic, readonly) NSURL *vehiclesUrl;
 
 - (id)initWithContentsOfUrl:(NSURL *)url;

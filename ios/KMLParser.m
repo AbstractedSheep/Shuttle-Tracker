@@ -14,6 +14,7 @@
 
 @synthesize routes = _routes;
 @synthesize stops = _stops;
+@synthesize vehicles = _vehicles;
 @synthesize vehiclesUrl;
 
 - (id)init {
@@ -25,13 +26,6 @@
 
 - (id)initWithContentsOfUrl:(NSURL *)url {
     if ((self = [super init])) {
-		_placemarks = [[NSMutableArray alloc] init];
-		_styles = [[NSMutableArray alloc] init];
-        
-        _routes = [[NSMutableArray alloc] init];
-		_stops = [[NSMutableArray alloc] init];
-        _vehicles = [[NSMutableArray alloc] init];
-        
         currentStyle = nil;
         currentPlacemark = nil;
         
@@ -58,15 +52,52 @@
 
 
 - (void)dealloc {
-    [_styles release];
-    [_placemarks release];
-    [_routes release];
-    [_stops release];
+    if (_styles) {
+        [_styles release];
+    }
+    if (_placemarks) {
+        [_placemarks release];
+    }
+    if (_routes) {
+        [_routes release];
+    }
+    if (_stops) {
+        [_stops release];
+    }
+    if (_vehicles) {
+        [_vehicles release];
+    }
+    
     [super dealloc];
 }
 
 #pragma mark -
 #pragma mark NSXMLParserDelegate Functions
+
+- (void)parserDidStartDocument:(NSXMLParser *)parser {
+    if (_styles) {
+        [_styles release];
+    }
+    if (_placemarks) {
+        [_placemarks release];
+    }
+    if (_routes) {
+        [_routes release];
+    }
+    if (_stops) {
+        [_stops release];
+    }
+    if (_vehicles) {
+        [_vehicles release];
+    }
+    
+    _placemarks = [[NSMutableArray alloc] init];
+    _styles = [[NSMutableArray alloc] init];
+    
+    _routes = [[NSMutableArray alloc] init];
+    _stops = [[NSMutableArray alloc] init];
+    _vehicles = [[NSMutableArray alloc] init];
+}
 
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError 
 {
