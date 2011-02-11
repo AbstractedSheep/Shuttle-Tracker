@@ -20,7 +20,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
     // Override point for customization after application launch.
-    MapViewController *mapVC = [[[MapViewController alloc] init] autorelease];
+    MapViewController *mapVC = [[MapViewController alloc] init];
 	[self.window addSubview:mapVC.view];
     [self.window makeKeyAndVisible];
     
