@@ -107,7 +107,7 @@
 //            }
         }
         
-        [temp release];
+//        [temp release];
     }
     
     MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:counter];
@@ -125,6 +125,7 @@
     routeView.strokeColor = route.style.color;
     
     [mapView addOverlay:polyLine];
+    [polyLine release];
     
 //    //  Close the subpath and add a line from the last point to the first point.
 //    CGPathCloseSubpath(path);
