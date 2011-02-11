@@ -8,13 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
-#import "ViewForX.h"
 
 
 @class KMLParser;
 
-@interface MapViewController : UIViewController {
-	MKMapView *mapView;
+@interface MapViewController : UIViewController <MKMapViewDelegate> {
+	MKMapView *_mapView;
     KMLParser *routeKmlParser;
     
     NSArray *routes;
@@ -24,7 +23,6 @@
     NSMutableArray *routeLines;
     NSMutableArray *routeLineViews;
     
-    ViewForX *vfx;
 }
 
 @end

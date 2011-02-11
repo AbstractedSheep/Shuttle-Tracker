@@ -8,7 +8,6 @@
 
 #import "MapViewController.h"
 #import "KMLParser.h"
-#import "ViewForX.h"
 
 
 @interface MapViewController()
@@ -25,13 +24,11 @@
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
 	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-	
-    vfx = [[ViewForX alloc] init];
     
-	mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
-    mapView.delegate = vfx;
+	_mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
+    _mapView.delegate = self;
     
-	[self.view addSubview:mapView];
+	[self.view addSubview:_mapView];
 	
 	//	Shuttles KML: http://shuttles.rpi.edu/displays/netlink.kml
 }
@@ -43,15 +40,20 @@
     routeLines = [[NSMutableArray alloc] init];
     routeLineViews = [[NSMutableArray alloc] init];
     
-    vfx.routeLines = routeLines;
-    vfx.routeLineViews = routeLineViews;
-    
     NSURL *xmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
     
-    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:xmlUrl];
-    [self routeKmlLoaded];
+    //  Load the first KML file asynchronously
+    dispatch_queue_t loadFirstKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
+	dispatch_async(loadFirstKmlQueue, ^{		
+        routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:xmlUrl];
+        [self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:YES];
+	});
     
-//    mapView.showsUserLocation = YES;
+    //  Use these if the asynchronous loading doesn't work
+//    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:xmlUrl];
+//    [self routeKmlLoaded];
+    
+    _mapView.showsUserLocation = YES;
     
     //  The student union is at -73.6765441399,42.7302712352
     MKCoordinateRegion region;
@@ -60,7 +62,7 @@
     region.span.latitudeDelta = 0.0180;
     region.span.longitudeDelta = 0.0120;
     
-    mapView.region = region;
+    _mapView.region = region;
 }
 
 - (void)routeKmlLoaded {
@@ -75,11 +77,11 @@
     vehicles = nil;
     
     for (KMLRoute *route in routes) {
-        [self addRoute:route];
+        [self performSelectorOnMainThread:@selector(addRoute:) withObject:route waitUntilDone:YES];
     }
     
     for (KMLStop *stop in stops) {
-        [self addStop:stop];
+        [self performSelectorOnMainThread:@selector(addStop:) withObject:stop waitUntilDone:YES];
     }
 }
 
@@ -95,7 +97,7 @@
         
         if (temp) {
             //  Get a CoreLocation coordinate from the coordinate string
-            clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:0] floatValue], [[temp objectAtIndex:1] floatValue]);
+            clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:1] floatValue], [[temp objectAtIndex:0] floatValue]);
             
             points[counter] = MKMapPointForCoordinate(clLoc);
             counter++;
@@ -112,16 +114,16 @@
     [routeLineViews addObject:routeView];
     
     routeView.lineWidth = route.style.width;
-//    routeView.fillColor = route.style.color;
-//    routeView.strokeColor = route.style.color;
-    routeView.fillColor = [UIColor redColor];
-    routeView.strokeColor = [UIColor redColor];
+    routeView.fillColor = route.style.color;
+    routeView.strokeColor = route.style.color;
+//    routeView.fillColor = [UIColor redColor];
+//    routeView.strokeColor = [UIColor redColor];
     
-    [mapView addOverlay:polyLine];
+    [_mapView addOverlay:polyLine];
 }
 
 - (void)addStop:(KMLStop *)stop {
-    [mapView addAnnotation:stop];
+    [_mapView addAnnotation:stop];
     
 }
 
@@ -148,12 +150,46 @@
 
 
 - (void)dealloc {
-    [mapView release];
+    [_mapView release];
     [super dealloc];
 }
 
 #pragma mark MKMapViewDelegate
 
+- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id<MKOverlay>)overlay {
+    MKOverlayView* overlayView = nil;
+    
+    int counter = 0;
+    
+    for (MKPolyline *routeLine in routeLines) {
+        if (routeLine == overlay) {
+            overlayView = [routeLineViews objectAtIndex:counter];
+            break;
+        }
+        
+        counter++;
+    }
+    
+    return overlayView;
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    //  If the annotation is the user's location, return nil so the platform
+    //  just uses the blue dot
+    if (annotation == _mapView.userLocation)
+        return nil;
+    
+    if ([annotation isKindOfClass:[KMLStop class]]) {
+        MKPinAnnotationView *pinAnnotationView = [[[MKPinAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
+        pinAnnotationView.pinColor = MKPinAnnotationColorPurple;
+        pinAnnotationView.animatesDrop = NO;
+        pinAnnotationView.canShowCallout = YES;
+        
+        return pinAnnotationView;
+    }
+    
+    return nil;
+}
 
 
 
