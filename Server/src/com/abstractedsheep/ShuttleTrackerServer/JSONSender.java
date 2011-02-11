@@ -34,11 +34,21 @@ public class JSONSender {
 			System.out.println("Connected to database");
 			Statement stmt = connection.createStatement();
 			for(Shuttle shuttle : shuttleList) {
+<<<<<<< HEAD
+				gen.writeObjectFieldStart(shuttle.getName());
+				gen.writeNumberField("Longitude", shuttle.getCurrentLocation().getLon());
+				gen.writeNumberField("Latitude", shuttle.getCurrentLocation().getLat());
+				gen.writeArrayFieldStart("ETA");
+				map = shuttle.getStopETA();
+				for(String stop : map.keySet()) {
+					gen.writeString(stop + " " + map.get((stop)) + " " + shuttle.getStops().get(stop).toString());
+=======
 				for(String stop : shuttle.getStopETA().keySet()){
 					String sql = "UPDATE shuttle_eta SET eta = " + getTimeStamp(shuttle.getStopETA().get(stop)) +
 								 "WHERE shuttle_id = " + shuttle.getShuttleId() + "AND stop_id = " +
 								 shuttle.getStops().get(stop).getShortName();
 					int updateCount = stmt.executeUpdate(sql);
+>>>>>>> 24ec0adc627ad1dd937e7b98885d32700ef618d2
 				}
 			}
 		} catch (ClassNotFoundException e) {

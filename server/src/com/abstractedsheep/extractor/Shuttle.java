@@ -54,15 +54,25 @@ public class Shuttle {
 	// on a single line to increase readability
 	public int getShuttleId() { return this.shuttleId; }
 	public void setShuttleId(int shuttleId) { this.shuttleId = shuttleId; }
+<<<<<<< HEAD
+	
+	public int getRouteId() { return routeID; }
+	
+=======
 
 	public int getRouteId() { return routeID; }
 
+>>>>>>> 24ec0adc627ad1dd937e7b98885d32700ef618d2
 	public HashMap<String, Stop> getStops() { return stops; }
 	public void setStops(HashMap<String, Stop> stops) { this.stops = stops; }
 
 	public int getSpeed() { return speed; }
 	public void setSpeed(int newSpd) { this.speed = (speed > 0) ? newSpd : 25; }
+<<<<<<< HEAD
+	
+=======
 
+>>>>>>> 24ec0adc627ad1dd937e7b98885d32700ef618d2
 	public static Point getCurrentLocation() { return currentLocation; }
 	public void setCurrentLocation(Point newLocation) { 
 		this.currentLocation = newLocation;
@@ -110,7 +120,29 @@ public class Shuttle {
 			this.stopETA.put(name, time);
 		}
 	}
+<<<<<<< HEAD
+	
+	/**calculates the straight line distance between the given stop location and the shuttle's location
+	 * The formula used to calculate this distance is the haversine formula
+	 * {@link http://www.movable-type.co.uk/scripts/latlong.html}
+	 * @param p - stop's location
+	 * @return distance to stop
+	 */
+	private static double calculateDistance(Point p) {
+		double earthRadius = 3961.3; //radius in miles
+		Point curr = getCurrentLocation();
+		double changeInLat = curr.lat - p.lat;
+		double changeInLong = curr.lon - p.lon;
+		double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
+					(Math.cos(p.lon) * Math.cos(curr.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
+		
+		return (earthRadius * c);
+	}
+	
+=======
 
+>>>>>>> 24ec0adc627ad1dd937e7b98885d32700ef618d2
 	@Override
 	public boolean equals(Object obj) {
 		Shuttle s = (Shuttle) obj;
@@ -266,6 +298,25 @@ public class Shuttle {
 			}
 			return distanceToTravel;
 		}
+<<<<<<< HEAD
+
+		/**
+		 * calculates distance from stop
+		 * @param stop - desired stop
+		 * @return distance to stop.
+		 */
+		public double getDistanceToStop(Stop stop) {
+			return 0.0;
+		}
+		
+		/**
+		 * calculates arrival time to stop
+		 * @param stop - desired stop
+		 * @return time to stop.
+		 */
+		public int getTimeToStop(Stop stop) {
+			return 0;
+=======
 		
 		/**calculates the straight line distance between the given stop location and the shuttle's location
 		 * The formula used to calculate this distance is the haversine formula
@@ -290,6 +341,7 @@ public class Shuttle {
 			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
 
 			return (earthRadius * c) * 0.621371192;
+>>>>>>> 24ec0adc627ad1dd937e7b98885d32700ef618d2
 		}
 	}
 }
