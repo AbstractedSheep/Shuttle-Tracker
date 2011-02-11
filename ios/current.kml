@@ -1,10 +1,38 @@
 <Folder>
   <name>Current Vehicle Positions</name>
+<Placemark id="vehicle_1">
+  <name>Bus 94</name>
+  <description>Traveling North at 17mph.</description>
+  <Point>
+    <coordinates>-73.6773,42.73035</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="vehicle_2">
+  <name>Bus 85</name>
+  <description>Traveling North at 20mph.</description>
+  <Point>
+    <coordinates>-73.6716,42.73279</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="vehicle_6">
+  <name>Bus 97</name>
+  <description>Traveling West at 25mph.</description>
+  <Point>
+    <coordinates>-73.67564,42.73298</coordinates>
+  </Point>
+</Placemark>
 <Placemark id="vehicle_7">
   <name>Bus 90</name>
-  <description>Traveling West at 0mph.</description>
+  <description>Traveling West at 33mph.</description>
   <Point>
-    <coordinates>-73.68373,42.73806</coordinates>
+    <coordinates>-73.68388,42.72736</coordinates>
+  </Point>
+</Placemark>
+<Placemark id="vehicle_8">
+  <name>Bus 92</name>
+  <description>Traveling North at 9mph.</description>
+  <Point>
+    <coordinates>-73.67586,42.72892</coordinates>
   </Point>
 </Placemark>
 </Folder>
