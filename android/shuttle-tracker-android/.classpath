@@ -19,6 +19,5 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/Shuttle-Tracker-Android/lib/vtd-xml-2.9-doc.zip!/vtd-xml-2.9-doc"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="android-mapviewballoons_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

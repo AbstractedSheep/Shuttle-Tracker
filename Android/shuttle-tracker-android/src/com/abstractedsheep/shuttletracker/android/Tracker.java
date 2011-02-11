@@ -6,14 +6,20 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import com.abstractedsheep.kml.Placemark;
 import com.abstractedsheep.kml.Style;
+import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -195,6 +201,24 @@ public class Tracker extends MapActivity {
 		
     	return placemarks;
     }
+    
+    private VehicleJson parseShuttleJson(InputStream is) {
+    	ObjectMapper mapper = new ObjectMapper();
+    	VehicleJson vehicles = null;
+    	try {
+			vehicles = mapper.readValue(is, VehicleJson.class);
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return vehicles;
+    }
 
 	@Override
 	protected boolean isRouteDisplayed() {
@@ -222,13 +246,26 @@ public class Tracker extends MapActivity {
 	
 	private void updateShuttles() {
 		threadLock = true;
-        List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/vehicles/current.kml");
+		URL shuttlesJson;
+		try {
+			shuttlesJson = new URL("http://shuttles.rpi.edu/vehicles/current.js");
+			URLConnection shuttleJsonConnection = shuttlesJson.openConnection();
+			
+			parseShuttleJson(shuttleJsonConnection.getInputStream());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
         
         shuttlesOverlay.removeAllOverlays();
         
-        for (Placemark p : placemarks) {
-    		shuttlesOverlay.addOverlay(p.toOverlayItem());
-        }
+        //for (Placemark p : placemarks) {
+    	//	shuttlesOverlay.addOverlay(p.toOverlayItem());
+        //}
         
                 
         runOnUiThread(invalidateMap);
