@@ -15,11 +15,12 @@
 		2860E32E111B888700E27156 /* AppDelegate_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E32C111B888700E27156 /* AppDelegate_iPad.m */; };
 		2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2860E32D111B888700E27156 /* MainWindow_iPad.xib */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		DA5F116913059FB4002AC5D2 /* shuttle_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DA5F116813059FB4002AC5D2 /* shuttle_icon.png */; };
+		DA5F116C1305A2A6002AC5D2 /* current.kml in Resources */ = {isa = PBXBuildFile; fileRef = DA5F116B1305A2A6002AC5D2 /* current.kml */; };
 		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
 		DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B7512F4C84700190FA3 /* MapViewController.m */; };
 		DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */ = {isa = PBXBuildFile; fileRef = DA750B8812F4CB7600190FA3 /* netlink.kml */; };
 		DA750B8C12F4CC7D00190FA3 /* KMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B8B12F4CC7D00190FA3 /* KMLParser.m */; };
-		DA750B9312F4D03100190FA3 /* current.kml in Resources */ = {isa = PBXBuildFile; fileRef = DA750B9212F4D03100190FA3 /* current.kml */; };
 		DAB2655512FB5D8900A4C5B7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */; };
 /* End PBXBuildFile section */
 
@@ -38,12 +39,13 @@
 		32CA4F630368D1EE00C91783 /* Shuttle_Tracker_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Shuttle_Tracker_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8D1107310486CEB800E47090 /* Shuttle_Tracker-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Shuttle_Tracker-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		DA31240012FDC69C00F90B79 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = KMLParser.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		DA5F116813059FB4002AC5D2 /* shuttle_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_icon.png; sourceTree = "<group>"; };
+		DA5F116B1305A2A6002AC5D2 /* current.kml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = current.kml; sourceTree = "<group>"; };
 		DA750B7012F4C7D700190FA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DA750B7412F4C84700190FA3 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MapViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DA750B7512F4C84700190FA3 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DA750B8812F4CB7600190FA3 /* netlink.kml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; lineEnding = 0; path = netlink.kml; sourceTree = "<group>"; };
 		DA750B8B12F4CC7D00190FA3 /* KMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = KMLParser.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		DA750B9212F4D03100190FA3 /* current.kml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = current.kml; sourceTree = "<group>"; };
 		DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -141,8 +143,9 @@
 		DA750B7C12F4CB6900190FA3 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DA750B9212F4D03100190FA3 /* current.kml */,
+				DA5F116B1305A2A6002AC5D2 /* current.kml */,
 				DA750B8812F4CB7600190FA3 /* netlink.kml */,
+				DA5F116813059FB4002AC5D2 /* shuttle_icon.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -202,7 +205,8 @@
 				2860E329111B887F00E27156 /* MainWindow_iPhone.xib in Resources */,
 				2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */,
 				DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */,
-				DA750B9312F4D03100190FA3 /* current.kml in Resources */,
+				DA5F116913059FB4002AC5D2 /* shuttle_icon.png in Resources */,
+				DA5F116C1305A2A6002AC5D2 /* current.kml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -183,7 +183,7 @@
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
 //    NSLog(@"Found characters: %@", string);
     
-    //  Append the current string, minus whitespace and newlines at the ends, to the string accumulation,
+    //  Append the current string to the string accumulation,
     //  to be used in parser:didEndElement:
     [accumulation appendString:string];
 }
@@ -225,8 +225,8 @@
         
     } else if (state.inStyle && currentStyle.parseState == colorState) {
         //  For whatever reason, this one has "\n \n    " (that's four spaces at the end) as a prefix, so get rid of it
+        //  Remember that setting colorString this way also sets currentStyle.color
         currentStyle.colorString = trimmedAccumulation;
-//        currentStyle.color = [currentStyle UIColorFromRGBAString:currentStyle.colorString];
         currentStyle.parseState = nilStyleParseState;
         
     } else if (state.inStyle && currentStyle.parseState == widthState) {
@@ -338,8 +338,13 @@
         
     }
     //  KML elements describing where to find vehicle data
+    else if (state.inNetworkLink && [elementName isEqualToString:@"NetworkLink"]) {
+        state.inNetworkLink = NO;
+        
+    }
     else if (state.inNetworkLink && [elementName isEqualToString:@"Link"]) {
         vehiclesUrl = [NSURL URLWithString:trimmedAccumulation];
+        [vehiclesUrl retain];
     }
     
     
