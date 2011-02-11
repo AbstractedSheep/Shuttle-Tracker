@@ -129,24 +129,25 @@
 #pragma mark Points
 
 //  Base class for objects which have a single set of coordinates, so just use one set of coordinates
-@interface KMLPoint : KMLPlacemark<MKAnnotation>
+@interface KMLPoint : KMLPlacemark <MKAnnotation>
 {
 	CLLocationCoordinate2D coordinate;
 }
 
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 
+- (id)initWithLocation:(CLLocationCoordinate2D)coord;
 
 @end
 
-@interface KMLStop : KMLPoint
+@interface KMLStop : KMLPoint <MKAnnotation>
 {
 	
 }
 
 @end
 
-@interface KMLVehicle : KMLPoint
+@interface KMLVehicle : KMLPoint <MKAnnotation>
 {
 	
 }

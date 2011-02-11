@@ -121,6 +121,8 @@
             assert(0);
         }
         
+        currentPlacemark.idTag = idTag;
+        
     } else if (state.inPlacemark && [elementName isEqualToString:@"name"]) {
         currentPlacemark.parseState = nameState;
         
@@ -187,6 +189,7 @@
     } else if (state.inStyle && currentStyle.parseState == colorState) {
         //  For whatever reason, this one has "\n \n    " (that's four spaces at the end) as a prefix, so get rid of it
         currentStyle.colorString = trimmedAccumulation;
+//        currentStyle.color = [currentStyle UIColorFromRGBAString:currentStyle.colorString];
         currentStyle.parseState = nilStyleParseState;
         
     } else if (state.inStyle && currentStyle.parseState == widthState) {
@@ -266,8 +269,8 @@
                 coordinates = [trimmedAccumulation componentsSeparatedByString:@","];
                 
                 if (coordinates && [coordinates count] == 2) {
-                    stopPlacemark.coordinate = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
-                                                                           [[coordinates objectAtIndex:1] doubleValue]);                        
+                    stopPlacemark.coordinate = CLLocationCoordinate2DMake([[coordinates objectAtIndex:1] doubleValue], 
+                                                                           [[coordinates objectAtIndex:0] doubleValue]);                        
                 }
                 
                 break;
@@ -277,8 +280,8 @@
                 coordinates = [trimmedAccumulation componentsSeparatedByString:@","];
                 
                 if (coordinates && [coordinates count] == 2) {
-                    vehiclePlacemark.coordinate = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
-                                                                              [[coordinates objectAtIndex:1] doubleValue]);                        
+                    vehiclePlacemark.coordinate = CLLocationCoordinate2DMake([[coordinates objectAtIndex:1] doubleValue], 
+                                                                              [[coordinates objectAtIndex:0] doubleValue]);                        
                 }
                 
                 break;
@@ -365,10 +368,14 @@
         rgbaValue = 0;
     }
     
+//    NSLog(@"%@", [UIColor colorWithRed:((float)((rgbaValue & 0xFF000000) >> 24))/255.0
+//                                 green:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
+//                                  blue:((float)((rgbaValue & 0xFF00) >> 8))/255.0
+//                                 alpha:((float)(rgbaValue & 0xFF))/255.0]);
     
-    return [UIColor colorWithRed:((float)((rgbaValue & 0xFF000000) >> 16))/255.0
-                           green:((float)((rgbaValue & 0xFF0000) >> 8))/255.0
-                            blue:((float)(rgbaValue & 0xFF00))/255.0
+    return [UIColor colorWithRed:((float)((rgbaValue & 0xFF000000) >> 24))/255.0
+                           green:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
+                            blue:((float)((rgbaValue & 0xFF00) >> 8))/255.0
                            alpha:((float)(rgbaValue & 0xFF))/255.0];
 }
 
@@ -424,10 +431,12 @@
     return name;
 }
 
-- (id)initWithCoordinate:(CLLocationCoordinate2D)coord {
+- (id)initWithLocation:(CLLocationCoordinate2D)coord {
     [self init];
     
-    coordinate = coord;
+    if (self) {
+        coordinate = coord;
+    }
     
     return self;
 }
