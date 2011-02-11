@@ -9,56 +9,58 @@
 #import "MapViewController.h"
 #import "KMLParser.h"
 
-#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
-
 
 @interface MapViewController()
 - (void)routeKmlLoaded;
-- (void)drawRoute:(KMLRoute *)route;
+- (void)vehicleKmlRefresh;
+- (void)addRoute:(KMLRoute *)route;
+- (void)addStop:(KMLStop *)stop;
+- (void)addVehicle:(KMLVehicle *)vehicle;
 
 @end
 
 
 @implementation MapViewController
 
-// The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-/*
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization.
-    }
-    return self;
-}
-*/
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
 	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-	
-	mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
-	[self.view addSubview:mapView];
-	
-	//	Shuttles KML: http://shuttles.rpi.edu/displays/netlink.kml
+    
+	_mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
+    _mapView.delegate = self;
+    
+	[self.view addSubview:_mapView];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    mapView.showsUserLocation = YES;
+    routeLines = [[NSMutableArray alloc] init];
+    routeLineViews = [[NSMutableArray alloc] init];
+    
+    NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
+    
+    //  Load the first KML file asynchronously
+    dispatch_queue_t loadFirstKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
+	dispatch_async(loadFirstKmlQueue, ^{		
+        routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
+        [self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:YES];
+        [routeKmlParser release];
+	});
+    
+    //  Show the user's location on the map
+    _mapView.showsUserLocation = YES;
     
     //  The student union is at -73.6765441399,42.7302712352
     MKCoordinateRegion region;
-    region.center.longitude = -73.67654;
     region.center.latitude = 42.73027;
-    region.span.latitudeDelta = 0.0080;
-    region.span.longitudeDelta = 0.0070;
+    region.center.longitude = -73.6750;
+    region.span.latitudeDelta = 0.0200;
+    region.span.longitudeDelta = 0.0132;
     
-    mapView.region = region;
-    
-    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:[[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"]];
-    [self routeKmlLoaded];
+    _mapView.region = region;
 }
 
 - (void)routeKmlLoaded {
@@ -70,20 +72,48 @@
     stops = [routeKmlParser stops];
     [stops retain];
     
+    vehicles = nil;
+    
     for (KMLRoute *route in routes) {
-        [self drawRoute:route];
+        [self performSelectorOnMainThread:@selector(addRoute:) withObject:route waitUntilDone:YES];
     }
+    
+    for (KMLStop *stop in stops) {
+        [self performSelectorOnMainThread:@selector(addStop:) withObject:stop waitUntilDone:YES];
+    }
+    
+    if (routeKmlParser.vehiclesUrl) {
+        
+        NSURL *shuttleKmlUrl = [[NSBundle mainBundle] URLForResource:@"current" withExtension:@"kml"];
+        
+        dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
+        dispatch_async(loadVehicleKmlQueue, ^{		
+//            vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlParser.vehiclesUrl];
+            vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:shuttleKmlUrl];
+            [self performSelectorOnMainThread:@selector(vehicleKmlRefresh) withObject:nil waitUntilDone:YES];
+//            [vehiclesKmlParser release];
+        });
+        
+    }
+    
 }
 
-- (void)drawRoute:(KMLRoute *)route {
-//    MKOverlayPathView *pathView = [[MKOverlayPathView alloc] init];
-//    
-//    CGMutablePathRef path = CGPathCreateMutable();
-//    
-//    CGPoint point;
+- (void)vehicleKmlRefresh {
+    [vehiclesKmlParser parse];
+    
+    vehicles = vehiclesKmlParser.vehicles;
+    
+    for (KMLVehicle *vehicle in vehicles) {
+        [self addVehicle:vehicle];
+    }
+    
+    [vehicles release];
+}
+
+- (void)addRoute:(KMLRoute *)route {
     NSArray *temp;
     CLLocationCoordinate2D clLoc;
-    CLLocationCoordinate2D *coordinates = malloc(sizeof(CLLocationCoordinate2D) * route.lineString.count);
+    MKMapPoint *points = malloc(sizeof(MKMapPoint) * route.lineString.count);
     
     int counter = 0;
     
@@ -92,30 +122,18 @@
         
         if (temp) {
             //  Get a CoreLocation coordinate from the coordinate string
-            clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:0] floatValue], [[temp objectAtIndex:1] floatValue]);
+            clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:1] floatValue], [[temp objectAtIndex:0] floatValue]);
             
-            coordinates[counter] = clLoc;
+            points[counter] = MKMapPointForCoordinate(clLoc);
             counter++;
-            
-//            point = [mapView convertCoordinate:clLoc toPointToView:self.view];
-//            
-//            //  Add the current point to the path representing this route
-//            if (startingPoint) {
-//                CGPathMoveToPoint(path, NULL, point.x, point.y);
-//            } else {
-//                CGPathAddLineToPoint(path, NULL, point.x, point.y);
-//            }
         }
         
-        [temp release];
     }
     
-    MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:counter];
-    [polyLine retain];
-    
+    MKPolyline *polyLine = [MKPolyline polylineWithPoints:points count:counter];
     [routeLines addObject:polyLine];
     
-    free(coordinates);
+    free(points);
     
     MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
     [routeLineViews addObject:routeView];
@@ -124,16 +142,17 @@
     routeView.fillColor = route.style.color;
     routeView.strokeColor = route.style.color;
     
-    [mapView addOverlay:polyLine];
-    
-//    //  Close the subpath and add a line from the last point to the first point.
-//    CGPathCloseSubpath(path);
-//    
-//    pathView.path = path;
-//    pathView.lineWidth = route.style.width;
-//    pathView.strokeColor = [self UIColorFromRGBAString:route.style.color];
+    [_mapView addOverlay:polyLine];
 }
 
+- (void)addStop:(KMLStop *)stop {
+    [_mapView addAnnotation:stop];
+    
+}
+
+- (void)addVehicle:(KMLVehicle *)vehicle {
+    [_mapView addAnnotation:vehicle];
+}
 /*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -157,11 +176,11 @@
 
 
 - (void)dealloc {
+    [_mapView release];
     [super dealloc];
 }
 
-#pragma mark -
-#pragma mark MKMapViewDelegate Methods
+#pragma mark MKMapViewDelegate
 
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id<MKOverlay>)overlay {
     MKOverlayView* overlayView = nil;
@@ -180,13 +199,27 @@
     return overlayView;
 }
 
-- (MKAnnotationView *)mapView:(MKMapView *)theMapView viewForAnnotation:(id<MKAnnotation>)annotation {
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
     //  If the annotation is the user's location, return nil so the platform
     //  just uses the blue dot
-    if (annotation == theMapView.userLocation)
+    if (annotation == _mapView.userLocation)
         return nil;
+    
+    if ([annotation isKindOfClass:[KMLStop class]]) {
+        MKPinAnnotationView *pinAnnotationView = [[[MKPinAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
+        pinAnnotationView.pinColor = MKPinAnnotationColorPurple;
+        pinAnnotationView.animatesDrop = NO;
+        pinAnnotationView.canShowCallout = YES;
+        
+        return pinAnnotationView;
+    } else if ([annotation isKindOfClass:[KMLVehicle class]]) {
+        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
+        vehicleAnnotationView.image = [UIImage imageWithContentsOfFile:@"shuttle_icon"];
+    }
     
     return nil;
 }
+
+
 
 @end

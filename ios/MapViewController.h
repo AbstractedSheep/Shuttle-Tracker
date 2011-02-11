@@ -13,16 +13,17 @@
 @class KMLParser;
 
 @interface MapViewController : UIViewController <MKMapViewDelegate> {
-	MKMapView *mapView;
+	MKMapView *_mapView;
     KMLParser *routeKmlParser;
+    KMLParser *vehiclesKmlParser;
     
-    NSArray *styles;
     NSArray *routes;
     NSArray *stops;
-    NSMutableArray *vehicles;
+    NSArray *vehicles;
     
     NSMutableArray *routeLines;
     NSMutableArray *routeLineViews;
+    
 }
 
 @end
