@@ -8,35 +8,29 @@
 
 #import "MapViewController.h"
 #import "KMLParser.h"
-
-#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+#import "ViewForX.h"
 
 
 @interface MapViewController()
 - (void)routeKmlLoaded;
-- (void)drawRoute:(KMLRoute *)route;
+- (void)addRoute:(KMLRoute *)route;
+- (void)addStop:(KMLStop *)stop;
 
 @end
 
 
 @implementation MapViewController
 
-// The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
-/*
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization.
-    }
-    return self;
-}
-*/
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
 	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
+    vfx = [[ViewForX alloc] init];
+    
 	mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
+    mapView.delegate = vfx;
+    
 	[self.view addSubview:mapView];
 	
 	//	Shuttles KML: http://shuttles.rpi.edu/displays/netlink.kml
@@ -46,19 +40,27 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    mapView.showsUserLocation = YES;
+    routeLines = [[NSMutableArray alloc] init];
+    routeLineViews = [[NSMutableArray alloc] init];
+    
+    vfx.routeLines = routeLines;
+    vfx.routeLineViews = routeLineViews;
+    
+    NSURL *xmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
+    
+    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:xmlUrl];
+    [self routeKmlLoaded];
+    
+//    mapView.showsUserLocation = YES;
     
     //  The student union is at -73.6765441399,42.7302712352
     MKCoordinateRegion region;
-    region.center.longitude = -73.67654;
+    region.center.longitude = -73.674;
     region.center.latitude = 42.73027;
-    region.span.latitudeDelta = 0.0080;
-    region.span.longitudeDelta = 0.0070;
+    region.span.latitudeDelta = 0.0180;
+    region.span.longitudeDelta = 0.0120;
     
     mapView.region = region;
-    
-    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:[[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"]];
-    [self routeKmlLoaded];
 }
 
 - (void)routeKmlLoaded {
@@ -70,20 +72,21 @@
     stops = [routeKmlParser stops];
     [stops retain];
     
+    vehicles = nil;
+    
     for (KMLRoute *route in routes) {
-        [self drawRoute:route];
+        [self addRoute:route];
+    }
+    
+    for (KMLStop *stop in stops) {
+        [self addStop:stop];
     }
 }
 
-- (void)drawRoute:(KMLRoute *)route {
-//    MKOverlayPathView *pathView = [[MKOverlayPathView alloc] init];
-//    
-//    CGMutablePathRef path = CGPathCreateMutable();
-//    
-//    CGPoint point;
+- (void)addRoute:(KMLRoute *)route {
     NSArray *temp;
     CLLocationCoordinate2D clLoc;
-    CLLocationCoordinate2D *coordinates = malloc(sizeof(CLLocationCoordinate2D) * route.lineString.count);
+    MKMapPoint *points = malloc(sizeof(MKMapPoint) * route.lineString.count);
     
     int counter = 0;
     
@@ -94,45 +97,32 @@
             //  Get a CoreLocation coordinate from the coordinate string
             clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:0] floatValue], [[temp objectAtIndex:1] floatValue]);
             
-            coordinates[counter] = clLoc;
+            points[counter] = MKMapPointForCoordinate(clLoc);
             counter++;
-            
-//            point = [mapView convertCoordinate:clLoc toPointToView:self.view];
-//            
-//            //  Add the current point to the path representing this route
-//            if (startingPoint) {
-//                CGPathMoveToPoint(path, NULL, point.x, point.y);
-//            } else {
-//                CGPathAddLineToPoint(path, NULL, point.x, point.y);
-//            }
         }
         
-//        [temp release];
     }
     
-    MKPolyline *polyLine = [MKPolyline polylineWithCoordinates:coordinates count:counter];
-    [polyLine retain];
-    
+    MKPolyline *polyLine = [MKPolyline polylineWithPoints:points count:counter];
     [routeLines addObject:polyLine];
     
-    free(coordinates);
+    free(points);
     
     MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
     [routeLineViews addObject:routeView];
     
     routeView.lineWidth = route.style.width;
-    routeView.fillColor = route.style.color;
-    routeView.strokeColor = route.style.color;
+//    routeView.fillColor = route.style.color;
+//    routeView.strokeColor = route.style.color;
+    routeView.fillColor = [UIColor redColor];
+    routeView.strokeColor = [UIColor redColor];
     
     [mapView addOverlay:polyLine];
-    [polyLine release];
+}
+
+- (void)addStop:(KMLStop *)stop {
+    [mapView addAnnotation:stop];
     
-//    //  Close the subpath and add a line from the last point to the first point.
-//    CGPathCloseSubpath(path);
-//    
-//    pathView.path = path;
-//    pathView.lineWidth = route.style.width;
-//    pathView.strokeColor = [self UIColorFromRGBAString:route.style.color];
 }
 
 /*
@@ -158,36 +148,13 @@
 
 
 - (void)dealloc {
+    [mapView release];
     [super dealloc];
 }
 
-#pragma mark -
-#pragma mark MKMapViewDelegate Methods
+#pragma mark MKMapViewDelegate
 
-- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id<MKOverlay>)overlay {
-    MKOverlayView* overlayView = nil;
-    
-    int counter = 0;
-    
-    for (MKPolyline *routeLine in routeLines) {
-        if (routeLine == overlay) {
-            overlayView = [routeLineViews objectAtIndex:counter];
-            break;
-        }
-        
-        counter++;
-    }
-    
-    return overlayView;
-}
 
-- (MKAnnotationView *)mapView:(MKMapView *)theMapView viewForAnnotation:(id<MKAnnotation>)annotation {
-    //  If the annotation is the user's location, return nil so the platform
-    //  just uses the blue dot
-    if (annotation == theMapView.userLocation)
-        return nil;
-    
-    return nil;
-}
+
 
 @end

@@ -12,6 +12,8 @@
 
 @implementation KMLParser
 
+@synthesize routes = _routes;
+@synthesize stops = _stops;
 
 - (id)init {
     //  Init with the default KML, netlink.kml
@@ -53,26 +55,6 @@
 }
 
 
-//  Do not return styles or placemarks by themselves
-//
-//- (NSArray *)styles {
-//    return [NSArray arrayWithArray:_styles];
-//}
-//
-//- (NSArray *)placemarks {
-//    return [NSArray arrayWithArray:_placemarks];
-//}
-
-//  Return an NSArray of all of the routes found in the KML file
-- (NSArray *)routes {
-    return [NSArray arrayWithArray:_routes];
-}
-
-//  Return an NSArray of all of the stops found in the KML file
-- (NSArray *)stops {
-    return [NSArray arrayWithArray:_stops];
-}
-
 - (void)dealloc {
     [_styles release];
     [_placemarks release];
@@ -103,15 +85,17 @@
         state.inStyle = YES;
         currentStyle = [[KMLStyle alloc] init];
         
+        NSString *idTag = [attributeDict objectForKey:@"id"];
+        
+        currentStyle.idTag = idTag;
+        
     } else if (state.inStyle && [elementName isEqualToString:@"LineStyle"]) {
         currentStyle.styleType = lineStyle;
         
     } else if (state.inStyle && [elementName isEqualToString:@"color"]) {
-        //  Do something?
         currentStyle.parseState = colorState;
         
     } else if (state.inStyle && [elementName isEqualToString:@"width"]) {
-        //  Do something?
         currentStyle.parseState = widthState;
         
     }
@@ -125,7 +109,6 @@
             currentPlacemark = (KMLPlacemark *)[[KMLRoute alloc] init];
             currentPlacemark.placemarkType = routeType;
             
-            [_routes addObject:(KMLRoute *)currentPlacemark];
         } else if (idTag && [idTag rangeOfString:@"stop"].location != NSNotFound) {
             currentPlacemark = (KMLPlacemark *)[[KMLStop alloc] init];
             currentPlacemark.placemarkType = stopType;
@@ -159,24 +142,13 @@
 
 //  Called with the string found inside a tag, if it is not another tag or CDATA.
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
-    NSLog(@"Found characters: %@", string);
+//    NSLog(@"Found characters: %@", string);
     
-    //  Append the current string to the string accumulation,
+    //  Append the current string, minus whitespace and newlines at the ends, to the string accumulation,
     //  to be used in parser:didEndElement:
     [accumulation appendString:string];
-    
 }
 
-
-//  Never gets called even if included?
-//- (void)parser:(NSXMLParser *)parser foundIgnorableWhitespace:(NSString *)whitespaceString {
-//    //  Note that the first item in the coordinate string is "", and the last is "    \n" (four spaces and a newline)
-//    if (currentPlacemark && currentPlacemark.parseState == coordinatesState) {
-//        if ([whitespaceString isEqualToString:@"    \n"]) {
-//            //  do nothing
-//        }
-//    }
-//}
 
 //  Called for CDATA found inside a tag
 - (void)parser:(NSXMLParser *)parser foundCDATA:(NSData *)CDATABlock {
@@ -192,8 +164,19 @@
 //  Called when a closing tag is found.
 //  Unset the state of the parser, free any objects which are no longer needed, etc.
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName {
+    NSString *trimmedAccumulation = [accumulation stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    if (trimmedAccumulation) {
+        [trimmedAccumulation retain];
+        NSLog(@"Trimmed: %@", trimmedAccumulation);
+    } else {
+        trimmedAccumulation = @"";
+    }
+    
     //  KML elements describing a style
     if (state.inStyle && [elementName isEqualToString:@"Style"]) {
+        [_styles addObject:currentStyle];
+        
         state.inStyle = NO;
         [currentStyle release];
         currentStyle = nil;
@@ -202,11 +185,12 @@
         //  Nothing
         
     } else if (state.inStyle && currentStyle.parseState == colorState) {
-        currentStyle.colorString = accumulation;
+        //  For whatever reason, this one has "\n \n    " (that's four spaces at the end) as a prefix, so get rid of it
+        currentStyle.colorString = trimmedAccumulation;
         currentStyle.parseState = nilStyleParseState;
         
     } else if (state.inStyle && currentStyle.parseState == widthState) {
-        currentStyle.width = [accumulation intValue];
+        currentStyle.width = [trimmedAccumulation intValue];
         currentStyle.parseState = nilStyleParseState;
         
     }
@@ -236,18 +220,18 @@
         
         currentPlacemark = nil;
     } else if (state.inPlacemark && currentPlacemark.parseState == nameState) {
-        currentPlacemark.name = [accumulation copy];
+        currentPlacemark.name = [trimmedAccumulation copy];
         currentPlacemark.parseState = nilPlacemarkParseState;
         
     } else if (state.inPlacemark && currentPlacemark.parseState == descriptionState) {
-        currentPlacemark.description = [accumulation copy];
+        currentPlacemark.description = [trimmedAccumulation copy];
         currentPlacemark.parseState = nilPlacemarkParseState;
         
     } else if (state.inPlacemark && currentPlacemark.parseState == styleUrlState) {
-        currentPlacemark.styleUrl = [accumulation copy];
+        currentPlacemark.styleUrl = [trimmedAccumulation copy];
         
         for (KMLStyle *style in _styles) {
-            if ([accumulation rangeOfString:style.idTag].location != NSNotFound) {
+            if ([trimmedAccumulation rangeOfString:style.idTag].location != NSNotFound) {
                 currentPlacemark.style = style;
             }
         }
@@ -268,11 +252,7 @@
                 routePlacemark = (KMLRoute *)currentPlacemark;
                 
                 //  Store the list of coordinates in the route
-                //  Note that the coordinate string mysteriously has 6 whitespace characters in front and 11 in back
-                routePlacemark.lineString = [[accumulation substringWithRange:NSMakeRange(6, [accumulation length] - 1 - 11)] componentsSeparatedByString:@"\n"];
-                for (id coords in routePlacemark.lineString){
-                    NSLog(@"Coordinates: |%@|", coords);
-                }
+                routePlacemark.lineString = [[trimmedAccumulation componentsSeparatedByString:@"\n"] autorelease];
                 
                 break;
                 
@@ -283,10 +263,10 @@
                 
             case stopType:
                 stopPlacemark = (KMLStop *)currentPlacemark;
-                coordinates = [accumulation componentsSeparatedByString:@","];
+                coordinates = [trimmedAccumulation componentsSeparatedByString:@","];
                 
                 if (coordinates && [coordinates count] == 2) {
-                    stopPlacemark.coordinates = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
+                    stopPlacemark.coordinate = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
                                                                            [[coordinates objectAtIndex:1] doubleValue]);                        
                 }
                 
@@ -294,10 +274,10 @@
                 
             case vehicleType:
                 vehiclePlacemark = (KMLVehicle *)currentPlacemark;
-                coordinates = [accumulation componentsSeparatedByString:@","];
+                coordinates = [trimmedAccumulation componentsSeparatedByString:@","];
                 
                 if (coordinates && [coordinates count] == 2) {
-                    vehiclePlacemark.coordinates = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
+                    vehiclePlacemark.coordinate = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], 
                                                                               [[coordinates objectAtIndex:1] doubleValue]);                        
                 }
                 
@@ -317,7 +297,10 @@
         currentPlacemark.parseState = nilPlacemarkParseState;
         
     }
-
+    
+    if (trimmedAccumulation) {
+        [trimmedAccumulation release];
+    }
 
     [accumulation release];
     accumulation = nil;
@@ -367,6 +350,8 @@
     
     color = [self UIColorFromRGBAString:colorString];
 }
+
+
 //  Take an NSString formatted as such: RRGGBBAA and return a UIColor
 - (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString {
     NSScanner *scanner;
@@ -374,8 +359,8 @@
     
     if (rgbaString) {
         scanner = [NSScanner scannerWithString:rgbaString];
-        
         [scanner scanHexInt:&rgbaValue];
+        
     } else {
         rgbaValue = 0;
     }
@@ -426,8 +411,26 @@
 
 @implementation KMLPoint
 
-@synthesize coordinates;
+@synthesize coordinate;
 
+
+//  The subtitle for a map pin
+- (NSString *)subtitle {
+    return description;
+}
+
+//  The title for a map pin
+- (NSString *)title {
+    return name;
+}
+
+- (id)initWithCoordinate:(CLLocationCoordinate2D)coord {
+    [self init];
+    
+    coordinate = coord;
+    
+    return self;
+}
 
 @end
 
