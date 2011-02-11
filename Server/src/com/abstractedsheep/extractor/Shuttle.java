@@ -2,9 +2,6 @@ package com.abstractedsheep.extractor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-
-import com.abstractedsheep.extractor.Shuttle.Point;
 
 public class Shuttle {
 	private int shuttleId;
@@ -108,35 +105,10 @@ public class Shuttle {
 		for(String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(p);
+			//this is the ETA in milliseconds
 			int time = (int) ((distance / this.speed) * 3600000);
 			this.stopETA.put(name, time);
 		}
-	}
-
-	//TODO: delete the first calculateDistance method and move the second one to RouteFinder
-	/**calculates the straight line distance between the given stop location and the shuttle's location
-	 * The formula used to calculate this distance is the haversine formula
-	 * {@link http://www.movable-type.co.uk/scripts/latlong.html}
-	 * @param p - stop's location
-	 * @return distance to stop
-	 */
-	private static double calculateDistance(Point p) {
-		return calculateDistance(p, getCurrentLocation());
-	}
-
-	private static double calculateDistance(Point p, Point curr) {
-		double earthRadius = 6378.7; //radius in miles
-		double changeInLat = curr.lat - p.lat;
-		double changeInLong = curr.lon - p.lon;
-		//need to convert these values to radians
-		changeInLat = Math.toRadians(changeInLat);
-		changeInLong = Math.toRadians(changeInLong);
-
-		double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
-					(Math.cos(p.lon) * Math.cos(curr.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
-		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
-
-		return (earthRadius * c) * 0.621371192;
 	}
 
 	@Override
@@ -212,7 +184,7 @@ public class Shuttle {
 		}
 
 		public RouteFinder(ArrayList<Route> rt) {
-			routeList = rt;
+			this.routeList = new ArrayList<Route>(rt);
 			this.locList = new ArrayList<Point>();
 			foundRoute = false;
 			closestRouteCoor = new Point();
@@ -261,6 +233,8 @@ public class Shuttle {
 				closestRouteCoor = (distanceArray[0] < distanceArray[1]) ?
 						locationArray[0] : locationArray[1];
 				indexOfClosestCoordinate = indexArray[routeID - 1] - 2;
+				this.routeList.remove((distanceArray[0] < distanceArray[1]) ?
+						1 : 0);
 			}
 		}
 
@@ -291,6 +265,31 @@ public class Shuttle {
 				}
 			}
 			return distanceToTravel;
+		}
+		
+		/**calculates the straight line distance between the given stop location and the shuttle's location
+		 * The formula used to calculate this distance is the haversine formula
+		 * {@link http://www.movable-type.co.uk/scripts/latlong.html}
+		 * @param p - stop's location
+		 * @return distance to stop
+		 */
+		private double calculateDistance(Point p) {
+			return calculateDistance(p, getCurrentLocation());
+		}
+
+		private double calculateDistance(Point p, Point curr) {
+			double earthRadius = 6378.7; //radius in miles
+			double changeInLat = curr.lat - p.lat;
+			double changeInLong = curr.lon - p.lon;
+			//need to convert these values to radians
+			changeInLat = Math.toRadians(changeInLat);
+			changeInLong = Math.toRadians(changeInLong);
+
+			double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2)) +
+						(Math.cos(p.lon) * Math.cos(curr.lon) * (Math.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
+			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1- a));
+
+			return (earthRadius * c) * 0.621371192;
 		}
 	}
 }

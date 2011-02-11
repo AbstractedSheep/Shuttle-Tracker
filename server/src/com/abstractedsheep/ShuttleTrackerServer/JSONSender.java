@@ -1,17 +1,11 @@
-
 package com.abstractedsheep.ShuttleTrackerServer;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.HashSet;
-
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 
 import com.abstractedsheep.extractor.Shuttle;
 
@@ -34,8 +28,8 @@ public class JSONSender {
 			String serverName = "128.113.17.3:3306";
 			String dbName = "shuttle_tracker";
 			String url = "jdbc:mysql://" + serverName +  "/" + dbName;
-			String usr = "root";
-			String pass = "salamander_s4";
+			String usr = "";
+			String pass = "";
 			connection = DriverManager.getConnection(url, usr, pass);
 			System.out.println("Connected to database");
 			Statement stmt = connection.createStatement();
