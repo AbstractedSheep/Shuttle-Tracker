@@ -33,11 +33,4 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.jsdt.core.jsNature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/com/abstractedsheep/ShuttleTrackerServer/sts.properties</name>
-			<type>1</type>
-			<location>C:/Users/jonnau/Documents/Android projects/Shuttle Tracker/server/src/com/abstractedsheep/ShuttleTrackerServer/sts.properties</location>
-		</link>
-	</linkedResources>
 </projectDescription>
