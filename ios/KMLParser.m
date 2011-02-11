@@ -14,6 +14,7 @@
 
 @synthesize routes = _routes;
 @synthesize stops = _stops;
+@synthesize vehiclesUrl;
 
 - (id)init {
     //  Init with the default KML, netlink.kml
@@ -36,6 +37,7 @@
         
         state.inStyle = NO;
         state.inPlacemark = NO;
+        state.inNetworkLink = NO;
         
         accumulation = [[NSMutableString alloc] init];
         //  The parser will be the one going through the KML file and extracting tags etc.
@@ -138,6 +140,10 @@
     } else if (state.inPlacemark && [elementName isEqualToString:@"coordinates"]) {
         currentPlacemark.parseState = coordinatesState;
         
+    }
+    //  KML elements describing where to find vehicle data
+    else if ([elementName isEqualToString:@"NetworkLink"]) {
+        state.inNetworkLink = YES;
     }
 }
 
@@ -300,6 +306,11 @@
         currentPlacemark.parseState = nilPlacemarkParseState;
         
     }
+    //  KML elements describing where to find vehicle data
+    else if (state.inNetworkLink && [elementName isEqualToString:@"Link"]) {
+        vehiclesUrl = [NSURL URLWithString:trimmedAccumulation];
+    }
+    
     
     if (trimmedAccumulation) {
         [trimmedAccumulation release];

@@ -20,6 +20,8 @@
     
     NSMutableArray *_vehicles;
     
+    NSURL *vehiclesUrl;
+    
     KMLStyle *currentStyle;
     KMLPlacemark *currentPlacemark;
     
@@ -29,6 +31,7 @@
     struct {
         BOOL inStyle;
         BOOL inPlacemark;
+        BOOL inNetworkLink;
     } state;
     
 @private
@@ -40,6 +43,7 @@
 //@property (nonatomic, readonly) NSArray *placemarks;
 @property (nonatomic, copy) NSArray *routes;
 @property (nonatomic, copy) NSArray *stops;
+@property (nonatomic, readonly) NSURL *vehiclesUrl;
 
 - (id)initWithContentsOfUrl:(NSURL *)url;
 - (void)parse;
