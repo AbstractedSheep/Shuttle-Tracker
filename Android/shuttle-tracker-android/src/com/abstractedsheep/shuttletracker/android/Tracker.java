@@ -1,8 +1,34 @@
+/* 
+ * Copyright 2011 Austin Wagner
+ *     
+ * This file is part of Mobile Shuttle Tracker.
+ *
+ *  Mobile Shuttle Tracker is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Mobile Shuttle Tracker is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Mobile Shuttle Tracker.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ */
+
 package com.abstractedsheep.shuttletracker.android;
 
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,14 +44,17 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.MapperConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.abstractedsheep.kml.Placemark;
 import com.abstractedsheep.kml.Style;
+import com.abstractedsheep.shuttletracker.json.VehicleArray;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.MapView.LayoutParams;
 import com.google.android.maps.OverlayItem;
 import com.ximpleware.EOFException;
@@ -42,7 +71,7 @@ import android.util.Log;
 import android.view.animation.BounceInterpolator;
 
 public class Tracker extends MapActivity {
-	public static String MAPS_API_KEY = "01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og";//"01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	public static String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 	private MapView map;
 	private UpdateShuttlesTask updateTask;
 	public static boolean threadLock = false;
@@ -61,6 +90,12 @@ public class Tracker extends MapActivity {
         
         initMap();
         setContentView(map);
+        
+        LocationOverlay mlo = new LocationOverlay(this, map, R.drawable.shuttle_marker);
+        mlo.enableMyLocation();
+        mlo.enableCompass();
+        
+        map.getOverlays().add(mlo);
         
         // Parse routes and stops
         List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/displays/netlink.kml");
@@ -207,78 +242,24 @@ public class Tracker extends MapActivity {
     }
     
     private ArrayList<VehicleJson> parseShuttleJson(InputStream is) {
-    	VehicleJson vehicle = new VehicleJson();
-    	ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
-    	JsonFactory jf = new JsonFactory();
-    	JsonParser jp;
-    	JsonToken currToken;
-    	String namefield;
-    	
+    	ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+    	VehicleArray vehicles = null;
+	
 		try {
-			Log.d("Tracker", "parsing json");
-			jp = jf.createJsonParser(is);
-			jp.nextToken(); // Go to start of array
-			
-			while ((currToken = jp.nextToken()) != JsonToken.END_ARRAY) {
-				namefield = jp.getCurrentName();
-				if (currToken == JsonToken.START_OBJECT) {
-					vehicle = new VehicleJson();
-				} else if (currToken == JsonToken.END_OBJECT) {
-					vehicles.add(vehicle);
-				} else if (namefield.equals("vehicle")) {
-					while (jp.nextToken() != JsonToken.END_OBJECT) {
-						namefield = jp.getCurrentName();
-						if (namefield.equals("id")) {
-							jp.nextToken();
-							vehicle.setId(Integer.parseInt(jp.getText()));
-						} else if (namefield.equals("name")) {
-							jp.nextToken();
-							vehicle.setName(jp.getText());
-						} else if (namefield.equals("latest_position")) {
-							while ((currToken = jp.nextToken()) != JsonToken.END_OBJECT) {
-								namefield = jp.getCurrentName();
-								
-								if (currToken != JsonToken.START_OBJECT) jp.nextToken(); 
-								
-								if (namefield.equals("heading")) {
-									vehicle.setHeading(Integer.parseInt(jp.getText()));
-								} else if (namefield.equals("latitude")) {
-									vehicle.setLatitude(Double.parseDouble(jp.getText()));
-								} else if (namefield.equals("longitude")) {
-									vehicle.setLongitude(Double.parseDouble(jp.getText()));
-								} else if (namefield.equals("speed")) {
-									vehicle.setSpeed(Integer.parseInt(jp.getText()));
-								} else if (namefield.equals("timestamp")) {
-									vehicle.setTimestamp(jp.getText());
-								} else if (namefield.equals("public_status_msg")) {
-									vehicle.setPublic_status_msg(jp.getText());
-								} else if (namefield.equals("cardinal_point")) {
-									vehicle.setCardinal_point(jp.getText());
-								} else if (namefield.equals("icon")) {
-									while (jp.nextToken() != JsonToken.END_OBJECT) {
-										namefield = jp.getCurrentName();
-										jp.nextToken();
-										if (namefield.equals("id")) {
-											vehicle.setIconId(Integer.parseInt(jp.getText()));
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
+			// ObjectMapper doesn't like the stream, but it works if converted into a string first
+			String json = convertStreamToString(is);
+			vehicles = mapper.readValue(json, VehicleArray.class);
 		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
-    	
-    	
-		
+   
     	return vehicles;
     }
 
@@ -294,7 +275,7 @@ public class Tracker extends MapActivity {
 			while (true) {
 				updateShuttles();
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(2500);
 					while (threadLock) {
 						Thread.sleep(100);
 					}
@@ -313,16 +294,17 @@ public class Tracker extends MapActivity {
 			URL shuttlesJson;
 			shuttlesJson = new URL("http://shuttles.rpi.edu/vehicles/current.js");
 			URLConnection shuttleJsonConnection = shuttlesJson.openConnection();
-			
+
 			ArrayList<VehicleJson> vehicles = parseShuttleJson(shuttleJsonConnection.getInputStream());
-			shuttlesOverlay.removeAllOverlays();
+			if (vehicles != null) {
+				shuttlesOverlay.removeAllOverlays();
 	        
-	        for (VehicleJson v : vehicles) {
-	    		shuttlesOverlay.addOverlay(v.toOverlayItem());
-	        }
-	        
-	                
-	        runOnUiThread(invalidateMap);
+	        	for (VehicleJson v : vehicles) {
+	        		shuttlesOverlay.addOverlay(v.toOverlayItem());
+	        	}
+	        	                
+	        	runOnUiThread(invalidateMap);
+			}
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -335,4 +317,32 @@ public class Tracker extends MapActivity {
         
         threadLock = false;
 	}
+	
+	  public String convertStreamToString(InputStream is) throws IOException
+	  {
+		  /*
+		   * To convert the InputStream to String we use the
+		   * Reader.read(char[] buffer) method. We iterate until the
+		   * Reader return -1 which means there's no more data to
+		   * read. We use the StringWriter class to produce the string.
+		   */
+		  if (is != null) {
+		      Writer writer = new StringWriter();
+		
+		      char[] buffer = new char[1024];
+		      try {
+		          Reader reader = new BufferedReader(
+		                  new InputStreamReader(is, "UTF-8"), 4000);
+		          int n;
+		          while ((n = reader.read(buffer)) != -1) {
+		              writer.write(buffer, 0, n);
+		          }
+		      } finally {
+		          is.close();
+		      }
+		      return writer.toString();
+		  } else {        
+		      return "";
+		  }
+	  }
 }
