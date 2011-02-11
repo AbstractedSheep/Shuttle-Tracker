@@ -18,6 +18,8 @@
     NSMutableArray *_routes;
     NSMutableArray *_stops;
     
+    NSMutableArray *_vehicles;
+    
     KMLStyle *currentStyle;
     KMLPlacemark *currentPlacemark;
     
@@ -47,7 +49,9 @@
 
 //  Use to hold style objects, I have only seen these used for routes
 @interface KMLStyle : NSObject {
-    NSString *color;
+    NSString *idTag;
+    NSString *colorString;
+    UIColor *color;
     int width;
     
     enum KMLStyles {
@@ -62,7 +66,9 @@
     } parseState;
 }
 
-@property (nonatomic, retain) NSString *color;
+@property (nonatomic, retain) NSString *idTag;
+@property (nonatomic, retain) NSString *colorString;
+@property (nonatomic, readonly) UIColor *color;
 @property (nonatomic) int width;
 @property (nonatomic) enum KMLStyles styleType;
 @property (nonatomic) enum KMLStyleParseState parseState;
@@ -77,6 +83,8 @@
 	NSString *idTag;
 	NSString *description;
     NSString *styleUrl;
+    
+    KMLStyle *style;
     
     enum PlacemarkType {
         routeType,
@@ -99,6 +107,7 @@
 @property (nonatomic, retain) NSString *idTag;
 @property (nonatomic, retain) NSString *description;
 @property (nonatomic, retain) NSString *styleUrl;
+@property (nonatomic, retain) KMLStyle *style;
 @property (nonatomic) enum PlacemarkType placemarkType;
 @property (nonatomic) enum KMLPlacemarkParseState parseState;
 

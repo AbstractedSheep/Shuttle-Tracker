@@ -17,7 +17,8 @@ public final class R {
         public static final int balloon_overlay_focused=0x7f020003;
         public static final int balloon_overlay_unfocused=0x7f020004;
         public static final int icon=0x7f020005;
-        public static final int stop_marker=0x7f020006;
+        public static final int shuttle_marker=0x7f020006;
+        public static final int stop_marker=0x7f020007;
     }
     public static final class id {
         public static final int balloon_inner_layout=0x7f050003;
@@ -33,7 +34,7 @@ public final class R {
         public static final int balloon_overlay=0x7f030001;
     }
     public static final class string {
-        public static final int app_name=0x7f040000;
-        public static final int hello=0x7f040001;
+        public static final int app_name=0x7f040001;
+        public static final int hello=0x7f040000;
     }
 }

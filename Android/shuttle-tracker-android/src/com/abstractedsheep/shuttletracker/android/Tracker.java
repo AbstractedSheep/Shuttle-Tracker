@@ -6,12 +6,23 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.abstractedsheep.kml.Placemark;
 import com.abstractedsheep.kml.Style;
+import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -25,12 +36,23 @@ import com.ximpleware.ParseException;
 import com.ximpleware.VTDGen;
 import com.ximpleware.VTDNav;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.animation.BounceInterpolator;
 
 public class Tracker extends MapActivity {
-	public static String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	public static String MAPS_API_KEY = "01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og";//"01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 	private MapView map;
+	private UpdateShuttlesTask updateTask;
+	public static boolean threadLock = false;
+	private StopsItemizedOverlay shuttlesOverlay;
+	
+	private Runnable invalidateMap = new Runnable() {
+		public void run() {
+			map.invalidate();
+		}
+	};
 	
     /** Called when the activity is first created. */
     @Override
@@ -40,6 +62,7 @@ public class Tracker extends MapActivity {
         initMap();
         setContentView(map);
         
+        // Parse routes and stops
         List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/displays/netlink.kml");
         StopsItemizedOverlay stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map);
         PathOverlay routesOverlay;
@@ -57,6 +80,12 @@ public class Tracker extends MapActivity {
         }
         
         map.getOverlays().add(stopsOverlay);
+        
+        shuttlesOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_marker), map);
+        map.getOverlays().add(shuttlesOverlay);
+        
+        updateTask = new UpdateShuttlesTask();
+        updateTask.execute((Void[])null);
     }
     
     /**
@@ -111,22 +140,23 @@ public class Tracker extends MapActivity {
     		// Quick and dirty parsing code, only parses LineStyles, LineStrings, and Points
     		if (vn.matchElement("Folder")) {
     			// Style parsing
-    			if (vn.toElement(VTDNav.FC, "Style"))
-    			do {
-    				id = vn.toString(vn.getAttrVal("id"));
-    				tempStyle = new Style();
-    				if (vn.toElement(VTDNav.FC, "LineStyle")) {
-    					if (vn.toElement(VTDNav.FC)) {
-    						do {
-    							tempStyle.setAttribute(vn.toString(vn.getCurrentIndex()), vn.toString(vn.getText()));
-    						} while (vn.toElement(VTDNav.NS));
-    						vn.toElement(VTDNav.P);
-    					}
-    					vn.toElement(VTDNav.P);
-    				}
-    				styles.put(id, tempStyle);
-    			} while (vn.toElement(VTDNav.NS, "Style"));
-    			vn.toElement(VTDNav.P);
+    			if (vn.toElement(VTDNav.FC, "Style")) {
+	    			do {
+	    				id = vn.toString(vn.getAttrVal("id"));
+	    				tempStyle = new Style();
+	    				if (vn.toElement(VTDNav.FC, "LineStyle")) {
+	    					if (vn.toElement(VTDNav.FC)) {
+	    						do {
+	    							tempStyle.setAttribute(vn.toString(vn.getCurrentIndex()), vn.toString(vn.getText()));
+	    						} while (vn.toElement(VTDNav.NS));
+	    						vn.toElement(VTDNav.P);
+	    					}
+	    					vn.toElement(VTDNav.P);
+	    				}
+	    				styles.put(id, tempStyle);
+	    			} while (vn.toElement(VTDNav.NS, "Style"));
+	    			vn.toElement(VTDNav.P);
+    			}
     			
     			// Placemark parsing
     			if (vn.toElement(VTDNav.FC, "Placemark")) {
@@ -175,10 +205,134 @@ public class Tracker extends MapActivity {
 		
     	return placemarks;
     }
+    
+    private ArrayList<VehicleJson> parseShuttleJson(InputStream is) {
+    	VehicleJson vehicle = new VehicleJson();
+    	ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
+    	JsonFactory jf = new JsonFactory();
+    	JsonParser jp;
+    	JsonToken currToken;
+    	String namefield;
+    	
+		try {
+			Log.d("Tracker", "parsing json");
+			jp = jf.createJsonParser(is);
+			jp.nextToken(); // Go to start of array
+			
+			while ((currToken = jp.nextToken()) != JsonToken.END_ARRAY) {
+				namefield = jp.getCurrentName();
+				if (currToken == JsonToken.START_OBJECT) {
+					vehicle = new VehicleJson();
+				} else if (currToken == JsonToken.END_OBJECT) {
+					vehicles.add(vehicle);
+				} else if (namefield.equals("vehicle")) {
+					while (jp.nextToken() != JsonToken.END_OBJECT) {
+						namefield = jp.getCurrentName();
+						if (namefield.equals("id")) {
+							jp.nextToken();
+							vehicle.setId(Integer.parseInt(jp.getText()));
+						} else if (namefield.equals("name")) {
+							jp.nextToken();
+							vehicle.setName(jp.getText());
+						} else if (namefield.equals("latest_position")) {
+							while ((currToken = jp.nextToken()) != JsonToken.END_OBJECT) {
+								namefield = jp.getCurrentName();
+								
+								if (currToken != JsonToken.START_OBJECT) jp.nextToken(); 
+								
+								if (namefield.equals("heading")) {
+									vehicle.setHeading(Integer.parseInt(jp.getText()));
+								} else if (namefield.equals("latitude")) {
+									vehicle.setLatitude(Double.parseDouble(jp.getText()));
+								} else if (namefield.equals("longitude")) {
+									vehicle.setLongitude(Double.parseDouble(jp.getText()));
+								} else if (namefield.equals("speed")) {
+									vehicle.setSpeed(Integer.parseInt(jp.getText()));
+								} else if (namefield.equals("timestamp")) {
+									vehicle.setTimestamp(jp.getText());
+								} else if (namefield.equals("public_status_msg")) {
+									vehicle.setPublic_status_msg(jp.getText());
+								} else if (namefield.equals("cardinal_point")) {
+									vehicle.setCardinal_point(jp.getText());
+								} else if (namefield.equals("icon")) {
+									while (jp.nextToken() != JsonToken.END_OBJECT) {
+										namefield = jp.getCurrentName();
+										jp.nextToken();
+										if (namefield.equals("id")) {
+											vehicle.setIconId(Integer.parseInt(jp.getText()));
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	
+    	
+		
+    	return vehicles;
+    }
 
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	private class UpdateShuttlesTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			while (true) {
+				updateShuttles();
+				try {
+					Thread.sleep(1000);
+					while (threadLock) {
+						Thread.sleep(100);
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+	}
+	
+	private void updateShuttles() {
+		threadLock = true;
+		
+		try {
+			URL shuttlesJson;
+			shuttlesJson = new URL("http://shuttles.rpi.edu/vehicles/current.js");
+			URLConnection shuttleJsonConnection = shuttlesJson.openConnection();
+			
+			ArrayList<VehicleJson> vehicles = parseShuttleJson(shuttleJsonConnection.getInputStream());
+			shuttlesOverlay.removeAllOverlays();
+	        
+	        for (VehicleJson v : vehicles) {
+	    		shuttlesOverlay.addOverlay(v.toOverlayItem());
+	        }
+	        
+	                
+	        runOnUiThread(invalidateMap);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+        
+        
+        threadLock = false;
 	}
 }
