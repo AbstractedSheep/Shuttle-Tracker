@@ -44,6 +44,7 @@
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     
     MapViewController *mapViewController = [[MapViewController alloc] init];
+    mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:nil tag:0];
     
     tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, nil];
     [self.view addSubview:tabBarController.view];
