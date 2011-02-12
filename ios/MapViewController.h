@@ -10,12 +10,15 @@
 #import <MapKit/MapKit.h>
 
 
-@class KMLParser;
+@class KMLParser, JSONParser;
 
 @interface MapViewController : UIViewController <MKMapViewDelegate> {
 	MKMapView *_mapView;
     KMLParser *routeKmlParser;
     KMLParser *vehiclesKmlParser;
+    JSONParser *vehiclesJSONParser;
+    
+    NSURL *shuttleJSONUrl;
     
     NSArray *routes;
     NSArray *stops;

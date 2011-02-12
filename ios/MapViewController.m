@@ -8,15 +8,18 @@
 
 #import "MapViewController.h"
 #import "KMLParser.h"
+#import "JSONParser.h"
 
 
 @interface MapViewController()
 - (void)routeKmlLoaded;
 - (void)updateVehicleData;
+- (void)vehicleJSONRefresh;
 - (void)vehicleKmlRefresh;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
-- (void)addVehicle:(KMLVehicle *)vehicle;
+- (void)addKmlVehicle:(KMLVehicle *)vehicle;
+- (void)addJsonVehicle:(JSONVehicle *)vehicle;
 
 @end
 
@@ -66,6 +69,11 @@
     _mapView.region = region;
     
     vehicleUpdateTimer = nil;
+    
+    shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
+    vehiclesJSONParser = [[JSONParser alloc] initWithUrl:shuttleJSONUrl];
+    
+    vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
 }
 
 - (void)routeKmlLoaded {
@@ -87,23 +95,51 @@
         [self performSelectorOnMainThread:@selector(addStop:) withObject:stop waitUntilDone:YES];
     }
     
-    if (routeKmlParser.vehiclesUrl) {
-        NSURL *urlFromParser = routeKmlParser.vehiclesUrl;
-        vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:urlFromParser];
-        
-        vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
-        
-    }
+//    if (routeKmlParser.vehiclesUrl) {
+//        NSURL *urlFromParser = routeKmlParser.vehiclesUrl;
+//        vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:urlFromParser];
+//        
+//        vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
+//        
+//    }
     
 }
 
 - (void)updateVehicleData {
     
+//    dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
+//    dispatch_async(loadVehicleKmlQueue, ^{
+//        [vehiclesKmlParser parse];
+//        [self performSelectorOnMainThread:@selector(vehicleKmlRefresh) withObject:nil waitUntilDone:YES];
+//    });
+
     dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
     dispatch_async(loadVehicleKmlQueue, ^{
-        [vehiclesKmlParser parse];
-        [self performSelectorOnMainThread:@selector(vehicleKmlRefresh) withObject:nil waitUntilDone:YES];
+        [vehiclesJSONParser parse];
+        [self performSelectorOnMainThread:@selector(vehicleJSONRefresh) withObject:nil waitUntilDone:YES];
     });
+    
+}
+
+- (void)vehicleJSONRefresh {
+    BOOL alreadyAdded = NO;
+    
+    for (JSONVehicle *newVehicle in vehiclesJSONParser.vehicles) {
+        for (JSONVehicle *existingVehicle in vehicles) {
+            if ([existingVehicle.name isEqualToString:newVehicle.name]) {
+                [UIView animateWithDuration:0.5 animations:^{
+                    [existingVehicle setCoordinate:newVehicle.coordinate];
+                }];
+                
+                alreadyAdded = YES;
+            }
+        }
+        
+        if (!alreadyAdded) {
+            [vehicles addObject:newVehicle];
+            [self addJsonVehicle:newVehicle];
+        }
+    }
 }
 
 - (void)vehicleKmlRefresh {
@@ -111,7 +147,7 @@
     
     for (KMLVehicle *newVehicle in vehiclesKmlParser.vehicles) {
         for (KMLVehicle *existingVehicle in vehicles) {
-            if ([existingVehicle.idTag isEqualToString:newVehicle.idTag]) {
+            if ([existingVehicle.name isEqualToString:newVehicle.name]) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [existingVehicle setCoordinate:newVehicle.coordinate];
                     [existingVehicle setDescription:newVehicle.description];
@@ -123,7 +159,7 @@
         
         if (!alreadyAdded) {
             [vehicles addObject:newVehicle];
-            [self addVehicle:newVehicle];
+            [self addKmlVehicle:newVehicle];
         }
         
     }
@@ -169,7 +205,11 @@
     
 }
 
-- (void)addVehicle:(KMLVehicle *)vehicle {
+- (void)addKmlVehicle:(KMLVehicle *)vehicle {
+    [_mapView addAnnotation:vehicle];
+}
+
+- (void)addJsonVehicle:(JSONVehicle *)vehicle {
     [_mapView addAnnotation:vehicle];
 }
 
@@ -254,6 +294,17 @@
         vehicleAnnotationView.canShowCallout = YES;
         
         [(KMLVehicle *)annotation setAnnotationView:vehicleAnnotationView];
+    } else if ([annotation isKindOfClass:[JSONVehicle class]]) {
+        if ([(JSONVehicle *)annotation annotationView]) {
+            return [(KMLVehicle *)annotation annotationView];
+        }
+        
+        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
+        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_image.png"];
+        vehicleAnnotationView.image = shuttleImage;
+        vehicleAnnotationView.canShowCallout = YES;
+        
+        [(JSONVehicle *)annotation setAnnotationView:vehicleAnnotationView];
     }
     
     return nil;
