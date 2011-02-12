@@ -7,7 +7,7 @@
 //
 
 #import "AppDelegate_iPhone.h"
-#import "MapViewController.h"
+#import "MainViewController_iPhone.h"
 
 @implementation AppDelegate_iPhone
 
@@ -20,8 +20,12 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
     // Override point for customization after application launch.
-    MapViewController *mapVC = [[MapViewController alloc] init];
-	[self.window addSubview:mapVC.view];
+//    MapViewController *mapVC = [[MapViewController alloc] init];
+//	[self.window addSubview:mapVC.view];
+    
+    MainViewController_iPhone *mainViewController = [[MainViewController_iPhone alloc] init];
+    [self.window addSubview:mainViewController.view];
+    
     [self.window makeKeyAndVisible];
     
     return YES;
