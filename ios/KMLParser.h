@@ -35,7 +35,8 @@
     } state;
     
 @private
-    NSXMLParser *parser;
+    NSURL *_parseUrl;
+    NSXMLParser *_parser;
 }
 
 //  Do not return styles or placemarks by themselves
@@ -137,9 +138,12 @@
 @interface KMLPoint : KMLPlacemark <MKAnnotation>
 {
 	CLLocationCoordinate2D coordinate;
+    MKAnnotationView *annotationView;
 }
 
 @property (nonatomic) CLLocationCoordinate2D coordinate;
+@property (nonatomic, retain) MKAnnotationView *annotationView;
+
 
 - (id)initWithLocation:(CLLocationCoordinate2D)coord;
 

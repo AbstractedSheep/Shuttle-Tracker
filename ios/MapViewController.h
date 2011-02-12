@@ -19,10 +19,13 @@
     
     NSArray *routes;
     NSArray *stops;
-    NSArray *vehicles;
+    
+    NSMutableArray *vehicles;
     
     NSMutableArray *routeLines;
     NSMutableArray *routeLineViews;
+    
+    NSTimer *vehicleUpdateTimer;
     
 }
 

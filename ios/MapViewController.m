@@ -12,6 +12,7 @@
 
 @interface MapViewController()
 - (void)routeKmlLoaded;
+- (void)updateVehicleData;
 - (void)vehicleKmlRefresh;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
@@ -47,7 +48,6 @@
 	dispatch_async(loadFirstKmlQueue, ^{		
         routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
         [self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:YES];
-        [routeKmlParser release];
 	});
     
     //  Show the user's location on the map
@@ -61,6 +61,8 @@
     region.span.longitudeDelta = 0.0132;
     
     _mapView.region = region;
+    
+    vehicleUpdateTimer = nil;
 }
 
 - (void)routeKmlLoaded {
@@ -72,7 +74,7 @@
     stops = [routeKmlParser stops];
     [stops retain];
     
-    vehicles = nil;
+    vehicles = [[NSMutableArray alloc] init];
     
     for (KMLRoute *route in routes) {
         [self performSelectorOnMainThread:@selector(addRoute:) withObject:route waitUntilDone:YES];
@@ -83,31 +85,44 @@
     }
     
     if (routeKmlParser.vehiclesUrl) {
+        NSURL *urlFromParser = routeKmlParser.vehiclesUrl;
+        vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:urlFromParser];
         
-        NSURL *shuttleKmlUrl = [[NSBundle mainBundle] URLForResource:@"current" withExtension:@"kml"];
-        
-        dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
-        dispatch_async(loadVehicleKmlQueue, ^{		
-//            vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlParser.vehiclesUrl];
-            vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:shuttleKmlUrl];
-            [self performSelectorOnMainThread:@selector(vehicleKmlRefresh) withObject:nil waitUntilDone:YES];
-//            [vehiclesKmlParser release];
-        });
+        vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
         
     }
     
 }
 
+- (void)updateVehicleData {
+    
+    dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
+    dispatch_async(loadVehicleKmlQueue, ^{
+        [vehiclesKmlParser parse];
+        [self performSelectorOnMainThread:@selector(vehicleKmlRefresh) withObject:nil waitUntilDone:YES];
+    });
+}
+
 - (void)vehicleKmlRefresh {
-    [vehiclesKmlParser parse];
+    BOOL alreadyAdded = NO;
     
-    vehicles = vehiclesKmlParser.vehicles;
-    
-    for (KMLVehicle *vehicle in vehicles) {
-        [self addVehicle:vehicle];
+    for (KMLVehicle *newVehicle in vehiclesKmlParser.vehicles) {
+        for (KMLVehicle *existingVehicle in vehicles) {
+            if ([existingVehicle.idTag isEqualToString:newVehicle.idTag]) {
+                [UIView animateWithDuration:0.5 animations:^{
+                    [existingVehicle setCoordinate:newVehicle.coordinate];
+                }];
+                
+                alreadyAdded = YES;
+            }
+        }
+        
+        if (!alreadyAdded) {
+            [vehicles addObject:newVehicle];
+            [self addVehicle:newVehicle];
+        }
+        
     }
-    
-    [vehicles release];
 }
 
 - (void)addRoute:(KMLRoute *)route {
@@ -153,13 +168,14 @@
 - (void)addVehicle:(KMLVehicle *)vehicle {
     [_mapView addAnnotation:vehicle];
 }
-/*
+
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations.
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+//    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    return YES;
 }
-*/
+
 
 - (void)didReceiveMemoryWarning {
     // Releases the view if it doesn't have a superview.
@@ -176,6 +192,14 @@
 
 
 - (void)dealloc {
+    if (routeKmlParser) {
+        [routeKmlParser release];
+    }
+    
+    if (vehicleUpdateTimer) {
+        [vehicleUpdateTimer invalidate];
+    }
+    
     [_mapView release];
     [super dealloc];
 }
@@ -206,15 +230,24 @@
         return nil;
     
     if ([annotation isKindOfClass:[KMLStop class]]) {
+        
         MKPinAnnotationView *pinAnnotationView = [[[MKPinAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
         pinAnnotationView.pinColor = MKPinAnnotationColorPurple;
         pinAnnotationView.animatesDrop = NO;
         pinAnnotationView.canShowCallout = YES;
         
+        [(KMLStop *)annotation setAnnotationView:pinAnnotationView];
+        
         return pinAnnotationView;
     } else if ([annotation isKindOfClass:[KMLVehicle class]]) {
+        if ([(KMLVehicle *)annotation annotationView]) {
+            return [(KMLVehicle *)annotation annotationView];
+        }
+        
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        vehicleAnnotationView.image = [UIImage imageWithContentsOfFile:@"shuttle_icon"];
+        vehicleAnnotationView.image = [UIImage imageNamed:@"shuttle_icon.png"];
+        
+        [(KMLVehicle *)annotation setAnnotationView:vehicleAnnotationView];
     }
     
     return nil;

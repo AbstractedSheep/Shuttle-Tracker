@@ -34,11 +34,8 @@
         state.inNetworkLink = NO;
         
         accumulation = [[NSMutableString alloc] init];
-        //  The parser will be the one going through the KML file and extracting tags etc.
-        //  TODO: Change to grab KML from the internet
-        parser = [[NSXMLParser alloc] initWithContentsOfURL:url];
-        //  The parser call delegate functions further down in this file
-        [parser setDelegate:self];
+        
+        _parseUrl = url;
         
 	}
     
@@ -46,8 +43,14 @@
 }
 
 - (void)parse {
+    //  The parser will be the one going through the KML file and extracting tags etc.
+    _parser = [[NSXMLParser alloc] initWithContentsOfURL:_parseUrl];
+    
+    //  The parser call delegate functions further down in this file
+    [_parser setDelegate:self];
+    
     //  Do something with the return value?
-    [parser parse];
+    [_parser parse];
 }
 
 
@@ -98,6 +101,12 @@
     _stops = [[NSMutableArray alloc] init];
     _vehicles = [[NSMutableArray alloc] init];
 }
+
+
+- (void)parserDidEndDocument:(NSXMLParser *)parser {
+    [_parser release];
+}
+
 
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError 
 {
@@ -342,7 +351,7 @@
         state.inNetworkLink = NO;
         
     }
-    else if (state.inNetworkLink && [elementName isEqualToString:@"Link"]) {
+    else if (state.inNetworkLink && [elementName isEqualToString:@"href"]) {
         vehiclesUrl = [NSURL URLWithString:trimmedAccumulation];
         [vehiclesUrl retain];
     }
@@ -415,15 +424,11 @@
         rgbaValue = 0;
     }
     
-//    NSLog(@"%@", [UIColor colorWithRed:((float)((rgbaValue & 0xFF000000) >> 24))/255.0
-//                                 green:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
-//                                  blue:((float)((rgbaValue & 0xFF00) >> 8))/255.0
-//                                 alpha:((float)(rgbaValue & 0xFF))/255.0]);
-    
-    return [UIColor colorWithRed:((float)((rgbaValue & 0xFF000000) >> 24))/255.0
-                           green:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
-                            blue:((float)((rgbaValue & 0xFF00) >> 8))/255.0
-                           alpha:((float)(rgbaValue & 0xFF))/255.0];
+    //  For whatever reason, the color comes in as ABGR
+    return [UIColor colorWithRed:((float)((rgbaValue & 0xFF)))/255.0
+                           green:((float)((rgbaValue & 0xFF00) >> 8))/255.0
+                            blue:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
+                           alpha:((float)((rgbaValue & 0xFF000000) >> 24))/255.0];
 }
 
 @end
@@ -466,6 +471,7 @@
 @implementation KMLPoint
 
 @synthesize coordinate;
+@synthesize annotationView;
 
 
 //  The subtitle for a map pin
