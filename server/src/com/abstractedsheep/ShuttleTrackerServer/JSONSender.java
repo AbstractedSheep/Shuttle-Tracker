@@ -1,5 +1,6 @@
 package com.abstractedsheep.ShuttleTrackerServer;
 
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -23,14 +24,13 @@ public class JSONSender {
 	public static void saveToDatabase(HashSet<Shuttle> shuttleList) {
 		String driver = "com.mysql.jdbc.Driver";
 		Connection connection = null;
+		String[] args = null;
+		//System.out.println((new File("sts.properties").getAbsolutePath()));
 		try {
 			Class.forName(driver).newInstance();
-			String serverName = "128.113.17.3:3306";
-			String dbName = "shuttle_tracker";
-			String url = "jdbc:mysql://" + serverName +  "/" + dbName;
-			String usr = "";
-			String pass = "";
-			connection = DriverManager.getConnection(url, usr, pass);
+			args = getArgumentsFromPropertiesFile(
+					"sts.properties");
+			connection = DriverManager.getConnection(args[0], args[1], args[2]);
 			System.out.println("Connected to database");
 			Statement stmt = connection.createStatement();
 			for(Shuttle shuttle : shuttleList) {
@@ -41,16 +41,7 @@ public class JSONSender {
 					int updateCount = stmt.executeUpdate(sql);
 				}
 			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -59,6 +50,18 @@ public class JSONSender {
 					connection.close();
 			} catch(SQLException e) {}
 		}
+	}
+	private static String[] getArgumentsFromPropertiesFile(String path) throws IOException {
+		String[] values = new String[3];
+		BufferedReader buf = new BufferedReader(new FileReader(new File(path)));
+		String line = "";
+		line = buf.readLine();
+		for(int i = 0; (line != null); i++) {
+			values[i] = line;
+			line = buf.readLine();
+		}
+		buf.close();
+		return values;
 	}
 	private static String getTimeStamp(Integer integer) {
 		String str = new Timestamp(System.currentTimeMillis() + integer).toString();
