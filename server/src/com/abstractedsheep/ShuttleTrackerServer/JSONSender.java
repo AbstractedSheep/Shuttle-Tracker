@@ -28,7 +28,7 @@ public class JSONSender {
 		String driver = "com.mysql.jdbc.Driver";
 		Connection connection = null;
 		String[] args = null;
-		// System.out.println((new File("sts.properties").getAbsolutePath()));
+		
 		try {
 			Class.forName(driver).newInstance();
 			args = getArgumentsFromPropertiesFile("sts.properties");
@@ -37,15 +37,18 @@ public class JSONSender {
 			Statement stmt = connection.createStatement();
 			for (Shuttle shuttle : shuttleList) {
 				for (String stop : shuttle.getStopETA().keySet()) {
+					//update table in DB
 					String sql = "UPDATE shuttle_eta SET eta = '"
 							+ getTimeStamp(shuttle.getStopETA().get(stop))
 							+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
 							+ " AND stop_id = '"
 							+ shuttle.getStops().get(stop).getShortName() + "'";
-					System.out.println(sql);
+					System.out.println(shuttle.getName() + " " + sql + " " + shuttle.getStops().get(stop).getRouteMap().toString());
 					int updateCount = stmt.executeUpdate(sql);
-
+					
+					//if this value does not exist, then insert it into the DB
 					if (updateCount == 0) {
+						//FIXME this string is throwing a SQLException because the insert string is too long.
 						String insertHeader = "INSERT INTO shuttle_eta (shuttle_id, stop_id, eta) ";
 						String interValues = "VALUES ("
 								+ shuttle.getShuttleId() + ",'"
@@ -53,6 +56,7 @@ public class JSONSender {
 								+ "','"
 								+ getTimeStamp(shuttle.getStopETA().get(stop))
 								+ "')";
+						System.out.println(insertHeader + interValues);
 						stmt.executeUpdate(insertHeader + interValues);
 					}
 				}
@@ -64,8 +68,8 @@ public class JSONSender {
 			try {
 				if (connection != null)
 					connection.close();
-			} catch (SQLException e) {
-			}
+				System.out.println("Connection to database has been closed.");
+			} catch (SQLException e) { }
 		}
 	}
 
