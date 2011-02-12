@@ -1,38 +1,34 @@
 package com.abstractedsheep.extractor;
 
 import java.util.HashMap;
-/**
- * sample output
-latitude 42.7302712352
-longitude -73.6765441399
-name Student Union
-short_name union
-id 1
-name West Route
-id 2
-name East Campus
 
+/**
+ * sample output latitude 42.7302712352 longitude -73.6765441399 name Student
+ * Union short_name union id 1 name West Route id 2 name East Campus
+ * 
  * @author jonnau
- *
+ * 
  */
 public class Stop {
 	private double lon, lat;
 	private String name, shortName;
 	/**
-	 * The routes that this stop is on is stored within another array in the json and the route contains
-	 * an integer id number as well as a name (e.g. West Route)
+	 * The routes that this stop is on is stored within another array in the
+	 * json and the route contains an integer id number as well as a name (e.g.
+	 * West Route)
 	 */
 	private HashMap<Integer, String> routeMap;
-	
-	public Stop(){
+
+	public Stop() {
 		this.lon = 42.7302712352;
 		this.lat = -73.6765441399;
 		this.name = "Union";
 		this.shortName = "union";
 		this.routeMap = new HashMap<Integer, String>();
 	}
-	
-	public Stop(double longitude, double latitude, String fullName, String shortN, HashMap<Integer, String> map){
+
+	public Stop(double longitude, double latitude, String fullName,
+			String shortN, HashMap<Integer, String> map) {
 		this.lon = longitude;
 		this.lat = latitude;
 		this.name = fullName;
@@ -48,7 +44,8 @@ public class Stop {
 	}
 
 	/**
-	 * @param lon the lon to set
+	 * @param lon
+	 *            the lon to set
 	 */
 	public void setLon(double lon) {
 		this.lon = lon;
@@ -60,13 +57,14 @@ public class Stop {
 	public double getLat() {
 		return lat;
 	}
-	
+
 	public Shuttle.Point getLocation() {
 		return new Shuttle.Point(lat, lon);
 	}
 
 	/**
-	 * @param lat the lat to set
+	 * @param lat
+	 *            the lat to set
 	 */
 	public void setLat(double lat) {
 		this.lat = lat;
@@ -80,7 +78,8 @@ public class Stop {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -94,7 +93,8 @@ public class Stop {
 	}
 
 	/**
-	 * @param shortName the shortName to set
+	 * @param shortName
+	 *            the shortName to set
 	 */
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
@@ -108,7 +108,8 @@ public class Stop {
 	}
 
 	/**
-	 * @param routeMap the routeMap to set
+	 * @param routeMap
+	 *            the routeMap to set
 	 */
 	public void setRouteMap(HashMap<Integer, String> routeMap) {
 		this.routeMap = routeMap;
