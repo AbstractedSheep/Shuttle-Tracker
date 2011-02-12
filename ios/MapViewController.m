@@ -26,9 +26,11 @@
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
-	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    CGRect rect = CGRectMake(0.0f, 0.0f, 320.0f, 411.0f);
     
-	_mapView = [[MKMapView alloc] initWithFrame:self.view.frame];
+	self.view = [[UIView alloc] initWithFrame:rect];
+    
+	_mapView = [[MKMapView alloc] initWithFrame:rect];
     _mapView.delegate = self;
     
 	[self.view addSubview:_mapView];
@@ -41,9 +43,10 @@
     routeLines = [[NSMutableArray alloc] init];
     routeLineViews = [[NSMutableArray alloc] init];
     
+    //  Use the local copy of the routes/stops KML file
     NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
     
-    //  Load the first KML file asynchronously
+    //  Load the routes/stops KML file asynchronously
     dispatch_queue_t loadFirstKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
 	dispatch_async(loadFirstKmlQueue, ^{		
         routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
@@ -248,6 +251,7 @@
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
         UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_image.png"];
         vehicleAnnotationView.image = shuttleImage;
+        vehicleAnnotationView.canShowCallout = YES;
         
         [(KMLVehicle *)annotation setAnnotationView:vehicleAnnotationView];
     }
