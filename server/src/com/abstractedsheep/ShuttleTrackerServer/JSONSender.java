@@ -34,10 +34,19 @@ public class JSONSender {
 			Statement stmt = connection.createStatement();
 			for(Shuttle shuttle : shuttleList) {
 				for(String stop : shuttle.getStopETA().keySet()){
-					String sql = "UPDATE shuttle_eta SET eta = " + getTimeStamp(shuttle.getStopETA().get(stop)) +
-								 "WHERE shuttle_id = " + shuttle.getShuttleId() + "AND stop_id = " +
-								 shuttle.getStops().get(stop).getShortName();
+					String sql = "UPDATE shuttle_eta SET eta = '" + getTimeStamp(shuttle.getStopETA().get(stop)) +
+								 "' WHERE shuttle_id = " + shuttle.getShuttleId() + " AND stop_id = '" +
+								 shuttle.getStops().get(stop).getShortName() + "'";
+					System.out.println(sql);
 					int updateCount = stmt.executeUpdate(sql);
+					
+					if(updateCount == 0) {
+						String insertHeader = "INSERT INTO shuttle_eta (shuttle_id, stop_id, eta) ";
+						String interValues = "VALUES (" + shuttle.getShuttleId() + ",'"
+									+ shuttle.getStops().get(stop).getShortName() + "','" +
+									getTimeStamp(shuttle.getStopETA().get(stop)) + "')";
+						stmt.executeUpdate(insertHeader + interValues);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -52,7 +61,9 @@ public class JSONSender {
 	}
 	private static String[] getArgumentsFromPropertiesFile(String path) throws IOException {
 		String[] values = new String[3];
-		BufferedReader buf = new BufferedReader(new FileReader(new File(path)));
+		File f = new File(path);
+		System.out.println(f.getAbsolutePath());
+		BufferedReader buf = new BufferedReader(new FileReader(f));
 		String line = "";
 		line = buf.readLine();
 		for(int i = 0; (line != null); i++) {
