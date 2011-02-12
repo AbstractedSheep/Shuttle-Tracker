@@ -13,16 +13,11 @@ import com.abstractedsheep.extractor.*;
  */
 public class ShuttleTrackerServer {
 	private JSONExtractor jsExtractor;
-	private ArrayList<Stop> stopList;
 	private HashSet<Shuttle> shuttleList;
-	private ArrayList<Route> routeList;
 
 	public ShuttleTrackerServer() {
 		this.jsExtractor = new JSONExtractor();
-		this.stopList = new ArrayList<Stop>();
 		this.shuttleList = new HashSet<Shuttle>();
-		this.routeList = new ArrayList<Route>();
-		// put values in the stop and route lists
 		getStaticData();
 		// read the shuttle data and calculate the ETAs in the background
 		startThread();
@@ -83,8 +78,6 @@ public class ShuttleTrackerServer {
 	private void getStaticData() {
 		try {
 			jsExtractor.readRouteData();
-			this.stopList = jsExtractor.getStopList();
-			this.routeList = jsExtractor.getRouteList();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

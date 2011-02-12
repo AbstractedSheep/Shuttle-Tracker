@@ -2,9 +2,6 @@ package com.abstractedsheep.extractor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-
-import com.abstractedsheep.extractor.Shuttle.Point;
 
 public class Shuttle {
 	private int shuttleId;
@@ -13,8 +10,7 @@ public class Shuttle {
 	private String cardinalPoint;
 	private String shuttleName;
 	private int speed;
-	private static Point currentLocation;
-	private boolean isWestShuttle;
+	private Point currentLocation;
 	private RouteFinder finder;
 	private static int routeID;
 
@@ -33,7 +29,6 @@ public class Shuttle {
 		this.cardinalPoint = "North";
 		this.speed = 0;
 		this.currentLocation = new Point();
-		this.isWestShuttle = true;
 		finder = new RouteFinder(rt);
 		routeID = 1;
 	}
@@ -51,7 +46,6 @@ public class Shuttle {
 		this.cardinalPoint = "North";
 		this.speed = 0;
 		this.currentLocation = new Point();
-		this.isWestShuttle = true;
 		finder = new RouteFinder(rt);
 		routeID = 1;
 	}
@@ -89,7 +83,7 @@ public class Shuttle {
 		this.speed = (speed > 0) ? newSpd : 25;
 	}
 
-	public static Point getCurrentLocation() {
+	public  Point getCurrentLocation() {
 		return currentLocation;
 	}
 
@@ -122,10 +116,6 @@ public class Shuttle {
 		return (routeID == 1) ? "East Campus" : "West Route";
 	}
 
-	public void setRoute(String routename) {
-		isWestShuttle = (routename.equals("West Route")) ? true : false;
-	}
-
 	// These next two methods are not required by Jackson
 	// They are here to add data to stops
 	public void addStop(String stopName, Stop p) {
@@ -150,7 +140,6 @@ public class Shuttle {
 		// it might be better to save the times in a HashMap as it may make
 		// writing to a file easier.
 		Point p = null;
-		;
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
@@ -172,7 +161,7 @@ public class Shuttle {
 	 *            - stop's location
 	 * @return distance to stop
 	 */
-	private static double calculateDistance(Point p) {
+	private  double calculateDistance(Point p) {
 		return calculateDistance(p, getCurrentLocation());
 	}
 
@@ -253,7 +242,7 @@ public class Shuttle {
 	 * 
 	 */
 	@SuppressWarnings("unused")
-	private static class RouteFinder {
+	private class RouteFinder {
 		ArrayList<Route> routeList;
 		ArrayList<Point> locList;
 		// this value is allowable error in degrees (~5-10 feet)
