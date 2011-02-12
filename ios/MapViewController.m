@@ -109,14 +109,16 @@
     
 //    dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
 //    dispatch_async(loadVehicleKmlQueue, ^{
-//        [vehiclesKmlParser parse];
-//        [self performSelectorOnMainThread:@selector(vehicleKmlRefresh) withObject:nil waitUntilDone:YES];
+//        if ([vehiclesKmlParser parse]) {
+//            [self performSelectorOnMainThread:@selector(vehicleKmlRefresh) withObject:nil waitUntilDone:YES];
+//        }
 //    });
 
     dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
     dispatch_async(loadVehicleKmlQueue, ^{
-        [vehiclesJSONParser parse];
-        [self performSelectorOnMainThread:@selector(vehicleJSONRefresh) withObject:nil waitUntilDone:YES];
+        if ([vehiclesJSONParser parse]) {
+            [self performSelectorOnMainThread:@selector(vehicleJSONRefresh) withObject:nil waitUntilDone:YES];
+        }
     });
     
 }

@@ -34,7 +34,7 @@
 }
 
 
-- (void)parse {
+- (BOOL)parse {
     NSError *theError = nil;
     NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
     
@@ -44,6 +44,8 @@
     
     if (theError) {
         NSLog(@"Error retrieving JSON data");
+        
+        return NO;
     } else {
         if (jsonString) {
             jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
@@ -64,8 +66,11 @@
             
             [vehicles addObject:vehicle];
         }
+        
+        return YES;
     }
     
+    return NO;
 }
 
 

@@ -21,7 +21,7 @@
 @property (nonatomic, retain) NSMutableArray *vehicles;
 
 - (id)initWithUrl:(NSURL *)url;
-- (void)parse;
+- (BOOL)parse;
 
 
 @end
