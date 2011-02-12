@@ -111,6 +111,7 @@
             if ([existingVehicle.idTag isEqualToString:newVehicle.idTag]) {
                 [UIView animateWithDuration:0.5 animations:^{
                     [existingVehicle setCoordinate:newVehicle.coordinate];
+                    [existingVehicle setDescription:newVehicle.description];
                 }];
                 
                 alreadyAdded = YES;
@@ -245,7 +246,8 @@
         }
         
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        vehicleAnnotationView.image = [UIImage imageNamed:@"shuttle_icon.png"];
+        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_image.png"];
+        vehicleAnnotationView.image = shuttleImage;
         
         [(KMLVehicle *)annotation setAnnotationView:vehicleAnnotationView];
     }

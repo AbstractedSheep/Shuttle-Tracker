@@ -216,7 +216,7 @@
     
     if (trimmedAccumulation) {
         [trimmedAccumulation retain];
-        NSLog(@"Trimmed: %@", trimmedAccumulation);
+//        NSLog(@"Trimmed: %@", trimmedAccumulation);
     } else {
         trimmedAccumulation = @"";
     }
