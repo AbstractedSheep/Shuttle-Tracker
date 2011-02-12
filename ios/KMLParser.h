@@ -20,6 +20,8 @@
     
     NSMutableArray *_vehicles;
     
+    NSURL *vehiclesUrl;
+    
     KMLStyle *currentStyle;
     KMLPlacemark *currentPlacemark;
     
@@ -29,17 +31,21 @@
     struct {
         BOOL inStyle;
         BOOL inPlacemark;
+        BOOL inNetworkLink;
     } state;
     
 @private
-    NSXMLParser *parser;
+    NSURL *_parseUrl;
+    NSXMLParser *_parser;
 }
 
 //  Do not return styles or placemarks by themselves
 //@property (nonatomic, readonly) NSArray *styles;
 //@property (nonatomic, readonly) NSArray *placemarks;
-@property (nonatomic, readonly) NSArray *routes;
-@property (nonatomic, readonly) NSArray *stops;
+@property (nonatomic, copy) NSArray *routes;
+@property (nonatomic, copy) NSArray *stops;
+@property (nonatomic, copy) NSArray *vehicles;
+@property (nonatomic, readonly) NSURL *vehiclesUrl;
 
 - (id)initWithContentsOfUrl:(NSURL *)url;
 - (void)parse;
@@ -129,13 +135,17 @@
 #pragma mark Points
 
 //  Base class for objects which have a single set of coordinates, so just use one set of coordinates
-@interface KMLPoint : KMLPlacemark
+@interface KMLPoint : KMLPlacemark <MKAnnotation>
 {
-	CLLocationCoordinate2D coordinates;
+	CLLocationCoordinate2D coordinate;
+    MKAnnotationView *annotationView;
 }
 
-@property (nonatomic) CLLocationCoordinate2D coordinates;
+@property (nonatomic) CLLocationCoordinate2D coordinate;
+@property (nonatomic, retain) MKAnnotationView *annotationView;
 
+
+- (id)initWithLocation:(CLLocationCoordinate2D)coord;
 
 @end
 
