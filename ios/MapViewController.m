@@ -37,6 +37,8 @@
     _mapView.delegate = self;
     
 	[self.view addSubview:_mapView];
+
+	[UIImage imageNamed:@"shuttle_image.png"];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
