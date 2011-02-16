@@ -1,17 +1,15 @@
 //
-//  MainViewController_iPhone.m
+//  EtaViewController.m
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 2/11/11.
+//  Created by Brendon Justin on 2/16/11.
 //  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
-#import "MainViewController_iPhone.h"
-#import "MapViewController.h"
-#import "../EtaViewController.h"
+#import "EtaViewController.h"
 
 
-@implementation MainViewController_iPhone
+@implementation EtaViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -37,25 +35,12 @@
 
 #pragma mark - View lifecycle
 
-
+/*
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView
 {
-    self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-                 
-    UITabBarController *tabBarController = [[UITabBarController alloc] init];
-    
-    MapViewController *mapViewController = [[MapViewController alloc] init];
-    mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:nil tag:0];
-    
-    EtaViewController *etaViewController = [[EtaViewController alloc] init];
-    etaViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs" image:nil tag:1];
-    
-    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etaViewController, nil];
-    [self.view addSubview:tabBarController.view];
-    
 }
-
+*/
 
 /*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
