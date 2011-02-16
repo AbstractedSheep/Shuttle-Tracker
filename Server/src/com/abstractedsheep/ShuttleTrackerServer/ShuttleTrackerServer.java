@@ -41,7 +41,7 @@ public class ShuttleTrackerServer {
 				System.out
 						.println("Reading Shuttle data and trying to manipulate it.");
 				jsExtractor.readShuttleData();
-				this.shuttleList = jsExtractor.getShuttleList();
+				this.shuttleList = new HashSet<Shuttle>(jsExtractor.getShuttleList());
 
 				if(shuttleList.size() > 0){
 					// do ETA calculations and print to the database

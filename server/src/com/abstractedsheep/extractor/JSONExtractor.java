@@ -227,4 +227,8 @@ public class JSONExtractor {
 		} catch (IOException e) {
 		}
 	}
+
+	public void clearShuttleList() {
+		this.shuttleList.removeAll(shuttleList);
+	}
 }
