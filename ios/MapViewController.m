@@ -97,25 +97,10 @@
         [self performSelectorOnMainThread:@selector(addStop:) withObject:stop waitUntilDone:YES];
     }
     
-//    if (routeKmlParser.vehiclesUrl) {
-//        NSURL *urlFromParser = routeKmlParser.vehiclesUrl;
-//        vehiclesKmlParser = [[KMLParser alloc] initWithContentsOfUrl:urlFromParser];
-//        
-//        vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
-//        
-//    }
-    
 }
 
 - (void)updateVehicleData {
     
-//    dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
-//    dispatch_async(loadVehicleKmlQueue, ^{
-//        if ([vehiclesKmlParser parse]) {
-//            [self performSelectorOnMainThread:@selector(vehicleKmlRefresh) withObject:nil waitUntilDone:YES];
-//        }
-//    });
-
     dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
     dispatch_async(loadVehicleKmlQueue, ^{
         if ([vehiclesJSONParser parse]) {
