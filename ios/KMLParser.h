@@ -110,8 +110,10 @@
 }
 
 @property (nonatomic, retain) NSString *name;
+@property (nonatomic, readonly) NSString *title;
 @property (nonatomic, retain) NSString *idTag;
 @property (nonatomic, retain) NSString *description;
+@property (nonatomic, readonly) NSString *subtitle;
 @property (nonatomic, retain) NSString *styleUrl;
 @property (nonatomic, retain) KMLStyle *style;
 @property (nonatomic) enum PlacemarkType placemarkType;

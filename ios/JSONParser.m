@@ -100,4 +100,13 @@
     return self;
 }
 
+- (NSString *)title {
+	return name;
+}
+
+- (NSString *)subtitle {
+	return description;
+}
+
+
 @end

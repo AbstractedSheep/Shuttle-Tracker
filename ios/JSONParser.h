@@ -39,7 +39,9 @@
 }
 
 @property (nonatomic, retain) NSString *name;
+@property (nonatomic, readonly) NSString *title;
 @property (nonatomic, retain) NSString *description;
+@property (nonatomic, readonly) NSString *subtitle;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, retain) NSDictionary *ETAs;
 @property (nonatomic, retain) MKAnnotationView *annotationView;
