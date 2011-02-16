@@ -27,13 +27,29 @@ public class Style {
 	public int width;
 	
 	
-	public void setAttribute(String name, String value) {
-		if (name.equalsIgnoreCase("color")) {
-			int[] colors = hexStringToByteArray(value);
+	public int getColor() {
+		return color;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
+	}
+	
+	public void setColor(String color) {
+		int[] colors = hexStringToByteArray(color.substring(1));
+		
+		if (colors.length == 4)
 			this.color = Color.argb(colors[0], colors[3], colors[2], colors[1]);
-		} else if (name.equalsIgnoreCase("width")) {
-			this.width = Integer.parseInt(value);
-		}
+		else
+			this.color = Color.rgb(colors[0], colors[1], colors[2]);
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
 	}
 	
 	public static int[] hexStringToByteArray(String s) {

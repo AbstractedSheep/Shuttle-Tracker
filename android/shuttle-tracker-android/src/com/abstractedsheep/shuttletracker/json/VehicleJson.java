@@ -20,9 +20,8 @@
 
 package com.abstractedsheep.shuttletracker.json;
 
-import com.abstractedsheep.shuttletracker.json.VehicleJson.Vehicle.Latest_Position;
+import com.abstractedsheep.shuttletracker.android.DirectionalOverlayItem;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.OverlayItem;
 
 public class VehicleJson {
 	private Vehicle vehicle;
@@ -123,8 +122,8 @@ public class VehicleJson {
 		}
 	}
 	
-	public OverlayItem toOverlayItem() {
-		return new OverlayItem(new GeoPoint((int)(vehicle.latest_position.latitude * 1e6), (int)(vehicle.latest_position.longitude * 1e6)), vehicle.name, "");
+	public DirectionalOverlayItem toOverlayItem() {
+		return new DirectionalOverlayItem(new GeoPoint((int)(vehicle.latest_position.latitude * 1e6), (int)(vehicle.latest_position.longitude * 1e6)), vehicle.latest_position.heading, vehicle.name, "");
 	}
 
 	public Vehicle getVehicle() {

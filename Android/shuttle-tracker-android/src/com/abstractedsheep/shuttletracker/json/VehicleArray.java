@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class VehicleArray extends ArrayList<VehicleJson> {
+	private static final long serialVersionUID = -9188505525348827268L;
 
 	public VehicleArray() {
 	}

@@ -22,10 +22,7 @@ package com.abstractedsheep.shuttletracker.android;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -54,12 +51,15 @@ public class LocationOverlay extends MyLocationOverlay {
 		Drawable d = context.getResources().getDrawable(this.markerResource);
 		Bitmap marker = ((BitmapDrawable) d).getBitmap();
 	
-		//Matrix m = new Matrix();
-		//m.postRotate(getOrientation());
+		float orientation = getOrientation();
 		
-		//marker = Bitmap.createBitmap(marker, 0, 0, marker.getWidth(), marker.getHeight(), m, true);
+		canvas.save();
+		
+		if (orientation != Float.NaN)
+			canvas.rotate(orientation, currLoc.x, currLoc.y);
 		
 		canvas.drawBitmap(marker, currLoc.x - (marker.getWidth() / 2), currLoc.y - (marker.getHeight() / 2), null);
+		canvas.restore();
 	}
 
 }

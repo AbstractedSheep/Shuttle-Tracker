@@ -20,8 +20,6 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,59 +27,39 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.MapperConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.abstractedsheep.kml.Placemark;
 import com.abstractedsheep.kml.Style;
+import com.abstractedsheep.shuttletracker.json.EtaArray;
+import com.abstractedsheep.shuttletracker.json.EtaJson;
+import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
+import com.abstractedsheep.shuttletracker.json.RoutesJson.Route.Coord;
 import com.abstractedsheep.shuttletracker.json.VehicleArray;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.MapView.LayoutParams;
-import com.google.android.maps.OverlayItem;
-import com.ximpleware.EOFException;
-import com.ximpleware.EncodingException;
-import com.ximpleware.EntityException;
-import com.ximpleware.NavException;
-import com.ximpleware.ParseException;
-import com.ximpleware.VTDGen;
-import com.ximpleware.VTDNav;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.animation.BounceInterpolator;
 
 public class Tracker extends MapActivity {
-	public static String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	public static String MAPS_API_KEY = "01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 	private MapView map;
-	private UpdateShuttlesTask updateTask;
-	public static boolean threadLock = false;
-	private StopsItemizedOverlay shuttlesOverlay;
-	
-	private Runnable invalidateMap = new Runnable() {
-		public void run() {
-			map.invalidate();
-		}
-	};
+	private Thread updateThread;
+	public boolean threadLock = false;
+	private DirectionalItemizedOverlay shuttlesOverlay;
+	private LocationOverlay myLocationOverlay;
+	private StopsItemizedOverlay stopsOverlay;
+	private boolean runUpdateShuttles;
+	ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
 	
     /** Called when the activity is first created. */
     @Override
@@ -90,37 +68,8 @@ public class Tracker extends MapActivity {
         
         initMap();
         setContentView(map);
-        
-        LocationOverlay mlo = new LocationOverlay(this, map, R.drawable.shuttle_marker);
-        mlo.enableMyLocation();
-        mlo.enableCompass();
-        
-        map.getOverlays().add(mlo);
-        
-        // Parse routes and stops
-        List<Placemark> placemarks = parsePlacemarks("http://shuttles.rpi.edu/displays/netlink.kml");
-        StopsItemizedOverlay stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map);
-        PathOverlay routesOverlay;
-        
-        for (Placemark p : placemarks) {
-        	if (p.type == Placemark.LINE_STRING) {
-        		routesOverlay = new PathOverlay(p.style);
-        		for (GeoPoint gp : p.coords) {
-        			routesOverlay.addPoint(gp);
-        		}
-        		map.getOverlays().add(routesOverlay);
-        	} else if (p.type == Placemark.POINT) {
-        		stopsOverlay.addOverlay(p.toOverlayItem());
-        	}
-        }
-        
-        map.getOverlays().add(stopsOverlay);
-        
-        shuttlesOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_marker), map);
-        map.getOverlays().add(shuttlesOverlay);
-        
-        updateTask = new UpdateShuttlesTask();
-        updateTask.execute((Void[])null);
+              
+        addRoutes();  
     }
     
     /**
@@ -135,132 +84,122 @@ public class Tracker extends MapActivity {
         map.setClickable(true);
         map.setFocusable(true);
         map.setBuiltInZoomControls(true);
+        
+        myLocationOverlay = new LocationOverlay(this, map, R.drawable.shuttle);
+        map.getOverlays().add(myLocationOverlay);
     }
     
     /**
-     * Parse the shuttle routes out of the KML
-     * 
-     * @param kmlUrl The HTTP path to the KML route file
-     * @return A list of PathOverlays that can be added to a map view
+     * Add routes and stops to map from the KML file as a PathOverlay and ItemizedOverlay
      */
-    private List<Placemark> parsePlacemarks(String kmlUrl) {
-    	HashMap<String, Style> styles = new HashMap<String, Style>();
-    	List<Placemark> placemarks = new ArrayList<Placemark>();
-    	Placemark tempPlacemark;
-    	Style tempStyle;
-    	String id;
-    	String temp;
-    	byte[] doc = new byte[32000];
-    	   	
-    	try {
-    		// Open a connection to the server
-    		URL url = new URL(kmlUrl);
-        	HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        	InputStream is = conn.getInputStream();
-        	
-        	// Read the KML file
-        	int i = 0;
-        	int b = 0;
-        	while ((b = is.read()) != -1) {
-        		doc[i] = (byte) b;
-        		i++;
-        	}
-        	
-        	// Initialize the parser
-	    	VTDGen vg = new VTDGen();
-	    	vg.setDoc(doc, 0, i);
-	    	vg.parse(true);
-    		VTDNav vn = vg.getNav();
-    		
-    		// Quick and dirty parsing code, only parses LineStyles, LineStrings, and Points
-    		if (vn.matchElement("Folder")) {
-    			// Style parsing
-    			if (vn.toElement(VTDNav.FC, "Style")) {
-	    			do {
-	    				id = vn.toString(vn.getAttrVal("id"));
-	    				tempStyle = new Style();
-	    				if (vn.toElement(VTDNav.FC, "LineStyle")) {
-	    					if (vn.toElement(VTDNav.FC)) {
-	    						do {
-	    							tempStyle.setAttribute(vn.toString(vn.getCurrentIndex()), vn.toString(vn.getText()));
-	    						} while (vn.toElement(VTDNav.NS));
-	    						vn.toElement(VTDNav.P);
-	    					}
-	    					vn.toElement(VTDNav.P);
-	    				}
-	    				styles.put(id, tempStyle);
-	    			} while (vn.toElement(VTDNav.NS, "Style"));
-	    			vn.toElement(VTDNav.P);
-    			}
-    			
-    			// Placemark parsing
-    			if (vn.toElement(VTDNav.FC, "Placemark")) {
-        			do {
-        				tempPlacemark = new Placemark();
-        				tempPlacemark.id = vn.toString(vn.getAttrVal("id"));
-
-    					if (vn.toElement(VTDNav.FC)) {
-    						do {
-    							temp = vn.toString(vn.getCurrentIndex());
-    							if ((temp.equalsIgnoreCase("styleUrl"))) {
-    								tempPlacemark.style = styles.get(vn.toString(vn.getText()).substring(1));
-    							} else if (temp.equalsIgnoreCase("LineString") || temp.equalsIgnoreCase("Point")) {
-    								tempPlacemark.setAttribute("type", temp);
-    								if (vn.toElement(VTDNav.FC, "coordinates")) {
-    									tempPlacemark.parseCoordinates(vn.toString(vn.getText()));
-    									vn.toElement(VTDNav.P);
-    								}
-    							} else {
-    								tempPlacemark.setAttribute(temp, vn.toString(vn.getText()));
-    							}
-    						} while (vn.toElement(VTDNav.NS));
-    						vn.toElement(VTDNav.P);
-    					}
-    					placemarks.add(tempPlacemark);
-        			} while (vn.toElement(VTDNav.NS, "Placemark"));
-        			vn.toElement(VTDNav.P);
-    			}
+    private void addRoutes() {
+    	RoutesJson routes = getRoutes();
+        stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map);
+        PathOverlay routesOverlay;
+        Style style;
+        
+        for (Route r : routes.getRoutes()) {
+        	style = new Style();
+        	style.setColor(r.getColor());
+        	style.setWidth(r.getWidth());
+    		routesOverlay = new PathOverlay(style);
+    		for (Coord c : r.getCoords()) {
+    			routesOverlay.addPoint(new GeoPoint((int)(c.getLatitude() * 1e6), (int)(c.getLongitude() * 1e6)));
     		}
-    		
-    	} catch (NavException e) {
-    		e.printStackTrace();
-    	} catch (MalformedURLException e) {
+    		map.getOverlays().add(routesOverlay);
+        }
+        
+        shuttlesOverlay = new DirectionalItemizedOverlay(getResources().getDrawable(R.drawable.shuttle), map);
+        map.getOverlays().add(shuttlesOverlay);
+        
+        stopsOverlay.addAllStops(routes.getStops());
+        map.getOverlays().add(stopsOverlay);
+    }
+    
+    private RoutesJson getRoutes() {		
+    	RoutesJson routes = null;
+	
+		try {
+			URL shuttlesJson;
+			shuttlesJson = new URL("http://shuttles.rpi.edu/displays/netlink.js");
+			URLConnection shuttleJsonConnection = shuttlesJson.openConnection();
+			
+			// ObjectMapper doesn't like the stream, but it works if converted into a string first
+			String json = convertStreamToString(shuttleJsonConnection.getInputStream());
+			routes = mapper.readValue(json, RoutesJson.class);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (EncodingException e) {
-			e.printStackTrace();
-		} catch (EOFException e) {
-			e.printStackTrace();
-		} catch (EntityException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
 		}
-		
-    	return placemarks;
+   
+    	return routes;
     }
     
-    private ArrayList<VehicleJson> parseShuttleJson(InputStream is) {
-    	ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	
+    	myLocationOverlay.enableMyLocation();
+    	runUpdateShuttles = true;
+        updateThread = new Thread(updateShuttles);
+    	updateThread.start();
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	
+    	myLocationOverlay.disableMyLocation();
+    	runUpdateShuttles = false;
+    	threadLock = false;
+    }
+    
+ 
+    private ArrayList<VehicleJson> parseShuttleJson(String url) {
     	VehicleArray vehicles = null;
 	
 		try {
+			URL shuttlesJson;
+			shuttlesJson = new URL(url);
+			URLConnection shuttleJsonConnection = shuttlesJson.openConnection();
+			
 			// ObjectMapper doesn't like the stream, but it works if converted into a string first
-			String json = convertStreamToString(is);
+			String json = convertStreamToString(shuttleJsonConnection.getInputStream());
 			vehicles = mapper.readValue(json, VehicleArray.class);
 		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
    
     	return vehicles;
+    }
+    
+    private ArrayList<EtaJson> parseEtaJson(String url) {
+    	EtaArray etas = null;
+	
+		try {
+			URL shuttlesJson;
+			shuttlesJson = new URL(url);
+			URLConnection shuttleJsonConnection = shuttlesJson.openConnection();
+			
+			// ObjectMapper doesn't like the stream, but it works if converted into a string first
+			String json = convertStreamToString(shuttleJsonConnection.getInputStream());
+			etas = mapper.readValue(json, EtaArray.class);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+   
+    	return etas;
     }
 
 	@Override
@@ -268,55 +207,40 @@ public class Tracker extends MapActivity {
 		return false;
 	}
 	
-	private class UpdateShuttlesTask extends AsyncTask<Void, Void, Void> {
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			while (true) {
-				updateShuttles();
-				try {
-					Thread.sleep(2500);
-					while (threadLock) {
-						Thread.sleep(100);
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+	private Runnable updateShuttles = new Runnable() {
+		
+		public void run() {
+			while (runUpdateShuttles) {
+				threadLock = true;
+				
+				ArrayList<VehicleJson> vehicles = parseShuttleJson("http://shuttles.rpi.edu/vehicles/current.js");
+				ArrayList<EtaJson> etas = parseEtaJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_next_eta");
+				
+				if (etas != null) {
+					stopsOverlay.putEtas(etas);
 				}
-			}
-		}
-		
-	}
-	
-	private void updateShuttles() {
-		threadLock = true;
-		
-		try {
-			URL shuttlesJson;
-			shuttlesJson = new URL("http://shuttles.rpi.edu/vehicles/current.js");
-			URLConnection shuttleJsonConnection = shuttlesJson.openConnection();
-
-			ArrayList<VehicleJson> vehicles = parseShuttleJson(shuttleJsonConnection.getInputStream());
-			if (vehicles != null) {
-				shuttlesOverlay.removeAllOverlays();
+				
+				if (vehicles != null) {
+					shuttlesOverlay.removeAllOverlays();
+		        
+		        	for (VehicleJson v : vehicles) {
+		        		shuttlesOverlay.addOverlay(v.toOverlayItem());
+		        	}
+				}
+				
+				runOnUiThread(invalidateMap);
 	        
-	        	for (VehicleJson v : vehicles) {
-	        		shuttlesOverlay.addOverlay(v.toOverlayItem());
-	        	}
-	        	                
-	        	runOnUiThread(invalidateMap);
+		        threadLock = false;
 			}
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
-		
-        
-        
-        threadLock = false;
-	}
+	};
+	
+	private Runnable invalidateMap = new Runnable() {
+		public void run() {
+			map.invalidate();
+		}
+	};
 	
 	  public String convertStreamToString(InputStream is) throws IOException
 	  {

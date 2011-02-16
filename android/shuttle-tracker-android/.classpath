@@ -14,11 +14,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/slf4j-android-1.5.8.jar"/>
-	<classpathentry kind="lib" path="lib/vtd-xml.jar" sourcepath="C:/Users/wagnea4/Desktop/ximpleware_2.9_java/java_cup">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/Shuttle-Tracker-Android/lib/vtd-xml-2.9-doc.zip!/vtd-xml-2.9-doc"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="src" path="android-mapviewballoons_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
