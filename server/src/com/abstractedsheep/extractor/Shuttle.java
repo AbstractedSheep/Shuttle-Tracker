@@ -7,6 +7,7 @@ public class Shuttle {
 	private int shuttleId;
 	private HashMap<String, Stop> stops;
 	private HashMap<String, Integer> stopETA;
+	private ArrayList<Integer> speedList;
 	private String cardinalPoint;
 	private String shuttleName;
 	private int speed;
@@ -29,6 +30,7 @@ public class Shuttle {
 		this.cardinalPoint = "North";
 		this.speed = 0;
 		this.currentLocation = new Point();
+		this.speedList = new ArrayList<Integer>();
 		finder = new RouteFinder(rt);
 		routeID = 1;
 	}
@@ -42,6 +44,7 @@ public class Shuttle {
 		this.shuttleId = shuttleId;
 		this.stops = new HashMap<String, Stop>();
 		this.stopETA = new HashMap<String, Integer>();
+		this.speedList = new ArrayList<Integer>();
 		this.shuttleName = "Bus 42";
 		this.cardinalPoint = "North";
 		this.speed = 0;
@@ -80,7 +83,15 @@ public class Shuttle {
 	}
 
 	public void setSpeed(int newSpd) {
-		this.speed = (speed > 0) ? newSpd : 25;
+		if(speedList.size() > 10)
+			speedList.remove(0);
+		speedList.add(newSpd);
+		int count = 0;
+		
+		for(int s : speedList) {
+			count += s;
+		}
+		this.speed = count / speedList.size();
 	}
 
 	public  Point getCurrentLocation() {
