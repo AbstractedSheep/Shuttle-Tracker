@@ -14,29 +14,29 @@
 @interface KMLParser : NSObject <NSXMLParserDelegate> {
 	NSMutableArray *_styles;
 	NSMutableArray *_placemarks;
-    
-    NSMutableArray *_routes;
-    NSMutableArray *_stops;
-    
-    NSMutableArray *_vehicles;
-    
-    NSURL *vehiclesUrl;
-    
-    KMLStyle *currentStyle;
-    KMLPlacemark *currentPlacemark;
-    
-    //  Hold all of the characters found by the NSXMLParser for a given element
-    NSMutableString *accumulation;
-    
-    struct {
-        BOOL inStyle;
-        BOOL inPlacemark;
-        BOOL inNetworkLink;
-    } state;
-    
-@private
-    NSURL *_parseUrl;
-    NSXMLParser *_parser;
+
+	NSMutableArray *_routes;
+	NSMutableArray *_stops;
+
+	NSMutableArray *_vehicles;
+
+	NSURL *vehiclesUrl;
+
+	KMLStyle *currentStyle;
+	KMLPlacemark *currentPlacemark;
+
+	//  Hold all of the characters found by the NSXMLParser for a given element
+	NSMutableString *accumulation;
+
+	struct {
+		BOOL inStyle;
+		BOOL inPlacemark;
+		BOOL inNetworkLink;
+	} state;
+
+	@private
+		NSURL *_parseUrl;
+	NSXMLParser *_parser;
 }
 
 //  Do not return styles or placemarks by themselves
@@ -55,21 +55,21 @@
 
 //  Use to hold style objects, I have only seen these used for routes
 @interface KMLStyle : NSObject {
-    NSString *idTag;
-    NSString *colorString;
-    UIColor *color;
-    int width;
-    
-    enum KMLStyles {
-        lineStyle,
-        nilStyle
-    } styleType;
-    
-    enum KMLStyleParseState {
-        colorState,
-        widthState,
-        nilStyleParseState
-    } parseState;
+	NSString *idTag;
+	NSString *colorString;
+	UIColor *color;
+	int width;
+
+	enum KMLStyles {
+		lineStyle,
+		nilStyle
+	} styleType;
+
+	enum KMLStyleParseState {
+		colorState,
+		widthState,
+		nilStyleParseState
+	} parseState;
 }
 
 @property (nonatomic, retain) NSString *idTag;
@@ -88,25 +88,25 @@
 	NSString *name;
 	NSString *idTag;
 	NSString *description;
-    NSString *styleUrl;
-    
-    KMLStyle *style;
-    
-    enum PlacemarkType {
-        routeType,
-        pointType,
-        stopType,
-        vehicleType,
-        nilType
-    } placemarkType;
-    
-    enum KMLPlacemarkParseState {
-        nameState,
-        descriptionState,
-        styleUrlState,
-        coordinatesState,
-        nilPlacemarkParseState
-    } parseState;
+	NSString *styleUrl;
+
+	KMLStyle *style;
+
+	enum PlacemarkType {
+		routeType,
+		pointType,
+		stopType,
+		vehicleType,
+		nilType
+	} placemarkType;
+
+	enum KMLPlacemarkParseState {
+		nameState,
+		descriptionState,
+		styleUrlState,
+		coordinatesState,
+		nilPlacemarkParseState
+	} parseState;
 }
 
 @property (nonatomic, retain) NSString *name;
@@ -138,7 +138,7 @@
 @interface KMLPoint : KMLPlacemark <MKAnnotation>
 {
 	CLLocationCoordinate2D coordinate;
-    MKAnnotationView *annotationView;
+	MKAnnotationView *annotationView;
 }
 
 @property (nonatomic) CLLocationCoordinate2D coordinate;
@@ -151,14 +151,14 @@
 
 @interface KMLStop : KMLPoint
 {
-	
+
 }
 
 @end
 
 @interface KMLVehicle : KMLPoint
 {
-	
+
 }
 
 @end
