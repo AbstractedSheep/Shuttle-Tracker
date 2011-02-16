@@ -29,6 +29,7 @@ public class JSONSender {
 		Connection connection = null;
 		String[] args = null;
 		// System.out.println((new File("sts.properties").getAbsolutePath()));
+		
 		try {
 			Class.forName(driver).newInstance();
 			args = getArgumentsFromPropertiesFile("sts.properties");
@@ -37,16 +38,16 @@ public class JSONSender {
 			Statement stmt = connection.createStatement();
 			for (Shuttle shuttle : shuttleList) {
 				for (String stop : shuttle.getStopETA().keySet()) {
+					//update table in DB
 					String sql = "UPDATE shuttle_eta SET eta = '"
 							+ getTimeStamp(shuttle.getStopETA().get(stop))
 							+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
 							+ " AND stop_id = '"
 							+ shuttle.getStops().get(stop).getShortName() + "'";
-					System.out.println(sql);
 					int updateCount = stmt.executeUpdate(sql);
 
 					if (updateCount == 0) {
-						String insertHeader = "INSERT INTO shuttle_eta (shuttle_id, stop_id, eta) ";
+						String insertHeader = "INSERT INTO shuttle_eta (shuttle_id, stop_id, eta)\n";
 						String interValues = "VALUES ("
 								+ shuttle.getShuttleId() + ",'"
 								+ shuttle.getStops().get(stop).getShortName()
@@ -65,6 +66,17 @@ public class JSONSender {
 				if (connection != null)
 					connection.close();
 			} catch (SQLException e) {
+			}
+		}
+		
+		printToConsole(shuttleList);
+	}
+
+	public static void printToConsole(HashSet<Shuttle> shuttleList) {
+		for(Shuttle shuttle : shuttleList) {
+			System.out.println(shuttle.getName() + " " + shuttle.getShuttleId() + " " + shuttle.getRouteName() + " " + shuttle.getRouteId());
+			for(String name : shuttle.getStopETA().keySet()) {
+				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name)));
 			}
 		}
 	}

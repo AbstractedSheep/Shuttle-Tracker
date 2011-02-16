@@ -191,9 +191,11 @@ public class DatabaseMetaData implements java.sql.DatabaseMetaData {
 
 			boolean isUnsigned = false;
 			
-			if (StringUtils.indexOfIgnoreCase(typeInfo, "unsigned") != -1) {
-				fullMysqlType = mysqlType + " unsigned";
-				isUnsigned = true;
+			if ((StringUtils.indexOfIgnoreCase(typeInfo, "unsigned") != -1) && 
+				(StringUtils.indexOfIgnoreCase(typeInfo, "set") != 0) &&
+				(StringUtils.indexOfIgnoreCase(typeInfo, "enum") != 0)) {
+					fullMysqlType = mysqlType + " unsigned";
+					isUnsigned = true;
 			} else {
 				fullMysqlType = mysqlType;
 			}
@@ -492,7 +494,7 @@ public class DatabaseMetaData implements java.sql.DatabaseMetaData {
 			JDBC_4_DBMD_SHOW_CTOR = null;
 		}
 		
-		// Current as-of MySQL-5.1.16
+		// Current as-of MySQL-5.5.8
 		String[] allMySQLKeywords = new String[] { "ACCESSIBLE", "ADD", "ALL",
 				"ALTER", "ANALYZE", "AND", "AS", "ASC", "ASENSITIVE", "BEFORE",
 				"BETWEEN", "BIGINT", "BINARY", "BLOB", "BOTH", "BY", "CALL",
@@ -534,7 +536,12 @@ public class DatabaseMetaData implements java.sql.DatabaseMetaData {
 				"UNSIGNED", "UPDATE", "USAGE", "USE", "USING", "UTC_DATE",
 				"UTC_TIME", "UTC_TIMESTAMP", "VALUES", "VARBINARY", "VARCHAR",
 				"VARCHARACTER", "VARYING", "WHEN", "WHERE", "WHILE", "WITH",
-				"WRITE", "X509", "XOR", "YEAR_MONTH", "ZEROFILL" };
+				"WRITE", "X509", "XOR", "YEAR_MONTH", "ZEROFILL",
+		// adding for 5.5.8:
+				"GENERAL", "IGNORE_SERVER_IDS", "MASTER_HEARTBEAT_PERIOD",
+				"MAXVALUE", "RESIGNAL", "SIGNAL", "SLOW"
+		
+		};
 
 		String[] sql92Keywords = new String[] { "ABSOLUTE", "EXEC", "OVERLAPS",
 				"ACTION", "EXECUTE", "PAD", "ADA", "EXISTS", "PARTIAL", "ADD",
@@ -1687,7 +1694,7 @@ public class DatabaseMetaData implements java.sql.DatabaseMetaData {
 
 					String returnsDefn = procedureDef.substring(declarationStart, endReturnsDef).trim();
 					TypeDescriptor returnDescriptor = new TypeDescriptor(
-							returnsDefn, null);
+							returnsDefn, "YES"); //null);
 
 					resultRows.add(convertTypeDescriptorToProcedureRow(
 							procNameAsBytes, procCatAsBytes, "", false, false, true,
@@ -1814,7 +1821,7 @@ public class DatabaseMetaData implements java.sql.DatabaseMetaData {
 
 						String typeInfo = typeInfoBuf.toString();
 
-						typeDesc = new TypeDescriptor(typeInfo, null);
+						typeDesc = new TypeDescriptor(typeInfo, "YES"); //null);
 					} else {
 						throw SQLError.createSQLException(
 								"Internal error when parsing callable statement metadata (missing parameter type)",

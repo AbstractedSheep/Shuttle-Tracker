@@ -36,6 +36,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -2086,6 +2087,9 @@ public class MetaDataRegressionTest extends BaseTestCase {
 	 * This fix also ensures that the precision of UNSIGNED MEDIUMINT and
 	 * UNSIGNED BIGINT is reported correctly via DBMD.getColumns().
 	 * 
+	 * Second fix ensures that list values of ENUM and SET types containing
+	 * 'unsigned' are not taken in account.
+	 * 
 	 * @throws Exception
 	 */
 	public void testBug27916() throws Exception {
@@ -2116,6 +2120,61 @@ public class MetaDataRegressionTest extends BaseTestCase {
 					rsmd.getPrecision(i + 1));
 			assertEquals(typeName, new Integer(rsmd.getPrecision(i + 1)),
 					typeNameToPrecision.get(typeName));
+		}
+		
+		if (!versionMeetsMinimum(5, 0)) {
+			return;
+		}
+
+		Properties props = new Properties();
+		props.setProperty("useInformationSchema","false");
+		ArrayList types = new ArrayList();
+		Connection PropConn = getConnectionWithProps(props);
+		try {
+			DatabaseMetaData dbmd = PropConn.getMetaData();
+			this.rs = dbmd.getTypeInfo();
+		    while (this.rs.next()) {
+		    	types.add(this.rs.getString("TYPE_NAME"));
+		    }
+		    this.rs.close();
+
+		    this.rs = dbmd.getColumns("mysql",null,"time_zone_transition","%");
+		    while (this.rs.next()) {
+		    	String typeName = this.rs.getString("TYPE_NAME");
+		    	assertTrue(typeName, types.contains(typeName));			    	
+		    }
+		    this.rs.close();
+		    this.rs = dbmd.getColumns("mysql",null,"proc","%");
+		    while (this.rs.next()) {
+		    	String typeName = this.rs.getString("TYPE_NAME");
+		    	assertTrue(typeName, types.contains(typeName));			    	
+		    }
+		    this.rs.close();
+			PropConn.close();
+			props.clear();
+			
+			props.setProperty("useInformationSchema","true");
+			PropConn = getConnectionWithProps(props);
+			dbmd = PropConn.getMetaData();
+
+			this.rs = dbmd.getColumns("mysql",null,"time_zone_transition","%");
+		    while (this.rs.next()) {
+		    	String typeName = this.rs.getString("TYPE_NAME");
+		    	assertTrue(typeName, types.contains(typeName));			    	
+		    }
+		    this.rs.close();
+		    this.rs = dbmd.getColumns("mysql",null,"proc","%");
+		    while (this.rs.next()) {
+		    	String typeName = this.rs.getString("TYPE_NAME");
+		    	assertTrue(typeName, types.contains(typeName));			    	
+		    }
+		    this.rs.close();
+			PropConn.close();
+			props.clear();
+		} finally {
+			if (PropConn != null) {
+				PropConn.close();
+			}
 		}
 	}
 
@@ -2772,6 +2831,41 @@ public class MetaDataRegressionTest extends BaseTestCase {
 			if (overrideConn != null) {
 				overrideConn.close();
 			}
+		}
+	}
+	/**
+	 * Tests fix for BUG#38367 - DatabaseMetaData dbMeta = this.conn.getMetaData();
+	 * this.rs = dbMeta.getProcedureColumns("test", null, "nullableParameterTest", null);
+	 * ...
+	 * Short columnNullable = new Short(this.rs.getShort(12));
+	 * assertTrue("Parameter " + columnName + " do not allow null arguments",
+	 * columnNullable.intValue() == java.sql.DatabaseMetaData.procedureNullable);
+	 * was failing for no good reason.
+	 * 
+	 * @throws Exception
+	 *             if the test fails.
+	 */
+
+	public void testBug38367() throws Exception {
+		if (!versionMeetsMinimum(5, 0)) {
+			return;
+		}
+
+		try {
+        	createProcedure("sptestBug38367", "(OUT nfact VARCHAR(100), IN ccuenta VARCHAR(100),"
+							+ "\nOUT ffact VARCHAR(100),"
+							+ "\nOUT fdoc VARCHAR(100))"
+							+ "\nBEGIN"
+							+ "\nEND");
+
+        	DatabaseMetaData dbMeta = this.conn.getMetaData();
+			this.rs = dbMeta.getProcedureColumns(this.conn.getCatalog(), null, "sptestBug38367", null);
+		    while (this.rs.next()) {
+		        String columnName = this.rs.getString(4);
+		        Short columnNullable = new Short(this.rs.getShort(12));
+		        assertTrue("Parameter " + columnName + " is not java.sql.DatabaseMetaData.procedureNullable.", columnNullable.intValue() == java.sql.DatabaseMetaData.procedureNullable);
+		      }
+    	} finally {
 		}
 	}
 

@@ -113,7 +113,7 @@ public class Shuttle {
 	}
 
 	public String getRouteName() {
-		return (routeID == 1) ? "East Campus" : "West Route";
+		return (routeID == 1) ? "West Route" : "East Campus";
 	}
 
 	// These next two methods are not required by Jackson

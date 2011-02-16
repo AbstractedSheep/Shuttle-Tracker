@@ -42,12 +42,17 @@ public class ShuttleTrackerServer {
 						.println("Reading Shuttle data and trying to manipulate it.");
 				jsExtractor.readShuttleData();
 				this.shuttleList = jsExtractor.getShuttleList();
-				// do ETA calculations and print to file
-				calculateETA();
-				JSONSender.saveToDatabase(shuttleList);
+
+				if(shuttleList.size() > 0){
+					// do ETA calculations and print to the database
+					calculateETA();
+					JSONSender.saveToDatabase(shuttleList);
+				} else {
+					jsExtractor.clearShuttleList();
+				}
 				// have the thread sleep for 15 seconds (approximate update
 				// time)
-				Thread.sleep(15 * 1000);
+				Thread.sleep(5 * 1000);
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

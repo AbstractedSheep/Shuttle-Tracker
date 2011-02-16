@@ -34,6 +34,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.lang.ref.SoftReference;
 import java.math.BigInteger;
 import java.net.ConnectException;
@@ -2048,14 +2051,17 @@ public class MysqlIO {
 	    	long queryStartTime = 0;
 	    	long queryEndTime = 0;
 
+    		String statementComment = this.connection.getStatementComment();
+    		
+    		if (this.connection.getIncludeThreadNamesAsStatementComment()) {
+    			statementComment = (statementComment != null ? statementComment + ", " : "") + "java thread: " + Thread.currentThread().getName();
+    		}
+    		
 	    	if (query != null) {
-
 	    		// We don't know exactly how many bytes we're going to get
 	    		// from the query. Since we're dealing with Unicode, the
 	    		// max is 2, so pad it (2 * query) + space for headers
 	    		int packLength = HEADER_LENGTH + 1 + (query.length() * 2) + 2;
-
-	    		String statementComment = this.connection.getStatementComment();
 
 	    		byte[] commentAsBytes = null;
 
@@ -2123,7 +2129,11 @@ public class MysqlIO {
 	    		String testcaseQuery = null;
 
 	    		if (query != null) {
-	    			testcaseQuery = query;
+	    			if (statementComment != null) {
+	    				testcaseQuery = "/* " + statementComment + " */ " + query;
+	    			} else {
+	    				testcaseQuery = query;
+	    			}
 	    		} else {
 	    			testcaseQuery = new String(queryBuf, 5,
 	    					(oldPacketPosition - 5));
@@ -3585,7 +3595,7 @@ public class MysqlIO {
                     }
                 }
 
-                appendInnodbStatusInformation(xOpen, errorBuf);
+                appendDeadlockStatusInformation(xOpen, errorBuf);
 
                 if (xOpen != null && xOpen.startsWith("22")) {
                 	throw new MysqlDataTruncation(errorBuf.toString(), 0, true, false, 0, 0, errno);
@@ -3617,7 +3627,7 @@ public class MysqlIO {
         }
     }
 
-    private void appendInnodbStatusInformation(String xOpen,
+    private void appendDeadlockStatusInformation(String xOpen,
 			StringBuffer errorBuf) throws SQLException {
 		if (this.connection.getIncludeInnodbStatusInDeadlockExceptions()
 				&& xOpen != null
@@ -3649,6 +3659,69 @@ public class MysqlIO {
 			} finally {
 				if (rs != null) {
 					rs.close();
+				}
+			}
+		}
+		
+		if (this.connection.getIncludeThreadDumpInDeadlockExceptions()) {
+			errorBuf.append("\n\n*** Java threads running at time of deadlock ***\n\n");
+			
+			ThreadMXBean threadMBean = ManagementFactory.getThreadMXBean();
+			long[] threadIds = threadMBean.getAllThreadIds();
+
+			ThreadInfo[] threads = threadMBean.getThreadInfo(threadIds,
+					Integer.MAX_VALUE);
+			List<ThreadInfo> activeThreads = new ArrayList<ThreadInfo>();
+
+			for (ThreadInfo info : threads) {
+				if (info != null) {
+					activeThreads.add(info);
+				}
+			}
+
+			for (ThreadInfo threadInfo : activeThreads) {
+				// "Thread-60" daemon prio=1 tid=0x093569c0 nid=0x1b99 in
+				// Object.wait()
+
+				errorBuf.append('"');
+				errorBuf.append(threadInfo.getThreadName());
+				errorBuf.append("\" tid=");
+				errorBuf.append(threadInfo.getThreadId());
+				errorBuf.append(" ");
+				errorBuf.append(threadInfo.getThreadState());
+
+				if (threadInfo.getLockName() != null) {
+					errorBuf.append(" on lock=" + threadInfo.getLockName());
+				}
+				if (threadInfo.isSuspended()) {
+					errorBuf.append(" (suspended)");
+				}
+				if (threadInfo.isInNative()) {
+					errorBuf.append(" (running in native)");
+				}
+
+				StackTraceElement[] stackTrace = threadInfo.getStackTrace();
+
+				if (stackTrace.length > 0) {
+					errorBuf.append(" in ");
+					errorBuf.append(stackTrace[0].getClassName());
+					errorBuf.append(".");
+					errorBuf.append(stackTrace[0].getMethodName());
+					errorBuf.append("()");
+				}
+
+				errorBuf.append("\n");
+
+				if (threadInfo.getLockOwnerName() != null) {
+					errorBuf.append("\t owned by " + threadInfo.getLockOwnerName()
+							+ " Id=" + threadInfo.getLockOwnerId());
+					errorBuf.append("\n");
+				}
+
+				for (int j = 0; j < stackTrace.length; j++) {
+					StackTraceElement ste = stackTrace[j];
+					errorBuf.append("\tat " + ste.toString());
+					errorBuf.append("\n");
 				}
 			}
 		}
