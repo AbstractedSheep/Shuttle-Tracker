@@ -53,7 +53,32 @@
             jsonDict = nil;
         }
         
+        NSLog(@"Dict: %@", jsonDict);
         
+        for (NSDictionary *dict in jsonDict) {
+            JSONVehicle *vehicle = [[JSONVehicle alloc] init];
+            
+            CLLocationCoordinate2D coordinate;
+            
+            for (NSString *string in dict) {
+                if ([string isEqualToString:@"shuttle_id"]) {
+                    vehicle.name = [dict objectForKey:string];
+                } else if ([string isEqualToString:@"latitude"]) {
+                    coordinate.latitude = [[dict objectForKey:string] floatValue];
+                } else if ([string isEqualToString:@"longitude"]) {
+                    coordinate.longitude = [[dict objectForKey:string] floatValue];
+                } else if ([string isEqualToString:@"heading"]) {
+                    vehicle.heading = [[dict objectForKey:string] intValue];
+                }
+            }
+            
+            vehicle.coordinate = coordinate;
+            
+            [vehicles addObject:vehicle];
+        }
+        /*
+         Only for http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt
+         
         //  Iterate through the items found, create vehicles, set their locations, and add them to the vehicles array
         for (NSString *string in jsonDict) {
             JSONVehicle *vehicle = [[JSONVehicle alloc] init];
@@ -66,6 +91,7 @@
             
             [vehicles addObject:vehicle];
         }
+         */
         
         return YES;
     }
@@ -88,13 +114,17 @@
 @synthesize description;
 @synthesize coordinate;
 @synthesize ETAs;
+@synthesize heading;
 @synthesize annotationView;
 
 
 - (id)init {
     if ((self = [super init])) {
         name = nil;
+        description = nil;
         ETAs = nil;
+        
+        heading = 0;
     }
 
     return self;

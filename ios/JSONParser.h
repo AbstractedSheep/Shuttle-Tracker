@@ -34,6 +34,8 @@
     CLLocationCoordinate2D coordinate;
     NSDictionary *ETAs;
     
+    int heading;
+    
     MKAnnotationView *annotationView;
     
 }
@@ -44,6 +46,7 @@
 @property (nonatomic, readonly) NSString *subtitle;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, retain) NSDictionary *ETAs;
+@property (nonatomic) int heading;
 @property (nonatomic, retain) MKAnnotationView *annotationView;
 
 
