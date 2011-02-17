@@ -50,8 +50,8 @@
     NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
     
     //  Load the routes/stops KML file asynchronously
-    dispatch_queue_t loadFirstKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
-	dispatch_async(loadFirstKmlQueue, ^{		
+    dispatch_queue_t loadRouteKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
+	dispatch_async(loadRouteKmlQueue, ^{		
         routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
         [self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:YES];
 	});
