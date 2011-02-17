@@ -16,7 +16,7 @@
 
 
 - (id)init {
-    [self initWithUrl:[NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"]];
+    [self initWithUrl:[NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"]];
     
     return self;
 }
@@ -53,7 +53,7 @@
             jsonDict = nil;
         }
         
-        NSLog(@"Dict: %@", jsonDict);
+//        NSLog(@"Dict: %@", jsonDict);
         
         for (NSDictionary *dict in jsonDict) {
             JSONVehicle *vehicle = [[JSONVehicle alloc] init];
@@ -75,6 +75,7 @@
             vehicle.coordinate = coordinate;
             
             [vehicles addObject:vehicle];
+            [vehicle release];
         }
         /*
          Only for http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt
