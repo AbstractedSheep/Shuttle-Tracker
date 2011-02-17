@@ -15,7 +15,6 @@
 - (void)routeKmlLoaded;
 - (void)updateVehicleData;
 - (void)vehicleJSONRefresh;
-- (void)vehicleKmlRefresh;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
 - (void)addKmlVehicle:(KMLVehicle *)vehicle;
