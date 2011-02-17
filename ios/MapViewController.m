@@ -37,8 +37,6 @@
     _mapView.delegate = self;
     
 	[self.view addSubview:_mapView];
-
-	[UIImage imageNamed:@"shuttle_image.png"];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -72,7 +70,7 @@
     
     vehicleUpdateTimer = nil;
     
-//    shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
+//  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
     shuttleJSONUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
     vehiclesJSONParser = [[JSONParser alloc] initWithUrl:shuttleJSONUrl];
     
@@ -102,8 +100,8 @@
 
 - (void)updateVehicleData {
     
-    dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
-    dispatch_async(loadVehicleKmlQueue, ^{
+    dispatch_queue_t loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    dispatch_async(loadVehicleJsonQueue, ^{
         if ([vehiclesJSONParser parse]) {
             [self performSelectorOnMainThread:@selector(vehicleJSONRefresh) withObject:nil waitUntilDone:YES];
         }
@@ -129,29 +127,6 @@
             [vehicles addObject:newVehicle];
             [self addJsonVehicle:newVehicle];
         }
-    }
-}
-
-- (void)vehicleKmlRefresh {
-    BOOL alreadyAdded = NO;
-    
-    for (KMLVehicle *newVehicle in vehiclesKmlParser.vehicles) {
-        for (KMLVehicle *existingVehicle in vehicles) {
-            if ([existingVehicle.name isEqualToString:newVehicle.name]) {
-                [UIView animateWithDuration:0.5 animations:^{
-                    [existingVehicle setCoordinate:newVehicle.coordinate];
-                    [existingVehicle setDescription:newVehicle.description];
-                }];
-                
-                alreadyAdded = YES;
-            }
-        }
-        
-        if (!alreadyAdded) {
-            [vehicles addObject:newVehicle];
-            [self addKmlVehicle:newVehicle];
-        }
-        
     }
 }
 
