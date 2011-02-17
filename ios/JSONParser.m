@@ -11,7 +11,6 @@
 
 @implementation JSONParser
 
-@synthesize jsonDict;
 @synthesize vehicles;
 
 
@@ -37,6 +36,7 @@
 - (BOOL)parse {
     NSError *theError = nil;
     NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
+    NSDictionary *jsonDict = nil;
     
     [vehicles release];
     

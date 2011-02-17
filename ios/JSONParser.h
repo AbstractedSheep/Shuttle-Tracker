@@ -11,13 +11,11 @@
 
 
 @interface JSONParser : NSObject {
-    NSDictionary *jsonDict;
     NSMutableArray *vehicles;
     
     NSURL *jsonUrl;
 }
 
-@property (nonatomic, retain) NSDictionary *jsonDict;
 @property (nonatomic, retain) NSMutableArray *vehicles;
 
 - (id)initWithUrl:(NSURL *)url;

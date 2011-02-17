@@ -45,6 +45,8 @@
     routeLines = [[NSMutableArray alloc] init];
     routeLineViews = [[NSMutableArray alloc] init];
     
+    vehicles = [[NSMutableArray alloc] init];
+    
     //  Use the local copy of the routes/stops KML file
     NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
     
@@ -84,8 +86,6 @@
     
     stops = [routeKmlParser stops];
     [stops retain];
-    
-    vehicles = [[NSMutableArray alloc] init];
     
     for (KMLRoute *route in routes) {
         [self performSelectorOnMainThread:@selector(addRoute:) withObject:route waitUntilDone:YES];
