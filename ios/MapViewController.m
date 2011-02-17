@@ -253,7 +253,7 @@
         }
         
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_image.png"];
+        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_icon.png"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
         
@@ -264,7 +264,7 @@
         }
         
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_image.png"];
+        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_icon.png"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
         
