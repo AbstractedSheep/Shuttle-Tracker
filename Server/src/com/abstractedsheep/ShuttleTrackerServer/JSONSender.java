@@ -18,18 +18,7 @@ import com.abstractedsheep.extractor.Shuttle;
  * 
  */
 public class JSONSender {
-	private Connection conn;
-	
-	private void connectToDatabase() throws InstantiationException, IllegalAccessException,
-											ClassNotFoundException, IOException, SQLException {
-		String driver = "com.mysql.jdbc.Driver";
-		String[] args = null;
-		
-		Class.forName(driver).newInstance();
-		args = getArgumentsFromPropertiesFile("sts.properties");
-		this.conn = DriverManager.getConnection(args[0], args[1], args[2]);
-	}
-	
+
 	/**
 	 * save this data to the database
 	 * 
@@ -81,15 +70,6 @@ public class JSONSender {
 		}
 		
 		printToConsole(shuttleList);
-	}
-	
-	private void deleteTable(String tableName) {
-		try {
-			Statement stm = conn.createStatement();
-			String sql = "TRUNCATE TABLE shuttle_eta";
-			
-			stm.executeUpdate(sql);
-		} catch(SQLException e) {}
 	}
 
 	public static void printToConsole(HashSet<Shuttle> shuttleList) {
