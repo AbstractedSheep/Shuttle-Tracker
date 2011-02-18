@@ -11,13 +11,11 @@
 
 
 @interface JSONParser : NSObject {
-    NSDictionary *jsonDict;
     NSMutableArray *vehicles;
     
     NSURL *jsonUrl;
 }
 
-@property (nonatomic, retain) NSDictionary *jsonDict;
 @property (nonatomic, retain) NSMutableArray *vehicles;
 
 - (id)initWithUrl:(NSURL *)url;
@@ -34,6 +32,8 @@
     CLLocationCoordinate2D coordinate;
     NSDictionary *ETAs;
     
+    int heading;
+    
     MKAnnotationView *annotationView;
     
 }
@@ -44,6 +44,7 @@
 @property (nonatomic, readonly) NSString *subtitle;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, retain) NSDictionary *ETAs;
+@property (nonatomic) int heading;
 @property (nonatomic, retain) MKAnnotationView *annotationView;
 
 

@@ -11,12 +11,11 @@
 
 @implementation JSONParser
 
-@synthesize jsonDict;
 @synthesize vehicles;
 
 
 - (id)init {
-    [self initWithUrl:[NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"]];
+    [self initWithUrl:[NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"]];
     
     return self;
 }
@@ -37,6 +36,7 @@
 - (BOOL)parse {
     NSError *theError = nil;
     NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
+    NSDictionary *jsonDict = nil;
     
     [vehicles release];
     
@@ -53,7 +53,33 @@
             jsonDict = nil;
         }
         
+//        NSLog(@"Dict: %@", jsonDict);
         
+        for (NSDictionary *dict in jsonDict) {
+            JSONVehicle *vehicle = [[JSONVehicle alloc] init];
+            
+            CLLocationCoordinate2D coordinate;
+            
+            for (NSString *string in dict) {
+                if ([string isEqualToString:@"shuttle_id"]) {
+                    vehicle.name = [dict objectForKey:string];
+                } else if ([string isEqualToString:@"latitude"]) {
+                    coordinate.latitude = [[dict objectForKey:string] floatValue];
+                } else if ([string isEqualToString:@"longitude"]) {
+                    coordinate.longitude = [[dict objectForKey:string] floatValue];
+                } else if ([string isEqualToString:@"heading"]) {
+                    vehicle.heading = [[dict objectForKey:string] intValue];
+                }
+            }
+            
+            vehicle.coordinate = coordinate;
+            
+            [vehicles addObject:vehicle];
+            [vehicle release];
+        }
+        /*
+         Only for http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt
+         
         //  Iterate through the items found, create vehicles, set their locations, and add them to the vehicles array
         for (NSString *string in jsonDict) {
             JSONVehicle *vehicle = [[JSONVehicle alloc] init];
@@ -66,6 +92,7 @@
             
             [vehicles addObject:vehicle];
         }
+         */
         
         return YES;
     }
@@ -88,13 +115,17 @@
 @synthesize description;
 @synthesize coordinate;
 @synthesize ETAs;
+@synthesize heading;
 @synthesize annotationView;
 
 
 - (id)init {
     if ((self = [super init])) {
         name = nil;
+        description = nil;
         ETAs = nil;
+        
+        heading = 0;
     }
 
     return self;

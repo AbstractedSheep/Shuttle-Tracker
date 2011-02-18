@@ -15,7 +15,6 @@
 - (void)routeKmlLoaded;
 - (void)updateVehicleData;
 - (void)vehicleJSONRefresh;
-- (void)vehicleKmlRefresh;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
 - (void)addKmlVehicle:(KMLVehicle *)vehicle;
@@ -37,8 +36,6 @@
     _mapView.delegate = self;
     
 	[self.view addSubview:_mapView];
-
-	[UIImage imageNamed:@"shuttle_image.png"];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -48,12 +45,14 @@
     routeLines = [[NSMutableArray alloc] init];
     routeLineViews = [[NSMutableArray alloc] init];
     
+    vehicles = [[NSMutableArray alloc] init];
+    
     //  Use the local copy of the routes/stops KML file
     NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
     
     //  Load the routes/stops KML file asynchronously
-    dispatch_queue_t loadFirstKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
-	dispatch_async(loadFirstKmlQueue, ^{		
+    dispatch_queue_t loadRouteKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
+	dispatch_async(loadRouteKmlQueue, ^{		
         routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
         [self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:YES];
 	});
@@ -72,7 +71,8 @@
     
     vehicleUpdateTimer = nil;
     
-    shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
+//  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
+    shuttleJSONUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
     vehiclesJSONParser = [[JSONParser alloc] initWithUrl:shuttleJSONUrl];
     
     vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
@@ -87,8 +87,6 @@
     stops = [routeKmlParser stops];
     [stops retain];
     
-    vehicles = [[NSMutableArray alloc] init];
-    
     for (KMLRoute *route in routes) {
         [self performSelectorOnMainThread:@selector(addRoute:) withObject:route waitUntilDone:YES];
     }
@@ -101,8 +99,8 @@
 
 - (void)updateVehicleData {
     
-    dispatch_queue_t loadVehicleKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
-    dispatch_async(loadVehicleKmlQueue, ^{
+    dispatch_queue_t loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    dispatch_async(loadVehicleJsonQueue, ^{
         if ([vehiclesJSONParser parse]) {
             [self performSelectorOnMainThread:@selector(vehicleJSONRefresh) withObject:nil waitUntilDone:YES];
         }
@@ -128,29 +126,6 @@
             [vehicles addObject:newVehicle];
             [self addJsonVehicle:newVehicle];
         }
-    }
-}
-
-- (void)vehicleKmlRefresh {
-    BOOL alreadyAdded = NO;
-    
-    for (KMLVehicle *newVehicle in vehiclesKmlParser.vehicles) {
-        for (KMLVehicle *existingVehicle in vehicles) {
-            if ([existingVehicle.name isEqualToString:newVehicle.name]) {
-                [UIView animateWithDuration:0.5 animations:^{
-                    [existingVehicle setCoordinate:newVehicle.coordinate];
-                    [existingVehicle setDescription:newVehicle.description];
-                }];
-                
-                alreadyAdded = YES;
-            }
-        }
-        
-        if (!alreadyAdded) {
-            [vehicles addObject:newVehicle];
-            [self addKmlVehicle:newVehicle];
-        }
-        
     }
 }
 
@@ -278,7 +253,7 @@
         }
         
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_image.png"];
+        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_icon.png"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
         
@@ -289,7 +264,7 @@
         }
         
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_image.png"];
+        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_icon.png"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
         
