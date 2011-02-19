@@ -280,7 +280,7 @@ public class Shuttle {
 		}
 
 		public RouteFinder(ArrayList<Route> rt) {
-			routeList = rt;
+			routeList = new ArrayList<Route>(rt);
 			this.locList = new ArrayList<Point>();
 			foundRoute = false;
 			closestRouteCoor = new Point();
@@ -293,6 +293,14 @@ public class Shuttle {
 				locList.remove(0);
 			locList.add(pt);
 			determineRouteOfShuttle();
+		}
+		
+		public int getRouteID() {
+			return routeList.get(0).getIdNum();
+		}
+		
+		public String getRouteName() {
+			return routeList.get(0).getRouteName();
 		}
 
 		private void determineRouteOfShuttle() {
@@ -332,6 +340,7 @@ public class Shuttle {
 				closestRouteCoor = (distanceArray[0] < distanceArray[1]) ? locationArray[0]
 						: locationArray[1];
 				indexOfClosestCoordinate = indexArray[routeID - 1] - 2;
+				this.routeList.remove(routeID - 1);
 			}
 		}
 
@@ -350,19 +359,22 @@ public class Shuttle {
 				if (rt.getIdNum() == routeID) {
 					list = rt.getCoordinateList();
 					int index = indexOfClosestCoordinate;
+					int count = 0;
 					distanceToTravel = calculateDistance(list.get(index));
-					for (int count = 0; count <= list.size(); count++) {
+					for (count = 0; count <= list.size(); count++) {
 						if (index > list.size() - 1)
 							index = 1;
 						distance = calculateDistance(list.get(index), stop);
 						// distance between this coordinate and the stop is
 						// greater than 15 ft
-						if (distance <= .0189)
+						if (distance <= .003)
 							break;
 						distanceToTravel += calculateDistance(list.get(index),
 								list.get(index - 1));
 						index++;
 					}
+					count --;
+					System.out.println((double) ( (double)count /  (double)list.size()));
 				}
 			}
 			return distanceToTravel;
