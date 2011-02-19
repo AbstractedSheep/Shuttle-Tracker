@@ -46,7 +46,8 @@ public class ShuttleTrackerServer {
 				if(shuttleList.size() > 0){
 					// do ETA calculations and print to the database
 					calculateETA();
-					JSONSender.saveToDatabase(shuttleList);
+					//JSONSender.saveToDatabase(shuttleList);
+					JSONSender.printToConsole(shuttleList);
 				} else {
 					jsExtractor.clearShuttleList();
 				}

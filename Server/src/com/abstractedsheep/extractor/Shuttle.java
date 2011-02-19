@@ -67,7 +67,7 @@ public class Shuttle {
 	}
 
 	public int getRouteId() {
-		return routeID;
+		return finder.getRouteID();
 	}
 
 	public HashMap<String, Stop> getStops() {
@@ -124,7 +124,7 @@ public class Shuttle {
 	}
 
 	public String getRouteName() {
-		return (routeID == 1) ? "West Route" : "East Campus";
+		return finder.getRouteName();
 	}
 
 	// These next two methods are not required by Jackson
@@ -156,40 +156,9 @@ public class Shuttle {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(p);
 			int time = (int) ((distance / this.speed) * 3600000);
+			//System.out.println((double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
 		}
-	}
-
-	// TODO: delete the first calculateDistance method and move the second one
-	// to RouteFinder
-	/**
-	 * calculates the straight line distance between the given stop location and
-	 * the shuttle's location The formula used to calculate this distance is the
-	 * haversine formula {@link http
-	 * ://www.movable-type.co.uk/scripts/latlong.html}
-	 * 
-	 * @param p
-	 *            - stop's location
-	 * @return distance to stop
-	 */
-	private  double calculateDistance(Point p) {
-		return calculateDistance(p, getCurrentLocation());
-	}
-
-	private static double calculateDistance(Point p, Point curr) {
-		double earthRadius = 6378.7; // radius in miles
-		double changeInLat = curr.lat - p.lat;
-		double changeInLong = curr.lon - p.lon;
-		// need to convert these values to radians
-		changeInLat = Math.toRadians(changeInLat);
-		changeInLong = Math.toRadians(changeInLong);
-
-		double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2))
-				+ (Math.cos(p.lon) * Math.cos(curr.lon) * (Math
-						.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
-		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-		return (earthRadius * c) * 0.621371192;
 	}
 
 	@Override
@@ -373,11 +342,41 @@ public class Shuttle {
 								list.get(index - 1));
 						index++;
 					}
-					count --;
-					System.out.println((double) ( (double)count /  (double)list.size()));
 				}
 			}
 			return distanceToTravel;
+		}
+		
+		// TODO: delete the first calculateDistance method and move the second one
+		// to RouteFinder
+		/**
+		 * calculates the straight line distance between the given stop location and
+		 * the shuttle's location The formula used to calculate this distance is the
+		 * haversine formula {@link http
+		 * ://www.movable-type.co.uk/scripts/latlong.html}
+		 * 
+		 * @param p
+		 *            - stop's location
+		 * @return distance to stop
+		 */
+		private double calculateDistance(Point p) {
+			return calculateDistance(p, getCurrentLocation());
+		}
+
+		private double calculateDistance(Point p, Point curr) {
+			double earthRadius = 6378.7; // radius in km
+			double changeInLat = curr.lat - p.lat;
+			double changeInLong = curr.lon - p.lon;
+			// need to convert these values to radians
+			changeInLat = Math.toRadians(changeInLat);
+			changeInLong = Math.toRadians(changeInLong);
+
+			double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2))
+					+ (Math.cos(Math.toRadians(p.lon)) * Math.cos(Math.toRadians(curr.lon)) * (Math
+							.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
+			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+			return (earthRadius * c) * 0.621371192;
 		}
 	}
 }
