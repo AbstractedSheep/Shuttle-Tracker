@@ -18,16 +18,18 @@ import com.abstractedsheep.extractor.Shuttle;
  * 
  */
 public class JSONSender {
-	private Connection conn;
+	private static Connection conn;
 	
-	private void connectToDatabase() throws InstantiationException, IllegalAccessException,
+	private static void connectToDatabase() throws InstantiationException, IllegalAccessException,
 											ClassNotFoundException, IOException, SQLException {
 		String driver = "com.mysql.jdbc.Driver";
 		String[] args = null;
 		
 		Class.forName(driver).newInstance();
 		args = getArgumentsFromPropertiesFile("sts.properties");
-		this.conn = DriverManager.getConnection(args[0], args[1], args[2]);
+		conn = DriverManager.getConnection(args[0], args[1], args[2]);
+		
+		deleteTable(args[2]);
 	}
 	
 	/**
@@ -36,17 +38,16 @@ public class JSONSender {
 	 * @param shuttleList
 	 */
 	public static void saveToDatabase(HashSet<Shuttle> shuttleList) {
-		String driver = "com.mysql.jdbc.Driver";
-		Connection connection = null;
-		String[] args = null;
-		// System.out.println((new File("sts.properties").getAbsolutePath()));
-		
+//		String driver = "com.mysql.jdbc.Driver";
+//		Connection connection = null;
+//		String[] args = null;
 		try {
-			Class.forName(driver).newInstance();
-			args = getArgumentsFromPropertiesFile("sts.properties");
-			connection = DriverManager.getConnection(args[0], args[1], args[2]);
+			connectToDatabase();
+//			Class.forName(driver).newInstance();
+//			args = getArgumentsFromPropertiesFile("sts.properties");
+//			connection = DriverManager.getConnection(args[0], args[1], args[2]);
 			System.out.println("Connected to database");
-			Statement stmt = connection.createStatement();
+			Statement stmt = conn.createStatement();
 			for (Shuttle shuttle : shuttleList) {
 				for (String stop : shuttle.getStopETA().keySet()) {
 					//update table in DB
@@ -74,8 +75,8 @@ public class JSONSender {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (connection != null)
-					connection.close();
+				if (conn != null)
+					conn.close();
 			} catch (SQLException e) {
 			}
 		}
@@ -83,7 +84,7 @@ public class JSONSender {
 		printToConsole(shuttleList);
 	}
 	
-	private void deleteTable(String tableName) {
+	private static void deleteTable(String tableName) {
 		try {
 			Statement stm = conn.createStatement();
 			String sql = "TRUNCATE TABLE shuttle_eta";

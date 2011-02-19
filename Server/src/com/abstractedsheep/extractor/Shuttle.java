@@ -73,6 +73,7 @@ public class Shuttle {
 
 	public void setStops(HashMap<String, Stop> stops) {
 		this.stops = stops;
+		this.stopETA.clear();
 	}
 
 	public int getSpeed() {
