@@ -13,7 +13,6 @@ public class Shuttle {
 	private int speed;
 	private Point currentLocation;
 	private RouteFinder finder;
-	private static int routeID;
 
 	// Jackson requires a constructor with no parameters to be available
 	// Also notice 'this.' preceding the variables, this makes it clear that the
@@ -32,7 +31,6 @@ public class Shuttle {
 		this.currentLocation = new Point();
 		this.speedList = new ArrayList<Integer>();
 		finder = new RouteFinder(rt);
-		routeID = 1;
 	}
 
 	// This constructor is not required by Jackson, but it makes manually
@@ -50,7 +48,6 @@ public class Shuttle {
 		this.speed = 0;
 		this.currentLocation = new Point();
 		finder = new RouteFinder(rt);
-		routeID = 1;
 	}
 
 	// Jackson will not work unless all of the variables have accessors and
@@ -85,7 +82,7 @@ public class Shuttle {
 	public void setSpeed(int newSpd) {
 		if(speedList.size() > 10)
 			speedList.remove(0);
-		speedList.add(newSpd);
+		speedList.add((newSpd < 20) ? 20 : newSpd);
 		int count = 0;
 		
 		for(int s : speedList) {
@@ -130,7 +127,7 @@ public class Shuttle {
 	// These next two methods are not required by Jackson
 	// They are here to add data to stops
 	public void addStop(String stopName, Stop p) {
-		if (p.getRouteMap().containsKey(routeID))
+		if (p.getRouteMap().containsKey(this.getRouteId()))
 			stops.put(stopName, p);
 	}
 
@@ -304,12 +301,10 @@ public class Shuttle {
 
 			if (distanceArray[0] != distanceArray[1]) {
 				this.foundRoute = true;
-				routeID = (distanceArray[0] < distanceArray[1]) ? routeList
-						.get(0).getIdNum() : routeList.get(1).getIdNum();
-				closestRouteCoor = (distanceArray[0] < distanceArray[1]) ? locationArray[0]
+				this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ? locationArray[0]
 						: locationArray[1];
-				indexOfClosestCoordinate = indexArray[routeID - 1] - 2;
 				this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
+				this.indexOfClosestCoordinate = indexArray[this.getRouteID() - 1] - 2;
 			}
 		}
 
@@ -325,7 +320,7 @@ public class Shuttle {
 			double distance = 0.0, distanceToTravel = 0.0;
 			for (Route rt : routeList) {
 
-				if (rt.getIdNum() == routeID) {
+				//if (rt.getIdNum() == routeID) {
 					list = rt.getCoordinateList();
 					int index = indexOfClosestCoordinate;
 					int count = 0;
@@ -342,7 +337,7 @@ public class Shuttle {
 								list.get(index - 1)) + .003;
 						index++;
 					}
-				}
+			//	}
 			}
 			return distanceToTravel;
 		}
