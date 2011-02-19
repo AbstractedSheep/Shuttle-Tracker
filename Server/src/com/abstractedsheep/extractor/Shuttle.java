@@ -72,7 +72,10 @@ public class Shuttle {
 	}
 
 	public void setStops(HashMap<String, Stop> stops) {
-		this.stops = stops;
+		if(!finder.changeRoute()) {
+			this.stops = stops;
+			this.stopETA.clear();
+		}
 	}
 
 	public int getSpeed() {
@@ -82,7 +85,7 @@ public class Shuttle {
 	public void setSpeed(int newSpd) {
 		if(speedList.size() > 10)
 			speedList.remove(0);
-		speedList.add((newSpd < 20) ? 20 : newSpd);
+		speedList.add((newSpd < 1) ? 1 : newSpd);
 		int count = 0;
 		
 		for(int s : speedList) {
@@ -148,13 +151,16 @@ public class Shuttle {
 		// it might be better to save the times in a HashMap as it may make
 		// writing to a file easier.
 		Point p = null;
+		int count = 0;
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(p);
-			int time = (int) ((distance / (double)this.speed) * 3600000);
-			//System.out.println((double) ((double)time * (1.667 * Math.pow(10, -5))));
+			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000 +
+						(count * 30 * 00);
+			System.out.println((double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
+			count++;
 		}
 	}
 
@@ -268,6 +274,10 @@ public class Shuttle {
 		public String getRouteName() {
 			return routeList.get(0).getRouteName();
 		}
+		
+		public boolean changeRoute() {
+			return this.foundRoute;
+		}
 
 		private void determineRouteOfShuttle() {
 			// using the given routes, determine which route the
@@ -299,12 +309,12 @@ public class Shuttle {
 			if (foundRoute)
 				return;
 
-			if (distanceArray[0] != distanceArray[1]) {
+			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006) {
 				this.foundRoute = true;
 				this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ? locationArray[0]
 						: locationArray[1];
 				this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
-				this.indexOfClosestCoordinate = indexArray[this.getRouteID() - 1] - 2;
+				this.indexOfClosestCoordinate = indexArray[this.getRouteID() - 1];
 			}
 		}
 
@@ -322,9 +332,9 @@ public class Shuttle {
 
 				//if (rt.getIdNum() == routeID) {
 					list = rt.getCoordinateList();
-					int index = indexOfClosestCoordinate;
+					int index = indexOfClosestCoordinate + 1;
 					int count = 0;
-					distanceToTravel = calculateDistance(list.get(index));
+					distanceToTravel = calculateDistance(list.get(index - 1));
 					for (count = 0; count <= list.size(); count++) {
 						if (index > list.size() - 1)
 							index = 1;
@@ -332,7 +342,7 @@ public class Shuttle {
 						// distance between this coordinate and the stop is
 						// greater than 15 ft
 						if (distance <= .006)
-							break;
+							return distanceToTravel;
 						distanceToTravel += calculateDistance(list.get(index),
 								list.get(index - 1)) + .003;
 						index++;

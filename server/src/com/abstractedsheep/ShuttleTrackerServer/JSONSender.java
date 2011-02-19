@@ -18,16 +18,18 @@ import com.abstractedsheep.extractor.Shuttle;
  * 
  */
 public class JSONSender {
-	private Connection conn;
+	private static Connection conn;
 	
-	private void connectToDatabase() throws InstantiationException, IllegalAccessException,
+	private static void connectToDatabase() throws InstantiationException, IllegalAccessException,
 											ClassNotFoundException, IOException, SQLException {
 		String driver = "com.mysql.jdbc.Driver";
 		String[] args = null;
 		
 		Class.forName(driver).newInstance();
 		args = getArgumentsFromPropertiesFile("sts.properties");
-		this.conn = DriverManager.getConnection(args[0], args[1], args[2]);
+		conn = DriverManager.getConnection(args[0], args[1], args[2]);
+		
+		deleteTable(args[2]);
 	}
 	
 	/**
@@ -36,17 +38,16 @@ public class JSONSender {
 	 * @param shuttleList
 	 */
 	public static void saveToDatabase(HashSet<Shuttle> shuttleList) {
-		String driver = "com.mysql.jdbc.Driver";
-		Connection connection = null;
-		String[] args = null;
-		// System.out.println((new File("sts.properties").getAbsolutePath()));
-		
+//		String driver = "com.mysql.jdbc.Driver";
+//		Connection connection = null;
+//		String[] args = null;
 		try {
-			Class.forName(driver).newInstance();
-			args = getArgumentsFromPropertiesFile("sts.properties");
-			connection = DriverManager.getConnection(args[0], args[1], args[2]);
+			connectToDatabase();
+//			Class.forName(driver).newInstance();
+//			args = getArgumentsFromPropertiesFile("sts.properties");
+//			connection = DriverManager.getConnection(args[0], args[1], args[2]);
 			System.out.println("Connected to database");
-			Statement stmt = connection.createStatement();
+			Statement stmt = conn.createStatement();
 			for (Shuttle shuttle : shuttleList) {
 				for (String stop : shuttle.getStopETA().keySet()) {
 					//update table in DB
@@ -54,17 +55,19 @@ public class JSONSender {
 							+ getTimeStamp(shuttle.getStopETA().get(stop))
 							+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
 							+ " AND stop_id = '"
-							+ shuttle.getStops().get(stop).getShortName() + "'";
+							+ shuttle.getStops().get(stop).getShortName() + "' AND route = '" +
+							shuttle.getRouteId() + "'";
 					int updateCount = stmt.executeUpdate(sql);
 
 					if (updateCount == 0) {
-						String insertHeader = "INSERT INTO shuttle_eta (shuttle_id, stop_id, eta)\n";
+						String insertHeader = "INSERT INTO shuttle_eta (shuttle_id, stop_id, eta, route)\n";
 						String interValues = "VALUES ("
 								+ shuttle.getShuttleId() + ",'"
 								+ shuttle.getStops().get(stop).getShortName()
 								+ "','"
 								+ getTimeStamp(shuttle.getStopETA().get(stop))
-								+ "')";
+								+ "', '"
+								+ shuttle.getRouteId() + "')";
 						stmt.executeUpdate(insertHeader + interValues);
 					}
 				}
@@ -74,8 +77,8 @@ public class JSONSender {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (connection != null)
-					connection.close();
+				if (conn != null)
+					conn.close();
 			} catch (SQLException e) {
 			}
 		}
@@ -83,7 +86,7 @@ public class JSONSender {
 		printToConsole(shuttleList);
 	}
 	
-	private void deleteTable(String tableName) {
+	private static void deleteTable(String tableName) {
 		try {
 			Statement stm = conn.createStatement();
 			String sql = "TRUNCATE TABLE shuttle_eta";
@@ -96,7 +99,7 @@ public class JSONSender {
 		for(Shuttle shuttle : shuttleList) {
 			System.out.println(shuttle.getName() + " " + shuttle.getShuttleId() + " " + shuttle.getRouteName() + " " + shuttle.getRouteId());
 			for(String name : shuttle.getStopETA().keySet()) {
-				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name)));
+				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name)) + " " + (shuttle.getStopETA().get(name)) / (1000 * 60));
 			}
 		}
 	}
