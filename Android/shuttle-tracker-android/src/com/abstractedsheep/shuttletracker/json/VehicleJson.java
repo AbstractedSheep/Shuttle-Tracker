@@ -32,7 +32,14 @@ public class VehicleJson {
 		private String name;
 		private Latest_Position latest_position;
 		private Icon icon;
+		private int route_id;
 		
+		public int getRoute_id() {
+			return route_id;
+		}
+		public void setRoute_id(int route_id) {
+			this.route_id = route_id;
+		}
 		public static class Latest_Position {
 			private int heading;
 			private double latitude;

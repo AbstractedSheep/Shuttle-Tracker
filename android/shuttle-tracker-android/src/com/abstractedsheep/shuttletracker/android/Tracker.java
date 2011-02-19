@@ -55,7 +55,7 @@ public class Tracker extends MapActivity {
 	private MapView map;
 	private Thread updateThread;
 	public boolean threadLock = false;
-	private DirectionalItemizedOverlay shuttlesOverlay;
+	private VehicleItemizedOverlay shuttlesOverlay;
 	private LocationOverlay myLocationOverlay;
 	private StopsItemizedOverlay stopsOverlay;
 	private boolean runUpdateShuttles;
@@ -109,7 +109,7 @@ public class Tracker extends MapActivity {
     		map.getOverlays().add(routesOverlay);
         }
         
-        shuttlesOverlay = new DirectionalItemizedOverlay(getResources().getDrawable(R.drawable.shuttle), map);
+        shuttlesOverlay = new VehicleItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_color), map);
         map.getOverlays().add(shuttlesOverlay);
         
         stopsOverlay.addAllStops(routes.getStops());
@@ -221,10 +221,10 @@ public class Tracker extends MapActivity {
 				}
 				
 				if (vehicles != null) {
-					shuttlesOverlay.removeAllOverlays();
+					shuttlesOverlay.removeAllVehicles();
 		        
 		        	for (VehicleJson v : vehicles) {
-		        		shuttlesOverlay.addOverlay(v.toOverlayItem());
+		        		shuttlesOverlay.addVehicle(v.getVehicle());
 		        	}
 				}
 				
