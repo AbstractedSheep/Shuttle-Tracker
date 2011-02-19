@@ -96,7 +96,7 @@ public class JSONSender {
 		for(Shuttle shuttle : shuttleList) {
 			System.out.println(shuttle.getName() + " " + shuttle.getShuttleId() + " " + shuttle.getRouteName() + " " + shuttle.getRouteId());
 			for(String name : shuttle.getStopETA().keySet()) {
-				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name)));
+				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name)) + " " + (shuttle.getStopETA().get(name)) / (1000 * 60));
 			}
 		}
 	}

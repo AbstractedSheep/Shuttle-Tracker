@@ -155,7 +155,7 @@ public class Shuttle {
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(p);
-			int time = (int) ((distance / this.speed) * 3600000);
+			int time = (int) ((distance / (double)this.speed) * 3600000);
 			//System.out.println((double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
 		}
@@ -309,7 +309,7 @@ public class Shuttle {
 				closestRouteCoor = (distanceArray[0] < distanceArray[1]) ? locationArray[0]
 						: locationArray[1];
 				indexOfClosestCoordinate = indexArray[routeID - 1] - 2;
-				this.routeList.remove(routeID - 1);
+				this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
 			}
 		}
 
@@ -336,10 +336,10 @@ public class Shuttle {
 						distance = calculateDistance(list.get(index), stop);
 						// distance between this coordinate and the stop is
 						// greater than 15 ft
-						if (distance <= .003)
+						if (distance <= .006)
 							break;
 						distanceToTravel += calculateDistance(list.get(index),
-								list.get(index - 1));
+								list.get(index - 1)) + .003;
 						index++;
 					}
 				}
