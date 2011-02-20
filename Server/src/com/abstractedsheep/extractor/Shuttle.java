@@ -85,7 +85,7 @@ public class Shuttle {
 	public void setSpeed(int newSpd) {
 		if(speedList.size() > 10)
 			speedList.remove(0);
-		speedList.add((newSpd < 1) ? 1 : newSpd);
+		speedList.add((newSpd < 10) ? 10 : newSpd);
 		int count = 0;
 		
 		for(int s : speedList) {
@@ -158,7 +158,7 @@ public class Shuttle {
 			double distance = finder.getDistanceToStop(p);
 			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000 +
 						(count * 30 * 00);
-			System.out.println((double) ((double)time * (1.667 * Math.pow(10, -5))));
+			//System.out.println((double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
 			count++;
 		}
