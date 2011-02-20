@@ -8,7 +8,7 @@
 
 #import "MainViewController_iPhone.h"
 #import "MapViewController.h"
-#import "../EtaViewController.h"
+#import "EtasViewController.h"
 
 
 @implementation MainViewController_iPhone
@@ -48,10 +48,10 @@
     MapViewController *mapViewController = [[MapViewController alloc] init];
     mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:nil tag:0];
     
-    EtaViewController *etaViewController = [[EtaViewController alloc] init];
-    etaViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs" image:nil tag:1];
+    EtasViewController *etasViewController = [[EtasViewController alloc] init];
+    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs" image:nil tag:1];
     
-    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etaViewController, nil];
+    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, nil];
     [self.view addSubview:tabBarController.view];
     
 }
