@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "DataManager.h"
 
-
 @interface MainViewController : UIViewController {
     DataManager *dataManager;
+    
+    NSTimer *vehicleUpdateTimer;
     
 }
 

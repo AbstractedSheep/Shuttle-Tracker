@@ -8,12 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
+#import "DataManager.h"
 
 
 @class KMLParser, JSONParser;
 
 @interface MapViewController : UIViewController <MKMapViewDelegate> {
 	MKMapView *_mapView;
+    
+    DataManager *dataManager;
+    
     KMLParser *routeKmlParser;
     KMLParser *vehiclesKmlParser;
     JSONParser *vehiclesJSONParser;
@@ -31,5 +35,8 @@
     NSTimer *vehicleUpdateTimer;
     
 }
+
+@property (nonatomic, assign) DataManager *dataManager;
+
 
 @end
