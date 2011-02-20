@@ -34,6 +34,7 @@
 		DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA8E13119C3800EDE54E /* DataManager.m */; };
 		DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA951311A2F100EDE54E /* MainViewController.m */; };
 		DAB2655512FB5D8900A4C5B7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */; };
+		DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */; };
 		DAE5C9C413063BEC0014AEFE /* MainViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */; };
 /* End PBXBuildFile section */
 
@@ -86,6 +87,8 @@
 		DAA0DA941311A2F100EDE54E /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		DAA0DA951311A2F100EDE54E /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		DAC9AB3B1311AF85008E8555 /* EtaWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaWrapper.h; sourceTree = "<group>"; };
+		DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
 		DAE5C9C213063BEC0014AEFE /* MainViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController_iPhone.h; sourceTree = "<group>"; };
 		DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController_iPhone.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -162,11 +165,13 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				32CA4F630368D1EE00C91783 /* Shuttle_Tracker_Prefix.pch */,
 				DAA0DA8D13119C3800EDE54E /* DataManager.h */,
 				DAA0DA8E13119C3800EDE54E /* DataManager.m */,
+				DAC9AB3B1311AF85008E8555 /* EtaWrapper.h */,
+				DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */,
 				DAA0DA941311A2F100EDE54E /* MainViewController.h */,
 				DAA0DA951311A2F100EDE54E /* MainViewController.m */,
-				32CA4F630368D1EE00C91783 /* Shuttle_Tracker_Prefix.pch */,
 				DA31240012FDC69C00F90B79 /* KMLParser.h */,
 				DA750B8B12F4CC7D00190FA3 /* KMLParser.m */,
 				DA14A837130C89B100F497B5 /* EtaViewController.h */,
@@ -336,6 +341,7 @@
 				DA14A839130C89B100F497B5 /* EtaViewController.m in Sources */,
 				DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */,
 				DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */,
+				DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
