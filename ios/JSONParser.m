@@ -34,6 +34,11 @@
 
 
 - (BOOL)parse {
+    return [self parseShuttles];
+}
+
+
+- (BOOL)parseShuttles {
     NSError *theError = nil;
     NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
     NSDictionary *jsonDict = nil;
@@ -100,6 +105,56 @@
     return NO;
 }
 
+- (BOOL)parseETAs {
+    NSError *theError = nil;
+    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
+    NSDictionary *jsonDict = nil;
+    
+    [ETAs release];
+    
+    ETAs = [[NSMutableArray alloc] init];
+    
+    if (theError) {
+        NSLog(@"Error retrieving JSON data");
+        
+        return NO;
+    } else {
+        if (jsonString) {
+            jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
+        } else {
+            jsonDict = nil;
+        }
+        
+        //        NSLog(@"Dict: %@", jsonDict);
+        
+        for (NSDictionary *dict in jsonDict) {
+            EtaWrapper *eta = [[EtaWrapper alloc] init];
+            
+            for (NSString *string in dict) {
+                if ([string isEqualToString:@"shuttle_id"]) {
+                    eta.shuttleId = [dict objectForKey:string];
+                } else if ([string isEqualToString:@"stop_id"]) {
+                    eta.stopId = [dict objectForKey:string];
+                } else if ([string isEqualToString:@"eta"]) {
+                    NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+                    dateFormatter.dateFormat = @"yyyy-MM-dd hh:mm:ss";
+                    
+                    eta.etaTime = [dateFormatter dateFromString:[dict objectForKey:string]];
+                } else if ([string isEqualToString:@"route"]) {
+                    eta.route = [[dict objectForKey:string] intValue];
+                }
+            }
+            
+            [ETAs addObject:eta];
+            [eta release];
+        }
+        
+        return YES;
+    }
+    
+    return NO;
+}
+
 
 - (void)dealloc {
     [super dealloc];
@@ -109,13 +164,11 @@
 @end
 
 
-@implementation JSONVehicle
+@implementation JSONPlacemark
 
 @synthesize name;
 @synthesize description;
 @synthesize coordinate;
-@synthesize ETAs;
-@synthesize heading;
 @synthesize annotationView;
 
 
@@ -123,11 +176,8 @@
     if ((self = [super init])) {
         name = nil;
         description = nil;
-        ETAs = nil;
-        
-        heading = 0;
     }
-
+    
     return self;
 }
 
@@ -137,6 +187,43 @@
 
 - (NSString *)subtitle {
 	return description;
+}
+
+
+@end
+
+
+@implementation JSONStop
+
+@synthesize idTag;
+
+
+- (id)init {
+    if ((self = [super init])) {
+        name = nil;
+        description = nil;
+    }
+    
+    return self;
+}
+
+@end
+
+
+@implementation JSONVehicle
+
+@synthesize heading;
+
+
+- (id)init {
+    if ((self = [super init])) {
+        name = nil;
+        description = nil;
+        
+        heading = 0;
+    }
+
+    return self;
 }
 
 
