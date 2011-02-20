@@ -12,14 +12,19 @@
 
 @interface JSONParser : NSObject {
     NSMutableArray *vehicles;
+    NSMutableArray *ETAs;
     
     NSURL *jsonUrl;
 }
 
 @property (nonatomic, retain) NSMutableArray *vehicles;
+@property (nonatomic, retain) NSMutableArray *ETAs;
+
 
 - (id)initWithUrl:(NSURL *)url;
 - (BOOL)parse;
+- (BOOL)parseShuttles;
+- (BOOL)parseEtas;
 
 
 @end
