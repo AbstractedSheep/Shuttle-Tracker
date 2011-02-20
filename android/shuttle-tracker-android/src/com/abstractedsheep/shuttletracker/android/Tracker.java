@@ -107,9 +107,10 @@ public class Tracker extends MapActivity {
     			routesOverlay.addPoint(new GeoPoint((int)(c.getLatitude() * 1e6), (int)(c.getLongitude() * 1e6)));
     		}
     		map.getOverlays().add(routesOverlay);
-        }
+        }        
         
         shuttlesOverlay = new VehicleItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_color), map);
+        shuttlesOverlay.putRoutes(routes.getRoutes());
         map.getOverlays().add(shuttlesOverlay);
         
         stopsOverlay.addAllStops(routes.getStops());
@@ -213,7 +214,7 @@ public class Tracker extends MapActivity {
 			while (runUpdateShuttles) {
 				threadLock = true;
 				
-				ArrayList<VehicleJson> vehicles = parseShuttleJson("http://shuttles.rpi.edu/vehicles/current.js");
+				ArrayList<VehicleJson> vehicles = parseShuttleJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions");
 				ArrayList<EtaJson> etas = parseEtaJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_next_eta");
 				
 				if (etas != null) {
@@ -224,7 +225,7 @@ public class Tracker extends MapActivity {
 					shuttlesOverlay.removeAllVehicles();
 		        
 		        	for (VehicleJson v : vehicles) {
-		        		shuttlesOverlay.addVehicle(v.getVehicle());
+		        		shuttlesOverlay.addVehicle(v);
 		        	}
 				}
 				

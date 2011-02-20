@@ -21,7 +21,6 @@
 package com.abstractedsheep.shuttletracker.android;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -30,7 +29,6 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Projection;
 
@@ -38,7 +36,6 @@ import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 
 public class DirectionalItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
 
-	private HashMap<Integer, RoutesJson.Route> routes;
 	private ArrayList<DirectionalOverlayItem> overlays = new ArrayList<DirectionalOverlayItem>();
 	private Drawable marker;
 	

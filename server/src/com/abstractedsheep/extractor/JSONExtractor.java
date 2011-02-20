@@ -197,6 +197,7 @@ public class JSONExtractor {
 			if (shuttle.equals(s)) {
 				s2 = shuttle;
 				s2.setCurrentLocation(s.getCurrentLocation());
+				s2.setStops(s.getStops());
 				shuttleList.remove(s);
 				break;
 			}

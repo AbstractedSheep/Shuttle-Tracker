@@ -32,7 +32,6 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.google.android.maps.GeoPoint;
@@ -45,8 +44,8 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 
 	private static final int MAGENTA = Color.rgb(255, 0, 255);
 	
-	private HashMap<Integer, RoutesJson.Route> routes;
-	private ArrayList<VehicleJson.Vehicle> vehicles = new ArrayList<VehicleJson.Vehicle>();
+	private HashMap<Integer, RoutesJson.Route> routes = new HashMap<Integer, RoutesJson.Route>();
+	private ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
 	private Drawable marker;
 	
 	public VehicleItemizedOverlay(Drawable defaultMarker, MapView mapView) {
@@ -54,7 +53,7 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		this.marker = boundCenter(defaultMarker);
 	}
 
-	public void addVehicle(VehicleJson.Vehicle vehicle) {
+	public void addVehicle(VehicleJson vehicle) {
 		synchronized (vehicles) {
 			vehicles.add(vehicle);
 		    populate();
@@ -78,9 +77,9 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 
 	@Override
 	protected DirectionalOverlayItem createItem(int i) {
-		VehicleJson.Vehicle v = vehicles.get(i);
-		GeoPoint gp = new GeoPoint((int)(v.getLatest_position().getLatitude() * 1e6), (int)(v.getLatest_position().getLongitude() * 1e6));
-		return new DirectionalOverlayItem(gp, v.getLatest_position().getHeading(), v.getName(), "");
+		VehicleJson v = vehicles.get(i);
+		GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
+		return new DirectionalOverlayItem(gp, v.getHeading(), "", "");
 	}
 
 	@Override
@@ -106,14 +105,14 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		Bitmap tempBitmap;
 
 		synchronized (vehicles) {
-			for (VehicleJson.Vehicle v : vehicles) {	
-				GeoPoint gp = new GeoPoint((int)(v.getLatest_position().getLatitude() * 1e6), (int)(v.getLatest_position().getLongitude() * 1e6));
+			for (VehicleJson v : vehicles) {	
+				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
 				pt = p.toPixels(gp, null);
 
 				rotate.reset();
-				rotate.postRotate(v.getLatest_position().getHeading(), bitmap.getWidth(), bitmap.getHeight() / 2);
+				rotate.postRotate(v.getHeading(), bitmap.getWidth(), bitmap.getHeight() / 2);
 				
-				if (v.getLatest_position().getHeading() > 180)
+				if (v.getHeading() > 180)
 					tempBitmap = Bitmap.createBitmap(flippedBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
 				else
 					tempBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
