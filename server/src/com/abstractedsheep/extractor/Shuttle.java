@@ -158,7 +158,7 @@ public class Shuttle {
 			double distance = finder.getDistanceToStop(p);
 			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000 +
 						(count * 30 * 00);
-			//System.out.println((double) ((double)time * (1.667 * Math.pow(10, -5))));
+//			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
 			count++;
 		}
@@ -336,12 +336,12 @@ public class Shuttle {
 					int count = 0;
 					distanceToTravel = calculateDistance(list.get(index - 1));
 					for (count = 0; count <= list.size(); count++) {
-						if (index > list.size() - 1)
+						if (index >= list.size())
 							index = 1;
-						distance = calculateDistance(list.get(index), stop);
+						distance = calculateDistance(list.get(index - 1), stop);
 						// distance between this coordinate and the stop is
 						// greater than 15 ft
-						if (distance <= .006)
+						if (distance <= .01)
 							return distanceToTravel;
 						distanceToTravel += calculateDistance(list.get(index),
 								list.get(index - 1)) + .003;
