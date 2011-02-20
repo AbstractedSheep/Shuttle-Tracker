@@ -24,6 +24,7 @@
 		DA1154A1130B5BA50004E7D0 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115495130B5BA50004E7D0 /* CJSONDeserializer.m */; };
 		DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115497130B5BA50004E7D0 /* CJSONScanner.m */; };
 		DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115499130B5BA50004E7D0 /* CJSONSerializer.m */; };
+		DA215D571311B7ED00CBEF62 /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA215D561311B7ED00CBEF62 /* EtasViewController.m */; };
 		DA346F0D13060D75004A0B93 /* shuttle_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DA346F0C13060D75004A0B93 /* shuttle_icon.png */; };
 		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
 		DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B7512F4C84700190FA3 /* MapViewController.m */; };
@@ -70,6 +71,8 @@
 		DA115498130B5BA50004E7D0 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
 		DA115499130B5BA50004E7D0 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
 		DA11549A130B5BA50004E7D0 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
+		DA215D551311B7ED00CBEF62 /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EtasViewController.h; path = "Shuttle-Tracker.xcodeproj/EtasViewController.h"; sourceTree = "<group>"; };
+		DA215D561311B7ED00CBEF62 /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EtasViewController.m; path = "Shuttle-Tracker.xcodeproj/EtasViewController.m"; sourceTree = "<group>"; };
 		DA31240012FDC69C00F90B79 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = KMLParser.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DA346F0C13060D75004A0B93 /* shuttle_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_icon.png; sourceTree = "<group>"; };
 		DA750B7012F4C7D700190FA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -165,6 +168,8 @@
 				32CA4F630368D1EE00C91783 /* Shuttle_Tracker_Prefix.pch */,
 				DAA0DA8D13119C3800EDE54E /* DataManager.h */,
 				DAA0DA8E13119C3800EDE54E /* DataManager.m */,
+				DA215D551311B7ED00CBEF62 /* EtasViewController.h */,
+				DA215D561311B7ED00CBEF62 /* EtasViewController.m */,
 				DAC9AB3B1311AF85008E8555 /* EtaWrapper.h */,
 				DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */,
 				DAA0DA941311A2F100EDE54E /* MainViewController.h */,
@@ -336,6 +341,7 @@
 				DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */,
 				DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */,
 				DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */,
+				DA215D571311B7ED00CBEF62 /* EtasViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

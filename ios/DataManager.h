@@ -11,7 +11,7 @@
 #import "JSONParser.h"
 
 
-@interface DataManager : NSObject <UITableViewDataSource> {
+@interface DataManager : NSObject {
     NSURL *shuttleJSONUrl;
     
     KMLParser *routeKmlParser;

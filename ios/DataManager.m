@@ -103,30 +103,4 @@
 }
 
 
-#pragma mark TableViewDataSource methods
-
-//  Section for each route
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return nil;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (section == 0)
-        return @"East Route";
-    else if (section == 1)
-        return @"West Route";
-    else
-        return @"Unknown";
-    
-}
-
-
 @end
