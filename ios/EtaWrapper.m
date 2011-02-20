@@ -11,4 +11,10 @@
 
 @implementation EtaWrapper
 
+@synthesize shuttleId;
+@synthesize stopId;
+@synthesize ETA;
+@synthesize route;
+
+
 @end
