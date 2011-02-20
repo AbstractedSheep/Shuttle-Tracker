@@ -48,6 +48,8 @@
     if (vehicleUpdateTimer) {
         [vehicleUpdateTimer invalidate];
     }
+    
+    [super dealloc];
 }
 
 - (void)routeKmlLoaded {

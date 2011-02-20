@@ -24,7 +24,6 @@
 		DA1154A1130B5BA50004E7D0 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115495130B5BA50004E7D0 /* CJSONDeserializer.m */; };
 		DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115497130B5BA50004E7D0 /* CJSONScanner.m */; };
 		DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115499130B5BA50004E7D0 /* CJSONSerializer.m */; };
-		DA14A839130C89B100F497B5 /* EtaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA14A838130C89B100F497B5 /* EtaViewController.m */; };
 		DA346F0D13060D75004A0B93 /* shuttle_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DA346F0C13060D75004A0B93 /* shuttle_icon.png */; };
 		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
 		DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B7512F4C84700190FA3 /* MapViewController.m */; };
@@ -71,8 +70,6 @@
 		DA115498130B5BA50004E7D0 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
 		DA115499130B5BA50004E7D0 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
 		DA11549A130B5BA50004E7D0 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
-		DA14A837130C89B100F497B5 /* EtaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaViewController.h; sourceTree = "<group>"; };
-		DA14A838130C89B100F497B5 /* EtaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaViewController.m; sourceTree = "<group>"; };
 		DA31240012FDC69C00F90B79 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = KMLParser.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DA346F0C13060D75004A0B93 /* shuttle_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_icon.png; sourceTree = "<group>"; };
 		DA750B7012F4C7D700190FA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -174,8 +171,6 @@
 				DAA0DA951311A2F100EDE54E /* MainViewController.m */,
 				DA31240012FDC69C00F90B79 /* KMLParser.h */,
 				DA750B8B12F4CC7D00190FA3 /* KMLParser.m */,
-				DA14A837130C89B100F497B5 /* EtaViewController.h */,
-				DA14A838130C89B100F497B5 /* EtaViewController.m */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				DA750B7412F4C84700190FA3 /* MapViewController.h */,
 				DA750B7512F4C84700190FA3 /* MapViewController.m */,
@@ -338,7 +333,6 @@
 				DA1154A1130B5BA50004E7D0 /* CJSONDeserializer.m in Sources */,
 				DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */,
 				DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */,
-				DA14A839130C89B100F497B5 /* EtaViewController.m in Sources */,
 				DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */,
 				DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */,
 				DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */,
