@@ -109,14 +109,52 @@
 @end
 
 
-@implementation JSONVehicle
+@implementation JSONPlacemark
 
 @synthesize name;
 @synthesize description;
 @synthesize coordinate;
+@synthesize annotationView;
+
+- (id)init {
+    if ((self = [super init])) {
+        name = nil;
+        description = nil;
+    }
+    
+    return self;
+}
+
+- (NSString *)title {
+	return name;
+}
+
+- (NSString *)subtitle {
+	return description;
+}
+
+
+@end
+
+@implementation JSONStop
+
+
+- (id)init {
+    if ((self = [super init])) {
+        name = nil;
+        description = nil;
+    }
+    
+    return self;
+}
+
+@end
+
+
+@implementation JSONVehicle
+
 @synthesize ETAs;
 @synthesize heading;
-@synthesize annotationView;
 
 
 - (id)init {
@@ -129,14 +167,6 @@
     }
 
     return self;
-}
-
-- (NSString *)title {
-	return name;
-}
-
-- (NSString *)subtitle {
-	return description;
 }
 
 
