@@ -55,17 +55,19 @@ public class JSONSender {
 							+ getTimeStamp(shuttle.getStopETA().get(stop))
 							+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
 							+ " AND stop_id = '"
-							+ shuttle.getStops().get(stop).getShortName() + "'";
+							+ shuttle.getStops().get(stop).getShortName() + "' AND route = '" +
+							shuttle.getRouteId() + "'";
 					int updateCount = stmt.executeUpdate(sql);
 
 					if (updateCount == 0) {
-						String insertHeader = "INSERT INTO shuttle_eta (shuttle_id, stop_id, eta)\n";
+						String insertHeader = "INSERT INTO shuttle_eta (shuttle_id, stop_id, eta, route)\n";
 						String interValues = "VALUES ("
 								+ shuttle.getShuttleId() + ",'"
 								+ shuttle.getStops().get(stop).getShortName()
 								+ "','"
 								+ getTimeStamp(shuttle.getStopETA().get(stop))
-								+ "')";
+								+ "', '"
+								+ shuttle.getRouteId() + "')";
 						stmt.executeUpdate(insertHeader + interValues);
 					}
 				}

@@ -2,9 +2,6 @@ package com.abstractedsheep.shuttletracker.json;
 
 import java.util.ArrayList;
 
-import android.graphics.Color;
-
-import com.abstractedsheep.kml.Style;
 import com.abstractedsheep.shuttletracker.android.DirectionalOverlayItem;
 import com.google.android.maps.GeoPoint;
 
@@ -87,15 +84,6 @@ public class RoutesJson {
 		private String name;
 		public String getColor() {
 			return color;
-		}
-		
-		public int getColorInt() {
-			int[] colors = Style.hexStringToByteArray(color.substring(1));
-			
-			if (colors.length == 4)
-				return Color.argb(colors[0], colors[3], colors[2], colors[1]);
-			else
-				return Color.rgb(colors[0], colors[1], colors[2]);
 		}
 
 		public void setColor(String color) {
