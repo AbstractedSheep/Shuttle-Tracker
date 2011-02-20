@@ -31,6 +31,9 @@
 		DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */ = {isa = PBXBuildFile; fileRef = DA750B8812F4CB7600190FA3 /* netlink.kml */; };
 		DA750B8C12F4CC7D00190FA3 /* KMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B8B12F4CC7D00190FA3 /* KMLParser.m */; };
 		DA8249651306F331004FBB50 /* JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DA8249641306F331004FBB50 /* JSONParser.m */; };
+		DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA8E13119C3800EDE54E /* DataManager.m */; };
+		DAA0DA9313119C6E00EDE54E /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA9213119C6E00EDE54E /* EtaWrapper.m */; };
+		DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA951311A2F100EDE54E /* MainViewController.m */; };
 		DAB2655512FB5D8900A4C5B7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */; };
 		DAE5C9C413063BEC0014AEFE /* MainViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */; };
 /* End PBXBuildFile section */
@@ -79,6 +82,12 @@
 		DA750B8B12F4CC7D00190FA3 /* KMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = KMLParser.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DA8249631306F331004FBB50 /* JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONParser.h; sourceTree = "<group>"; };
 		DA8249641306F331004FBB50 /* JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONParser.m; sourceTree = "<group>"; };
+		DAA0DA8D13119C3800EDE54E /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; path = DataManager.h; sourceTree = "<group>"; };
+		DAA0DA8E13119C3800EDE54E /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
+		DAA0DA9113119C6E00EDE54E /* EtaWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaWrapper.h; sourceTree = "<group>"; };
+		DAA0DA9213119C6E00EDE54E /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
+		DAA0DA941311A2F100EDE54E /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		DAA0DA951311A2F100EDE54E /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DAE5C9C213063BEC0014AEFE /* MainViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController_iPhone.h; sourceTree = "<group>"; };
 		DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController_iPhone.m; sourceTree = "<group>"; };
@@ -156,6 +165,12 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				DAA0DA8D13119C3800EDE54E /* DataManager.h */,
+				DAA0DA8E13119C3800EDE54E /* DataManager.m */,
+				DAA0DA941311A2F100EDE54E /* MainViewController.h */,
+				DAA0DA951311A2F100EDE54E /* MainViewController.m */,
+				DAA0DA9113119C6E00EDE54E /* EtaWrapper.h */,
+				DAA0DA9213119C6E00EDE54E /* EtaWrapper.m */,
 				32CA4F630368D1EE00C91783 /* Shuttle_Tracker_Prefix.pch */,
 				DA31240012FDC69C00F90B79 /* KMLParser.h */,
 				DA750B8B12F4CC7D00190FA3 /* KMLParser.m */,
@@ -324,6 +339,9 @@
 				DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */,
 				DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */,
 				DA14A839130C89B100F497B5 /* EtaViewController.m in Sources */,
+				DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */,
+				DAA0DA9313119C6E00EDE54E /* EtaWrapper.m in Sources */,
+				DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

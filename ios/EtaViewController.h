@@ -8,9 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class DataManager;
 
-@interface EtaViewController : UIViewController {
-    NSArray *stops;
+@interface EtaViewController : UITableViewController <UITableViewDelegate> {
+    DataManager *dataManager;
+    UITableView *tableView;
 }
+
+@property (nonatomic, assign) DataManager *dataManager;
+
 
 @end

@@ -7,9 +7,14 @@
 //
 
 #import "EtaViewController.h"
+#import "DataManager.h"
+#import "EtaWrapper.h"
 
 
 @implementation EtaViewController
+
+@synthesize dataManager;
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -35,12 +40,12 @@
 
 #pragma mark - View lifecycle
 
-/*
+
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView
 {
+    
 }
-*/
 
 /*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
