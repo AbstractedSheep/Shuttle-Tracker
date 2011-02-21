@@ -52,7 +52,7 @@ public class JSONSender {
 				for (String stop : shuttle.getStopETA().keySet()) {
 					//update table in DB
 					String sql = "UPDATE shuttle_eta SET eta = '"
-							+ getTimeStamp(shuttle.getStopETA().get(stop))
+							+ shuttle.getStopETA().get(stop)
 							+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
 							+ " AND stop_id = '"
 							+ shuttle.getStops().get(stop).getShortName() + "' AND route = '" +
@@ -65,7 +65,7 @@ public class JSONSender {
 								+ shuttle.getShuttleId() + ",'"
 								+ shuttle.getStops().get(stop).getShortName()
 								+ "','"
-								+ getTimeStamp(shuttle.getStopETA().get(stop))
+								+ shuttle.getStopETA().get(stop)
 								+ "', '"
 								+ shuttle.getRouteId() + "')";
 						stmt.executeUpdate(insertHeader + interValues);
