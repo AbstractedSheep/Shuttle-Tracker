@@ -12,27 +12,29 @@
 
 @interface JSONParser : NSObject {
     NSMutableArray *vehicles;
+    NSMutableArray *ETAs;
     
     NSURL *jsonUrl;
 }
 
 @property (nonatomic, retain) NSMutableArray *vehicles;
+@property (nonatomic, retain) NSMutableArray *ETAs;
+
 
 - (id)initWithUrl:(NSURL *)url;
 - (BOOL)parse;
+- (BOOL)parseShuttles;
+- (BOOL)parseEtas;
 
 
 @end
 
 
-@interface JSONVehicle : NSObject <MKAnnotation> {
+@interface JSONPlacemark : NSObject <MKAnnotation> {
     NSString *name;
     NSString *description;
     
     CLLocationCoordinate2D coordinate;
-    NSDictionary *ETAs;
-    
-    int heading;
     
     MKAnnotationView *annotationView;
     
@@ -43,9 +45,28 @@
 @property (nonatomic, retain) NSString *description;
 @property (nonatomic, readonly) NSString *subtitle;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
+@property (nonatomic, retain) MKAnnotationView *annotationView;
+
+
+@end
+
+
+@interface JSONStop : JSONPlacemark {
+    
+}
+
+
+@end
+
+@interface JSONVehicle : JSONPlacemark {
+    NSDictionary *ETAs;
+    
+    int heading;
+    
+}
+
 @property (nonatomic, retain) NSDictionary *ETAs;
 @property (nonatomic) int heading;
-@property (nonatomic, retain) MKAnnotationView *annotationView;
 
 
 @end
