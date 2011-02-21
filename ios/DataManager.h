@@ -12,11 +12,14 @@
 
 
 @interface DataManager : NSObject {
-    NSURL *shuttleJSONUrl;
+    NSURL *shuttleJsonUrl;
+    NSURL *etasJsonUrl;
     
     KMLParser *routeKmlParser;
     KMLParser *vehiclesKmlParser;
-    JSONParser *vehiclesJSONParser;
+    JSONParser *vehiclesJsonParser;
+    JSONParser *etasJsonParser;
+    
     
     NSArray *routes;
     NSArray *stops;
@@ -25,13 +28,15 @@
     
     NSArray *ETAs;
     
-     NSTimer *vehicleUpdateTimer;
+    NSTimer *vehicleUpdateTimer;
 }
 
 @property (nonatomic, retain) NSArray *routes;
 @property (nonatomic, retain) NSArray *stops;
 @property (nonatomic, retain) NSMutableArray *vehicles;
 @property (nonatomic, retain) NSArray *ETAs;
+
+- (void)updateData;
 
 
 @end

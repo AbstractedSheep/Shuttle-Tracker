@@ -33,6 +33,7 @@
     NSMutableArray *routeLineViews;
     
     NSTimer *vehicleUpdateTimer;
+    NSTimer *etaUpdateTimer;
     
 }
 

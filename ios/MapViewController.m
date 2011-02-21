@@ -13,8 +13,10 @@
 
 @interface MapViewController()
 - (void)routeKmlLoaded;
-- (void)updateVehicleData;
-- (void)vehicleJSONRefresh;
+- (void)refreshVehicleData;
+- (void)refreshEtaData;
+//- (void)updateVehicleData;
+//- (void)vehicleJSONRefresh;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
 - (void)addKmlVehicle:(KMLVehicle *)vehicle;
@@ -77,9 +79,12 @@
     shuttleJSONUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
     vehiclesJSONParser = [[JSONParser alloc] initWithUrl:shuttleJSONUrl];
     
-    vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
+//    vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
+    vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(refreshVehicleData) userInfo:nil repeats:YES];
 }
 
+
+//  TODO: Move into viewDidLoad?
 - (void)routeKmlLoaded {
     [routeKmlParser parse];
     
@@ -99,21 +104,14 @@
     
 }
 
-- (void)updateVehicleData {
-    
-    dispatch_queue_t loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
-    dispatch_async(loadVehicleJsonQueue, ^{
-        if ([vehiclesJSONParser parse]) {
-            [self performSelectorOnMainThread:@selector(vehicleJSONRefresh) withObject:nil waitUntilDone:YES];
-        }
-    });
-    
-}
 
-- (void)vehicleJSONRefresh {
+//  Grab the most recent data from the data manager and use it
+- (void)refreshVehicleData {
     BOOL alreadyAdded = NO;
     
-    for (JSONVehicle *newVehicle in vehiclesJSONParser.vehicles) {
+    NSArray *tmpVehicles = [dataManager.vehicles copy];
+    
+    for (JSONVehicle *newVehicle in tmpVehicles) {
         for (JSONVehicle *existingVehicle in vehicles) {
             if ([existingVehicle.name isEqualToString:newVehicle.name]) {
                 [UIView animateWithDuration:0.5 animations:^{
@@ -130,6 +128,46 @@
         }
     }
 }
+
+
+//  Do nothing as of yet
+- (void)refreshEtaData {
+    
+}
+
+
+//- (void)updateVehicleData {
+//    
+//    dispatch_queue_t loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+//    dispatch_async(loadVehicleJsonQueue, ^{
+//        if ([vehiclesJSONParser parse]) {
+//            [self performSelectorOnMainThread:@selector(vehicleJSONRefresh) withObject:nil waitUntilDone:YES];
+//        }
+//    });
+//    
+//}
+//
+//- (void)vehicleJSONRefresh {
+//    BOOL alreadyAdded = NO;
+//    
+//    for (JSONVehicle *newVehicle in vehiclesJSONParser.vehicles) {
+//        for (JSONVehicle *existingVehicle in vehicles) {
+//            if ([existingVehicle.name isEqualToString:newVehicle.name]) {
+//                [UIView animateWithDuration:0.5 animations:^{
+//                    [existingVehicle setCoordinate:newVehicle.coordinate];
+//                }];
+//                
+//                alreadyAdded = YES;
+//            }
+//        }
+//        
+//        if (!alreadyAdded) {
+//            [vehicles addObject:newVehicle];
+//            [self addJsonVehicle:newVehicle];
+//        }
+//    }
+//}
+
 
 - (void)addRoute:(KMLRoute *)route {
     NSArray *temp;
