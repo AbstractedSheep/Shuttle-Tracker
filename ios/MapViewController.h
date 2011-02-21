@@ -20,7 +20,6 @@
     
     KMLParser *routeKmlParser;
     KMLParser *vehiclesKmlParser;
-    JSONParser *vehiclesJSONParser;
     
     NSURL *shuttleJSONUrl;
     

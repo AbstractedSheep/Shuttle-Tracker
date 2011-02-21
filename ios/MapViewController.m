@@ -15,8 +15,6 @@
 - (void)routeKmlLoaded;
 - (void)refreshVehicleData;
 - (void)refreshEtaData;
-//- (void)updateVehicleData;
-//- (void)vehicleJSONRefresh;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
 - (void)addKmlVehicle:(KMLVehicle *)vehicle;
@@ -65,8 +63,9 @@
     _mapView.showsUserLocation = YES;
     
     //  The student union is at -73.6765441399,42.7302712352
+    //  The center point used here is a bit south of it
     MKCoordinateRegion region;
-    region.center.latitude = 42.73027;
+    region.center.latitude = 42.7302;
     region.center.longitude = -73.6750;
     region.span.latitudeDelta = 0.0200;
     region.span.longitudeDelta = 0.0132;
@@ -75,16 +74,11 @@
     
     vehicleUpdateTimer = nil;
     
-//  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
-    shuttleJSONUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
-    vehiclesJSONParser = [[JSONParser alloc] initWithUrl:shuttleJSONUrl];
-    
-//    vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
     vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(refreshVehicleData) userInfo:nil repeats:YES];
 }
 
 
-//  TODO: Move into viewDidLoad?
+//  TODO: Move into viewDidLoad?  Or move into DataManager?
 - (void)routeKmlLoaded {
     [routeKmlParser parse];
     
@@ -134,39 +128,6 @@
 - (void)refreshEtaData {
     
 }
-
-
-//- (void)updateVehicleData {
-//    
-//    dispatch_queue_t loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
-//    dispatch_async(loadVehicleJsonQueue, ^{
-//        if ([vehiclesJSONParser parse]) {
-//            [self performSelectorOnMainThread:@selector(vehicleJSONRefresh) withObject:nil waitUntilDone:YES];
-//        }
-//    });
-//    
-//}
-//
-//- (void)vehicleJSONRefresh {
-//    BOOL alreadyAdded = NO;
-//    
-//    for (JSONVehicle *newVehicle in vehiclesJSONParser.vehicles) {
-//        for (JSONVehicle *existingVehicle in vehicles) {
-//            if ([existingVehicle.name isEqualToString:newVehicle.name]) {
-//                [UIView animateWithDuration:0.5 animations:^{
-//                    [existingVehicle setCoordinate:newVehicle.coordinate];
-//                }];
-//                
-//                alreadyAdded = YES;
-//            }
-//        }
-//        
-//        if (!alreadyAdded) {
-//            [vehicles addObject:newVehicle];
-//            [self addJsonVehicle:newVehicle];
-//        }
-//    }
-//}
 
 
 - (void)addRoute:(KMLRoute *)route {
