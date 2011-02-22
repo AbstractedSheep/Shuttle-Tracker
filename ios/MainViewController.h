@@ -12,11 +12,11 @@
 @interface MainViewController : UIViewController {
     DataManager *dataManager;
     
-    NSTimer *vehicleUpdateTimer;
+    NSTimer *dataUpdateTimer;
     
 }
 
-@property (nonatomic, retain) DataManager *dataManager;
+@property (nonatomic, assign) DataManager *dataManager;
 
 
 @end

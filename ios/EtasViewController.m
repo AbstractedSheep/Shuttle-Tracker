@@ -24,6 +24,12 @@
     return self;
 }
 
+- (id)init {
+    self = [self initWithStyle:UITableViewStyleGrouped];
+    
+    return self;
+}
+
 - (void)dealloc
 {
     [super dealloc];

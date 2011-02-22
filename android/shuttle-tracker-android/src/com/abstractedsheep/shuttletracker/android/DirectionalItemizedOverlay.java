@@ -29,18 +29,17 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Projection;
 
-import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
-
-public class DirectionalItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
+public class DirectionalItemizedOverlay extends ItemizedOverlay<DirectionalOverlayItem> {
 
 	private ArrayList<DirectionalOverlayItem> overlays = new ArrayList<DirectionalOverlayItem>();
 	private Drawable marker;
 	
 	public DirectionalItemizedOverlay(Drawable defaultMarker, MapView mapView) {
-		super(boundCenter(defaultMarker), mapView);
+		super(boundCenter(defaultMarker));
 		this.marker = boundCenter(defaultMarker);
 	}
 
@@ -67,11 +66,6 @@ public class DirectionalItemizedOverlay extends BalloonItemizedOverlay<Direction
 	public int size() {
 		return overlays.size();
 	}
-
-	@Override
-	protected boolean onBalloonTap(int index) {
-		return false;
-	}	
 	
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {

@@ -20,7 +20,6 @@
     
     KMLParser *routeKmlParser;
     KMLParser *vehiclesKmlParser;
-    JSONParser *vehiclesJSONParser;
     
     NSURL *shuttleJSONUrl;
     
@@ -33,6 +32,7 @@
     NSMutableArray *routeLineViews;
     
     NSTimer *vehicleUpdateTimer;
+    NSTimer *etaUpdateTimer;
     
 }
 

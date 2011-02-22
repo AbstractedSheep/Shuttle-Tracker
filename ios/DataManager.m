@@ -7,13 +7,15 @@
 //
 
 #import "DataManager.h"
+#import "EtaWrapper.h"
 
 
 @interface DataManager()
 
 - (void)routeKmlLoaded;
 - (void)updateVehicleData;
-- (void)vehicleJSONRefresh;
+- (void)vehicleJsonRefresh;
+- (void)etaJsonRefresh;
 
 @end
 
@@ -30,11 +32,15 @@
         vehicleUpdateTimer = nil;
         
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
-        shuttleJSONUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
-        vehiclesJSONParser = [[JSONParser alloc] initWithUrl:shuttleJSONUrl];
+        shuttleJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
+        vehiclesJsonParser = [[JSONParser alloc] initWithUrl:shuttleJsonUrl];
         
         //vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
         
+        etasJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta"];
+        etasJsonParser = [[JSONParser alloc] initWithUrl:etasJsonUrl];
+        
+        vehicles = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -45,13 +51,47 @@
         [routeKmlParser release];
     }
     
+    if (vehiclesKmlParser) {
+        [vehiclesKmlParser release];
+    }
+    
+    if (vehiclesJsonParser) {
+        [vehiclesJsonParser release];
+    }
+    
+    if (etasJsonParser) {
+        [etasJsonParser release];
+    }
+    
     if (vehicleUpdateTimer) {
         [vehicleUpdateTimer invalidate];
+    }
+    
+    [shuttleJsonUrl release];
+    [etasJsonUrl release];
+    
+    if (routes) {
+        [routes release];
+    }
+    if (stops) {
+        [stops release];
+    }
+    
+    [vehicles release];
+    
+    if (ETAs) {
+        [ETAs release];
+    }
+    
+    if (vehicleUpdateTimer) {
+        [vehicleUpdateTimer release];
     }
     
     [super dealloc];
 }
 
+
+//  TODO: Remove this or adjust it to be appropriate for DataManager. Taken from MapViewController.
 - (void)routeKmlLoaded {
     [routeKmlParser parse];
     
@@ -71,21 +111,27 @@
     
 }
 
+
+- (void)updateData {
+    [self updateVehicleData];
+}
+
+
 - (void)updateVehicleData {
     
     dispatch_queue_t loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
     dispatch_async(loadVehicleJsonQueue, ^{
-        if ([vehiclesJSONParser parse]) {
-            [self performSelectorOnMainThread:@selector(vehicleJSONRefresh) withObject:nil waitUntilDone:YES];
+        if ([vehiclesJsonParser parse]) {
+            [self performSelectorOnMainThread:@selector(vehicleJsonRefresh) withObject:nil waitUntilDone:YES];
         }
     });
     
 }
 
-- (void)vehicleJSONRefresh {
+- (void)vehicleJsonRefresh {
     BOOL alreadyAdded = NO;
     
-    for (JSONVehicle *newVehicle in vehiclesJSONParser.vehicles) {
+    for (JSONVehicle *newVehicle in vehiclesJsonParser.vehicles) {
         for (JSONVehicle *existingVehicle in vehicles) {
             if ([existingVehicle.name isEqualToString:newVehicle.name]) {
                 [UIView animateWithDuration:0.5 animations:^{
@@ -100,6 +146,23 @@
             [vehicles addObject:newVehicle];
         }
     }
+}
+
+- (void)updateEtaData {
+    
+    dispatch_queue_t loadEtaJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    dispatch_async(loadEtaJsonQueue, ^{
+        if ([etasJsonParser parse]) {
+            [self performSelectorOnMainThread:@selector(etaJsonRefresh) withObject:nil waitUntilDone:YES];
+        }
+    });
+    
+}
+
+- (void)etaJsonRefresh {
+    [ETAs release];
+    ETAs = [etasJsonParser.ETAs copy];
+    
 }
 
 
