@@ -72,10 +72,8 @@ public class Shuttle {
 	}
 
 	public void setStops(HashMap<String, Stop> stops) {
-		if(!finder.changeRoute()) {
-			this.stops = stops;
-			this.stopETA.clear();
-		}
+		this.stops = stops;
+		this.stopETA.clear();
 	}
 
 	public int getSpeed() {
@@ -85,7 +83,7 @@ public class Shuttle {
 	public void setSpeed(int newSpd) {
 		if(speedList.size() > 10)
 			speedList.remove(0);
-		speedList.add((newSpd < 10) ? 10 : newSpd);
+		speedList.add((newSpd < 20) ? 20 : newSpd);
 		int count = 0;
 		
 		for(int s : speedList) {
@@ -151,16 +149,13 @@ public class Shuttle {
 		// it might be better to save the times in a HashMap as it may make
 		// writing to a file easier.
 		Point p = null;
-		int count = 0;
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(p);
-			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000 +
-						(count * 30 * 1000);
-//			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
+			int time = (int) ((distance / (double)this.speed) * 3600000);
+			//System.out.println((double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
-			count++;
 		}
 	}
 
@@ -185,6 +180,24 @@ public class Shuttle {
 		public Point(double lat, double lon) {
 			this.lat = lat;
 			this.lon = lon;
+		}
+		
+		public static Point subtract(Point p1, Point p2) {
+			return new Point(p1.lat - p2.lat, p1.lon - p2.lon);
+		}
+		
+		public static Point add(Point p1, Point p2) {
+			return new Point(p1.lat + p2.lat, p1.lon + p2.lon);
+		}
+		
+		public static Point multiply(Point p1, double d1) {
+			return new Point(p1.lat * d1, p1.lon * p2);
+		}
+		
+		public static double distance(Point p1, Point p2) {
+			double x = p1.lat - p2.lat;
+			double y = p1.lon - p2.lon;
+			return Math.sqrt(x * x + y * y);
 		}
 
 		public double getLat() {
@@ -275,47 +288,38 @@ public class Shuttle {
 			return routeList.get(0).getRouteName();
 		}
 		
-		public boolean changeRoute() {
-			return this.foundRoute;
+		private Point getClosestPoint(Point A, Point B, Point P){    
+			Point AP = Point.subtract(P, A):    
+			Point AB = Point.subtract(B, A);    
+			double ab2 = AB.getLat()*AB.getLat() + AB.getLon()*AB.getLon();    
+			double ap_ab = AP.getLat()*AB.getLat() + AP.getLon()*AB.getLon();    
+			double t = ap_ab / ab2;          
+			if (t < 0.0f) 
+				t = 0.0f;         
+			else if (t > 1.0f) 
+				t = 1.0f;    
+			Point Closest = Point.add(A, Point.multiply(AB, t));    
+			return Closest;
 		}
 
 		private void determineRouteOfShuttle() {
-			// using the given routes, determine which route the
-			// shuttle is following
-			ArrayList<Shuttle.Point> list = null;
-			Point p1 = null, p2 = null;
-			double[] distanceArray = { 999, 999 }; // TODO: to make the code
-													// more robust, turn it into
-													// an arraylist?
-			Point[] locationArray = { new Point(), new Point() };
-			int[] indexArray = { 0, 0 };
-			int index = 0;
-			double distance = 0.0;
-
+			Point p1;
+			Point p2;
+			double distance;
+			double tempDistance;
+			Route onRoute;
+			
 			for (Route route : routeList) {
 				list = route.getCoordinateList();
 				for (int i = 0; i < list.size(); i++) {
 					p1 = list.get(i);
-					distance = calculateDistance(p1);
-
-					if (distanceArray[index] >= distance) {
-						distanceArray[index] = distance;
-						locationArray[index] = p1;
-						indexArray[index] = i;
+					p2 = list.get((i = list.size() - 1) ? i + 1 : 0);
+					tempDistance = Point.distance(getClosestPoint(p1, p2, currentLocation), currentLocation);
+					if (distance == null || tempDistance < distance) {
+						distance = tempDistance;
+						onRoute = route;
 					}
 				}
-				index++;
-			}
-			if (foundRoute)
-				return;
-
-			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006) {
-				System.out.println(distanceArray[0] + " " + distanceArray[1]);
-				this.foundRoute = true;
-				this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ? locationArray[0]
-						: locationArray[1];
-				this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
-				this.indexOfClosestCoordinate = indexArray[this.getRouteID() - 1];
 			}
 		}
 
@@ -333,17 +337,17 @@ public class Shuttle {
 
 				//if (rt.getIdNum() == routeID) {
 					list = rt.getCoordinateList();
-					int index = indexOfClosestCoordinate + 1;
+					int index = indexOfClosestCoordinate;
 					int count = 0;
-					distanceToTravel = calculateDistance(list.get(index - 1));
+					distanceToTravel = calculateDistance(list.get(index));
 					for (count = 0; count <= list.size(); count++) {
-						if (index >= list.size())
+						if (index > list.size() - 1)
 							index = 1;
-						distance = calculateDistance(list.get(index - 1), stop);
+						distance = calculateDistance(list.get(index), stop);
 						// distance between this coordinate and the stop is
 						// greater than 15 ft
-						if (distance <= .01)
-							return distanceToTravel;
+						if (distance <= .006)
+							break;
 						distanceToTravel += calculateDistance(list.get(index),
 								list.get(index - 1)) + .003;
 						index++;
@@ -370,16 +374,19 @@ public class Shuttle {
 		}
 
 		private double calculateDistance(Point p, Point curr) {
-			double earthRadius = 3956;
-			
-			double dlong = Math.toRadians((curr.lon - p.lon));
-		    double dlat = Math.toRadians((curr.lat - p.lat));
-		    double a = Math.pow(Math.sin(dlat/2.0), 2) +
-		    		   Math.cos(Math.toRadians(p.lat)) * Math.cos(Math.toRadians(curr.lon)) * Math.pow(Math.sin(dlong/2.0), 2);
-		    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-		    double d = earthRadius * c; 
+			double earthRadius = 6378.7; // radius in km
+			double changeInLat = curr.lat - p.lat;
+			double changeInLong = curr.lon - p.lon;
+			// need to convert these values to radians
+			changeInLat = Math.toRadians(changeInLat);
+			changeInLong = Math.toRadians(changeInLong);
 
-		    return d;
+			double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2))
+					+ (Math.cos(Math.toRadians(p.lon)) * Math.cos(Math.toRadians(curr.lon)) * (Math
+							.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
+			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+			return (earthRadius * c) * 0.621371192;
 		}
 	}
 }
