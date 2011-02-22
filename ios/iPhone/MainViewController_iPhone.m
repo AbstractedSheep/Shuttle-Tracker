@@ -8,11 +8,14 @@
 
 #import "MainViewController_iPhone.h"
 #import "MapViewController.h"
-#import "../EtaViewController.h"
+#import "EtasViewController.h"
 
 
 @implementation MainViewController_iPhone
 
+
+/*
+ Use the init method from the MainViewController superclass
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -21,6 +24,8 @@
     }
     return self;
 }
+*/
+
 
 - (void)dealloc
 {
@@ -47,23 +52,26 @@
     
     MapViewController *mapViewController = [[MapViewController alloc] init];
     mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:nil tag:0];
+    mapViewController.dataManager = dataManager;
     
-    EtaViewController *etaViewController = [[EtaViewController alloc] init];
-    etaViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs" image:nil tag:1];
+    EtasViewController *etasViewController = [[EtasViewController alloc] init];
+    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs" image:nil tag:1];
+    etasViewController.dataManager = dataManager;
     
-    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etaViewController, nil];
+    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, nil];
     [self.view addSubview:tabBarController.view];
     
 }
 
 
-/*
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:dataManager selector:@selector(updateData) userInfo:nil repeats:YES];
 }
-*/
+
 
 - (void)viewDidUnload
 {

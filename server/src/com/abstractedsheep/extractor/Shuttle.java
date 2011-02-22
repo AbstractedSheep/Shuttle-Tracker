@@ -157,8 +157,8 @@ public class Shuttle {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(p);
 			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000 +
-						(count * 30 * 00);
-			//System.out.println((double) ((double)time * (1.667 * Math.pow(10, -5))));
+						(count * 30 * 1000);
+//			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
 			count++;
 		}
@@ -310,6 +310,7 @@ public class Shuttle {
 				return;
 
 			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006) {
+				System.out.println(distanceArray[0] + " " + distanceArray[1]);
 				this.foundRoute = true;
 				this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ? locationArray[0]
 						: locationArray[1];
@@ -336,12 +337,12 @@ public class Shuttle {
 					int count = 0;
 					distanceToTravel = calculateDistance(list.get(index - 1));
 					for (count = 0; count <= list.size(); count++) {
-						if (index > list.size() - 1)
+						if (index >= list.size())
 							index = 1;
-						distance = calculateDistance(list.get(index), stop);
+						distance = calculateDistance(list.get(index - 1), stop);
 						// distance between this coordinate and the stop is
 						// greater than 15 ft
-						if (distance <= .006)
+						if (distance <= .01)
 							return distanceToTravel;
 						distanceToTravel += calculateDistance(list.get(index),
 								list.get(index - 1)) + .003;
@@ -369,19 +370,16 @@ public class Shuttle {
 		}
 
 		private double calculateDistance(Point p, Point curr) {
-			double earthRadius = 6378.7; // radius in km
-			double changeInLat = curr.lat - p.lat;
-			double changeInLong = curr.lon - p.lon;
-			// need to convert these values to radians
-			changeInLat = Math.toRadians(changeInLat);
-			changeInLong = Math.toRadians(changeInLong);
+			double earthRadius = 3956;
+			
+			double dlong = Math.toRadians((curr.lon - p.lon));
+		    double dlat = Math.toRadians((curr.lat - p.lat));
+		    double a = Math.pow(Math.sin(dlat/2.0), 2) +
+		    		   Math.cos(Math.toRadians(p.lat)) * Math.cos(Math.toRadians(curr.lon)) * Math.pow(Math.sin(dlong/2.0), 2);
+		    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		    double d = earthRadius * c; 
 
-			double a = (Math.sin(changeInLat / 2) * Math.sin(changeInLat / 2))
-					+ (Math.cos(Math.toRadians(p.lon)) * Math.cos(Math.toRadians(curr.lon)) * (Math
-							.sin(changeInLong / 2) * Math.sin(changeInLong / 2)));
-			double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-			return (earthRadius * c) * 0.621371192;
+		    return d;
 		}
 	}
 }

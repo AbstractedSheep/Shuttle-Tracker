@@ -24,14 +24,17 @@
 		DA1154A1130B5BA50004E7D0 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115495130B5BA50004E7D0 /* CJSONDeserializer.m */; };
 		DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115497130B5BA50004E7D0 /* CJSONScanner.m */; };
 		DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115499130B5BA50004E7D0 /* CJSONSerializer.m */; };
-		DA14A839130C89B100F497B5 /* EtaViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA14A838130C89B100F497B5 /* EtaViewController.m */; };
+		DA215D5E1311B9C600CBEF62 /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA215D5D1311B9C600CBEF62 /* EtasViewController.m */; };
 		DA346F0D13060D75004A0B93 /* shuttle_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DA346F0C13060D75004A0B93 /* shuttle_icon.png */; };
 		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
 		DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B7512F4C84700190FA3 /* MapViewController.m */; };
 		DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */ = {isa = PBXBuildFile; fileRef = DA750B8812F4CB7600190FA3 /* netlink.kml */; };
 		DA750B8C12F4CC7D00190FA3 /* KMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B8B12F4CC7D00190FA3 /* KMLParser.m */; };
 		DA8249651306F331004FBB50 /* JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DA8249641306F331004FBB50 /* JSONParser.m */; };
+		DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA8E13119C3800EDE54E /* DataManager.m */; };
+		DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA951311A2F100EDE54E /* MainViewController.m */; };
 		DAB2655512FB5D8900A4C5B7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */; };
+		DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */; };
 		DAE5C9C413063BEC0014AEFE /* MainViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */; };
 /* End PBXBuildFile section */
 
@@ -68,8 +71,8 @@
 		DA115498130B5BA50004E7D0 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
 		DA115499130B5BA50004E7D0 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
 		DA11549A130B5BA50004E7D0 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
-		DA14A837130C89B100F497B5 /* EtaViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaViewController.h; sourceTree = "<group>"; };
-		DA14A838130C89B100F497B5 /* EtaViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaViewController.m; sourceTree = "<group>"; };
+		DA215D5C1311B9C600CBEF62 /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtasViewController.h; sourceTree = "<group>"; };
+		DA215D5D1311B9C600CBEF62 /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtasViewController.m; sourceTree = "<group>"; };
 		DA31240012FDC69C00F90B79 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = KMLParser.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DA346F0C13060D75004A0B93 /* shuttle_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_icon.png; sourceTree = "<group>"; };
 		DA750B7012F4C7D700190FA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -79,7 +82,13 @@
 		DA750B8B12F4CC7D00190FA3 /* KMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = KMLParser.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		DA8249631306F331004FBB50 /* JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONParser.h; sourceTree = "<group>"; };
 		DA8249641306F331004FBB50 /* JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONParser.m; sourceTree = "<group>"; };
+		DAA0DA8D13119C3800EDE54E /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
+		DAA0DA8E13119C3800EDE54E /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
+		DAA0DA941311A2F100EDE54E /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		DAA0DA951311A2F100EDE54E /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		DAC9AB3B1311AF85008E8555 /* EtaWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaWrapper.h; sourceTree = "<group>"; };
+		DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
 		DAE5C9C213063BEC0014AEFE /* MainViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController_iPhone.h; sourceTree = "<group>"; };
 		DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController_iPhone.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -157,10 +166,16 @@
 			isa = PBXGroup;
 			children = (
 				32CA4F630368D1EE00C91783 /* Shuttle_Tracker_Prefix.pch */,
+				DAA0DA8D13119C3800EDE54E /* DataManager.h */,
+				DAA0DA8E13119C3800EDE54E /* DataManager.m */,
+				DA215D5C1311B9C600CBEF62 /* EtasViewController.h */,
+				DA215D5D1311B9C600CBEF62 /* EtasViewController.m */,
+				DAC9AB3B1311AF85008E8555 /* EtaWrapper.h */,
+				DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */,
+				DAA0DA941311A2F100EDE54E /* MainViewController.h */,
+				DAA0DA951311A2F100EDE54E /* MainViewController.m */,
 				DA31240012FDC69C00F90B79 /* KMLParser.h */,
 				DA750B8B12F4CC7D00190FA3 /* KMLParser.m */,
-				DA14A837130C89B100F497B5 /* EtaViewController.h */,
-				DA14A838130C89B100F497B5 /* EtaViewController.m */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				DA750B7412F4C84700190FA3 /* MapViewController.h */,
 				DA750B7512F4C84700190FA3 /* MapViewController.m */,
@@ -323,7 +338,10 @@
 				DA1154A1130B5BA50004E7D0 /* CJSONDeserializer.m in Sources */,
 				DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */,
 				DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */,
-				DA14A839130C89B100F497B5 /* EtaViewController.m in Sources */,
+				DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */,
+				DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */,
+				DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */,
+				DA215D5E1311B9C600CBEF62 /* EtasViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
