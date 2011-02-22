@@ -109,7 +109,7 @@ public class Tracker extends MapActivity {
     		map.getOverlays().add(routesOverlay);
         }        
         
-        shuttlesOverlay = new VehicleItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_color), map);
+        shuttlesOverlay = new VehicleItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_color));
         shuttlesOverlay.putRoutes(routes.getRoutes());
         map.getOverlays().add(shuttlesOverlay);
         

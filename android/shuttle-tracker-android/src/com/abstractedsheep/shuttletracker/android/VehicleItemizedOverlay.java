@@ -35,12 +35,11 @@ import android.graphics.drawable.Drawable;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Projection;
 
-import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
-
-public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
+public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayItem> {
 
 	private static final int MAGENTA = Color.rgb(255, 0, 255);
 	
@@ -48,8 +47,8 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	private ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
 	private Drawable marker;
 	
-	public VehicleItemizedOverlay(Drawable defaultMarker, MapView mapView) {
-		super(boundCenter(defaultMarker), mapView);
+	public VehicleItemizedOverlay(Drawable defaultMarker) {
+		super(boundCenter(defaultMarker));
 		this.marker = boundCenter(defaultMarker);
 	}
 
@@ -85,11 +84,6 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	@Override
 	public int size() {
 		return vehicles.size();
-	}
-
-	@Override
-	protected boolean onBalloonTap(int index) {
-		return false;
 	}	
 	
 	@Override
@@ -112,12 +106,15 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 				rotate.reset();
 				rotate.postRotate(v.getHeading(), bitmap.getWidth(), bitmap.getHeight() / 2);
 				
-				if (v.getHeading() > 180)
-					tempBitmap = Bitmap.createBitmap(flippedBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
-				else
-					tempBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
+				if (v.getHeading() > 180) {
+					tempBitmap = recolorBitmap(flippedBitmap, routes.get(v.getRoute_id()).getColorInt());
+					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
+				} else {
+					tempBitmap = recolorBitmap(bitmap, routes.get(v.getRoute_id()).getColorInt());
+					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
+				}
 				
-				tempBitmap = recolorBitmap(tempBitmap, routes.get(v.getRoute_id()).getColorInt());
+				
 				canvas.drawBitmap(tempBitmap, pt.x - (bitmap.getWidth() / 2), pt.y - (bitmap.getHeight() / 2), null);
 			}
 		}		
