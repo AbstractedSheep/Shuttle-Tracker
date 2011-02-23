@@ -181,6 +181,8 @@
     if ((self = [super init])) {
         name = nil;
         description = nil;
+        
+        annotationView = nil;
     }
     
     return self;
@@ -204,6 +206,8 @@
     if ((self = [super init])) {
         name = nil;
         description = nil;
+        
+        annotationView = nil;
     }
     
     return self;
@@ -223,6 +227,7 @@
         name = nil;
         description = nil;
         ETAs = nil;
+        annotationView = nil;
         
         heading = 0;
     }

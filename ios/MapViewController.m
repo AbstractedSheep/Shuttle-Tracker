@@ -108,11 +108,29 @@
     for (JSONVehicle *newVehicle in tmpVehicles) {
         for (JSONVehicle *existingVehicle in vehicles) {
             if ([existingVehicle.name isEqualToString:newVehicle.name]) {
+                [existingVehicle setHeading:newVehicle.heading];
+                
                 [UIView animateWithDuration:0.5 animations:^{
                     [existingVehicle setCoordinate:newVehicle.coordinate];
+                    
+                    
+//                    if (existingVehicle.annotationView) {
+//                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation([existingVehicle heading]*2*M_PI/360);
+//                    }
                 }];
                 
                 alreadyAdded = YES;
+                
+//                if (existingVehicle.annotationView) {
+//                    //  Note: Same code as in - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation below
+//                    [UIView animateWithDuration:0.5 animations:^{
+//                        //	Rotate the shuttle image to match the orientation of the shuttle
+////                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation([existingVehicle heading]*2*M_PI/360);
+//                    }];
+//                    
+//                    //  Endnote
+//                }
+
             }
         }
         
@@ -267,7 +285,15 @@
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
         UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_icon.png"];
         vehicleAnnotationView.image = shuttleImage;
-        vehicleAnnotationView.canShowCallout = YES;
+        vehicleAnnotationView.canShowCallout = NO;
+        
+        //  Note: Same code as in - (void)refreshVehicleData above
+        [UIView animateWithDuration:0.5 animations:^{
+            //	Rotate the shuttle image to match the orientation of the shuttle
+            vehicleAnnotationView.transform = CGAffineTransformMakeRotation([(JSONVehicle *)annotation heading]*2*M_PI/360);
+        }];
+        
+        //  Endnote
         
         [(JSONVehicle *)annotation setAnnotationView:vehicleAnnotationView];
     }
