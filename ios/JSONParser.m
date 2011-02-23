@@ -14,7 +14,7 @@
 @implementation JSONParser
 
 @synthesize vehicles;
-@synthesize ETAs;
+@synthesize etas;
 
 
 - (id)init {
@@ -116,9 +116,9 @@
     NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
     NSDictionary *jsonDict = nil;
     
-    [ETAs release];
+    [etas release];
     
-    ETAs = [[NSMutableArray alloc] init];
+    etas = [[NSMutableArray alloc] init];
     
     if (theError) {
         NSLog(@"Error retrieving JSON data");
@@ -142,17 +142,13 @@
                 } else if ([string isEqualToString:@"stop_id"]) {
                     eta.stopId = [dict objectForKey:string];
                 } else if ([string isEqualToString:@"eta"]) {
-                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                    dateFormatter.dateFormat = @"yyyy-MM-dd hh:mm:ss";
-                    
-                    
-                    eta.ETA = [dateFormatter dateFromString:[dict objectForKey:string]];
+                    eta.eta = [NSDate dateWithTimeIntervalSinceNow:[[dict objectForKey:string] floatValue]/1000.0f];
                 } else if ([string isEqualToString:@"route"]) {
                     eta.route = [[dict objectForKey:string] intValue];
                 }
             }
             
-            [ETAs addObject:eta];
+            [etas addObject:eta];
             [eta release];
         }
         

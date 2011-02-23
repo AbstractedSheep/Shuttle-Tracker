@@ -85,8 +85,12 @@
     routes = [routeKmlParser routes];
     [routes retain];
     
+    dataManager.routes = routes;
+    
     stops = [routeKmlParser stops];
     [stops retain];
+    
+    dataManager.stops = stops;
     
     for (KMLRoute *route in routes) {
         [self performSelectorOnMainThread:@selector(addRoute:) withObject:route waitUntilDone:YES];

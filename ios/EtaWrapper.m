@@ -13,7 +13,7 @@
 
 @synthesize shuttleId;
 @synthesize stopId;
-@synthesize ETA;
+@synthesize eta;
 @synthesize route;
 
 

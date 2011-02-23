@@ -15,6 +15,7 @@
 - (void)routeKmlLoaded;
 - (void)updateVehicleData;
 - (void)vehicleJsonRefresh;
+- (void)updateEtaData;
 - (void)etaJsonRefresh;
 
 @end
@@ -25,7 +26,10 @@
 @synthesize routes;
 @synthesize stops;
 @synthesize vehicles;
-@synthesize ETAs;
+@synthesize etas;
+@synthesize eastEtas;
+@synthesize westEtas;
+
 
 - (id)init {
     if ((self = [super init])) {
@@ -79,8 +83,8 @@
     
     [vehicles release];
     
-    if (ETAs) {
-        [ETAs release];
+    if (etas) {
+        [etas release];
     }
     
     if (vehicleUpdateTimer) {
@@ -114,6 +118,7 @@
 
 - (void)updateData {
     [self updateVehicleData];
+    [self updateEtaData];
 }
 
 
@@ -121,7 +126,7 @@
     
     dispatch_queue_t loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
     dispatch_async(loadVehicleJsonQueue, ^{
-        if ([vehiclesJsonParser parse]) {
+        if ([vehiclesJsonParser parseShuttles]) {
             [self performSelectorOnMainThread:@selector(vehicleJsonRefresh) withObject:nil waitUntilDone:YES];
         }
     });
@@ -152,7 +157,7 @@
     
     dispatch_queue_t loadEtaJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
     dispatch_async(loadEtaJsonQueue, ^{
-        if ([etasJsonParser parse]) {
+        if ([etasJsonParser parseEtas]) {
             [self performSelectorOnMainThread:@selector(etaJsonRefresh) withObject:nil waitUntilDone:YES];
         }
     });
@@ -160,9 +165,18 @@
 }
 
 - (void)etaJsonRefresh {
-    [ETAs release];
-    ETAs = [etasJsonParser.ETAs copy];
+    [etas release];
+    etas = [etasJsonParser.etas copy];
     
+    westEtas = eastEtas = 0;
+    
+    for (EtaWrapper *eta in etas) {
+        if (eta.route == 1) {
+            eastEtas++;
+        } else if (eta.route == 2) {
+            westEtas++;
+        }
+    }
 }
 
 

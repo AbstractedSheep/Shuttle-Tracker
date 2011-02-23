@@ -7,6 +7,7 @@
 //
 
 #import "EtasViewController.h"
+#import "EtaWrapper.h"
 
 
 @implementation EtasViewController
@@ -100,9 +101,16 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    
+    if (section == 0) {
+        return dataManager.eastEtas;
+    } else if (section == 1) {
+        return dataManager.westEtas;
+    } else {
+        return 0;
+    }
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -114,7 +122,33 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
+//    cell.userInteractionEnabled = NO;
+    
     // Configure the cell...
+    EtaWrapper *etaWrapped = nil;
+    
+    int counter = 0;
+    
+    for (EtaWrapper *eta in dataManager.etas) {
+        if (eta.route == indexPath.section + 1) {
+            if (counter == indexPath.row) {
+                etaWrapped = eta;
+                break;
+            }
+            
+            counter++;
+        }
+    }
+    
+    if (etaWrapped) {
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"hh:mm:ss"];
+        
+        [cell.textLabel setText:[etaWrapped.stopId stringByAppendingString:[dateFormatter stringFromDate:etaWrapped.eta]]];
+        
+        [dateFormatter release];
+    }
+
     
     return cell;
 }

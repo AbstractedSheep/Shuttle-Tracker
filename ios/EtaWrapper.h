@@ -12,13 +12,13 @@
 @interface EtaWrapper : NSObject {
     NSString *shuttleId;
     NSString *stopId;
-    NSDate *ETA;
+    NSDate *eta;
     NSInteger route;
 }
 
 @property (nonatomic, retain) NSString *shuttleId;
 @property (nonatomic, retain) NSString *stopId;
-@property (nonatomic, retain) NSDate *ETA;
+@property (nonatomic, retain) NSDate *eta;
 @property (nonatomic) NSInteger route;
 
 @end

@@ -55,7 +55,7 @@
     mapViewController.dataManager = dataManager;
     
     EtasViewController *etasViewController = [[EtasViewController alloc] init];
-    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs" image:nil tag:1];
+    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:nil tag:1];
     etasViewController.dataManager = dataManager;
     
     tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, nil];

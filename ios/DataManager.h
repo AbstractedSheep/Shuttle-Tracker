@@ -26,7 +26,9 @@
     
     NSMutableArray *vehicles;
     
-    NSArray *ETAs;
+    NSArray *etas;
+    NSInteger eastEtas;
+    NSInteger westEtas;
     
     NSTimer *vehicleUpdateTimer;
 }
@@ -34,7 +36,9 @@
 @property (nonatomic, retain) NSArray *routes;
 @property (nonatomic, retain) NSArray *stops;
 @property (nonatomic, retain) NSMutableArray *vehicles;
-@property (nonatomic, retain) NSArray *ETAs;
+@property (nonatomic, retain) NSArray *etas;
+@property (nonatomic, readonly) NSInteger eastEtas;
+@property (nonatomic, readonly) NSInteger westEtas;
 
 - (void)updateData;
 
