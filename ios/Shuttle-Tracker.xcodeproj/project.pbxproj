@@ -25,7 +25,6 @@
 		DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115497130B5BA50004E7D0 /* CJSONScanner.m */; };
 		DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115499130B5BA50004E7D0 /* CJSONSerializer.m */; };
 		DA215D5E1311B9C600CBEF62 /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA215D5D1311B9C600CBEF62 /* EtasViewController.m */; };
-		DA346F0D13060D75004A0B93 /* shuttle_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DA346F0C13060D75004A0B93 /* shuttle_icon.png */; };
 		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
 		DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B7512F4C84700190FA3 /* MapViewController.m */; };
 		DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */ = {isa = PBXBuildFile; fileRef = DA750B8812F4CB7600190FA3 /* netlink.kml */; };
@@ -76,7 +75,6 @@
 		DA215D5C1311B9C600CBEF62 /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtasViewController.h; sourceTree = "<group>"; };
 		DA215D5D1311B9C600CBEF62 /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtasViewController.m; sourceTree = "<group>"; };
 		DA31240012FDC69C00F90B79 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = KMLParser.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		DA346F0C13060D75004A0B93 /* shuttle_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_icon.png; sourceTree = "<group>"; };
 		DA750B7012F4C7D700190FA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DA750B7412F4C84700190FA3 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MapViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DA750B7512F4C84700190FA3 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -257,7 +255,6 @@
 				DA750B8812F4CB7600190FA3 /* netlink.kml */,
 				DAA0367C13149335005D3E86 /* shuttle_color.png */,
 				DAA0367D13149335005D3E86 /* shuttle.png */,
-				DA346F0C13060D75004A0B93 /* shuttle_icon.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -317,7 +314,6 @@
 				2860E329111B887F00E27156 /* MainWindow_iPhone.xib in Resources */,
 				2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */,
 				DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */,
-				DA346F0D13060D75004A0B93 /* shuttle_icon.png in Resources */,
 				DAA0367E13149335005D3E86 /* shuttle_color.png in Resources */,
 				DAA0367F13149335005D3E86 /* shuttle.png in Resources */,
 			);
