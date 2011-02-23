@@ -20,7 +20,7 @@ import com.abstractedsheep.extractor.Shuttle;
 public class JSONSender {
 	private static Connection conn;
 	
-	private static void connectToDatabase() throws InstantiationException, IllegalAccessException,
+	public static void connectToDatabase() throws InstantiationException, IllegalAccessException,
 											ClassNotFoundException, IOException, SQLException {
 		String driver = "com.mysql.jdbc.Driver";
 		String[] args = null;
@@ -38,14 +38,8 @@ public class JSONSender {
 	 * @param shuttleList
 	 */
 	public static void saveToDatabase(HashSet<Shuttle> shuttleList) {
-//		String driver = "com.mysql.jdbc.Driver";
-//		Connection connection = null;
-//		String[] args = null;
 		try {
 			connectToDatabase();
-//			Class.forName(driver).newInstance();
-//			args = getArgumentsFromPropertiesFile("sts.properties");
-//			connection = DriverManager.getConnection(args[0], args[1], args[2]);
 			System.out.println("Connected to database");
 			Statement stmt = conn.createStatement();
 			for (Shuttle shuttle : shuttleList) {
