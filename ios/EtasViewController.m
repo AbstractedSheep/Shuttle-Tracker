@@ -122,13 +122,12 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
-//    cell.userInteractionEnabled = NO;
-    
     // Configure the cell...
     EtaWrapper *etaWrapped = nil;
     
     int counter = 0;
     
+    //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
     for (EtaWrapper *eta in dataManager.etas) {
         if (eta.route == indexPath.section + 1) {
             if (counter == indexPath.row) {
@@ -140,6 +139,7 @@
         }
     }
     
+    //  If the EtaWrapper was found, add the stop info and the ETA
     if (etaWrapped) {
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"hh:mm:ss"];
@@ -149,6 +149,7 @@
         [dateFormatter release];
     }
 
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }

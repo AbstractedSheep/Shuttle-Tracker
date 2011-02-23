@@ -22,7 +22,6 @@
 
 
 - (id)initWithUrl:(NSURL *)url;
-- (BOOL)parse;
 - (BOOL)parseShuttles;
 - (BOOL)parseEtas;
 

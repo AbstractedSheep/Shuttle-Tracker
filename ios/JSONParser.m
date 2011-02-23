@@ -17,6 +17,7 @@
 @synthesize etas;
 
 
+//  Assume a call to init is for a shuttle JSON parser
 - (id)init {
     [self initWithUrl:[NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"]];
     
@@ -36,12 +37,8 @@
 }
 
 
-- (BOOL)parse {
-    return [self parseShuttles];
-}
-
-
 //  Parse the shuttle data we will get from http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions
+//  Note: parseShuttles and parseEtas are very similar
 - (BOOL)parseShuttles {
     NSError *theError = nil;
     NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
@@ -62,13 +59,13 @@
             jsonDict = nil;
         }
         
-//        NSLog(@"Dict: %@", jsonDict);
-        
+        //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
             JSONVehicle *vehicle = [[JSONVehicle alloc] init];
             
             CLLocationCoordinate2D coordinate;
             
+            //  Set the vehicle properties to the corresponding JSON values
             for (NSString *string in dict) {
                 if ([string isEqualToString:@"shuttle_id"]) {
                     vehicle.name = [dict objectForKey:string];
@@ -81,27 +78,12 @@
                 }
             }
             
+            //  Set the coordinate of the vehicle after both the latitude and longitude are set
             vehicle.coordinate = coordinate;
             
             [vehicles addObject:vehicle];
             [vehicle release];
         }
-        /*
-         Only for http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt
-         
-        //  Iterate through the items found, create vehicles, set their locations, and add them to the vehicles array
-        for (NSString *string in jsonDict) {
-            JSONVehicle *vehicle = [[JSONVehicle alloc] init];
-            vehicle.name = string;
-            vehicle.description = @"lol";
-            
-            NSArray *coordinates = [[jsonDict objectForKey:string] objectsForKeys:[NSArray arrayWithObjects:@"Latitude", @"Longitude", nil] notFoundMarker:[NSNull null]];
-            
-            vehicle.coordinate = CLLocationCoordinate2DMake([[coordinates objectAtIndex:0] doubleValue], [[coordinates objectAtIndex:1] doubleValue]);
-            
-            [vehicles addObject:vehicle];
-        }
-         */
         
         return YES;
     }
@@ -111,6 +93,7 @@
 
 
 //  Parse the ETAs we will get, as formatted at http://abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta
+//  Note: parseShuttles and parseEtas are very similar
 - (BOOL)parseEtas {
     NSError *theError = nil;
     NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
@@ -131,11 +114,12 @@
             jsonDict = nil;
         }
         
-        //        NSLog(@"Dict: %@", jsonDict);
         
+        //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
             EtaWrapper *eta = [[EtaWrapper alloc] init];
             
+            //  Set the eta properties to the corresponding JSON values
             for (NSString *string in dict) {
                 if ([string isEqualToString:@"shuttle_id"]) {
                     eta.shuttleId = [dict objectForKey:string];
@@ -160,6 +144,9 @@
 
 - (void)dealloc {
     [super dealloc];
+    [etas release];
+    [vehicles release];
+    [jsonUrl release];
 }
 
 
@@ -184,10 +171,12 @@
     return self;
 }
 
+//  Title is the main line of text displayed in the callout of an MKAnnotation
 - (NSString *)title {
 	return name;
 }
 
+//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation
 - (NSString *)subtitle {
 	return description;
 }

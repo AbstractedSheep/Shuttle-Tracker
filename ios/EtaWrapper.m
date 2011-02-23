@@ -15,6 +15,7 @@
 @synthesize stopId;
 @synthesize eta;
 @synthesize route;
+@synthesize stopName;
 
 
 @end

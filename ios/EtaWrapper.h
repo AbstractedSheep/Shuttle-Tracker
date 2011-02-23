@@ -14,11 +14,14 @@
     NSString *stopId;
     NSDate *eta;
     NSInteger route;
+    
+    NSString *stopName;
 }
 
 @property (nonatomic, retain) NSString *shuttleId;
 @property (nonatomic, retain) NSString *stopId;
 @property (nonatomic, retain) NSDate *eta;
 @property (nonatomic) NSInteger route;
+@property (nonatomic, assign) NSString *stopName;
 
 @end
