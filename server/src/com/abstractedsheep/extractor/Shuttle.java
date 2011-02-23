@@ -348,7 +348,7 @@ public class Shuttle {
 						distance = calculateDistance(list.get(index - 1), stop);
 						// distance between this coordinate and the stop is
 						// greater than 15 ft
-						if (distance <= .012)
+						if (distance <= .01)
 							return distanceToTravel;
 						distanceToTravel += calculateDistance(list.get(index),
 								list.get(index - 1)) + .003;
