@@ -1,6 +1,7 @@
 package com.abstractedsheep.ShuttleTrackerServer;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,17 +49,15 @@ public class ShuttleTrackerServer {
 					calculateETA();
 					JSONSender.saveToDatabase(shuttleList);
 					//JSONSender.printToConsole(shuttleList);
-				} else {
+				} else {//clear the database and the shuttle list
+					JSONSender.connectToDatabase();
 					jsExtractor.clearShuttleList();
 				}
 				// have the thread sleep for 15 seconds (approximate update
 				// time)
 				Thread.sleep(5 * 1000);
 
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
