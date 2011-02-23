@@ -40,7 +40,7 @@
 @property (nonatomic, readonly) NSInteger eastEtas;
 @property (nonatomic, readonly) NSInteger westEtas;
 
-- (void)loadFromKml;
+- (void)loadRoutesAndStops;
 - (void)updateData;
 
 

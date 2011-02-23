@@ -13,7 +13,6 @@
 
 @interface MapViewController()
 - (void)managedRoutesLoaded;
-- (void)routeKmlLoaded;
 - (void)refreshVehicleData;
 - (void)refreshEtaData;
 - (void)addRoute:(KMLRoute *)route;
@@ -51,9 +50,9 @@
     vehicles = [[NSMutableArray alloc] init];
     
     //  Load the routes/stops KML file asynchronously
-    dispatch_queue_t loadRouteKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
-	dispatch_async(loadRouteKmlQueue, ^{
-        [dataManager loadFromKml];
+    dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
+	dispatch_async(loadRoutesQueue, ^{
+        [dataManager loadRoutesAndStops];
         [self managedRoutesLoaded];
 	});
     

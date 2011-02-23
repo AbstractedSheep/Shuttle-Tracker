@@ -11,7 +11,7 @@
 
 
 @interface DataManager()
-
+- (void)loadFromKml;
 - (void)routeKmlLoaded;
 - (void)updateVehicleData;
 - (void)vehicleJsonRefresh;
@@ -97,6 +97,10 @@
     [super dealloc];
 }
 
+- (void)loadRoutesAndStops {
+    [self loadFromKml];
+}
+
 - (void)loadFromKml {
     //  Use the local copy of the routes/stops KML file
     NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
@@ -177,6 +181,14 @@
             eastEtas++;
         } else if (eta.route == 2) {
             westEtas++;
+        }
+    }
+    
+    for (EtaWrapper *eta in etas) {
+        for (KMLStop *stop in stops) {
+            if (NULL) {
+                //None
+            }
         }
     }
 }
