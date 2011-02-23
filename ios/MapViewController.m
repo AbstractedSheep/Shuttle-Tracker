@@ -106,11 +106,6 @@
                 
                 [UIView animateWithDuration:0.5 animations:^{
                     [existingVehicle setCoordinate:newVehicle.coordinate];
-                    
-                    
-//                    if (existingVehicle.annotationView) {
-//                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation([existingVehicle heading]*2*M_PI/360);
-//                    }
                 }];
                 
                 alreadyAdded = YES;
@@ -119,7 +114,7 @@
 //                    //  Note: Same code as in - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation below
 //                    [UIView animateWithDuration:0.5 animations:^{
 //                        //	Rotate the shuttle image to match the orientation of the shuttle
-////                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation([existingVehicle heading]*2*M_PI/360);
+//                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation([existingVehicle heading]*2*M_PI/360);
 //                    }];
 //                    
 //                    //  Endnote
