@@ -104,9 +104,10 @@
     // Return the number of rows in the section.
     
     if (section == 0) {
-        return dataManager.eastEtas;
-    } else if (section == 1) {
         return dataManager.westEtas;
+    } else if (section == 1) {
+        return dataManager.eastEtas;
+        
     } else {
         return 0;
     }
@@ -142,9 +143,9 @@
     //  If the EtaWrapper was found, add the stop info and the ETA
     if (etaWrapped) {
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"hh:mm:ss"];
+        [dateFormatter setDateFormat:@"hh:mm"];
         
-        [cell.textLabel setText:[etaWrapped.stopId stringByAppendingString:[dateFormatter stringFromDate:etaWrapped.eta]]];
+        [cell.textLabel setText:[etaWrapped.stopId stringByAppendingString:[@"  " stringByAppendingString:[dateFormatter stringFromDate:etaWrapped.eta]]]];
         
         [dateFormatter release];
     }
@@ -157,52 +158,14 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 0)
-        return @"East Route";
-    else if (section == 1)
         return @"West Route";
+    else if (section == 1)
+        return @"East Route";
     else
         return @"Unknown";
     
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 

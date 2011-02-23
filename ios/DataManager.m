@@ -36,6 +36,9 @@
         routes = nil;
         stops = nil;
         
+        eastEtas = 0;
+        westEtas = 0;
+        
         vehicleUpdateTimer = nil;
         
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
@@ -174,13 +177,14 @@
     [etas release];
     etas = [etasJsonParser.etas copy];
     
-    westEtas = eastEtas = 0;
+    westEtas = 0;
+    eastEtas = 0;
     
     for (EtaWrapper *eta in etas) {
         if (eta.route == 1) {
-            eastEtas++;
-        } else if (eta.route == 2) {
             westEtas++;
+        } else if (eta.route == 2) {
+            eastEtas++;
         }
     }
     

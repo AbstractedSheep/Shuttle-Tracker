@@ -54,9 +54,11 @@
     mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:nil tag:0];
     mapViewController.dataManager = dataManager;
     
-    EtasViewController *etasViewController = [[EtasViewController alloc] init];
+    etasViewController = [[EtasViewController alloc] init];
     etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:nil tag:1];
     etasViewController.dataManager = dataManager;
+    
+    etasTableUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:etasViewController.tableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     
     tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, nil];
     [self.view addSubview:tabBarController.view];

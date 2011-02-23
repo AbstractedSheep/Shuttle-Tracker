@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "MainViewController.h"
 
+@class EtasViewController;
 
 @interface MainViewController_iPhone : MainViewController {
     
+    EtasViewController *etasViewController;
 }
 
 @end
