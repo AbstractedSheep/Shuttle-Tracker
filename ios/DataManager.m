@@ -33,6 +33,9 @@
 
 - (id)init {
     if ((self = [super init])) {
+        routes = nil;
+        stops = nil;
+        
         vehicleUpdateTimer = nil;
         
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
@@ -94,24 +97,23 @@
     [super dealloc];
 }
 
+- (void)loadFromKml {
+    //  Use the local copy of the routes/stops KML file
+    NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
+    
+    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
+    [routeKmlParser parse];
+    [self routeKmlLoaded];
+}
 
 //  TODO: Remove this or adjust it to be appropriate for DataManager. Taken from MapViewController.
 - (void)routeKmlLoaded {
-    [routeKmlParser parse];
     
     routes = [routeKmlParser routes];
     [routes retain];
     
     stops = [routeKmlParser stops];
     [stops retain];
-    
-    for (KMLRoute *route in routes) {
-        [self performSelectorOnMainThread:@selector(addRoute:) withObject:route waitUntilDone:YES];
-    }
-    
-    for (KMLStop *stop in stops) {
-        [self performSelectorOnMainThread:@selector(addStop:) withObject:stop waitUntilDone:YES];
-    }
     
 }
 

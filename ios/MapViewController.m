@@ -12,6 +12,7 @@
 
 
 @interface MapViewController()
+- (void)managedRoutesLoaded;
 - (void)routeKmlLoaded;
 - (void)refreshVehicleData;
 - (void)refreshEtaData;
@@ -49,14 +50,11 @@
     
     vehicles = [[NSMutableArray alloc] init];
     
-    //  Use the local copy of the routes/stops KML file
-    NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
-    
     //  Load the routes/stops KML file asynchronously
     dispatch_queue_t loadRouteKmlQueue = dispatch_queue_create("com.abstractedsheep.kmlqueue", NULL);
-	dispatch_async(loadRouteKmlQueue, ^{		
-        routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
-        [self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:YES];
+	dispatch_async(loadRouteKmlQueue, ^{
+        [dataManager loadFromKml];
+        [self managedRoutesLoaded];
 	});
     
     //  Show the user's location on the map
@@ -78,19 +76,13 @@
 }
 
 
-//  TODO: Move into viewDidLoad?  Or move into DataManager?
-- (void)routeKmlLoaded {
-    [routeKmlParser parse];
-    
-    routes = [routeKmlParser routes];
+//  The routes and stops were loaded in the dataManager
+- (void)managedRoutesLoaded {
+    routes = [dataManager routes];
     [routes retain];
     
-    dataManager.routes = routes;
-    
-    stops = [routeKmlParser stops];
+    stops = [dataManager stops];
     [stops retain];
-    
-    dataManager.stops = stops;
     
     for (KMLRoute *route in routes) {
         [self performSelectorOnMainThread:@selector(addRoute:) withObject:route waitUntilDone:YES];
@@ -99,7 +91,6 @@
     for (KMLStop *stop in stops) {
         [self performSelectorOnMainThread:@selector(addStop:) withObject:stop waitUntilDone:YES];
     }
-    
 }
 
 
