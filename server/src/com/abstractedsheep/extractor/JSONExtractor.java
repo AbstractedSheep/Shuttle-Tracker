@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParseException;
@@ -217,6 +218,14 @@ public class JSONExtractor {
 	}
 
 	public HashSet<Shuttle> getShuttleList() {
+		Iterator<Shuttle> itr = shuttleList.iterator();
+		Shuttle s = null;
+		while(itr.hasNext()) {
+			s = itr.next();
+			if(Math.abs(s.getLastUpdateTime() - System.currentTimeMillis()) > (1000 * 15 * 3)) {
+				itr.remove();
+			}
+		}
 		return this.shuttleList;
 	}
 

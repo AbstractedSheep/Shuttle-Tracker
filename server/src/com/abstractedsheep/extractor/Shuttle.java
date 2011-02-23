@@ -13,6 +13,7 @@ public class Shuttle {
 	private int speed;
 	private Point currentLocation;
 	private RouteFinder finder;
+	private long lastUpdateTime;
 
 	// Jackson requires a constructor with no parameters to be available
 	// Also notice 'this.' preceding the variables, this makes it clear that the
@@ -31,6 +32,7 @@ public class Shuttle {
 		this.currentLocation = new Point();
 		this.speedList = new ArrayList<Integer>();
 		finder = new RouteFinder(rt);
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
 	// This constructor is not required by Jackson, but it makes manually
@@ -48,6 +50,7 @@ public class Shuttle {
 		this.speed = 0;
 		this.currentLocation = new Point();
 		finder = new RouteFinder(rt);
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
 	// Jackson will not work unless all of the variables have accessors and
@@ -107,7 +110,10 @@ public class Shuttle {
 	public void setCurrentLocation(Point newLocation) {
 		this.currentLocation = newLocation;
 		finder.changeCurrentLocation(currentLocation);
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
+	
+	public long getLastUpdateTime() { return this.lastUpdateTime; }
 
 	public String getCardinalPoint() {
 		return cardinalPoint;
