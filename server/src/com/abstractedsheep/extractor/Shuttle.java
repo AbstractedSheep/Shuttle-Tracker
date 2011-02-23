@@ -70,9 +70,15 @@ public class Shuttle {
 	public HashMap<String, Stop> getStops() {
 		return stops;
 	}
-
-	public void setStops(HashMap<String, Stop> stops) {
-		if(!finder.changeRoute()) {
+	
+	/**
+	 * changes the state of the stop collection if the given route ID matches that for this
+	 * shuttle and the shuttle also knows which route it is on.
+	 * @param stops - new collection
+	 * @param id - route id
+	 */
+	public void setStops(HashMap<String, Stop> stops, int id) {
+		if(finder.changeRoute() && (this.getRouteId() == id)) {
 			this.stops = stops;
 			this.stopETA.clear();
 		}
