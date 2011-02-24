@@ -168,8 +168,7 @@ public class Shuttle {
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(p);
-			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000 +
-						(count * 30 * 1000);
+			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000;
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
 			count++;
