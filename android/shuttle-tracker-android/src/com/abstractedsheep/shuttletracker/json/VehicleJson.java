@@ -36,7 +36,7 @@ public class VehicleJson {
 	private String cardinal_point;
 		
 	public int getRoute_id() {
-		return route_id + 1;
+		return route_id;
 	}
 	public void setRoute_id(int route_id) {
 		this.route_id = route_id;

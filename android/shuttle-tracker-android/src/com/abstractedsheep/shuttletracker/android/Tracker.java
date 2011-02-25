@@ -51,7 +51,7 @@ import com.google.android.maps.MapView.LayoutParams;
 import android.os.Bundle;
 
 public class Tracker extends MapActivity {
-	public static String MAPS_API_KEY = "01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	public static String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 	private MapView map;
 	private Thread updateThread;
 	public boolean threadLock = false;

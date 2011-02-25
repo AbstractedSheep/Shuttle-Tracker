@@ -20,7 +20,6 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +41,8 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 
 	private ArrayList<Stop> stops = new ArrayList<Stop>();
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
-	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	//SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
 	
 	public StopsItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(boundCenter(defaultMarker), mapView);
@@ -76,15 +76,11 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		Stop s = stops.get(i);
 		EtaJson eta = etas.get(s.getShort_name());
 		String snippet = "";
+		long now = (new Date()).getTime();
 		
 		if (eta != null) {
-			try {
-				long now = (new Date()).getTime();
-				Date arrival = formatter.parse(eta.getEta());
-				snippet = "Next Arrival: " + secondsToHMS((arrival.getTime() - now) / 1000) + " minutes";
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			Date arrival = new Date(now + Long.parseLong(eta.getEta()));
+			snippet = "Next Arrival: " + formatter.format(arrival);
 		}
 		return new OverlayItem(new GeoPoint((int)(s.getLatitude() * 1e6), (int)(s.getLongitude() * 1e6)), s.getName(), snippet);
 	}
@@ -98,33 +94,4 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 	protected boolean onBalloonTap(int index) {
 		return false;
 	}	
-	
-	private String secondsToHMS(long totalSeconds) {
-		int hours = (int) (totalSeconds / 1200);
-		int minutes = (int) ((totalSeconds - hours * 60) / 60);
-		int seconds = (int) (totalSeconds - minutes * 60 - hours * 1200);
-		
-		String result = "";
-		
-		if (hours > 0)
-			result += String.valueOf(hours) + ":";
-		
-		if (!result.equals(""))
-			result += twoDigits(minutes) + ":";
-		else
-			result += String.valueOf(minutes) + ":";
-		
-		result += twoDigits(seconds);
-		
-		return result;
-	}
-	
-	private String twoDigits(int value) {
-		if (value >= 10) 
-			return String.valueOf(value);
-		else if (value < 0)
-			throw new IllegalArgumentException("value must be >= 0");
-		else
-			return "0" + String.valueOf(value);
-	}
 }

@@ -20,11 +20,15 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -46,6 +50,7 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 	private HashMap<Integer, RoutesJson.Route> routes = new HashMap<Integer, RoutesJson.Route>();
 	private ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
 	private Drawable marker;
+	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	public VehicleItemizedOverlay(Drawable defaultMarker) {
 		super(boundCenter(defaultMarker));
@@ -97,37 +102,49 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 		flip.setScale(-1.0f, 1.0f);
 		Bitmap flippedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), flip, true);
 		Bitmap tempBitmap;
+		long now;
+		Date lastUpdate;
 
 		synchronized (vehicles) {
-			for (VehicleJson v : vehicles) {	
-				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
-				pt = p.toPixels(gp, null);
-
-				rotate.reset();
-				rotate.postRotate(v.getHeading(), bitmap.getWidth(), bitmap.getHeight() / 2);
-				
-				if (v.getHeading() > 180) {
-					tempBitmap = recolorBitmap(flippedBitmap, routes.get(v.getRoute_id()).getColorInt());
-					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
-				} else {
-					tempBitmap = recolorBitmap(bitmap, routes.get(v.getRoute_id()).getColorInt());
-					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
+			for (VehicleJson v : vehicles) {
+				try {
+					now = (new Date()).getTime();
+					lastUpdate = formatter.parse(v.getUpdate_time());
+			
+					if ((now - lastUpdate.getTime()) > 60000)
+						continue;
+					
+					GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
+					pt = p.toPixels(gp, null);
+	
+					rotate.reset();
+					rotate.postRotate(v.getHeading(), bitmap.getWidth(), bitmap.getHeight() / 2);
+					
+					if (v.getHeading() > 180) {
+						tempBitmap = recolorBitmap(flippedBitmap, routes.get(v.getRoute_id()).getColorInt());
+						tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
+					} else {
+						tempBitmap = recolorBitmap(bitmap, routes.get(v.getRoute_id()).getColorInt());
+						tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
+					}
+					
+					
+					canvas.drawBitmap(tempBitmap, pt.x - (bitmap.getWidth() / 2), pt.y - (bitmap.getHeight() / 2), null);
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
-				
-				
-				canvas.drawBitmap(tempBitmap, pt.x - (bitmap.getWidth() / 2), pt.y - (bitmap.getHeight() / 2), null);
 			}
 		}		
 	}
 	
-	private Bitmap recolorBitmap(Bitmap b, int color) {
+	private Bitmap recolorBitmap(Bitmap bitmap, int color) {
+		Bitmap b = bitmap.copy(Config.ARGB_8888, true);
 		for (int i = 0; i < b.getWidth(); i++) {
 			for (int j = 0; j < b.getHeight(); j++) {
 				if (b.getPixel(i, j) == MAGENTA)
 					b.setPixel(i, j, color);
 			}
 		}
-		
 		return b;
 	}
 }

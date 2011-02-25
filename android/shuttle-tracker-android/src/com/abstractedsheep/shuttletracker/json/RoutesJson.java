@@ -93,9 +93,9 @@ public class RoutesJson {
 			int[] colors = Style.hexStringToByteArray(color.substring(1));
 			
 			if (colors.length == 4)
-				return Color.argb(colors[0], colors[3], colors[2], colors[1]);
+				return Color.argb(colors[0], (colors[3] - 10 > 0) ? colors[3] - 10 : 0,  (colors[2] - 10 > 0) ? colors[2] - 10 : 0,  (colors[1] - 10 > 0) ? colors[1] - 10 : 0);
 			else
-				return Color.rgb(colors[0], colors[1], colors[2]);
+				return Color.rgb(colors[0],  (colors[1] - 10 > 0) ? colors[1] - 10 : 0,  (colors[2] - 10 > 0) ? colors[2] - 10 : 0);
 		}
 
 		public void setColor(String color) {
