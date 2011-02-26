@@ -218,12 +218,11 @@ public class JSONExtractor {
 	}
 
 	public HashSet<Shuttle> getShuttleList() {
-		Iterator<Shuttle> itr = shuttleList.iterator();
-		Shuttle s = null;
-		while(itr.hasNext()) {
-			s = itr.next();
+		HashSet<Shuttle> tempList = new HashSet<Shuttle>(shuttleList);
+		Iterator<Shuttle> itr = tempList.iterator();		
+		for(Shuttle s : tempList) {
 			if(Math.abs(s.getLastUpdateTime() - System.currentTimeMillis()) > (1000 * 15 * 3)) {
-				itr.remove();
+				shuttleList.remove(s);
 			}
 		}
 		return this.shuttleList;
