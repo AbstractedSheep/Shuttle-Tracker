@@ -244,6 +244,7 @@ public class Shuttle {
 		private boolean foundRoute;
 		// this is the route coordinate closest to the shuttle's position.
 		private Point closestRouteCoor;
+		private double closestDistanceToRoute;
 		private int indexOfClosestCoordinate;
 
 		/**
@@ -276,6 +277,12 @@ public class Shuttle {
 				locList.remove(0);
 			locList.add(pt);
 			determineRouteOfShuttle();
+		}
+		
+		//a shuttle is considered on a route if it is no more than a quarter
+		//mile away from the closest route coordinate.
+		public boolean isShuttleOnRoute() {
+			return (this.closestDistanceToRoute >= .25);
 		}
 		
 		public int getRouteID() {
