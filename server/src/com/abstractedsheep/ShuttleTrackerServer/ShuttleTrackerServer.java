@@ -54,7 +54,6 @@ public class ShuttleTrackerServer {
 				}
 				// have the thread sleep for 15 seconds (approximate update
 				// time)
-				Thread.sleep(5 * 1000);
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
