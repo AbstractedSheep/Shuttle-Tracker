@@ -51,8 +51,16 @@ public class Shuttle {
 		this.currentLocation = new Point();
 		finder = new RouteFinder(rt);
 		this.lastUpdateTime = System.currentTimeMillis();
+	}	
+	
+	/**
+	 * updates the current state of the shuttle object.
+	 * @param newShuttle
+	 */
+	public void updateShuttle(Shuttle newShuttle) {
+		this.setCurrentLocation(newShuttle.getCurrentLocation());
 	}
-
+	
 	// Jackson will not work unless all of the variables have accessors and
 	// mutators
 	// Since these usually only have one line of code in them, put the entire
@@ -61,36 +69,39 @@ public class Shuttle {
 	public int getShuttleId() {
 		return this.shuttleId;
 	}
-
 	public void setShuttleId(int shuttleId) {
 		this.shuttleId = shuttleId;
 	}
-
 	public int getRouteId() {
 		return finder.getRouteID();
 	}
-
 	public HashMap<String, Stop> getStops() {
 		return stops;
 	}
-	
 	/**
 	 * changes the state of the stop collection if the given route ID matches that for this
 	 * shuttle and the shuttle also knows which route it is on.
 	 * @param stops - new collection
 	 * @param id - route id
 	 */
-	public void setStops(HashMap<String, Stop> stops, int id) {
-		if(finder.changeRoute() && (this.getRouteId() == id)) {
+	public void setStops(HashMap<String, Stop> stops, RouteFinder newFinder) {
+		if(newFinder.hasFoundRoute() && this.getRouteId() != newFinder.getRouteID()) {
 			this.stops = stops;
-			this.stopETA.clear();
+			this.finder = newFinder;
 		}
+		this.stopETA.clear();
 	}
-
+	/**
+	 * @return average speed of shuttle
+	 */
 	public int getSpeed() {
 		return speed;
 	}
-
+	/**
+	 * given a new speed value, calculate the average speed by this shuttle
+	 * and set that value as the speed of the shuttle.
+	 * @param newSpd - new instantaneous speed value.
+	 */
 	public void setSpeed(int newSpd) {
 		if(speedList.size() > 10)
 			speedList.remove(0);
@@ -102,41 +113,40 @@ public class Shuttle {
 		}
 		this.speed = count / speedList.size();
 	}
-
 	public  Point getCurrentLocation() {
 		return currentLocation;
 	}
-
 	public void setCurrentLocation(Point newLocation) {
 		this.currentLocation = newLocation;
 		finder.changeCurrentLocation(currentLocation);
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
-	
 	public long getLastUpdateTime() { return this.lastUpdateTime; }
-
 	public String getCardinalPoint() {
 		return cardinalPoint;
 	}
-
 	public void setCardinalPoint(String cardinalPoint) {
 		this.cardinalPoint = cardinalPoint;
 	}
-
 	public String getName() {
 		return shuttleName;
 	}
-
 	public void setName(String newName) {
 		this.shuttleName = newName;
 	}
-
 	public HashMap<String, Integer> getStopETA() {
 		return stopETA;
 	}
-
 	public String getRouteName() {
 		return finder.getRouteName();
+	}
+	public RouteFinder getFinder() {return this.finder; }
+	//these two methods get values from the inner RouteFinder class.
+	public boolean hasFoundRoute() {
+		return finder.hasFoundRoute();
+	}
+	public boolean isTooFarFromRoute() {
+		return finder.isShuttleOnRoute();
 	}
 
 	// These next two methods are not required by Jackson
@@ -293,11 +303,14 @@ public class Shuttle {
 			return routeList.get(0).getRouteName();
 		}
 		
-		public boolean changeRoute() {
+		public boolean hasFoundRoute() {
 			return this.foundRoute;
 		}
 
 		private void determineRouteOfShuttle() {
+			if (foundRoute)
+				return;
+			
 			// using the given routes, determine which route the
 			// shuttle is following
 			ArrayList<Shuttle.Point> list = null;
@@ -324,8 +337,6 @@ public class Shuttle {
 				}
 				index++;
 			}
-			if (foundRoute)
-				return;
 
 			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006) {
 				System.out.println(distanceArray[0] + " " + distanceArray[1]);
@@ -353,13 +364,13 @@ public class Shuttle {
 					list = rt.getCoordinateList();
 					int index = indexOfClosestCoordinate + 1;
 					int count = 0;
-					distanceToTravel = calculateDistance(list.get(index - 1));
+					distanceToTravel = calculateDistance(list.get(index - 0));
 					for (count = 0; count <= list.size(); count++) {
 						if (index >= list.size())
 							index = 1;
 						distance = calculateDistance(list.get(index - 1), stop);
 						// distance between this coordinate and the stop is
-						// greater than 15 ft
+						// less than 100 ft
 						if (distance <= .01)
 							return distanceToTravel;
 						distanceToTravel += calculateDistance(list.get(index),

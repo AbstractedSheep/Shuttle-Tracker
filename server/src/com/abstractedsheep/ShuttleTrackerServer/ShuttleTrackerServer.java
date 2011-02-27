@@ -39,8 +39,7 @@ public class ShuttleTrackerServer {
 	private void readDynamicData() {
 		while (true) {
 			try {
-				System.out
-						.println("Reading Shuttle data and trying to manipulate it.");
+				System.out.println("Reading Shuttle data and trying to manipulate it.");
 				jsExtractor.readShuttleData();
 				this.shuttleList = new HashSet<Shuttle>(jsExtractor.getShuttleList());
 
@@ -60,6 +59,13 @@ public class ShuttleTrackerServer {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
+				try {
+					Thread.sleep(1000 * 5);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
