@@ -85,7 +85,7 @@ public class Shuttle {
 	 * @param id - route id
 	 */
 	public void setStops(HashMap<String, Stop> stops, RouteFinder newFinder) {
-		if(newFinder.hasFoundRoute() && this.getRouteId() != newFinder.getRouteID()) {
+		if(newFinder.hasFoundRoute()) {
 			this.stops = stops;
 			this.finder = newFinder;
 		}
