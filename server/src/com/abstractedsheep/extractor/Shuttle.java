@@ -343,15 +343,17 @@ public class Shuttle {
 			//the shuttle's route has only been determined iff the difference
 			//between the closest points on the East and West routes is greater
 			//than ~32 feet...
-			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006)
+			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006) {
 				this.foundRoute = true;
-			
+				this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
+			}
 			//Since the overlapped region is still part of both routes,
 			//the shuttle can still give valid ETAs.
 			this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ?
 									locationArray[0] : locationArray[1];
-			this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
+			//this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
 			this.indexOfClosestCoordinate = indexArray[this.getRouteID() - 1];
+			this.closestDistanceToRoute = distanceArray[this.getRouteID() - 1];
 		}
 
 		/**
@@ -370,14 +372,14 @@ public class Shuttle {
 					list = rt.getCoordinateList();
 					int index = indexOfClosestCoordinate + 1;
 					int count = 0;
-					distanceToTravel = calculateDistance(list.get(index - 0));
+					distanceToTravel = calculateDistance(list.get(index - 1));
 					for (count = 0; count <= list.size(); count++) {
 						if (index >= list.size())
 							index = 1;
 						distance = calculateDistance(list.get(index - 1), stop);
 						// distance between this coordinate and the stop is
 						// less than 100 ft
-						if (distance <= .01)
+						if (distance <= .02)
 							return distanceToTravel;
 						distanceToTravel += calculateDistance(list.get(index),
 								list.get(index - 1)) + .003;
