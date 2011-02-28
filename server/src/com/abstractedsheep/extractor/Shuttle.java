@@ -337,15 +337,15 @@ public class Shuttle {
 				}
 				index++;
 			}
-
+			
+			System.out.println(distanceArray[0] + " " + distanceArray[1]);
 			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006) {
-				System.out.println(distanceArray[0] + " " + distanceArray[1]);
 				this.foundRoute = true;
-				this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ? locationArray[0]
-						: locationArray[1];
-				this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
-				this.indexOfClosestCoordinate = indexArray[this.getRouteID() - 1];
 			}
+			this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ?
+									locationArray[0] : locationArray[1];
+			this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
+			this.indexOfClosestCoordinate = indexArray[this.getRouteID() - 1];
 		}
 
 		/**
