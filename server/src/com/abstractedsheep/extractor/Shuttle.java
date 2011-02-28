@@ -339,9 +339,15 @@ public class Shuttle {
 			}
 			
 			System.out.println(distanceArray[0] + " " + distanceArray[1]);
-			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006) {
+			
+			//the shuttle's route has only been determined iff the difference
+			//between the closest points on the East and West routes is greater
+			//than ~32 feet...
+			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006)
 				this.foundRoute = true;
-			}
+			
+			//Since the overlapped region is still part of both routes,
+			//the shuttle can still give valid ETAs.
 			this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ?
 									locationArray[0] : locationArray[1];
 			this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
