@@ -57,6 +57,8 @@
             jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
         } else {
             jsonDict = nil;
+			
+			return NO;
         }
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
@@ -75,7 +77,15 @@
                     coordinate.longitude = [[dict objectForKey:string] floatValue];
                 } else if ([string isEqualToString:@"heading"]) {
                     vehicle.heading = [[dict objectForKey:string] intValue];
-                }
+                } else if ([string isEqualToString:@"update_time"]) {
+					NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+					[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+					
+					vehicle.updateTime = [dateFormatter dateFromString:[dict objectForKey:string]];
+					[dateFormatter release];
+				} else if ([string isEqualToString:@"route_id"]) {
+					vehicle.routeNo = [[dict objectForKey:string] intValue];
+				}
             }
             
             //  Set the coordinate of the vehicle after both the latitude and longitude are set
@@ -112,6 +122,8 @@
             jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
         } else {
             jsonDict = nil;
+			
+			return NO;
         }
         
         
@@ -205,6 +217,8 @@
 
 @synthesize ETAs;
 @synthesize heading;
+@synthesize updateTime;
+@synthesize routeNo;
 
 
 - (id)init {
@@ -215,6 +229,7 @@
         annotationView = nil;
         
         heading = 0;
+		routeNo = 0;
     }
 
     return self;

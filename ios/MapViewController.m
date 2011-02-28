@@ -123,11 +123,20 @@
             }
         }
         
-        if (!alreadyAdded) {
+		//	Check to make sure that the new vehicle was updated in the past two minutes
+        if (!alreadyAdded && [newVehicle.updateTime timeIntervalSinceNow] < 120) {
             [vehicles addObject:newVehicle];
             [self addJsonVehicle:newVehicle];
         }
     }
+	
+	for (JSONVehicle *vehicle in vehicles) {
+		//	Remove vehicles which have not been updated for two minutes
+		if ([vehicle.updateTime timeIntervalSinceNow] < 120) {
+			[_mapView removeAnnotation:vehicle];
+			[vehicles removeObject:vehicle];
+		}
+	}
 }
 
 

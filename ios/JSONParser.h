@@ -59,13 +59,16 @@
 
 @interface JSONVehicle : JSONPlacemark {
     NSDictionary *ETAs;
-    
     int heading;
-    
+	NSDate *updateTime;
+    int routeNo;
+	
 }
 
 @property (nonatomic, retain) NSDictionary *ETAs;
 @property (nonatomic) int heading;
+@property (nonatomic, retain) NSDate *updateTime;
+@property (nonatomic) int routeNo;
 
 
 @end
