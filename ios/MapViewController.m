@@ -124,19 +124,28 @@
         }
         
 		//	Check to make sure that the new vehicle was updated in the past two minutes
-        if (!alreadyAdded && [newVehicle.updateTime timeIntervalSinceNow] < 120) {
+        if (!alreadyAdded && [newVehicle.updateTime timeIntervalSinceNow] < -180.0) {
             [vehicles addObject:newVehicle];
             [self addJsonVehicle:newVehicle];
         }
     }
 	
+	NSMutableArray *vehiclesToRemove = [[NSMutableArray alloc] init];
+	
 	for (JSONVehicle *vehicle in vehicles) {
 		//	Remove vehicles which have not been updated for two minutes
-		if ([vehicle.updateTime timeIntervalSinceNow] < 120) {
-			[_mapView removeAnnotation:vehicle];
-			[vehicles removeObject:vehicle];
+		if ([vehicle.updateTime timeIntervalSinceNow] < -180.0) {
+//			NSLog(@"%f", [vehicle.updateTime timeIntervalSinceNow]);
+			[vehiclesToRemove addObject:vehicle];
 		}
 	}
+	
+	for (JSONVehicle *vehicle in vehiclesToRemove) {
+		[_mapView removeAnnotation:vehicle];
+		[vehicles removeObject:vehicle];
+	}
+	
+	[vehiclesToRemove release];
 }
 
 
@@ -156,7 +165,7 @@
     for (NSString *coordinate in route.lineString) {
         temp = [coordinate componentsSeparatedByString:@","];
         
-        if (temp) {
+        if (temp && [temp count] > 1) {
             //  Get a CoreLocation coordinate from the coordinate string
             clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:1] floatValue], [[temp objectAtIndex:0] floatValue]);
             
