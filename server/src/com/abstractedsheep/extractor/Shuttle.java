@@ -329,7 +329,7 @@ public class Shuttle {
 					p1 = list.get(i);
 					distance = calculateDistance(p1);
 
-					if (distanceArray[index] >= distance) {
+					if (distanceArray[index] > distance) {
 						distanceArray[index] = distance;
 						locationArray[index] = p1;
 						indexArray[index] = i;
