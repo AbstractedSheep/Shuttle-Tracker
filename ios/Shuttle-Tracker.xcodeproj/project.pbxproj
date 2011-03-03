@@ -35,6 +35,8 @@
 		DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA8E13119C3800EDE54E /* DataManager.m */; };
 		DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA951311A2F100EDE54E /* MainViewController.m */; };
 		DAACF009131F2E980074FA4C /* stop_marker.png in Resources */ = {isa = PBXBuildFile; fileRef = DAACF008131F2E980074FA4C /* stop_marker.png */; };
+		DAACF018131F3ACC0074FA4C /* Shuttle-Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DAACF017131F3ACC0074FA4C /* Shuttle-Icon.png */; };
+		DAACF01A131F3AD90074FA4C /* Shuttle-Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAACF019131F3AD90074FA4C /* Shuttle-Icon@2x.png */; };
 		DAB2655512FB5D8900A4C5B7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */; };
 		DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */; };
 		DAE5C9C413063BEC0014AEFE /* MainViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */; };
@@ -90,6 +92,8 @@
 		DAA0DA941311A2F100EDE54E /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		DAA0DA951311A2F100EDE54E /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		DAACF008131F2E980074FA4C /* stop_marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_marker.png; sourceTree = "<group>"; };
+		DAACF017131F3ACC0074FA4C /* Shuttle-Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Shuttle-Icon.png"; sourceTree = "<group>"; };
+		DAACF019131F3AD90074FA4C /* Shuttle-Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Shuttle-Icon@2x.png"; sourceTree = "<group>"; };
 		DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DAC9AB3B1311AF85008E8555 /* EtaWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaWrapper.h; sourceTree = "<group>"; };
 		DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
@@ -255,6 +259,8 @@
 			isa = PBXGroup;
 			children = (
 				DA750B8812F4CB7600190FA3 /* netlink.kml */,
+				DAACF017131F3ACC0074FA4C /* Shuttle-Icon.png */,
+				DAACF019131F3AD90074FA4C /* Shuttle-Icon@2x.png */,
 				DAA0367C13149335005D3E86 /* shuttle_color.png */,
 				DAA0367D13149335005D3E86 /* shuttle.png */,
 				DAACF008131F2E980074FA4C /* stop_marker.png */,
@@ -320,6 +326,8 @@
 				DAA0367E13149335005D3E86 /* shuttle_color.png in Resources */,
 				DAA0367F13149335005D3E86 /* shuttle.png in Resources */,
 				DAACF009131F2E980074FA4C /* stop_marker.png in Resources */,
+				DAACF018131F3ACC0074FA4C /* Shuttle-Icon.png in Resources */,
+				DAACF01A131F3AD90074FA4C /* Shuttle-Icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
