@@ -33,6 +33,8 @@
     
     NSTimer *vehicleUpdateTimer;
     NSTimer *etaUpdateTimer;
+	
+	UIImage *shuttleImage;
     
 }
 

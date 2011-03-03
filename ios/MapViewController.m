@@ -38,6 +38,9 @@
     _mapView.delegate = self;
     
 	[self.view addSubview:_mapView];
+	
+	shuttleImage = [UIImage imageNamed:@"shuttle"];
+	[shuttleImage retain];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -113,7 +116,12 @@
                     }];
                     
                     //  Endnote
-                }
+                } else {
+					//  Note: Same code as in - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation below
+                    [UIView animateWithDuration:0.5 animations:^{
+						[existingVehicle copyAttributes:newVehicle];
+                    }];
+				}
 				
 				alreadyAdded = YES;
 
@@ -232,6 +240,7 @@
     }
     
     [_mapView release];
+	[shuttleImage release];
     [super dealloc];
 }
 
@@ -269,32 +278,24 @@
 		
 		return stopAnnotationView;
         
-//        MKPinAnnotationView *pinAnnotationView = [[[MKPinAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
-//        pinAnnotationView.pinColor = MKPinAnnotationColorPurple;
-//        pinAnnotationView.animatesDrop = NO;
-//        pinAnnotationView.canShowCallout = YES;
-//        
-//        [(KMLStop *)annotation setAnnotationView:pinAnnotationView];
-//        
-//        return pinAnnotationView;
     } else if ([annotation isKindOfClass:[KMLVehicle class]]) {
         if ([(KMLVehicle *)annotation annotationView]) {
             return [(KMLVehicle *)annotation annotationView];
         }
         
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
         
         [(KMLVehicle *)annotation setAnnotationView:vehicleAnnotationView];
+		
+		return vehicleAnnotationView;
     } else if ([annotation isKindOfClass:[JSONVehicle class]]) {
         if ([(JSONVehicle *)annotation annotationView]) {
             return [(JSONVehicle *)annotation annotationView];
         }
         
-        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle"];
+        MKAnnotationView *vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
 		
@@ -307,6 +308,8 @@
         //  Endnote
         
         [(JSONVehicle *)annotation setAnnotationView:vehicleAnnotationView];
+		
+		return vehicleAnnotationView;
     }
     
     return nil;
