@@ -22,6 +22,6 @@
 @property (nonatomic, retain) NSString *stopId;
 @property (nonatomic, retain) NSDate *eta;
 @property (nonatomic) NSInteger route;
-@property (nonatomic, assign) NSString *stopName;
+@property (nonatomic, readonly) NSString *stopName;
 
 @end

@@ -145,7 +145,7 @@
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"hh:mm"];
         
-        [cell.textLabel setText:[etaWrapped.stopId stringByAppendingString:[@"  " stringByAppendingString:[dateFormatter stringFromDate:etaWrapped.eta]]]];
+        [cell.textLabel setText:[etaWrapped.stopName stringByAppendingString:[@"  " stringByAppendingString:[dateFormatter stringFromDate:etaWrapped.eta]]]];
         
         [dateFormatter release];
     }
