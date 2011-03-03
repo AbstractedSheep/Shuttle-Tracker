@@ -103,17 +103,13 @@
         for (JSONVehicle *existingVehicle in vehicles) {
             if ([existingVehicle.name isEqualToString:newVehicle.name]) {
                 
-//                [UIView animateWithDuration:0.5 animations:^{
-//					[existingVehicle copyAttributes:newVehicle];
-//                }];
-                
                 if (existingVehicle.annotationView) {
                     //  Note: Same code as in - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation below
                     [UIView animateWithDuration:0.5 animations:^{
 						[existingVehicle copyAttributes:newVehicle];
 						
                         //	Rotate the shuttle image to match the orientation of the shuttle
-                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation(existingVehicle.heading*2*M_PI/360);
+//                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation(existingVehicle.heading*2*M_PI/360);
                     }];
                     
                     //  Endnote
@@ -126,7 +122,6 @@
 		
 		//	Check to make sure that the new vehicle was updated in the past two minutes
         if (!alreadyAdded && [newVehicle.updateTime timeIntervalSinceNow] > -120.0f) {
-//			NSLog(@"blah %f", [newVehicle.updateTime timeIntervalSinceNow]);
             [vehicles addObject:newVehicle];
             [self addJsonVehicle:newVehicle];
         }
@@ -295,7 +290,7 @@
         UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_color.png"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
-        
+		
         //  Note: Same code as in - (void)refreshVehicleData above
         [UIView animateWithDuration:0.5 animations:^{
             //	Rotate the shuttle image to match the orientation of the shuttle
