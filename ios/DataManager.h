@@ -29,8 +29,6 @@
     NSArray *etas;
     NSInteger eastEtas;
     NSInteger westEtas;
-    
-    NSTimer *vehicleUpdateTimer;
 }
 
 @property (nonatomic, retain) NSArray *routes;

@@ -125,6 +125,12 @@
 			
 			return NO;
         }
+		
+		if (theError) {
+			NSLog(@"Error creating JSON data dictionary from string: %@", jsonString);
+			
+			return NO;
+		}
         
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
@@ -250,7 +256,7 @@
 
 //  Title is the main line of text displayed in the callout of an MKAnnotation
 - (NSString *)title {
-	return routeNo ? @"East Shuttle" : @"West Shuttle";
+	return (routeNo - 1) ? @"East Shuttle" : @"West Shuttle";
 }
 
 //  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation

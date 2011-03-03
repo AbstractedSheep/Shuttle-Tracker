@@ -103,6 +103,8 @@
     NSArray *tmpVehicles = [dataManager.vehicles copy];
     
     for (JSONVehicle *newVehicle in tmpVehicles) {
+		alreadyAdded = NO;
+		
         for (JSONVehicle *existingVehicle in vehicles) {
             if ([existingVehicle.name isEqualToString:newVehicle.name]) {
                 
@@ -129,7 +131,7 @@
         }
 		
 		//	Check to make sure that the new vehicle was updated in the past two minutes
-        if (!alreadyAdded && [newVehicle.updateTime timeIntervalSinceNow] > -120.0f) {
+        if (!alreadyAdded && [newVehicle.updateTime timeIntervalSinceNow] > -180.0f) {
             [vehicles addObject:newVehicle];
             [self addJsonVehicle:newVehicle];
         }
@@ -139,7 +141,7 @@
 	
 	for (JSONVehicle *vehicle in vehicles) {
 		//	Remove vehicles which have not been updated for two minutes
-		if ([vehicle.updateTime timeIntervalSinceNow] < -120.0f) {
+		if ([vehicle.updateTime timeIntervalSinceNow] < -180.0f) {
 //			NSLog(@"%f", [vehicle.updateTime timeIntervalSinceNow]);
 			[vehiclesToRemove addObject:vehicle];
 		}

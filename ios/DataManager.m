@@ -39,13 +39,9 @@
         eastEtas = 0;
         westEtas = 0;
         
-        vehicleUpdateTimer = nil;
-        
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
         shuttleJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
         vehiclesJsonParser = [[JSONParser alloc] initWithUrl:shuttleJsonUrl];
-        
-        //vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:self selector:@selector(updateVehicleData) userInfo:nil repeats:YES];
         
         etasJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta"];
         etasJsonParser = [[JSONParser alloc] initWithUrl:etasJsonUrl];
@@ -73,10 +69,6 @@
         [etasJsonParser release];
     }
     
-    if (vehicleUpdateTimer) {
-        [vehicleUpdateTimer invalidate];
-    }
-    
     [shuttleJsonUrl release];
     [etasJsonUrl release];
     
@@ -91,10 +83,6 @@
     
     if (etas) {
         [etas release];
-    }
-    
-    if (vehicleUpdateTimer) {
-        [vehicleUpdateTimer release];
     }
     
     [super dealloc];
