@@ -308,8 +308,6 @@ public class Shuttle {
 		}
 
 		private void determineRouteOfShuttle() {
-			if (foundRoute)
-				return;
 			
 			// using the given routes, determine which route the
 			// shuttle is following
@@ -338,7 +336,14 @@ public class Shuttle {
 				index++;
 			}
 			
-			System.out.println(distanceArray[0] + " " + distanceArray[1]);
+			//System.out.println(distanceArray[0] + " " + distanceArray[1]);
+			
+			if(routeList.size() < 2) {
+				this.closestRouteCoor = locationArray[0];
+				this.indexOfClosestCoordinate = indexArray[0];
+				this.closestDistanceToRoute = distanceArray[0];
+				return;
+			}
 			
 			//the shuttle's route has only been determined iff the difference
 			//between the closest points on the East and West routes is greater
