@@ -70,5 +70,6 @@
 @property (nonatomic, retain) NSDate *updateTime;
 @property (nonatomic) int routeNo;
 
+- (void)copyAttributes:(JSONVehicle *)newVehicle;
 
 @end

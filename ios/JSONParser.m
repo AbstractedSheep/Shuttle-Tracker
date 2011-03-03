@@ -213,6 +213,7 @@
 @end
 
 
+//	Overrides init, title, and subtitle
 @implementation JSONVehicle
 
 @synthesize ETAs;
@@ -227,12 +228,42 @@
         description = nil;
         ETAs = nil;
         annotationView = nil;
+		updateTime = nil;
         
         heading = 0;
 		routeNo = 0;
     }
 
     return self;
+}
+
+- (void)copyAttributes:(JSONVehicle *)newVehicle {
+	self.name = newVehicle.name;
+	self.description = newVehicle.name;
+	self.ETAs = newVehicle.ETAs;
+	self.updateTime = newVehicle.updateTime;
+	
+	self.heading = newVehicle.heading;
+	self.routeNo = newVehicle.routeNo;
+}
+
+
+//  Title is the main line of text displayed in the callout of an MKAnnotation
+- (NSString *)title {
+	return routeNo ? @"East Shuttle" : @"West Shuttle";
+}
+
+//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation
+- (NSString *)subtitle {
+	if (updateTime) {
+		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+		[dateFormatter setDateFormat:@"HH:mm"];
+		
+		NSString *updatedString = [NSString stringWithString:@"Last updated: "];
+		
+		return [updatedString stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
+	}
+	return description;
 }
 
 
