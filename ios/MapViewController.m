@@ -261,41 +261,48 @@
         return nil;
     
     if ([annotation isKindOfClass:[KMLStop class]]) {
+		MKAnnotationView *stopAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
+        stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
+        stopAnnotationView.canShowCallout = YES;
         
-        MKPinAnnotationView *pinAnnotationView = [[[MKPinAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
-        pinAnnotationView.pinColor = MKPinAnnotationColorPurple;
-        pinAnnotationView.animatesDrop = NO;
-        pinAnnotationView.canShowCallout = YES;
+        [(KMLStop *)annotation setAnnotationView:stopAnnotationView];
+		
+		return stopAnnotationView;
         
-        [(KMLStop *)annotation setAnnotationView:pinAnnotationView];
-        
-        return pinAnnotationView;
+//        MKPinAnnotationView *pinAnnotationView = [[[MKPinAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
+//        pinAnnotationView.pinColor = MKPinAnnotationColorPurple;
+//        pinAnnotationView.animatesDrop = NO;
+//        pinAnnotationView.canShowCallout = YES;
+//        
+//        [(KMLStop *)annotation setAnnotationView:pinAnnotationView];
+//        
+//        return pinAnnotationView;
     } else if ([annotation isKindOfClass:[KMLVehicle class]]) {
         if ([(KMLVehicle *)annotation annotationView]) {
             return [(KMLVehicle *)annotation annotationView];
         }
         
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle.png"];
+        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
         
         [(KMLVehicle *)annotation setAnnotationView:vehicleAnnotationView];
     } else if ([annotation isKindOfClass:[JSONVehicle class]]) {
         if ([(JSONVehicle *)annotation annotationView]) {
-            return [(KMLVehicle *)annotation annotationView];
+            return [(JSONVehicle *)annotation annotationView];
         }
         
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_color.png"];
+        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
 		
         //  Note: Same code as in - (void)refreshVehicleData above
-        [UIView animateWithDuration:0.5 animations:^{
-            //	Rotate the shuttle image to match the orientation of the shuttle
-            vehicleAnnotationView.transform = CGAffineTransformMakeRotation([(JSONVehicle *)annotation heading]*2*M_PI/360);
-        }];
+//        [UIView animateWithDuration:0.5 animations:^{
+//            //	Rotate the shuttle image to match the orientation of the shuttle
+//            vehicleAnnotationView.transform = CGAffineTransformMakeRotation([(JSONVehicle *)annotation heading]*2*M_PI/360);
+//        }];
         
         //  Endnote
         
