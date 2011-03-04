@@ -71,6 +71,7 @@
 {
     [super viewDidLoad];
     
+	//	Schedule a timer to make the DataManager pull new data every 5 seconds
     dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:dataManager selector:@selector(updateData) userInfo:nil repeats:YES];
 }
 

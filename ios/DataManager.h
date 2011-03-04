@@ -29,6 +29,9 @@
     NSArray *etas;
     NSInteger eastEtas;
     NSInteger westEtas;
+	
+	dispatch_queue_t loadVehicleJsonQueue;
+	dispatch_queue_t loadEtaJsonQueue;
 }
 
 @property (nonatomic, retain) NSArray *routes;

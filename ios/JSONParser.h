@@ -32,6 +32,7 @@
 @interface JSONPlacemark : NSObject <MKAnnotation> {
     NSString *name;
     NSString *description;
+	NSString *subtitle;
     
     CLLocationCoordinate2D coordinate;
     
@@ -42,7 +43,7 @@
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, readonly) NSString *title;
 @property (nonatomic, retain) NSString *description;
-@property (nonatomic, readonly) NSString *subtitle;
+@property (nonatomic, retain) NSString *subtitle;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, retain) MKAnnotationView *annotationView;
 
@@ -70,6 +71,6 @@
 @property (nonatomic, retain) NSDate *updateTime;
 @property (nonatomic) int routeNo;
 
-- (void)copyAttributes:(JSONVehicle *)newVehicle;
+- (void)copyAttributesExceptLocation:(JSONVehicle *)newVehicle;
 
 @end

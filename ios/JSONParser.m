@@ -175,6 +175,7 @@
 
 @synthesize name;
 @synthesize description;
+@synthesize subtitle;
 @synthesize coordinate;
 @synthesize annotationView;
 
@@ -194,9 +195,11 @@
 	return name;
 }
 
-//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation
-- (NSString *)subtitle {
-	return description;
+- (void)setDescription:(NSString *)newDescription {
+	description = newDescription;
+	[description retain];
+	
+	self.subtitle = newDescription;
 }
 
 
@@ -243,9 +246,24 @@
     return self;
 }
 
-- (void)copyAttributes:(JSONVehicle *)newVehicle {
+
+- (void)dealloc {
+	[name release];
+	[description release];
+	
+	if (ETAs) {
+		[ETAs release];
+	}
+	
+	[updateTime release];
+	[super dealloc];
+}
+
+//	Update the attributes of the current vehicle, usually for the same vehicle in a subsequent
+//	data update.
+- (void)copyAttributesExceptLocation:(JSONVehicle *)newVehicle {
 	self.name = newVehicle.name;
-	self.description = newVehicle.name;
+	self.description = newVehicle.description;
 	self.ETAs = newVehicle.ETAs;
 	self.updateTime = newVehicle.updateTime;
 	
@@ -259,17 +277,24 @@
 	return (routeNo - 1) ? @"East Shuttle" : @"West Shuttle";
 }
 
-//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation
-- (NSString *)subtitle {
-	if (updateTime) {
-		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-		[dateFormatter setDateFormat:@"HH:mm"];
-		
-		NSString *updatedString = [NSString stringWithString:@"Last updated: "];
-		
-		return [updatedString stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
-	}
-	return description;
+
+- (void)setUpdateTime:(NSDate *)newUpdateTime {
+//	if (updateTime && [updateTime timeIntervalSinceNow] > -30.0f) {
+//		return;
+//	}
+	
+	updateTime = newUpdateTime;
+	[updateTime retain];
+	
+	//	Update the vehicle's subtitle here, since it displays the last updated time
+	//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation
+	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"HH:mm"];
+	
+	self.subtitle = [@"Last updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
+	NSLog(@"Subtitle: %@", subtitle);
+	
+	[dateFormatter release];
 }
 
 

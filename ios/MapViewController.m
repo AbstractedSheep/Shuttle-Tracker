@@ -109,20 +109,17 @@
             if ([existingVehicle.name isEqualToString:newVehicle.name]) {
                 
                 if (existingVehicle.annotationView) {
-                    //  Note: Same code as in - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation below
+					[existingVehicle copyAttributesExceptLocation:newVehicle];
+					
                     [UIView animateWithDuration:0.5 animations:^{
-						[existingVehicle copyAttributes:newVehicle];
+						existingVehicle.coordinate = newVehicle.coordinate;
 						
                         //	Rotate the shuttle image to match the orientation of the shuttle
 //                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation(existingVehicle.heading*2*M_PI/360);
                     }];
-                    
-                    //  Endnote
+					
                 } else {
-					//  Note: Same code as in - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation below
-                    [UIView animateWithDuration:0.5 animations:^{
-						[existingVehicle copyAttributes:newVehicle];
-                    }];
+					[existingVehicle copyAttributesExceptLocation:newVehicle];
 				}
 				
 				alreadyAdded = YES;
@@ -130,19 +127,27 @@
             }
         }
 		
-		//	Check to make sure that the new vehicle was updated in the past two minutes
-        if (!alreadyAdded && [newVehicle.updateTime timeIntervalSinceNow] > -180.0f) {
-            [vehicles addObject:newVehicle];
-            [self addJsonVehicle:newVehicle];
-        }
+		if (!alreadyAdded) {
+			[vehicles addObject:newVehicle];
+			[self addJsonVehicle:newVehicle];
+		}
     }
+	
+	BOOL shouldRemove = YES;
 	
 	NSMutableArray *vehiclesToRemove = [[NSMutableArray alloc] init];
 	
+	//	Look to see if the current vehicle is in the data manager any more.  If it isn't, then remove it.
 	for (JSONVehicle *vehicle in vehicles) {
-		//	Remove vehicles which have not been updated for two minutes
-		if ([vehicle.updateTime timeIntervalSinceNow] < -180.0f) {
-//			NSLog(@"%f", [vehicle.updateTime timeIntervalSinceNow]);
+		shouldRemove = YES;
+		
+		for (JSONVehicle *newVehicle in tmpVehicles) {
+			if ([vehicle.name isEqualToString:newVehicle.name]) {
+				shouldRemove = NO;
+			}
+		}
+		
+		if (shouldRemove) {
 			[vehiclesToRemove addObject:vehicle];
 		}
 	}
@@ -300,14 +305,6 @@
         MKAnnotationView *vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
-		
-        //  Note: Same code as in - (void)refreshVehicleData above
-//        [UIView animateWithDuration:0.5 animations:^{
-//            //	Rotate the shuttle image to match the orientation of the shuttle
-//            vehicleAnnotationView.transform = CGAffineTransformMakeRotation([(JSONVehicle *)annotation heading]*2*M_PI/360);
-//        }];
-        
-        //  Endnote
         
         [(JSONVehicle *)annotation setAnnotationView:vehicleAnnotationView];
 		
