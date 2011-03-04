@@ -37,6 +37,7 @@
     CLLocationCoordinate2D coordinate;
     
     MKAnnotationView *annotationView;
+	NSDateFormatter *timeDisplayFormatter;
     
 }
 
@@ -46,6 +47,7 @@
 @property (nonatomic, retain) NSString *subtitle;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, retain) MKAnnotationView *annotationView;
+@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
 
 
 @end

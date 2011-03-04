@@ -32,6 +32,8 @@
 	
 	dispatch_queue_t loadVehicleJsonQueue;
 	dispatch_queue_t loadEtaJsonQueue;
+	
+	NSDateFormatter *timeDisplayFormatter;
 }
 
 @property (nonatomic, retain) NSArray *routes;
@@ -40,6 +42,8 @@
 @property (nonatomic, retain) NSArray *etas;
 @property (nonatomic, readonly) NSInteger eastEtas;
 @property (nonatomic, readonly) NSInteger westEtas;
+@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
+
 
 - (void)loadRoutesAndStops;
 - (void)updateData;

@@ -12,9 +12,12 @@
 
 @interface EtasViewController : UITableViewController {
     DataManager *dataManager;
-    
+    NSDateFormatter *timeDisplayFormatter;
+	
 }
 
 @property (nonatomic, assign) DataManager *dataManager;
+@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
+
 
 @end

@@ -47,7 +47,16 @@
 - (void)loadView
 {
     self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-                 
+	
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	BOOL use24Time = [[defaults objectForKey:@"Use24Time"] boolValue];
+	
+	if (use24Time) {
+		[timeDisplayFormatter setDateFormat:@"HH:mm"];
+	} else {
+		[timeDisplayFormatter setDateFormat:@"hh:mm a"];
+	}
+	
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     
     MapViewController *mapViewController = [[MapViewController alloc] init];
