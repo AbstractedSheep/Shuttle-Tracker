@@ -143,7 +143,13 @@
     
     //  If the EtaWrapper was found, add the stop info and the ETA
     if (etaWrapped) {
-        [cell.textLabel setText:[etaWrapped.stopName stringByAppendingString:[@"  " stringByAppendingString:[timeDisplayFormatter stringFromDate:etaWrapped.eta]]]];
+        cell.textLabel = etaWrapped.stopName;
+
+	UILabel *etaLabel = [[UILabel alloc] init];
+	etaLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
+	cell.accessoryView = etaLabel;
+
+	[etaLabel release];
     }
 
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
