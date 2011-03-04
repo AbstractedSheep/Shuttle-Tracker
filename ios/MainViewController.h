@@ -15,9 +15,11 @@
     NSTimer *dataUpdateTimer;
     NSTimer *etasTableUpdateTimer;
     
+	NSDateFormatter *timeDisplayFormatter;
 }
 
-@property (nonatomic, assign) DataManager *dataManager;
+@property (nonatomic, retain) DataManager *dataManager;
+@property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
 
 
 @end

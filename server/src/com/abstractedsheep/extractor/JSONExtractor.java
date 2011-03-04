@@ -198,7 +198,7 @@ public class JSONExtractor {
 			if (shuttle.equals(s)) {
 				s2 = shuttle;
 				s2.setCurrentLocation(s.getCurrentLocation());
-				s2.setStops(s.getStops(), s.getRouteId());
+				s2.setStops(s.getStops(), s.getFinder());
 				shuttleList.remove(s);
 				break;
 			}
@@ -218,12 +218,16 @@ public class JSONExtractor {
 	}
 
 	public HashSet<Shuttle> getShuttleList() {
-		Iterator<Shuttle> itr = shuttleList.iterator();
-		Shuttle s = null;
-		while(itr.hasNext()) {
-			s = itr.next();
+		HashSet<Shuttle> tempList = new HashSet<Shuttle>(shuttleList);
+		
+		//if the shuttle has either not been sending updates in a while
+		//or is too far from either route, then delete that shuttle from the list
+		//such that the ETAs are not skewed.
+		for(Shuttle s : tempList) {
 			if(Math.abs(s.getLastUpdateTime() - System.currentTimeMillis()) > (1000 * 15 * 3)) {
-				itr.remove();
+				shuttleList.remove(s);
+			} else if(s.isTooFarFromRoute()) {
+				shuttleList.remove(s);
 			}
 		}
 		return this.shuttleList;

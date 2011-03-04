@@ -57,6 +57,8 @@
             jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
         } else {
             jsonDict = nil;
+			
+			return NO;
         }
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
@@ -75,7 +77,15 @@
                     coordinate.longitude = [[dict objectForKey:string] floatValue];
                 } else if ([string isEqualToString:@"heading"]) {
                     vehicle.heading = [[dict objectForKey:string] intValue];
-                }
+                } else if ([string isEqualToString:@"update_time"]) {
+					NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+					[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+					
+					vehicle.updateTime = [dateFormatter dateFromString:[dict objectForKey:string]];
+					[dateFormatter release];
+				} else if ([string isEqualToString:@"route_id"]) {
+					vehicle.routeNo = [[dict objectForKey:string] intValue];
+				}
             }
             
             //  Set the coordinate of the vehicle after both the latitude and longitude are set
@@ -112,7 +122,15 @@
             jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
         } else {
             jsonDict = nil;
+			
+			return NO;
         }
+		
+		if (theError) {
+			NSLog(@"Error creating JSON data dictionary from string: %@", jsonString);
+			
+			return NO;
+		}
         
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
@@ -157,8 +175,11 @@
 
 @synthesize name;
 @synthesize description;
+@synthesize subtitle;
 @synthesize coordinate;
 @synthesize annotationView;
+@synthesize timeDisplayFormatter;
+
 
 - (id)init {
     if ((self = [super init])) {
@@ -176,9 +197,11 @@
 	return name;
 }
 
-//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation
-- (NSString *)subtitle {
-	return description;
+- (void)setDescription:(NSString *)newDescription {
+	description = newDescription;
+	[description retain];
+	
+	self.subtitle = newDescription;
 }
 
 
@@ -201,10 +224,13 @@
 @end
 
 
+//	Overrides init, title, and subtitle
 @implementation JSONVehicle
 
 @synthesize ETAs;
 @synthesize heading;
+@synthesize updateTime;
+@synthesize routeNo;
 
 
 - (id)init {
@@ -213,11 +239,63 @@
         description = nil;
         ETAs = nil;
         annotationView = nil;
+		updateTime = nil;
         
         heading = 0;
+		routeNo = 0;
     }
 
     return self;
+}
+
+
+- (void)dealloc {
+	[name release];
+	[description release];
+	
+	if (ETAs) {
+		[ETAs release];
+	}
+	
+	[updateTime release];
+	[super dealloc];
+}
+
+//	Update the attributes of the current vehicle, usually for the same vehicle in a subsequent
+//	data update.
+- (void)copyAttributesExceptLocation:(JSONVehicle *)newVehicle {
+	self.name = newVehicle.name;
+	self.description = newVehicle.description;
+	self.ETAs = newVehicle.ETAs;
+	self.updateTime = newVehicle.updateTime;
+	self.subtitle = newVehicle.subtitle;
+	
+	self.heading = newVehicle.heading;
+	self.routeNo = newVehicle.routeNo;
+}
+
+
+//  Title is the main line of text displayed in the callout of an MKAnnotation
+- (NSString *)title {
+	return (routeNo - 1) ? @"East Shuttle" : @"West Shuttle";
+}
+
+
+- (void)setUpdateTime:(NSDate *)newUpdateTime {
+//	if (updateTime && [updateTime timeIntervalSinceDate:newUpdateTime] > -5.0f) {
+//		return;
+//	}
+	
+	updateTime = newUpdateTime;
+	[updateTime retain];
+	
+	//	Update the vehicle's subtitle here, since it displays the last updated time
+	//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation
+	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+	[dateFormatter setDateFormat:@"HH:mm"];
+	
+	self.subtitle = [@"Updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
+	[dateFormatter release];
 }
 
 

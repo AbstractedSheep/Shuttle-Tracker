@@ -39,27 +39,32 @@ public class ShuttleTrackerServer {
 	private void readDynamicData() {
 		while (true) {
 			try {
-				System.out
-						.println("Reading Shuttle data and trying to manipulate it.");
+				System.out.println("Reading Shuttle data and trying to manipulate it.");
 				jsExtractor.readShuttleData();
 				this.shuttleList = new HashSet<Shuttle>(jsExtractor.getShuttleList());
 
 				if(shuttleList.size() > 0){
 					// do ETA calculations and print to the database
 					calculateETA();
-					//JSONSender.saveToDatabase(shuttleList);
-					JSONSender.printToConsole(shuttleList);
+					JSONSender.saveToDatabase(shuttleList);
+					//JSONSender.printToConsole(shuttleList);
 				} else {//clear the database and the shuttle list
 					JSONSender.connectToDatabase();
 					jsExtractor.clearShuttleList();
 				}
 				// have the thread sleep for 15 seconds (approximate update
 				// time)
-				Thread.sleep(5 * 1000);
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
+				try {
+					Thread.sleep(1000 * 5);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}

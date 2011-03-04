@@ -38,6 +38,9 @@
     _mapView.delegate = self;
     
 	[self.view addSubview:_mapView];
+	
+	shuttleImage = [UIImage imageNamed:@"shuttle"];
+	[shuttleImage retain];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -100,34 +103,61 @@
     NSArray *tmpVehicles = [dataManager.vehicles copy];
     
     for (JSONVehicle *newVehicle in tmpVehicles) {
+		alreadyAdded = NO;
+		
         for (JSONVehicle *existingVehicle in vehicles) {
             if ([existingVehicle.name isEqualToString:newVehicle.name]) {
-                [existingVehicle setHeading:newVehicle.heading];
                 
-                [UIView animateWithDuration:0.5 animations:^{
-                    [existingVehicle setCoordinate:newVehicle.coordinate];
-                }];
-                
-                alreadyAdded = YES;
-                
-//                if (existingVehicle.annotationView) {
-//                    //  Note: Same code as in - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation below
-//                    [UIView animateWithDuration:0.5 animations:^{
-//                        //	Rotate the shuttle image to match the orientation of the shuttle
-//                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation([existingVehicle heading]*2*M_PI/360);
-//                    }];
-//                    
-//                    //  Endnote
-//                }
+                if (existingVehicle.annotationView) {
+					[existingVehicle copyAttributesExceptLocation:newVehicle];
+					
+                    [UIView animateWithDuration:0.5 animations:^{
+						existingVehicle.coordinate = newVehicle.coordinate;
+						
+                        //	Rotate the shuttle image to match the orientation of the shuttle
+//                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation(existingVehicle.heading*2*M_PI/360);
+                    }];
+					
+                } else {
+					[existingVehicle copyAttributesExceptLocation:newVehicle];
+				}
+				
+				alreadyAdded = YES;
 
             }
         }
-        
-        if (!alreadyAdded) {
-            [vehicles addObject:newVehicle];
-            [self addJsonVehicle:newVehicle];
-        }
+		
+		if (!alreadyAdded) {
+			[vehicles addObject:newVehicle];
+			[self addJsonVehicle:newVehicle];
+		}
     }
+	
+	BOOL shouldRemove = YES;
+	
+	NSMutableArray *vehiclesToRemove = [[NSMutableArray alloc] init];
+	
+	//	Look to see if the current vehicle is in the data manager any more.  If it isn't, then remove it.
+	for (JSONVehicle *vehicle in vehicles) {
+		shouldRemove = YES;
+		
+		for (JSONVehicle *newVehicle in tmpVehicles) {
+			if ([vehicle.name isEqualToString:newVehicle.name]) {
+				shouldRemove = NO;
+			}
+		}
+		
+		if (shouldRemove) {
+			[vehiclesToRemove addObject:vehicle];
+		}
+	}
+	
+	for (JSONVehicle *vehicle in vehiclesToRemove) {
+		[_mapView removeAnnotation:vehicle];
+		[vehicles removeObject:vehicle];
+	}
+	
+	[vehiclesToRemove release];
 }
 
 
@@ -147,7 +177,7 @@
     for (NSString *coordinate in route.lineString) {
         temp = [coordinate componentsSeparatedByString:@","];
         
-        if (temp) {
+        if (temp && [temp count] > 1) {
             //  Get a CoreLocation coordinate from the coordinate string
             clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:1] floatValue], [[temp objectAtIndex:0] floatValue]);
             
@@ -217,6 +247,7 @@
     }
     
     [_mapView release];
+	[shuttleImage release];
     [super dealloc];
 }
 
@@ -246,45 +277,38 @@
         return nil;
     
     if ([annotation isKindOfClass:[KMLStop class]]) {
+		MKAnnotationView *stopAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
+        stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
+        stopAnnotationView.canShowCallout = YES;
         
-        MKPinAnnotationView *pinAnnotationView = [[[MKPinAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
-        pinAnnotationView.pinColor = MKPinAnnotationColorPurple;
-        pinAnnotationView.animatesDrop = NO;
-        pinAnnotationView.canShowCallout = YES;
+        [(KMLStop *)annotation setAnnotationView:stopAnnotationView];
+		
+		return stopAnnotationView;
         
-        [(KMLStop *)annotation setAnnotationView:pinAnnotationView];
-        
-        return pinAnnotationView;
     } else if ([annotation isKindOfClass:[KMLVehicle class]]) {
         if ([(KMLVehicle *)annotation annotationView]) {
             return [(KMLVehicle *)annotation annotationView];
         }
         
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle.png"];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
         
         [(KMLVehicle *)annotation setAnnotationView:vehicleAnnotationView];
+		
+		return vehicleAnnotationView;
     } else if ([annotation isKindOfClass:[JSONVehicle class]]) {
         if ([(JSONVehicle *)annotation annotationView]) {
-            return [(KMLVehicle *)annotation annotationView];
+            return [(JSONVehicle *)annotation annotationView];
         }
         
-        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        UIImage *shuttleImage = [UIImage imageNamed:@"shuttle_color.png"];
+        MKAnnotationView *vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"];
         vehicleAnnotationView.image = shuttleImage;
-        vehicleAnnotationView.canShowCallout = NO;
-        
-        //  Note: Same code as in - (void)refreshVehicleData above
-        [UIView animateWithDuration:0.5 animations:^{
-            //	Rotate the shuttle image to match the orientation of the shuttle
-            vehicleAnnotationView.transform = CGAffineTransformMakeRotation([(JSONVehicle *)annotation heading]*2*M_PI/360);
-        }];
-        
-        //  Endnote
+        vehicleAnnotationView.canShowCallout = YES;
         
         [(JSONVehicle *)annotation setAnnotationView:vehicleAnnotationView];
+		
+		return vehicleAnnotationView;
     }
     
     return nil;
