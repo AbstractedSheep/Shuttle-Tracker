@@ -35,12 +35,10 @@
     NSTimer *etaUpdateTimer;
 	
 	UIImage *shuttleImage;
-	NSDateFormatter *timeDisplayFormatter;
     
 }
 
 @property (nonatomic, assign) DataManager *dataManager;
-@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
 
 
 @end

@@ -178,6 +178,8 @@
 @synthesize subtitle;
 @synthesize coordinate;
 @synthesize annotationView;
+@synthesize timeDisplayFormatter;
+
 
 - (id)init {
     if ((self = [super init])) {
@@ -266,6 +268,7 @@
 	self.description = newVehicle.description;
 	self.ETAs = newVehicle.ETAs;
 	self.updateTime = newVehicle.updateTime;
+	self.subtitle = newVehicle.subtitle;
 	
 	self.heading = newVehicle.heading;
 	self.routeNo = newVehicle.routeNo;
@@ -279,7 +282,7 @@
 
 
 - (void)setUpdateTime:(NSDate *)newUpdateTime {
-//	if (updateTime && [updateTime timeIntervalSinceNow] > -30.0f) {
+//	if (updateTime && [updateTime timeIntervalSinceDate:newUpdateTime] > -5.0f) {
 //		return;
 //	}
 	
@@ -291,9 +294,7 @@
 	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 	[dateFormatter setDateFormat:@"HH:mm"];
 	
-	self.subtitle = [@"Last updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
-	NSLog(@"Subtitle: %@", subtitle);
-	
+	self.subtitle = [@"Updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
 	[dateFormatter release];
 }
 

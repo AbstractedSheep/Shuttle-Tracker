@@ -14,6 +14,7 @@
 
 
 @synthesize dataManager;
+@synthesize timeDisplayFormatter;
 
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -142,12 +143,7 @@
     
     //  If the EtaWrapper was found, add the stop info and the ETA
     if (etaWrapped) {
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        [dateFormatter setDateFormat:@"hh:mm"];
-        
-        [cell.textLabel setText:[etaWrapped.stopName stringByAppendingString:[@"  " stringByAppendingString:[dateFormatter stringFromDate:etaWrapped.eta]]]];
-        
-        [dateFormatter release];
+        [cell.textLabel setText:[etaWrapped.stopName stringByAppendingString:[@"  " stringByAppendingString:[timeDisplayFormatter stringFromDate:etaWrapped.eta]]]];
     }
 
     cell.selectionStyle = UITableViewCellSelectionStyleNone;

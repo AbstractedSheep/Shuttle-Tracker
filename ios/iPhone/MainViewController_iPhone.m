@@ -48,6 +48,8 @@
 {
     self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
+	timeDisplayFormatter = [[NSDateFormatter alloc] init];
+	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	BOOL use24Time = [[defaults objectForKey:@"Use24Time"] boolValue];
 	
@@ -56,6 +58,8 @@
 	} else {
 		[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 	}
+	
+	dataManager.timeDisplayFormatter = timeDisplayFormatter;
 	
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     
@@ -66,6 +70,7 @@
     etasViewController = [[EtasViewController alloc] init];
     etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:nil tag:1];
     etasViewController.dataManager = dataManager;
+	etasViewController.timeDisplayFormatter = timeDisplayFormatter;
     
     etasTableUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:etasViewController.tableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     

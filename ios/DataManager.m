@@ -29,6 +29,7 @@
 @synthesize etas;
 @synthesize eastEtas;
 @synthesize westEtas;
+@synthesize timeDisplayFormatter;
 
 
 - (id)init {
