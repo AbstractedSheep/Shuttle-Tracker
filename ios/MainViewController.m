@@ -12,6 +12,7 @@
 @implementation MainViewController
 
 @synthesize dataManager;
+@synthesize timeDisplayFormatter;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
