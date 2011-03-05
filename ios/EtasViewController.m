@@ -103,7 +103,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    
+    //	West route first, because that's the one I use often
     if (section == 0) {
         return dataManager.westEtas;
     } else if (section == 1) {
@@ -117,10 +117,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"EtaCell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
+		//	Init the cell such that it has main text, black and left aligned, and secondary text, blue and right aligned
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
     }
     
@@ -150,6 +151,7 @@
 		cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
     }
 
+	//	The cell should not change in appearance when selected
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
