@@ -20,9 +20,7 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
@@ -30,48 +28,52 @@ import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 
 public class EtaActivity extends Activity implements IShuttleDataUpdateCallback {
 	private ArrayList<EtaJson> etas;
 	RoutesJson routes;
-	private SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
 	private ShuttleDataService dataService;
+	ExpandableListView etaListView;
+	EtaListAdapter etaAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.eta);
 		
+		etaListView = (ExpandableListView) findViewById(R.id.eta_list);
+		etaAdapter = new EtaListAdapter(getLayoutInflater());
+		etaListView.setAdapter(etaAdapter);
 		dataService = ShuttleDataService.getInstance();
 		routesUpdated(dataService.getRoutes());
 	}
    
-	public void dataUpdated(ArrayList<VehicleJson> vehicles,
-			ArrayList<EtaJson> etas) {
+	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
 		if (etas != null) {
 			this.etas = etas;
-			
 			runOnUiThread(updateList);	
 		}
 	}
 	
 	private Runnable updateList = new Runnable() {
 		public void run() {
-			ListView lv = (ListView) findViewById(R.id.eta_list);
-			ArrayAdapter<String> aa = new ArrayAdapter<String>(EtaActivity.this, android.R.layout.simple_list_item_1);
-			for (EtaJson e : etas) {
-				long now = (new Date()).getTime();
-				Date arrival = new Date(now + Long.parseLong(e.getEta()));
-				aa.add(formatter.format(arrival));
-			}
-			lv.setAdapter(aa);
+			etaAdapter.putEtas(etas);
+		}
+	};
+	
+	private Runnable setRoutes = new Runnable() {
+		public void run() {
+			etaAdapter.setRoutes(routes);
 		}
 	};
 
+	
+
 	public void routesUpdated(RoutesJson routes) {
-		if (routes != null)
+		if (routes != null) {
 			this.routes = routes;
+			runOnUiThread(setRoutes);
+		}
 	}
 }

@@ -48,6 +48,7 @@ public class BalloonOverlayView extends FrameLayout {
 	private LinearLayout layout;
 	private TextView title;
 	private TextView snippet;
+	private boolean visible;
 
 	/**
 	 * Create a new BalloonOverlayView.
@@ -74,6 +75,7 @@ public class BalloonOverlayView extends FrameLayout {
 		close.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				layout.setVisibility(GONE);
+				visible = false;
 			}
 		});
 
@@ -92,7 +94,7 @@ public class BalloonOverlayView extends FrameLayout {
 	 * (title and snippet). 
 	 */
 	public void setData(OverlayItem item) {
-		
+		visible = true;
 		layout.setVisibility(VISIBLE);
 		if (item.getTitle() != null) {
 			title.setVisibility(VISIBLE);
@@ -108,5 +110,17 @@ public class BalloonOverlayView extends FrameLayout {
 		}
 		
 	}
+	
+	@Override
+	public void setVisibility(int visibility) {
+		super.setVisibility(visibility);
+		
+		if (visibility == View.VISIBLE)
+			visible = true;
+		else
+			visible = false;
+	}
+	
+	public boolean isVisible() { return visible; }
 
 }

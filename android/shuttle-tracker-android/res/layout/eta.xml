@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ListView 
-	android:id="@+id/eta_list" 
-	android:layout_width="fill_parent" 
-	android:layout_height="fill_parent" 
-	xmlns:android="http://schemas.android.com/apk/res/android">
-</ListView>
+<!-- <ScrollView 
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+>
+  
+	<com.abstractedsheep.shuttletracker.android.TimeView
+		android:id="@+id/eta_list" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content" 
+		android:orientation="vertical"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+	>
+	</com.abstractedsheep.shuttletracker.android.TimeView> 
+</ScrollView> -->
+<ExpandableListView android:id="@+id/eta_list" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"></ExpandableListView>

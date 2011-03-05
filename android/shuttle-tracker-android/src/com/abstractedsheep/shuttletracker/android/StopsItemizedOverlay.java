@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.view.View;
 
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
@@ -77,8 +79,10 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 	public void refreshBalloon() {
 		BalloonOverlayView bov = getBalloonView();
 		int index = getCurrentIndex();
-		if (bov != null && index >= 0)
+		if (bov != null && index >= 0 && bov.isVisible()) {
+			Log.d("Tracker", "Refreshing balloon");
 			bov.setData(createItem(index));
+		}
 	}
 
 	@Override

@@ -54,7 +54,6 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
         setContentView(map);
               
         dataService = ShuttleDataService.getInstance();
-        routesUpdated(dataService.getRoutes());
     }
     
     /** Set up the MapView with the default configuration */
@@ -121,6 +120,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
     		shuttlesOverlay.removeAllVehicles();
     	map.invalidate();
     	
+        routesUpdated(dataService.getRoutes());
     	dataUpdated(dataService.getCurrentShuttleLocations(), dataService.getCurrentEtas());
     }
     
