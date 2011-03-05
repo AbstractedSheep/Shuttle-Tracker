@@ -33,31 +33,17 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MapView.LayoutParams;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
+import android.util.Log;
 
 public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdateCallback {
-	public static String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	public static String MAPS_API_KEY = "01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 	private MapView map;
 	private VehicleItemizedOverlay shuttlesOverlay;
 	private LocationOverlay myLocationOverlay;
 	private StopsItemizedOverlay stopsOverlay;
-	
-	private IShuttleDataMonitor service = null;
-	private ServiceConnection svcConn = new ServiceConnection() {
-		public void onServiceConnected(ComponentName className, IBinder binder) {
-			service = (IShuttleDataMonitor)binder;
-	    	
-	    	service.registerCallback(TrackerMapActivity.this);
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			service = null;
-		}
-	};
+	private ShuttleDataService dataService;
+	private boolean hasRoutes;
 	
     /** Called when the activity is first created. */
     @Override
@@ -67,20 +53,11 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
         initMap();
         setContentView(map);
               
-        getApplicationContext().bindService(new Intent(this, ShuttleDataService.class), svcConn, BIND_AUTO_CREATE);
+        dataService = ShuttleDataService.getInstance();
+        routesUpdated(dataService.getRoutes());
     }
     
-    @Override
-    protected void onDestroy() {
-    	super.onDestroy();
-    	
-    	if (service != null)
-    		getApplicationContext().unbindService(svcConn);
-    }
-    
-    /**
-     * Set up the map view with the default configuration
-     */
+    /** Set up the MapView with the default configuration */
     private void initMap() {
     	map = new MapView(this, MAPS_API_KEY);
     	LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, new GeoPoint(0, 0), 0);
@@ -96,21 +73,32 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
     }
     
     /**
-     * Add routes and stops to map from the KML file as a PathOverlay and ItemizedOverlay
+     * Add routes and stops to map from the JSON as a PathOverlay and StopsItemizedOverlay. Also adds the shuttles overlay so it sits below the stops.
+     * 
+     * @param routes The list of routes parsed from the JSON
      */
     private void addRoutes(RoutesJson routes) {
+    	Log.d("Tracker", "addRoutes()");
+    	hasRoutes = true;
         stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map);
         PathOverlay routesOverlay;
         Style style;
+        ArrayList<GeoPoint> points;
+        
         
         for (Route r : routes.getRoutes()) {
+        	Log.d("Tracker", "Creating route " + r.getName());
         	style = new Style();
         	style.setColor(r.getColor());
         	style.setWidth(r.getWidth());
     		routesOverlay = new PathOverlay(style);
+    		points = new ArrayList<GeoPoint>();
     		for (Coord c : r.getCoords()) {
-    			routesOverlay.addPoint(new GeoPoint((int)(c.getLatitude() * 1e6), (int)(c.getLongitude() * 1e6)));
+    			points.add(new GeoPoint((int)(c.getLatitude() * 1e6), (int)(c.getLongitude() * 1e6)));
     		}
+    		
+    		routesOverlay.setPoints(points);
+    		Log.d("Tracker", "Adding route " + r.getName());
     		map.getOverlays().add(routesOverlay);
         }        
         
@@ -123,15 +111,17 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
     }
     
    
-    
     @Override
     protected void onResume() {
     	super.onResume();
     	
     	myLocationOverlay.enableMyLocation();
     	
-    	if (service != null)
-    		service.registerCallback(this);
+    	if (shuttlesOverlay != null)
+    		shuttlesOverlay.removeAllVehicles();
+    	map.invalidate();
+    	
+    	dataUpdated(dataService.getCurrentShuttleLocations(), dataService.getCurrentEtas());
     }
     
     @Override
@@ -139,26 +129,53 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
     	super.onPause();
     	
     	myLocationOverlay.disableMyLocation();
-    	
-    	if (service != null)
-    		service.unregisterCallback(this);
     }
 
 
 	@Override
 	protected boolean isRouteDisplayed() {
-		return false;
+		return hasRoutes;
 	}
 	
+	/** Calls map,invalidate(). For use with runOnUiThread() */
 	private Runnable invalidateMap = new Runnable() {
 		public void run() {
 			map.invalidate();
 		}
 	};
+	
+	/** Calls stopsOverlay.putEtas(). For use with runOnUiThread() */
+	private class PutEtas implements Runnable {
+		private ArrayList<EtaJson> etas;
+		public PutEtas(ArrayList<EtaJson> etas) {
+			this.etas = etas;
+		}
+		public void run() {
+			stopsOverlay.putEtas(etas);
+		}
+	}
+	
+	/** Calls addRoutes(). For use with runOnUiThread() */
+	private class AddRoutes implements Runnable {
+		private RoutesJson routes;
+		public AddRoutes(RoutesJson routes) {
+			this.routes = routes;
+		}
+		public void run() {
+			addRoutes(routes);
+		}
+	}
 
+
+	/**
+	 * Updates the MapView with the latest shuttle positions and ETAs in a thread safe manner.
+	 * 
+	 * @param vehicles The list of current vehicle positions, null value indicates no change.
+	 * @param etas The list of ETAs to the stops, null value indicates no change.
+	 */
 	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
 		if (etas != null && stopsOverlay != null) {
-			stopsOverlay.putEtas(etas);
+			runOnUiThread(new PutEtas(etas));
 		}
 		
 		if (vehicles != null && shuttlesOverlay != null) {
@@ -172,8 +189,13 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
 		runOnUiThread(invalidateMap);
 	}
 
+	/**
+	 * Sets up the MapView with the shuttle routes in a thread safe manner. Will not work a second time unless hasRoutes is manually changed to false.
+	 * 
+	 *  @param routes The list of routes parsed from the JSON, null will cause the function to do nothing.
+	 */
 	public void routesUpdated(RoutesJson routes) {
-		if (routes != null)
-			addRoutes(routes);
+		if (routes != null && !hasRoutes)
+			runOnUiThread(new AddRoutes(routes));
 	}
 }

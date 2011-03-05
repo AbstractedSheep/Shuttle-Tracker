@@ -48,6 +48,7 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 	private View clickRegion;
 	private int viewOffset;
 	final MapController mc;
+	private int currentIndex;
 	
 	/**
 	 * Create a new BalloonItemizedOverlay
@@ -60,6 +61,7 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 		this.mapView = mapView;
 		viewOffset = 0;
 		mc = mapView.getController();
+		currentIndex = -1;
 	}
 	
 	/**
@@ -91,6 +93,7 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 	 */
 	@Override
 	protected final boolean onTap(int index) {
+		currentIndex = index;
 		
 		boolean isRecycled;
 		final int thisIndex;
@@ -143,6 +146,8 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 		if (balloonView != null) {
 			balloonView.setVisibility(View.GONE);
 		}
+		
+		currentIndex = -1;
 	}
 	
 	/**
@@ -208,6 +213,14 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 			return;
 		}
 
+	}
+	
+	public BalloonOverlayView getBalloonView() {
+		return balloonView;
+	}
+	
+	public int getCurrentIndex() {
+		return currentIndex;
 	}
 	
 }

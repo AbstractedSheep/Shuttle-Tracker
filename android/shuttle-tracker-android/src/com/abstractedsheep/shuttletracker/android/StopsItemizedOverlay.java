@@ -36,43 +36,53 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
+import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 
 public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
 
 	private ArrayList<Stop> stops = new ArrayList<Stop>();
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
-	//SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
 	
 	public StopsItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(boundCenter(defaultMarker), mapView);
+		populate();
 	}
 
-	public void addAllStops(Collection<? extends Stop> stops) {
+	public synchronized void addAllStops(Collection<? extends Stop> stops) {
 		this.stops.addAll(stops);
 		populate();
 	}
 	
-	public void addStop(Stop stop) {
+	public synchronized void addStop(Stop stop) { 
 	    stops.add(stop);
 	    populate();
 	}
 	
-	public void removeAllStops() {
+	public synchronized void removeAllStops() {
 		stops.clear();
 		populate();
 	}
 	
-	public void putEtas(List<EtaJson> etaList) {
+	public synchronized void putEtas(List<EtaJson> etaList) {
 		EtaJson eta;
 		for (int i = 0; i < etaList.size(); i++) {
 			eta = etaList.get(i);
 			etas.put(eta.getStop_id(), eta);
 		}
+		
+		refreshBalloon();
+	}
+	
+	public void refreshBalloon() {
+		BalloonOverlayView bov = getBalloonView();
+		int index = getCurrentIndex();
+		if (bov != null && index >= 0)
+			bov.setData(createItem(index));
 	}
 
 	@Override
-	protected OverlayItem createItem(int i) {
+	protected synchronized OverlayItem createItem(int i) {
 		Stop s = stops.get(i);
 		EtaJson eta = etas.get(s.getShort_name());
 		String snippet = "";
@@ -82,6 +92,7 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 			Date arrival = new Date(now + Long.parseLong(eta.getEta()));
 			snippet = "Next Arrival: " + formatter.format(arrival);
 		}
+		
 		return new OverlayItem(new GeoPoint((int)(s.getLatitude() * 1e6), (int)(s.getLongitude() * 1e6)), s.getName(), snippet);
 	}
 

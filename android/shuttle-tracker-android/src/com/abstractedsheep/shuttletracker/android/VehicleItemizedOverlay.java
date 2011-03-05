@@ -55,23 +55,20 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 	public VehicleItemizedOverlay(Drawable defaultMarker) {
 		super(boundCenter(defaultMarker));
 		this.marker = boundCenter(defaultMarker);
+		populate();
 	}
 
-	public void addVehicle(VehicleJson vehicle) {
-		synchronized (vehicles) {
-			vehicles.add(vehicle);
-		    populate();
-		}
+	public synchronized void addVehicle(VehicleJson vehicle) {
+		vehicles.add(vehicle);
+	    populate();
 	}
 	
-	public void removeAllVehicles() {
-		synchronized (vehicles) {
-			vehicles.clear();
-			populate();
-		}
+	public synchronized void removeAllVehicles() {
+		vehicles.clear();
+		populate();
 	}
 	
-	public void putRoutes(List<RoutesJson.Route> routeList) {
+	public synchronized void putRoutes(List<RoutesJson.Route> routeList) {
 		RoutesJson.Route route;
 		for (int i = 0; i < routeList.size(); i++) {
 			route = routeList.get(i);
@@ -80,7 +77,7 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 	}
 
 	@Override
-	protected DirectionalOverlayItem createItem(int i) {
+	protected synchronized DirectionalOverlayItem createItem(int i) {
 		VehicleJson v = vehicles.get(i);
 		GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
 		return new DirectionalOverlayItem(gp, v.getHeading(), "", "");
@@ -92,7 +89,7 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 	}	
 	
 	@Override
-	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+	public synchronized void draw(Canvas canvas, MapView mapView, boolean shadow) {
 		Projection p = mapView.getProjection();
 		Point pt;
 		Bitmap bitmap = ((BitmapDrawable) marker).getBitmap();
@@ -104,37 +101,36 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 		Bitmap tempBitmap;
 		long now;
 		Date lastUpdate;
+		
+		for (VehicleJson v : vehicles) {
+			try {
+				
+				now = (new Date()).getTime();
+				lastUpdate = formatter.parse(v.getUpdate_time());
+		
+				if ((now - lastUpdate.getTime()) > 60000)
+					continue;
+				
+				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
+				pt = p.toPixels(gp, null);
 
-		synchronized (vehicles) {
-			for (VehicleJson v : vehicles) {
-				try {
-					now = (new Date()).getTime();
-					lastUpdate = formatter.parse(v.getUpdate_time());
-			
-					if ((now - lastUpdate.getTime()) > 60000)
-						continue;
-					
-					GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
-					pt = p.toPixels(gp, null);
-	
-					rotate.reset();
-					rotate.postRotate(v.getHeading(), bitmap.getWidth(), bitmap.getHeight() / 2);
-					
-					if (v.getHeading() > 180) {
-						tempBitmap = recolorBitmap(flippedBitmap, routes.get(v.getRoute_id()).getColorInt());
-						tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
-					} else {
-						tempBitmap = recolorBitmap(bitmap, routes.get(v.getRoute_id()).getColorInt());
-						tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
-					}
-					
-					
-					canvas.drawBitmap(tempBitmap, pt.x - (bitmap.getWidth() / 2), pt.y - (bitmap.getHeight() / 2), null);
-				} catch (ParseException e) {
-					e.printStackTrace();
+				rotate.reset();
+				rotate.postRotate(v.getHeading(), bitmap.getWidth(), bitmap.getHeight() / 2);
+				
+				if (v.getHeading() > 180) {
+					tempBitmap = recolorBitmap(flippedBitmap, routes.get(v.getRoute_id()).getColorInt());
+					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
+				} else {
+					tempBitmap = recolorBitmap(bitmap, routes.get(v.getRoute_id()).getColorInt());
+					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
 				}
+				
+				
+				canvas.drawBitmap(tempBitmap, pt.x - (bitmap.getWidth() / 2), pt.y - (bitmap.getHeight() / 2), null);
+			} catch (ParseException e) {
+				e.printStackTrace();
 			}
-		}		
+		}	
 	}
 	
 	private Bitmap recolorBitmap(Bitmap bitmap, int color) {
