@@ -348,7 +348,7 @@ public class Shuttle {
 			//the shuttle's route has only been determined iff the difference
 			//between the closest points on the East and West routes is greater
 			//than ~32 feet...
-			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .006) {
+			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .01) {
 				this.foundRoute = true;
 				this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
 			}

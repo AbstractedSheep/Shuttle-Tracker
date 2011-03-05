@@ -103,7 +103,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    
+    //	West route first, because that's the one I use often
     if (section == 0) {
         return dataManager.westEtas;
     } else if (section == 1) {
@@ -117,11 +117,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"EtaCell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		//	Init the cell such that it has main text, black and left aligned, and secondary text, blue and right aligned
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Configure the cell...
@@ -143,15 +144,14 @@
     
     //  If the EtaWrapper was found, add the stop info and the ETA
     if (etaWrapped) {
-        cell.textLabel = etaWrapped.stopName;
-
-	UILabel *etaLabel = [[UILabel alloc] init];
-	etaLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
-	cell.accessoryView = etaLabel;
-
-	[etaLabel release];
+		//	The main text label, left aligned and black in UITableViewCellStyleValue1
+        cell.textLabel.text = etaWrapped.stopName;
+		
+		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
+		cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
     }
 
+	//	The cell should not change in appearance when selected
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
