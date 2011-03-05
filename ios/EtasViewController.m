@@ -121,7 +121,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Configure the cell...
@@ -143,13 +143,11 @@
     
     //  If the EtaWrapper was found, add the stop info and the ETA
     if (etaWrapped) {
-        cell.textLabel = etaWrapped.stopName;
-
-	UILabel *etaLabel = [[UILabel alloc] init];
-	etaLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
-	cell.accessoryView = etaLabel;
-
-	[etaLabel release];
+		//	The main text label, left aligned and black in UITableViewCellStyleValue1
+        cell.textLabel.text = etaWrapped.stopName;
+		
+		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
+		cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
     }
 
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
