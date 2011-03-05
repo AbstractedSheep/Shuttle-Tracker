@@ -15,6 +15,7 @@
 
 @synthesize vehicles;
 @synthesize etas;
+@synthesize timeDisplayFormatter;
 
 
 //  Assume a call to init is for a shuttle JSON parser
@@ -90,6 +91,8 @@
             
             //  Set the coordinate of the vehicle after both the latitude and longitude are set
             vehicle.coordinate = coordinate;
+			
+			vehicle.timeDisplayFormatter = timeDisplayFormatter;
             
             [vehicles addObject:vehicle];
             [vehicle release];
@@ -267,8 +270,9 @@
 	self.name = newVehicle.name;
 	self.description = newVehicle.description;
 	self.ETAs = newVehicle.ETAs;
+	self.timeDisplayFormatter = newVehicle.timeDisplayFormatter;
 	self.updateTime = newVehicle.updateTime;
-	self.subtitle = newVehicle.subtitle;
+//	self.subtitle = newVehicle.subtitle;
 	
 	self.heading = newVehicle.heading;
 	self.routeNo = newVehicle.routeNo;
@@ -290,12 +294,34 @@
 	[updateTime retain];
 	
 	//	Update the vehicle's subtitle here, since it displays the last updated time
-	//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation
-	NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-	[dateFormatter setDateFormat:@"HH:mm"];
+	//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation	
+	//	Don't update the subtitle if the displayed text will be the same
+	NSString *newSubtitle;
 	
-	self.subtitle = [@"Updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
-	[dateFormatter release];
+	if (timeDisplayFormatter) {
+		newSubtitle = [@"Updated: " stringByAppendingString:[timeDisplayFormatter stringFromDate:updateTime]];
+		
+		//	Check to see if the updated subtitle is the same as the existing one.
+		//	If it isn't, then update the subtitle
+		if (![newSubtitle isEqualToString:self.subtitle]) {
+			self.subtitle = newSubtitle;;
+		}
+		
+	} else {
+		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+		[dateFormatter setDateFormat:@"HH:mm"];
+		
+		//	Check to see if the updated subtitle is the same as the existing one.
+		//	If it isn't, then update the subtitle
+		newSubtitle = [@"Updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
+		if ([newSubtitle isEqualToString:self.subtitle]) {
+			self.subtitle = newSubtitle;
+		}
+		
+		[dateFormatter release];
+	}
+	
+
 }
 
 
