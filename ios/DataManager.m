@@ -285,5 +285,11 @@
     }
 }
 
+- (void)setTimeDisplayFormatter:(NSDateFormatter *)newTimeDisplayFormatter {
+	timeDisplayFormatter = newTimeDisplayFormatter;
+	
+	vehiclesJsonParser.timeDisplayFormatter = timeDisplayFormatter;
+}
+
 
 @end

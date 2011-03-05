@@ -15,10 +15,12 @@
     NSMutableArray *etas;
     
     NSURL *jsonUrl;
+	NSDateFormatter *timeDisplayFormatter;
 }
 
 @property (nonatomic, retain) NSMutableArray *vehicles;
 @property (nonatomic, retain) NSMutableArray *etas;
+@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
 
 
 - (id)initWithUrl:(NSURL *)url;
