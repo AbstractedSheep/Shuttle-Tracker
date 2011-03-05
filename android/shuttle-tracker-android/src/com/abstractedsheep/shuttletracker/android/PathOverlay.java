@@ -49,8 +49,8 @@ public class PathOverlay extends Overlay {
 		this.style = style;
 	}
 	
-	public void addPoint(GeoPoint p) {
-		path.add(p);
+	public void setPoints(ArrayList<GeoPoint> p) {
+		path = p;
 	}
 	
 	@Override
@@ -62,7 +62,7 @@ public class PathOverlay extends Overlay {
 	    polygonPaint.setColor(this.style.color);
 	    polygonPaint.setStyle(Paint.Style.STROKE);
 	    polygonPaint.setAntiAlias(true); 
-	    
+    
 	    for (int i = 0; i < path.size(); i++) {
 		    if (i == path.size() - 1) {
 		        break;

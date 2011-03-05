@@ -29,11 +29,7 @@ import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -41,59 +37,24 @@ public class EtaActivity extends Activity implements IShuttleDataUpdateCallback 
 	private ArrayList<EtaJson> etas;
 	RoutesJson routes;
 	private SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
-	private IShuttleDataMonitor service = null;
-	private ServiceConnection svcConn = new ServiceConnection() {
-		public void onServiceConnected(ComponentName className, IBinder binder) {
-			service = (IShuttleDataMonitor)binder;
-	    	
-	    	service.registerCallback(EtaActivity.this);
-		}
-
-		public void onServiceDisconnected(ComponentName className) {
-			service = null;
-		}
-	};
+	private ShuttleDataService dataService;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.eta);
 		
-		getApplicationContext().bindService(new Intent(this, ShuttleDataService.class), svcConn, BIND_AUTO_CREATE);
+		dataService = ShuttleDataService.getInstance();
+		routesUpdated(dataService.getRoutes());
 	}
-	
-	@Override
-    protected void onDestroy() {
-    	super.onDestroy();
-    	
-    	if (service != null)
-    		getApplicationContext().unbindService(svcConn);
-    }
-	 
-	@Override
-    protected void onResume() {
-    	super.onResume();
-    	
-    	if (service != null)
-    		service.registerCallback(this);
-    }
-    
-    @Override
-    protected void onPause() {
-    	super.onPause();
-    	
-    	
-    	if (service != null)
-    		service.unregisterCallback(this);
-    }
-    
-	
    
 	public void dataUpdated(ArrayList<VehicleJson> vehicles,
 			ArrayList<EtaJson> etas) {
-		this.etas = etas;
-		
-		runOnUiThread(updateList);	
+		if (etas != null) {
+			this.etas = etas;
+			
+			runOnUiThread(updateList);	
+		}
 	}
 	
 	private Runnable updateList = new Runnable() {

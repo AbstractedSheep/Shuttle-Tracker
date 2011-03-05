@@ -20,31 +20,72 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
+import java.util.ArrayList;
+
+import com.abstractedsheep.shuttletracker.json.EtaJson;
+import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.VehicleJson;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
-public class TrackerTabActivity extends TabActivity {
+/*
+ * !!! All children of this activity MUST implement IShuttleDataUpdateCallback, but the implementation may be empty !!!
+ */
+public class TrackerTabActivity extends TabActivity implements IShuttleDataUpdateCallback {
 	private TabHost tabHost;
+	private ShuttleDataService dataService;
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		dataService.active.set(false);
+		dataService.unregisterCallback(this);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		dataService.active.set(true);
+		dataService.registerCallback(this);
+		new Thread(dataService.updateShuttles).start();
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);	
 		
 		this.tabHost = getTabHost();
 		
+		// Add the map activity as a tab
 		TabSpec tab = this.tabHost.newTabSpec("map");
 		Intent i = new Intent(this, TrackerMapActivity.class);
 		tab.setContent(i);
 		tab.setIndicator("Map");
 		this.tabHost.addTab(tab);
 		
+		// Add the ETA activity as a tab
 		tab = this.tabHost.newTabSpec("eta");
 		i = new Intent(this, EtaActivity.class);
 		tab.setContent(i);
 		tab.setIndicator("ETA");
 		this.tabHost.addTab(tab);
+		
+		dataService = ShuttleDataService.getInstance();
+		new Thread(dataService.updateRoutes).start();
+	}
+
+	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
+		((IShuttleDataUpdateCallback)getLocalActivityManager().getCurrentActivity()).dataUpdated(vehicles, etas);
+		
+	}
+
+	public void routesUpdated(RoutesJson routes) {
+		((IShuttleDataUpdateCallback)getLocalActivityManager().getCurrentActivity()).routesUpdated(routes);
 	}
 }
