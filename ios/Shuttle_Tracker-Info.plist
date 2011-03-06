@@ -14,8 +14,8 @@
 	<string></string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>Shuttle-Icon.png</string>
-		<string>Shuttle-Icon@2x.png</string>
+		<string>Shuttle-Icon-smaller.png</string>
+		<string>Shuttle-Icon-smaller@2x.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.abstractedsheep.${PRODUCT_NAME:rfc1034identifier}</string>

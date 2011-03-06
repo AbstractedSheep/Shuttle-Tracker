@@ -24,6 +24,8 @@
 		DA1154A1130B5BA50004E7D0 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115495130B5BA50004E7D0 /* CJSONDeserializer.m */; };
 		DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115497130B5BA50004E7D0 /* CJSONScanner.m */; };
 		DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115499130B5BA50004E7D0 /* CJSONSerializer.m */; };
+		DA1F3FB31322FEA000CCB393 /* Shuttle-Icon-smaller.png in Resources */ = {isa = PBXBuildFile; fileRef = DA1F3FB21322FEA000CCB393 /* Shuttle-Icon-smaller.png */; };
+		DA1F3FB61322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA1F3FB51322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png */; };
 		DA215D5E1311B9C600CBEF62 /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA215D5D1311B9C600CBEF62 /* EtasViewController.m */; };
 		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
 		DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B7512F4C84700190FA3 /* MapViewController.m */; };
@@ -75,6 +77,8 @@
 		DA115498130B5BA50004E7D0 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
 		DA115499130B5BA50004E7D0 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
 		DA11549A130B5BA50004E7D0 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
+		DA1F3FB21322FEA000CCB393 /* Shuttle-Icon-smaller.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Shuttle-Icon-smaller.png"; sourceTree = "<group>"; };
+		DA1F3FB51322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Shuttle-Icon-smaller@2x.png"; sourceTree = "<group>"; };
 		DA215D5C1311B9C600CBEF62 /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtasViewController.h; sourceTree = "<group>"; };
 		DA215D5D1311B9C600CBEF62 /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtasViewController.m; sourceTree = "<group>"; };
 		DA31240012FDC69C00F90B79 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = KMLParser.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -261,6 +265,8 @@
 				DA750B8812F4CB7600190FA3 /* netlink.kml */,
 				DAACF017131F3ACC0074FA4C /* Shuttle-Icon.png */,
 				DAACF019131F3AD90074FA4C /* Shuttle-Icon@2x.png */,
+				DA1F3FB51322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png */,
+				DA1F3FB21322FEA000CCB393 /* Shuttle-Icon-smaller.png */,
 				DAA0367C13149335005D3E86 /* shuttle_color.png */,
 				DAA0367D13149335005D3E86 /* shuttle.png */,
 				DAACF008131F2E980074FA4C /* stop_marker.png */,
@@ -328,6 +334,8 @@
 				DAACF009131F2E980074FA4C /* stop_marker.png in Resources */,
 				DAACF018131F3ACC0074FA4C /* Shuttle-Icon.png in Resources */,
 				DAACF01A131F3AD90074FA4C /* Shuttle-Icon@2x.png in Resources */,
+				DA1F3FB31322FEA000CCB393 /* Shuttle-Icon-smaller.png in Resources */,
+				DA1F3FB61322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
