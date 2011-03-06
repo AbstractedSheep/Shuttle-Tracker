@@ -135,6 +135,11 @@
 			return NO;
 		}
         
+		if (!jsonDict || [jsonDict isKindOfClass:[NSNull class]]) {
+//			NSLog(@"Error, no jsonDict created.");
+			
+			return NO;
+		}
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
@@ -203,8 +208,6 @@
 - (void)setDescription:(NSString *)newDescription {
 	description = newDescription;
 	[description retain];
-	
-	self.subtitle = newDescription;
 }
 
 
@@ -272,7 +275,6 @@
 	self.ETAs = newVehicle.ETAs;
 	self.timeDisplayFormatter = newVehicle.timeDisplayFormatter;
 	self.updateTime = newVehicle.updateTime;
-//	self.subtitle = newVehicle.subtitle;
 	
 	self.heading = newVehicle.heading;
 	self.routeNo = newVehicle.routeNo;
@@ -283,6 +285,8 @@
 - (NSString *)title {
 	return (routeNo - 1) ? @"East Shuttle" : @"West Shuttle";
 }
+
+
 
 
 - (void)setUpdateTime:(NSDate *)newUpdateTime {
@@ -300,25 +304,24 @@
 		
 		//	Check to see if the updated subtitle is the same as the existing one.
 		//	If it isn't, then update the subtitle
-		if (![newSubtitle isEqualToString:self.subtitle]) {
-			self.subtitle = newSubtitle;;
+		if (![newSubtitle isEqualToString:[self subtitle]]) {
+			self.subtitle = newSubtitle;
 		}
 		
 	} else {
 		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-		[dateFormatter setDateFormat:@"HH:mm"];
+		[dateFormatter setDateFormat:@"hh:mm a"];
 		
 		//	Check to see if the updated subtitle is the same as the existing one.
 		//	If it isn't, then update the subtitle
 		newSubtitle = [@"Updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
-		if ([newSubtitle isEqualToString:self.subtitle]) {
+		
+		if (![newSubtitle isEqualToString:self.subtitle]) {
 			self.subtitle = newSubtitle;
 		}
 		
 		[dateFormatter release];
 	}
-	
-
 }
 
 
