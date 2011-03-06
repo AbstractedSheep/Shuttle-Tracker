@@ -66,14 +66,14 @@ public class TrackerTabActivity extends TabActivity implements IShuttleDataUpdat
 		TabSpec tab = this.tabHost.newTabSpec("map");
 		Intent i = new Intent(this, TrackerMapActivity.class);
 		tab.setContent(i);
-		tab.setIndicator("Map");
+		tab.setIndicator("Map", getResources().getDrawable(R.drawable.map));
 		this.tabHost.addTab(tab);
 		
 		// Add the ETA activity as a tab
 		tab = this.tabHost.newTabSpec("eta");
 		i = new Intent(this, EtaActivity.class);
 		tab.setContent(i);
-		tab.setIndicator("ETA");
+		tab.setIndicator("ETA", getResources().getDrawable(R.drawable.clock));
 		this.tabHost.addTab(tab);
 		
 		dataService = ShuttleDataService.getInstance();

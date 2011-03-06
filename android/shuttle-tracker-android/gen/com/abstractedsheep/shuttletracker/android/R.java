@@ -16,11 +16,17 @@ public final class R {
         public static final int balloon_overlay_close=0x7f020002;
         public static final int balloon_overlay_focused=0x7f020003;
         public static final int balloon_overlay_unfocused=0x7f020004;
-        public static final int icon=0x7f020005;
-        public static final int shuttle=0x7f020006;
-        public static final int shuttle_color=0x7f020007;
-        public static final int shuttle_marker=0x7f020008;
-        public static final int stop_marker=0x7f020009;
+        public static final int clock=0x7f020005;
+        public static final int glyphish_clock_active=0x7f020006;
+        public static final int glyphish_clock_inactive=0x7f020007;
+        public static final int glyphish_map_active=0x7f020008;
+        public static final int glyphish_map_inactive=0x7f020009;
+        public static final int icon=0x7f02000a;
+        public static final int map=0x7f02000b;
+        public static final int shuttle=0x7f02000c;
+        public static final int shuttle_color=0x7f02000d;
+        public static final int shuttle_marker=0x7f02000e;
+        public static final int stop_marker=0x7f02000f;
     }
     public static final class id {
         public static final int balloon_inner_layout=0x7f050003;
