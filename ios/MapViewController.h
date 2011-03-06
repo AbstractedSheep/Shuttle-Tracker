@@ -39,6 +39,7 @@
 }
 
 @property (nonatomic, assign) DataManager *dataManager;
+@property (nonatomic, assign) NSMutableArray *vehicles;
 
 
 @end

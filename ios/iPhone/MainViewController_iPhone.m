@@ -66,6 +66,7 @@
     MapViewController *mapViewController = [[MapViewController alloc] init];
     mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:nil tag:0];
     mapViewController.dataManager = dataManager;
+	mapViewController.vehicles = dataManager.vehicles;
     
     etasViewController = [[EtasViewController alloc] init];
     etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:nil tag:1];

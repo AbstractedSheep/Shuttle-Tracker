@@ -175,8 +175,8 @@
 	NSMutableArray *vehiclesToRemove = [[NSMutableArray alloc] init];
 	
 	for (JSONVehicle *vehicle in vehicles) {
-		//	Remove vehicles which have not been updated for two minutes
-		if ([vehicle.updateTime timeIntervalSinceNow] < -300.0f) {
+		//	Remove vehicles which have not been updated for three minutes
+		if ([vehicle.updateTime timeIntervalSinceNow] < -180.0f) {
 			[vehiclesToRemove addObject:vehicle];
 		}
 	}
@@ -188,64 +188,6 @@
 	[vehiclesToRemove release];
 }
 
-/*
-//  Grab the most recent data from the data manager and use it
-- (void)refreshVehicleData {
-    BOOL alreadyAdded = NO;
-    
-    NSArray *tmpVehicles = [dataManager.vehicles copy];
-    
-    for (JSONVehicle *newVehicle in tmpVehicles) {
-		alreadyAdded = NO;
-		
-        for (JSONVehicle *existingVehicle in vehicles) {
-            if ([existingVehicle.name isEqualToString:newVehicle.name]) {
-                
-                if (existingVehicle.annotationView) {
-					[existingVehicle copyAttributesExceptLocation:newVehicle];
-                    //  Note: Same code as in - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation below
-                    [UIView animateWithDuration:0.5 animations:^{
-						existingVehicle.coordinate = newVehicle.coordinate;
-						
-                        //	Rotate the shuttle image to match the orientation of the shuttle
-						//                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation(existingVehicle.heading*2*M_PI/360);
-                    }];
-                    
-                    //  Endnote
-                } else {
-					[existingVehicle copyAttributesExceptLocation:newVehicle];
-				}
-				
-				alreadyAdded = YES;
-				
-            }
-        }
-		
-		//	Check to make sure that the new vehicle was updated in the past two minutes
-        if (!alreadyAdded && [newVehicle.updateTime timeIntervalSinceNow] > -300.0f) {
-            [vehicles addObject:newVehicle];
-            [self addJsonVehicle:newVehicle];
-        }
-    }
-	
-	NSMutableArray *vehiclesToRemove = [[NSMutableArray alloc] init];
-	
-	for (JSONVehicle *vehicle in vehicles) {
-		//	Remove vehicles which have not been updated for two minutes
-		if ([vehicle.updateTime timeIntervalSinceNow] < -300.0f) {
-			//			NSLog(@"%f", [vehicle.updateTime timeIntervalSinceNow]);
-			[vehiclesToRemove addObject:vehicle];
-		}
-	}
-	
-	for (JSONVehicle *vehicle in vehiclesToRemove) {
-		[_mapView removeAnnotation:vehicle];
-		[vehicles removeObject:vehicle];
-	}
-	
-	[vehiclesToRemove release];
-}
-*/
 
 - (void)updateEtaData {
     

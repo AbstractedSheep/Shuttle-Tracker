@@ -26,6 +26,7 @@
 @implementation MapViewController
 
 @synthesize dataManager;
+@synthesize vehicles;
 
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
@@ -49,8 +50,6 @@
     
     routeLines = [[NSMutableArray alloc] init];
     routeLineViews = [[NSMutableArray alloc] init];
-    
-    vehicles = [[NSMutableArray alloc] init];
     
     //  Load the routes/stops KML file asynchronously
     dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
@@ -98,11 +97,30 @@
 
 //  Grab the most recent data from the data manager and use it
 - (void)refreshVehicleData {
+	/*
     BOOL alreadyAdded = NO;
     
-    NSArray *tmpVehicles = [dataManager.vehicles copy];
+    NSArray *newVehicles = [dataManager.vehicles copy];
+	*/
+	
+	if (!vehicles) {
+		return;
+	}
+	
+	for (JSONVehicle *vehicle in vehicles) {
+		if ([[_mapView annotations] indexOfObject:vehicle] == NSNotFound) {
+			[self addJsonVehicle:vehicle];
+		}
+	}
+	
+	for (id existingObject in [_mapView annotations]) {
+		if ([existingObject isKindOfClass:[JSONVehicle class]] && [vehicles indexOfObject:existingObject] == NSNotFound) {
+			[_mapView removeAnnotation:existingObject];
+		}
+	}
     
-    for (JSONVehicle *newVehicle in tmpVehicles) {
+	/*
+    for (JSONVehicle *newVehicle in newVehicles) {
 		alreadyAdded = NO;
 		
         for (JSONVehicle *existingVehicle in vehicles) {
@@ -141,7 +159,7 @@
 	for (JSONVehicle *vehicle in vehicles) {
 		shouldRemove = YES;
 		
-		for (JSONVehicle *newVehicle in tmpVehicles) {
+		for (JSONVehicle *newVehicle in newVehicles) {
 			if ([vehicle.name isEqualToString:newVehicle.name]) {
 				shouldRemove = NO;
 			}
@@ -158,6 +176,7 @@
 	}
 	
 	[vehiclesToRemove release];
+	 */
 }
 
 
@@ -277,6 +296,10 @@
         return nil;
     
     if ([annotation isKindOfClass:[KMLStop class]]) {
+		if ([(KMLStop *)annotation annotationView]) {
+			return [(KMLStop *)annotation annotationView];
+		}
+		
 		MKAnnotationView *stopAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
         stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
         stopAnnotationView.canShowCallout = YES;
@@ -302,7 +325,7 @@
             return [(JSONVehicle *)annotation annotationView];
         }
         
-        MKAnnotationView *vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"];
+        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
         vehicleAnnotationView.image = shuttleImage;
         vehicleAnnotationView.canShowCallout = YES;
         
