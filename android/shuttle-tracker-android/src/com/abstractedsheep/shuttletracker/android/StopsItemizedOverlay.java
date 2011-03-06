@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
@@ -109,4 +110,11 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 	protected boolean onBalloonTap(int index) {
 		return false;
 	}	
+	
+	@Override
+	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		long start = System.currentTimeMillis();
+		super.draw(canvas, mapView, shadow);
+		Log.d("Tracker", "Stops drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+	}
 }

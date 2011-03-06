@@ -35,6 +35,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
@@ -47,6 +48,11 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 
 	private static final int MAGENTA = Color.rgb(255, 0, 255);
 	
+	
+	private Bitmap markerBitmap;
+	private Bitmap markerBitmapFlipped;
+	private HashMap<Integer, Bitmap> coloredMarkers = new HashMap<Integer, Bitmap>();
+	private HashMap<Integer, Bitmap> coloredMarkersFlipped = new HashMap<Integer, Bitmap>();
 	private HashMap<Integer, RoutesJson.Route> routes = new HashMap<Integer, RoutesJson.Route>();
 	private ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
 	private Drawable marker;
@@ -56,6 +62,13 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 		super(boundCenter(defaultMarker));
 		this.marker = boundCenter(defaultMarker);
 		populate();
+		
+		Matrix flip = new Matrix();
+		flip.reset();
+		flip.setScale(-1.0f, 1.0f);
+		
+		markerBitmap = ((BitmapDrawable) marker).getBitmap();
+		markerBitmapFlipped = Bitmap.createBitmap(markerBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), flip, true);
 	}
 
 	public synchronized void addVehicle(VehicleJson vehicle) {
@@ -73,6 +86,9 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 		for (int i = 0; i < routeList.size(); i++) {
 			route = routeList.get(i);
 			routes.put(route.getId(), route);
+			
+			coloredMarkers.put(route.getId(), recolorBitmap(markerBitmap, route.getColorInt()));
+			coloredMarkersFlipped.put(route.getId(), recolorBitmap(markerBitmapFlipped, route.getColorInt()));
 		}
 	}
 
@@ -90,14 +106,10 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 	
 	@Override
 	public synchronized void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		long start = System.currentTimeMillis();
 		Projection p = mapView.getProjection();
-		Point pt;
-		Bitmap bitmap = ((BitmapDrawable) marker).getBitmap();
+		Point pt;		
 		Matrix rotate = new Matrix();
-		Matrix flip = new Matrix();
-		flip.reset();
-		flip.setScale(-1.0f, 1.0f);
-		Bitmap flippedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), flip, true);
 		Bitmap tempBitmap;
 		long now;
 		Date lastUpdate;
@@ -115,22 +127,23 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 				pt = p.toPixels(gp, null);
 
 				rotate.reset();
-				rotate.postRotate(v.getHeading(), bitmap.getWidth(), bitmap.getHeight() / 2);
+				rotate.postRotate(v.getHeading(), markerBitmap.getWidth(), markerBitmap.getHeight() / 2);
 				
 				if (v.getHeading() > 180) {
-					tempBitmap = recolorBitmap(flippedBitmap, routes.get(v.getRoute_id()).getColorInt());
-					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
+					tempBitmap = coloredMarkersFlipped.get(v.getRoute_id());
+					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), rotate, true);
 				} else {
-					tempBitmap = recolorBitmap(bitmap, routes.get(v.getRoute_id()).getColorInt());
-					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), rotate, true);
+					tempBitmap = coloredMarkers.get(v.getRoute_id());
+					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), rotate, true);
 				}
 				
-				
-				canvas.drawBitmap(tempBitmap, pt.x - (bitmap.getWidth() / 2), pt.y - (bitmap.getHeight() / 2), null);
+				canvas.drawBitmap(tempBitmap, pt.x - (markerBitmap.getWidth() / 2), pt.y - (markerBitmap.getHeight() / 2), null);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 		}	
+		
+		Log.d("Tracker", "Shuttle drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
 	}
 	
 	private Bitmap recolorBitmap(Bitmap bitmap, int color) {

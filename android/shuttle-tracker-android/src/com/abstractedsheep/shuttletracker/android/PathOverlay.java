@@ -27,6 +27,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.util.Log;
 
 import com.abstractedsheep.kml.Style;
 import com.google.android.maps.GeoPoint;
@@ -55,6 +56,8 @@ public class PathOverlay extends Overlay {
 	
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		long start = System.currentTimeMillis();
+		
 		Projection projection = mapView.getProjection();
 	    Path p = new Path();
 	    Paint polygonPaint = new Paint();
@@ -78,7 +81,8 @@ public class PathOverlay extends Overlay {
 	    }
 	    
 	    canvas.drawPath(p, polygonPaint);
-	    super.draw(canvas, mapView, shadow);
+	    
+	    Log.d("Tracker", "Path drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
 	}
 
 }
