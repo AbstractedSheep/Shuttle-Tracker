@@ -1,6 +1,7 @@
 package com.abstractedsheep.extractor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class Shuttle {
@@ -182,6 +183,26 @@ public class Shuttle {
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
 			count++;
+		}
+		
+		this.addTimeDelayToStops();
+	}
+	
+	/**
+	 * added a 30 second time delay for each stop (except the first one).
+	 */
+	private void addTimeDelayToStops() {
+		ArrayList<Integer> valueList = new ArrayList<Integer>(stopETA.values());
+		Collections.sort(valueList);
+		HashMap<String, Integer> tempList = new HashMap<String, Integer>(stopETA);
+		
+		for(String name : tempList.keySet()) {
+			for(int i = 0; i < valueList.size(); i++) {
+				if(tempList.get(name) == valueList.get(i)) {
+					stopETA.put(name, valueList.get(i) + (1000 * (30 * i)));
+					break;
+				}
+			}
 		}
 	}
 
