@@ -286,9 +286,6 @@
 
 
 - (void)setUpdateTime:(NSDate *)newUpdateTime {
-//	if (updateTime && [updateTime timeIntervalSinceDate:newUpdateTime] > -5.0f) {
-//		return;
-//	}
 	
 	updateTime = newUpdateTime;
 	[updateTime retain];

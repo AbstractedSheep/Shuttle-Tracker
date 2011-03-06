@@ -97,11 +97,6 @@
 
 //  Grab the most recent data from the data manager and use it
 - (void)refreshVehicleData {
-	/*
-    BOOL alreadyAdded = NO;
-    
-    NSArray *newVehicles = [dataManager.vehicles copy];
-	*/
 	
 	if (!vehicles) {
 		return;
@@ -118,65 +113,6 @@
 			[_mapView removeAnnotation:existingObject];
 		}
 	}
-    
-	/*
-    for (JSONVehicle *newVehicle in newVehicles) {
-		alreadyAdded = NO;
-		
-        for (JSONVehicle *existingVehicle in vehicles) {
-            if ([existingVehicle.name isEqualToString:newVehicle.name]) {
-                
-                if (existingVehicle.annotationView) {
-					[existingVehicle copyAttributesExceptLocation:newVehicle];
-					
-                    [UIView animateWithDuration:0.5 animations:^{
-						existingVehicle.coordinate = newVehicle.coordinate;
-						
-                        //	Rotate the shuttle image to match the orientation of the shuttle
-//                        existingVehicle.annotationView.transform = CGAffineTransformMakeRotation(existingVehicle.heading*2*M_PI/360);
-                    }];
-					
-                } else {
-					[existingVehicle copyAttributesExceptLocation:newVehicle];
-				}
-				
-				alreadyAdded = YES;
-
-            }
-        }
-		
-		if (!alreadyAdded) {
-			[vehicles addObject:newVehicle];
-			[self addJsonVehicle:newVehicle];
-		}
-    }
-	
-	BOOL shouldRemove = YES;
-	
-	NSMutableArray *vehiclesToRemove = [[NSMutableArray alloc] init];
-	
-	//	Look to see if the current vehicle is in the data manager any more.  If it isn't, then remove it.
-	for (JSONVehicle *vehicle in vehicles) {
-		shouldRemove = YES;
-		
-		for (JSONVehicle *newVehicle in newVehicles) {
-			if ([vehicle.name isEqualToString:newVehicle.name]) {
-				shouldRemove = NO;
-			}
-		}
-		
-		if (shouldRemove) {
-			[vehiclesToRemove addObject:vehicle];
-		}
-	}
-	
-	for (JSONVehicle *vehicle in vehiclesToRemove) {
-		[_mapView removeAnnotation:vehicle];
-		[vehicles removeObject:vehicle];
-	}
-	
-	[vehiclesToRemove release];
-	 */
 }
 
 
