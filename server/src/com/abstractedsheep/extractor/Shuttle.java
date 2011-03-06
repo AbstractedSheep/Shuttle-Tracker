@@ -292,6 +292,7 @@ public class Shuttle {
 			locList.add(loc);
 			foundRoute = false;
 			closestRouteCoor = new Point();
+			indexOfClosestCoordinate = 0;
 		}
 
 		public RouteFinder(ArrayList<Route> rt) {
@@ -299,6 +300,7 @@ public class Shuttle {
 			this.locList = new ArrayList<Point>();
 			foundRoute = false;
 			closestRouteCoor = new Point();
+			indexOfClosestCoordinate = 0;
 		}
 
 		// TDO: might not be necessary to store the locations, but perhaps
@@ -344,7 +346,9 @@ public class Shuttle {
 
 			for (Route route : routeList) {
 				list = route.getCoordinateList();
-				for (int i = 0; i < list.size(); i++) {
+				for (int i = indexOfClosestCoordinate, count = 0; count < list.size(); i++) {
+					if(i > list.size())
+						i = 0;
 					p1 = list.get(i);
 					distance = calculateDistance(p1);
 
@@ -353,6 +357,7 @@ public class Shuttle {
 						locationArray[index] = p1;
 						indexArray[index] = i;
 					}
+					count++;
 				}
 				index++;
 			}
