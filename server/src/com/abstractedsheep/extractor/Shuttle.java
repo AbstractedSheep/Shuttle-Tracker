@@ -347,7 +347,7 @@ public class Shuttle {
 			for (Route route : routeList) {
 				list = route.getCoordinateList();
 				for (int i = indexOfClosestCoordinate, count = 0; count < list.size(); i++) {
-					if(i > list.size())
+					if(i > list.size() - 1)
 						i = 0;
 					p1 = list.get(i);
 					distance = calculateDistance(p1);
