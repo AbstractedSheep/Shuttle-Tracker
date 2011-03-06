@@ -15,6 +15,10 @@
 		2860E32E111B888700E27156 /* AppDelegate_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E32C111B888700E27156 /* AppDelegate_iPad.m */; };
 		2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2860E32D111B888700E27156 /* MainWindow_iPad.xib */; };
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
+		DA05D6FC1323EE1D00479EAB /* glyphish_map.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D6FA1323EE1D00479EAB /* glyphish_map.png */; };
+		DA05D6FD1323EE1D00479EAB /* glyphish_map@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */; };
+		DA05D7011323EEEA00479EAB /* glyphish_notepad.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D6FF1323EEEA00479EAB /* glyphish_notepad.png */; };
+		DA05D7021323EEEA00479EAB /* glyphish_notepad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D7001323EEEA00479EAB /* glyphish_notepad@2x.png */; };
 		DA11549B130B5BA50004E7D0 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115486130B5BA50004E7D0 /* CDataScanner.m */; };
 		DA11549C130B5BA50004E7D0 /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115489130B5BA50004E7D0 /* CFilteringJSONSerializer.m */; };
 		DA11549D130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DA11548B130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.m */; };
@@ -58,6 +62,10 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = main.m; path = Shared/main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		32CA4F630368D1EE00C91783 /* Shuttle_Tracker_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Shuttle_Tracker_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8D1107310486CEB800E47090 /* Shuttle_Tracker-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Shuttle_Tracker-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		DA05D6FA1323EE1D00479EAB /* glyphish_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_map.png; sourceTree = "<group>"; };
+		DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_map@2x.png"; sourceTree = "<group>"; };
+		DA05D6FF1323EEEA00479EAB /* glyphish_notepad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_notepad.png; sourceTree = "<group>"; };
+		DA05D7001323EEEA00479EAB /* glyphish_notepad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_notepad@2x.png"; sourceTree = "<group>"; };
 		DA115485130B5BA50004E7D0 /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner.h; sourceTree = "<group>"; };
 		DA115486130B5BA50004E7D0 /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner.m; sourceTree = "<group>"; };
 		DA115488130B5BA50004E7D0 /* CFilteringJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFilteringJSONSerializer.h; sourceTree = "<group>"; };
@@ -263,6 +271,10 @@
 			isa = PBXGroup;
 			children = (
 				DA750B8812F4CB7600190FA3 /* netlink.kml */,
+				DA05D6FA1323EE1D00479EAB /* glyphish_map.png */,
+				DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */,
+				DA05D6FF1323EEEA00479EAB /* glyphish_notepad.png */,
+				DA05D7001323EEEA00479EAB /* glyphish_notepad@2x.png */,
 				DAACF017131F3ACC0074FA4C /* Shuttle-Icon.png */,
 				DAACF019131F3AD90074FA4C /* Shuttle-Icon@2x.png */,
 				DA1F3FB51322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png */,
@@ -336,6 +348,10 @@
 				DAACF01A131F3AD90074FA4C /* Shuttle-Icon@2x.png in Resources */,
 				DA1F3FB31322FEA000CCB393 /* Shuttle-Icon-smaller.png in Resources */,
 				DA1F3FB61322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png in Resources */,
+				DA05D6FC1323EE1D00479EAB /* glyphish_map.png in Resources */,
+				DA05D6FD1323EE1D00479EAB /* glyphish_map@2x.png in Resources */,
+				DA05D7011323EEEA00479EAB /* glyphish_notepad.png in Resources */,
+				DA05D7021323EEEA00479EAB /* glyphish_notepad@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
