@@ -5,18 +5,18 @@ TRACKER WEB DATA SERVICE
 input: call using URL:  domain/data_service.php?action=action&sh=sh&st=st  
     action - get_next_eta || get_all_eta
     sh - shuttle ID 
-    st - stop ID
+    rt - route ID
 output: JSON formatted tracking information
 
 sh and st are optional and give you specific eta about that shuttle or stop
     action - get_next_eta || get_all_eta
     sh - shuttle ID 
-    st - stop ID
+    rt - route ID
 
 examples:
 abstractedsheep.com/~ashulgach/dataservice.php?action=get_next_eta      # gets the next eta for all stops
 
-abstractedsheep.com/~ashulgach/dataservice.php?action=get_next_eta&st=1 # gets the next eta for stop id 1
+abstractedsheep.com/~ashulgach/dataservice.php?action=get_next_eta&rt=1 # gets the next eta for West Route
 
 abstractedsheep.com/~ashulgach/dataservice.php?action=get_all_eta       # gets all the etas for all shuttles and stops
 
@@ -27,14 +27,14 @@ include("apps/data_service.php");
 $data_service = new DataService();
 $action     = $_REQUEST['action'];
 $shuttle_id = $_REQUEST['sh'];
-$stop_id    = $_REQUEST['st'];
+$route_id    = $_REQUEST['rt'];
 
 switch ($action) {
     case 'get_next_eta' :
-        echo $data_service->getNextEta($stop_id);
+        echo $data_service->getNextEta($route_id);
         exit;
     case 'get_all_eta' :
-        echo $data_service->getAllEta($stop_id, $shuttle_id);
+        echo $data_service->getAllEta($route_id, $shuttle_id);
         exit;
     case 'get_shuttle_positions' :
         echo $data_service->getShuttlePositions();
