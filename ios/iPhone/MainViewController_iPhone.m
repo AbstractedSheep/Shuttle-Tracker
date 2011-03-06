@@ -64,12 +64,12 @@
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
     
     MapViewController *mapViewController = [[MapViewController alloc] init];
-    mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:nil tag:0];
+    mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0];
     mapViewController.dataManager = dataManager;
 	mapViewController.vehicles = dataManager.vehicles;
     
     etasViewController = [[EtasViewController alloc] init];
-    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:nil tag:1];
+    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:[UIImage imageNamed:@"glyphish_notepad"] tag:1];
     etasViewController.dataManager = dataManager;
 	etasViewController.timeDisplayFormatter = timeDisplayFormatter;
     
