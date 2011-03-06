@@ -205,6 +205,8 @@
 	return name;
 }
 
+//	Description is an internal only thing now.  It used to be used for the subtitle
+//	as well, but if that behavior is desired, add it in a subclass' implementation
 - (void)setDescription:(NSString *)newDescription {
 	description = newDescription;
 	[description retain];
@@ -285,8 +287,6 @@
 - (NSString *)title {
 	return (routeNo - 1) ? @"East Shuttle" : @"West Shuttle";
 }
-
-
 
 
 - (void)setUpdateTime:(NSDate *)newUpdateTime {
