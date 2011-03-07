@@ -15,6 +15,7 @@
 @synthesize stopId;
 @synthesize eta;
 @synthesize route;
+@synthesize stopName;
 
 /*
  <name>Student Union</name>
@@ -30,7 +31,7 @@
  <name>Polytech Apartments</name>
  <name>Blitman Residence Commons</name>
  <name>15th and College</name>
- */
+
 
 //	Give the name of the stop. Thing about this is, these are hardcoded for the
 //	JSON data I am receiving and the RPI shuttles' current routes.
@@ -65,6 +66,7 @@
 	
 	return @"Unknown";
 }
+ */
 
 
 @end

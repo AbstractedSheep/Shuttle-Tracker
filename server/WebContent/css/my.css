@@ -6,6 +6,14 @@ BODY, TD {
   font-size:50pt;
   /* font-weight:bold; */
 }
+#east
+{
+    display:block;
+}
+#west
+{
+    display:block;
+}
 h1
 {
 font-family:verdana;

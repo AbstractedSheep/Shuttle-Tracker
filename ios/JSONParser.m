@@ -155,7 +155,15 @@
                     eta.eta = [NSDate dateWithTimeIntervalSinceNow:[[dict objectForKey:string] floatValue]/1000.0f];
                 } else if ([string isEqualToString:@"route"]) {
                     eta.route = [[dict objectForKey:string] intValue];
-                }
+                } else if ([string isEqualToString:@"name"]) {
+					eta.stopName = [dict objectForKey:string];
+					
+					//	"Blitman Residence Commons is just too long, so handle is specially.
+					//	TBD: Find a better way to do this
+					if ([eta.stopName isEqualToString:@"Blitman Residence Commons"]) {
+						eta.stopName = [NSString stringWithString:@"Blitman Commons"];
+					}
+				}
             }
             
             [etas addObject:eta];
