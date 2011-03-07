@@ -69,7 +69,7 @@
 	mapViewController.vehicles = dataManager.vehicles;
     
     etasViewController = [[EtasViewController alloc] init];
-    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:[UIImage imageNamed:@"glyphish_notepad"] tag:1];
+    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:[UIImage imageNamed:@"glyphish_clock"] tag:1];
     etasViewController.dataManager = dataManager;
 	etasViewController.timeDisplayFormatter = timeDisplayFormatter;
     

@@ -17,8 +17,6 @@
 		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
 		DA05D6FC1323EE1D00479EAB /* glyphish_map.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D6FA1323EE1D00479EAB /* glyphish_map.png */; };
 		DA05D6FD1323EE1D00479EAB /* glyphish_map@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */; };
-		DA05D7011323EEEA00479EAB /* glyphish_notepad.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D6FF1323EEEA00479EAB /* glyphish_notepad.png */; };
-		DA05D7021323EEEA00479EAB /* glyphish_notepad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D7001323EEEA00479EAB /* glyphish_notepad@2x.png */; };
 		DA11549B130B5BA50004E7D0 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115486130B5BA50004E7D0 /* CDataScanner.m */; };
 		DA11549C130B5BA50004E7D0 /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115489130B5BA50004E7D0 /* CFilteringJSONSerializer.m */; };
 		DA11549D130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DA11548B130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.m */; };
@@ -31,6 +29,8 @@
 		DA1F3FB31322FEA000CCB393 /* Shuttle-Icon-smaller.png in Resources */ = {isa = PBXBuildFile; fileRef = DA1F3FB21322FEA000CCB393 /* Shuttle-Icon-smaller.png */; };
 		DA1F3FB61322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA1F3FB51322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png */; };
 		DA215D5E1311B9C600CBEF62 /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA215D5D1311B9C600CBEF62 /* EtasViewController.m */; };
+		DA3FC96C1324606000E6FE78 /* glyphish_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96A1324606000E6FE78 /* glyphish_clock.png */; };
+		DA3FC96D1324606000E6FE78 /* glyphish_clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */; };
 		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
 		DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B7512F4C84700190FA3 /* MapViewController.m */; };
 		DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */ = {isa = PBXBuildFile; fileRef = DA750B8812F4CB7600190FA3 /* netlink.kml */; };
@@ -64,8 +64,6 @@
 		8D1107310486CEB800E47090 /* Shuttle_Tracker-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Shuttle_Tracker-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		DA05D6FA1323EE1D00479EAB /* glyphish_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_map.png; sourceTree = "<group>"; };
 		DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_map@2x.png"; sourceTree = "<group>"; };
-		DA05D6FF1323EEEA00479EAB /* glyphish_notepad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_notepad.png; sourceTree = "<group>"; };
-		DA05D7001323EEEA00479EAB /* glyphish_notepad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_notepad@2x.png"; sourceTree = "<group>"; };
 		DA115485130B5BA50004E7D0 /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner.h; sourceTree = "<group>"; };
 		DA115486130B5BA50004E7D0 /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner.m; sourceTree = "<group>"; };
 		DA115488130B5BA50004E7D0 /* CFilteringJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFilteringJSONSerializer.h; sourceTree = "<group>"; };
@@ -90,6 +88,8 @@
 		DA215D5C1311B9C600CBEF62 /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtasViewController.h; sourceTree = "<group>"; };
 		DA215D5D1311B9C600CBEF62 /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtasViewController.m; sourceTree = "<group>"; };
 		DA31240012FDC69C00F90B79 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = KMLParser.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		DA3FC96A1324606000E6FE78 /* glyphish_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_clock.png; sourceTree = "<group>"; };
+		DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_clock@2x.png"; sourceTree = "<group>"; };
 		DA750B7012F4C7D700190FA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DA750B7412F4C84700190FA3 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MapViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DA750B7512F4C84700190FA3 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -271,10 +271,10 @@
 			isa = PBXGroup;
 			children = (
 				DA750B8812F4CB7600190FA3 /* netlink.kml */,
+				DA3FC96A1324606000E6FE78 /* glyphish_clock.png */,
+				DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */,
 				DA05D6FA1323EE1D00479EAB /* glyphish_map.png */,
 				DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */,
-				DA05D6FF1323EEEA00479EAB /* glyphish_notepad.png */,
-				DA05D7001323EEEA00479EAB /* glyphish_notepad@2x.png */,
 				DAACF017131F3ACC0074FA4C /* Shuttle-Icon.png */,
 				DAACF019131F3AD90074FA4C /* Shuttle-Icon@2x.png */,
 				DA1F3FB51322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png */,
@@ -350,8 +350,8 @@
 				DA1F3FB61322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png in Resources */,
 				DA05D6FC1323EE1D00479EAB /* glyphish_map.png in Resources */,
 				DA05D6FD1323EE1D00479EAB /* glyphish_map@2x.png in Resources */,
-				DA05D7011323EEEA00479EAB /* glyphish_notepad.png in Resources */,
-				DA05D7021323EEEA00479EAB /* glyphish_notepad@2x.png in Resources */,
+				DA3FC96C1324606000E6FE78 /* glyphish_clock.png in Resources */,
+				DA3FC96D1324606000E6FE78 /* glyphish_clock@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
