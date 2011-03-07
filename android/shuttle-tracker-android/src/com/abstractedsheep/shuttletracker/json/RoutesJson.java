@@ -12,7 +12,7 @@ public class RoutesJson {
 	private ArrayList<Stop> stops;
 	private ArrayList<Route> routes;
 	
-	public static class Stop {
+	public static class Stop implements Comparable<Stop> {
 		private double latitude;
 		public double getLatitude() {
 			return latitude;
@@ -31,7 +31,10 @@ public class RoutesJson {
 		}
 
 		public String getName() {
-			return name;
+			if (this.short_name.equals("blitman"))
+				return "Blitman Commons";
+			else
+				return name;
 		}
 
 		public void setName(String name) {
@@ -78,6 +81,10 @@ public class RoutesJson {
 		
 		public DirectionalOverlayItem toOverlayItem() {	
 			return new DirectionalOverlayItem(new GeoPoint((int) (this.latitude * 1e6), (int)(this.longitude * 1e6)), this.name, "");
+		}
+
+		public int compareTo(Stop another) {
+			return getName().compareTo(another.getName());
 		}
 	}
 	

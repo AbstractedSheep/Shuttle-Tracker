@@ -22,6 +22,7 @@ package com.abstractedsheep.shuttletracker.android;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,14 +72,24 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 			}
 		}
 		
+		for (ArrayList<Stop> stops : children) {
+			Collections.sort(stops);
+		}
+		
 		notifyDataSetInvalidated();
 	}
 	
 	public void putEtas(List<EtaJson> etaList) {
 		EtaJson eta;
+		EtaJson tempEta;
 		for (int i = 0; i < etaList.size(); i++) {
 			eta = etaList.get(i);
-			etas.put(eta.getStop_id(), eta);
+			tempEta = etas.get(eta.getStop_id() + eta.getRoute());
+			if (tempEta == null || (tempEta != null && eta.getEta() < tempEta.getEta())) {
+				Log.d("Tracker", "Putting " + eta.getEta() + " at " + eta.getStop_id() + eta.getRoute());
+				etas.put(eta.getStop_id() + eta.getRoute(), eta);
+			}
+			
 		}
 		
 		notifyDataSetChanged();
@@ -136,13 +148,15 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		
 		TextView tv = (TextView) v.findViewById(R.id.text1);
 		
+		Route route = parents.get(groupPosition);
 		Stop stop = children.get(groupPosition).get(childPosition);
-		EtaJson eta = etas.get(stop.getShort_name());
+		EtaJson eta = etas.get(stop.getShort_name() + route.getId());
+		Log.d("Tracker", "Got " + ((eta == null) ? null : eta.getEta()) + " from " + stop.getShort_name() + route.getId());
 		String etaString = "";
 		
 		if (eta != null) {
 			long now = (new Date()).getTime();
-			Date arrival = new Date(now + Long.parseLong(eta.getEta()));
+			Date arrival = new Date(now + eta.getEta());
 			etaString = formatter.format(arrival);
 		}
 		

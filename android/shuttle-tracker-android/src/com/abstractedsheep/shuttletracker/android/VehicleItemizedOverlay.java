@@ -114,6 +114,8 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 		long now;
 		Date lastUpdate;
 		
+		
+		
 		for (VehicleJson v : vehicles) {
 			try {
 				
@@ -126,9 +128,12 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
 				pt = p.toPixels(gp, null);
 
+				
 				rotate.reset();
 				rotate.postRotate(v.getHeading(), markerBitmap.getWidth(), markerBitmap.getHeight() / 2);
 				
+				
+				long start2 = System.currentTimeMillis();
 				if (v.getHeading() > 180) {
 					tempBitmap = coloredMarkersFlipped.get(v.getRoute_id());
 					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), rotate, true);
@@ -136,8 +141,11 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 					tempBitmap = coloredMarkers.get(v.getRoute_id());
 					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), rotate, true);
 				}
+				Log.d("Tracker", "Shuttle rotation complete in " + String.valueOf(System.currentTimeMillis() - start2) + "ms");
 				
+				start2 = System.currentTimeMillis();
 				canvas.drawBitmap(tempBitmap, pt.x - (markerBitmap.getWidth() / 2), pt.y - (markerBitmap.getHeight() / 2), null);
+				Log.d("Tracker", "Individual shuttle drawing complete in " + String.valueOf(System.currentTimeMillis() - start2) + "ms");
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}

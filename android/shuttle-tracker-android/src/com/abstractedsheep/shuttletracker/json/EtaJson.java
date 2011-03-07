@@ -2,21 +2,16 @@ package com.abstractedsheep.shuttletracker.json;
 
 public class EtaJson {
 	private String stop_id;
-	private String stop_name;
+	private String name;
 	private int shuttle_id;
-	private String shuttle_name;
-	private String eta;
+	private int eta;
+	private int route;
+	
 	public String getStop_id() {
 		return stop_id;
 	}
 	public void setStop_id(String stop_id) {
 		this.stop_id = stop_id;
-	}
-	public String getStop_name() {
-		return stop_name;
-	}
-	public void setStop_name(String stop_name) {
-		this.stop_name = stop_name;
 	}
 	public int getShuttle_id() {
 		return shuttle_id;
@@ -24,16 +19,22 @@ public class EtaJson {
 	public void setShuttle_id(int shuttle_id) {
 		this.shuttle_id = shuttle_id;
 	}
-	public String getShuttle_name() {
-		return shuttle_name;
+	public String getName() {
+		return name;
 	}
-	public void setShuttle_name(String shuttle_name) {
-		this.shuttle_name = shuttle_name;
+	public void setName(String name) {
+		this.name = name;
 	}
-	public String getEta() {
+	public int getRoute() {
+		return route;
+	}
+	public void setRoute(int route) {
+		this.route = route;
+	}
+	public int getEta() {
 		return eta;
 	}
-	public void setEta(String eta) {
+	public void setEta(int eta) {
 		this.eta = eta;
 	}
 }

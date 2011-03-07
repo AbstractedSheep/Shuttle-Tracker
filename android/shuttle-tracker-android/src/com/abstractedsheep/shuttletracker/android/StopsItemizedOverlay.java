@@ -94,7 +94,7 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		long now = (new Date()).getTime();
 		
 		if (eta != null) {
-			Date arrival = new Date(now + Long.parseLong(eta.getEta()));
+			Date arrival = new Date(now + eta.getEta());
 			snippet = "Next Arrival: " + formatter.format(arrival);
 		}
 		

@@ -45,6 +45,7 @@ import com.abstractedsheep.shuttletracker.json.VehicleArray;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.os.SystemClock;
+import android.util.Log;
 
 public class ShuttleDataService {
 	private ObjectMapper mapper = new ObjectMapper();
@@ -86,8 +87,12 @@ public class ShuttleDataService {
 			URLConnection shuttleJsonConnection = shuttlesJson.openConnection();
 			
 			// ObjectMapper doesn't like the stream, but it works if converted into a string first
-			String json = convertStreamToString(shuttleJsonConnection.getInputStream());			
+			long start = System.currentTimeMillis();
+			String json = convertStreamToString(shuttleJsonConnection.getInputStream());		
+			Log.d("Tracker", "Converted " + generic.getName() + " stream to string in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+			start = System.currentTimeMillis();
 			parsedClass = mapper.readValue(json, generic);
+			Log.d("Tracker", generic.getName() + " mapping complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -129,7 +134,7 @@ public class ShuttleDataService {
 						vehicles = tempVehicles;
 					}
 					
-					ArrayList<EtaJson> tempEtas = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_next_eta", EtaArray.class);
+					ArrayList<EtaJson> tempEtas = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta", EtaArray.class);
 					if (tempEtas != null) {
 						etas = tempEtas;
 					}
