@@ -178,7 +178,7 @@ public class Shuttle {
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
-			double distance = finder.getDistanceToStop(p);
+			double distance = finder.getDistanceToStop(stops.get(name));
 			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000;
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
@@ -315,7 +315,7 @@ public class Shuttle {
 		//a shuttle is considered on a route if it is no more than a quarter
 		//mile away from the closest route coordinate.
 		public boolean isShuttleOnRoute() {
-			return (this.closestDistanceToRoute >= .07);
+			return (this.closestDistanceToRoute >= .05);
 		}
 		
 		public int getRouteID() {
@@ -394,29 +394,26 @@ public class Shuttle {
 		 *            - desired stop
 		 * @return distance to stop.
 		 */
-		public double getDistanceToStop(Point stop) {
+		public double getDistanceToStop(Stop stop) {
 			ArrayList<Point> list = null;
 			double distance = 0.0, distanceToTravel = 0.0;
 			for (Route rt : routeList) {
-
-				//if (rt.getIdNum() == routeID) {
-					list = rt.getCoordinateList();
-					int index = indexOfClosestCoordinate + 1;
-					int count = 0;
-					distanceToTravel = calculateDistance(list.get(index - 1));
-					for (count = 0; count <= list.size(); count++) {
-						if (index >= list.size())
-							index = 1;
-						distance = calculateDistance(list.get(index - 1), stop);
-						// distance between this coordinate and the stop is
-						// less than 100 ft
-						if (distance <= .02)
-							return distanceToTravel;
-						distanceToTravel += calculateDistance(list.get(index),
-								list.get(index - 1)) + .003;
-						index++;
-					}
-			//	}
+				list = rt.getCoordinateList();
+				int index = indexOfClosestCoordinate + 1;
+				int count = 0;
+				distanceToTravel = calculateDistance(list.get(index - 1));
+				for (count = 0; count <= list.size(); count++, index++) {
+					if (index >= list.size())
+						index = 1;
+					//calculate distance between the currently viewed point in the list
+					//and the stop's position.
+					distance = calculateDistance(list.get(index - 1), stop.getLocation());
+					
+					if (stop.isClosestRoutePoint(list.get(index - 1), this.getRouteID()))
+						return distanceToTravel + distance;
+					distanceToTravel += calculateDistance(list.get(index),
+							list.get(index - 1));
+				}
 			}
 			return distanceToTravel;
 		}
