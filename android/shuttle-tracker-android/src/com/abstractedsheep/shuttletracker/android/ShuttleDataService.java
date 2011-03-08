@@ -20,13 +20,7 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -82,16 +76,11 @@ public class ShuttleDataService {
     	T parsedClass = null;
 	
 		try {
-			URL shuttlesJson;
-			shuttlesJson = new URL(url);
-			URLConnection shuttleJsonConnection = shuttlesJson.openConnection();
+			URL jsonUrl = new URL(url);
+			URLConnection jsonConnection = jsonUrl.openConnection();
 			
-			// ObjectMapper doesn't like the stream, but it works if converted into a string first
 			long start = System.currentTimeMillis();
-			String json = convertStreamToString(shuttleJsonConnection.getInputStream());		
-			Log.d("Tracker", "Converted " + generic.getName() + " stream to string in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
-			start = System.currentTimeMillis();
-			parsedClass = mapper.readValue(json, generic);
+			parsedClass = mapper.readValue(jsonConnection.getInputStream(), generic);
 			Log.d("Tracker", generic.getName() + " mapping complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -113,14 +102,11 @@ public class ShuttleDataService {
 					tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", RoutesJson.class);
 					if (tempRoutes != null) {
 						routes = tempRoutes;
+						notifyRoutesUpdated(routes);
 					}
 					
 					SystemClock.sleep(5000);
-				} while (tempRoutes == null);
-				
-				
-				if (tempRoutes != null)
-					notifyRoutesUpdated(routes);
+				} while (tempRoutes == null);				
 			}	
 		}
 	};
@@ -139,8 +125,9 @@ public class ShuttleDataService {
 						etas = tempEtas;
 					}
 					
-					if (tempVehicles != null || tempEtas != null)
+					if (tempVehicles != null || tempEtas != null) {
 						notifyShuttlesUpdated(vehicles, etas);
+					}
 				}	
 				
 				SystemClock.sleep(5000);
@@ -181,33 +168,4 @@ public class ShuttleDataService {
 	public synchronized RoutesJson getRoutes() {
 		return routes;
 	}	
-
-	private String convertStreamToString(InputStream is) throws IOException
-	{
-		/*
-		* To convert the InputStream to String we use the
-		* Reader.read(char[] buffer) method. We iterate until the
-		* Reader return -1 which means there's no more data to
-		* read. We use the StringWriter class to produce the string.
-		*/
-		if (is != null) {
-			Writer writer = new StringWriter();
-
-			char[] buffer = new char[1024];
-			try {
-				Reader reader = new BufferedReader(
-				new InputStreamReader(is, "UTF-8"), 20000);
-				int n;
-				while ((n = reader.read(buffer)) != -1) {
-					writer.write(buffer, 0, n);
-				}
-			} finally {
-				is.close();
-			}
-			return writer.toString();
-		} else {        
-			return "";
-		}
-	}
-
 }

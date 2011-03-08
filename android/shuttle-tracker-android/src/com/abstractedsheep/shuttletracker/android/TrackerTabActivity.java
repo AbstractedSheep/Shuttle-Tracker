@@ -29,6 +29,9 @@ import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Window;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
@@ -38,6 +41,7 @@ import android.widget.TabHost.TabSpec;
 public class TrackerTabActivity extends TabActivity implements IShuttleDataUpdateCallback {
 	private TabHost tabHost;
 	private ShuttleDataService dataService;
+	ProgressBar titleBarProgress;
 	
 	@Override
 	protected void onPause() {
@@ -60,6 +64,11 @@ public class TrackerTabActivity extends TabActivity implements IShuttleDataUpdat
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
 		
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setContentView(R.layout.tab);
+		Log.d("Tracker", "Progress Set");
+		setProgressBarIndeterminateVisibility(true);
+		
 		this.tabHost = getTabHost();
 		
 		// Add the map activity as a tab
@@ -79,6 +88,13 @@ public class TrackerTabActivity extends TabActivity implements IShuttleDataUpdat
 		dataService = ShuttleDataService.getInstance();
 		new Thread(dataService.updateRoutes).start();
 	}
+	
+	Runnable hideIndeterminateProgress = new Runnable() {
+		public void run() {
+			Log.d("Tracker", "Progress Stopped");
+			setProgressBarIndeterminateVisibility(false);
+		}
+	};
 
 	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
 		((IShuttleDataUpdateCallback)getLocalActivityManager().getCurrentActivity()).dataUpdated(vehicles, etas);
@@ -87,5 +103,8 @@ public class TrackerTabActivity extends TabActivity implements IShuttleDataUpdat
 
 	public void routesUpdated(RoutesJson routes) {
 		((IShuttleDataUpdateCallback)getLocalActivityManager().getCurrentActivity()).routesUpdated(routes);
+		if (routes != null) {
+			runOnUiThread(hideIndeterminateProgress);
+		}
 	}
 }

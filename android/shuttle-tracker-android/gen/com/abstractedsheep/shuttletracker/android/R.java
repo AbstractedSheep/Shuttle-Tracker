@@ -45,6 +45,7 @@ public final class R {
         public static final int eta=0x7f030002;
         public static final int simple_expandable_list_item_1=0x7f030003;
         public static final int simple_list_item_1=0x7f030004;
+        public static final int tab=0x7f030005;
     }
     public static final class string {
         public static final int app_name=0x7f040001;

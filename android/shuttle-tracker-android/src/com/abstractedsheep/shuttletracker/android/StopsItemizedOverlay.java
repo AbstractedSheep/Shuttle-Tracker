@@ -47,6 +47,7 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
 	SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
 	
+	
 	public StopsItemizedOverlay(Drawable defaultMarker, MapView mapView) {
 		super(boundCenter(defaultMarker), mapView);
 		populate();
@@ -67,15 +68,18 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		populate();
 	}
 	
-	public synchronized void putEtas(List<EtaJson> etaList) {
+	public void putEtas(List<EtaJson> etaList) {
 		EtaJson eta;
+		EtaJson tempEta;
 		for (int i = 0; i < etaList.size(); i++) {
 			eta = etaList.get(i);
-			etas.put(eta.getStop_id(), eta);
+			tempEta = etas.get(eta.getStop_id() + eta.getRoute());
+			if (tempEta == null || (tempEta != null && eta.getEta() < tempEta.getEta())) {
+				etas.put(eta.getStop_id() + eta.getRoute(), eta);
+			}	
 		}
-		
-		refreshBalloon();
 	}
+
 	
 	public void refreshBalloon() {
 		BalloonOverlayView bov = getBalloonView();
@@ -89,13 +93,17 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 	@Override
 	protected synchronized OverlayItem createItem(int i) {
 		Stop s = stops.get(i);
-		EtaJson eta = etas.get(s.getShort_name());
+		EtaJson eta;
 		String snippet = "";
+		Date arrival;
 		long now = (new Date()).getTime();
 		
-		if (eta != null) {
-			Date arrival = new Date(now + eta.getEta());
-			snippet = "Next Arrival: " + formatter.format(arrival);
+		for (Stop.Route r : s.getRoutes()) {
+			eta = etas.get(s.getShort_name() + r.getId());
+			if (eta != null) {
+				arrival = new Date(now + eta.getEta());
+				snippet += (!snippet.equals("") ? "\n" : "") + r.getName() + ": " + formatter.format(arrival);
+			}
 		}
 		
 		return new OverlayItem(new GeoPoint((int)(s.getLatitude() * 1e6), (int)(s.getLongitude() * 1e6)), s.getName(), snippet);
