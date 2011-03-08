@@ -315,7 +315,7 @@ public class Shuttle {
 		//a shuttle is considered on a route if it is no more than a quarter
 		//mile away from the closest route coordinate.
 		public boolean isShuttleOnRoute() {
-			return (this.closestDistanceToRoute >= .25);
+			return (this.closestDistanceToRoute >= .07);
 		}
 		
 		public int getRouteID() {
