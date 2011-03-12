@@ -21,7 +21,7 @@
     
     // Override point for customization after application launch.
     
-    MainViewController_iPhone *mainViewController = [[MainViewController_iPhone alloc] init];
+    mainViewController = [[MainViewController_iPhone alloc] init];
     [self.window addSubview:mainViewController.view];
     
     [self.window makeKeyAndVisible];
@@ -80,6 +80,7 @@
 
 - (void)dealloc {
     [window release];
+	[mainViewController release];
     [super dealloc];
 }
 

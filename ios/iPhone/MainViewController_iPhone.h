@@ -13,6 +13,7 @@
 
 @interface MainViewController_iPhone : MainViewController {
     
+	UITabBarController *tabBarController;
     EtasViewController *etasViewController;
 }
 

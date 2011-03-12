@@ -149,6 +149,7 @@
     
     MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
     [routeLineViews addObject:routeView];
+	[routeView release];
     
     routeView.lineWidth = route.style.width;
     routeView.fillColor = route.style.color;

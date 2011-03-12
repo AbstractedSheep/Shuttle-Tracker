@@ -8,8 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+@class MainViewController_iPhone;
+
 @interface AppDelegate_iPhone : NSObject <UIApplicationDelegate> {
     UIWindow *window;
+	MainViewController_iPhone *mainViewController;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;

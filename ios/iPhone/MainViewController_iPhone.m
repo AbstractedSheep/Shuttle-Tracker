@@ -61,7 +61,7 @@
 	
 	dataManager.timeDisplayFormatter = timeDisplayFormatter;
 	
-    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    tabBarController = [[UITabBarController alloc] init];
     
     MapViewController *mapViewController = [[MapViewController alloc] init];
     mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0];
@@ -76,6 +76,9 @@
     etasTableUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:etasViewController.tableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     
     tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, nil];
+	[mapViewController release];
+	[etasViewController release];
+	
     [self.view addSubview:tabBarController.view];
     
 }
@@ -96,6 +99,7 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+	[tabBarController release];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
