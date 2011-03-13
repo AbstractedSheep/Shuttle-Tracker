@@ -60,7 +60,7 @@ public class Route {
 				p3 = coordinateList.get(0);
 			}
 			
-			this.bearingList.add(getBearing(p1, p2, p3));
+			this.bearingList.add(getConstantBearing(p1, p2, p3));
 		}
 	}
 
@@ -82,6 +82,31 @@ public class Route {
 		array[0] = Math.toDegrees(Math.atan2(y1, x1));
 		array[1] = Math.toDegrees(Math.atan2(y2, x2));
 		return array;
+	}
+	
+	private Double[] getConstantBearing(Point current, Point prev, Point next) {
+		Double[] array = new Double[2];
+		double deltaLat1 = (current.getLatInRadians() - prev.getLatInRadians()),
+		   	   deltaLat2 = (next.getLatInRadians() - current.getLatInRadians());
+		double deltaLon1 = (current.getLonInRadians() - prev.getLonInRadians()),
+		       deltaLon2 = (next.getLonInRadians() - current.getLonInRadians());
+		
+		double dPhi1 = Math.log(Math.tan(current.getLatInRadians()/2+Math.PI/4)/
+					  Math.tan(prev.getLatInRadians()/2+Math.PI/4));
+		double dPhi2 = Math.log(Math.tan(next.getLatInRadians()/2+Math.PI/4)/
+				  	  Math.tan(current.getLatInRadians()/2+Math.PI/4));
+		
+		if(deltaLon1 > Math.PI) {
+			deltaLon1 = (deltaLon1 > 0) ? -(2*Math.PI - deltaLon1) : (2*Math.PI + deltaLon1);
+		}
+		
+		if(deltaLon2 > Math.PI) {
+			deltaLon2 = (deltaLon2 > 0) ? -(2*Math.PI - deltaLon2) : (2*Math.PI + deltaLon2);
+		}
+		
+		array[0] = Math.toDegrees(Math.atan2(deltaLon1, dPhi1));
+		array[1] = Math.toDegrees(Math.atan2(deltaLon2, dPhi2));
+		return null;
 	}
 
 	/**
