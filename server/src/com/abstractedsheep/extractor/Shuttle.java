@@ -232,6 +232,10 @@ public class Shuttle {
 		public double getLat() {
 			return lat;
 		}
+		
+		public double getLatInRadians() {
+			return Math.toRadians(lat);
+		}
 
 		public void setLat(double lat) {
 			this.lat = lat;
@@ -239,6 +243,10 @@ public class Shuttle {
 
 		public double getLon() {
 			return lon;
+		}
+		
+		public double getLonInRadians() {
+			return Math.toRadians(lon);
 		}
 
 		public void setLon(double lon) {
@@ -277,6 +285,7 @@ public class Shuttle {
 		private Point closestRouteCoor;
 		private double closestDistanceToRoute;
 		private int indexOfClosestCoordinate;
+		private boolean isBeforeRoutePoint;
 
 		/**
 		 * 
@@ -293,6 +302,7 @@ public class Shuttle {
 			foundRoute = false;
 			closestRouteCoor = new Point();
 			indexOfClosestCoordinate = 0;
+			this.isBeforeRoutePoint = false;
 		}
 
 		public RouteFinder(ArrayList<Route> rt) {
@@ -301,6 +311,7 @@ public class Shuttle {
 			foundRoute = false;
 			closestRouteCoor = new Point();
 			indexOfClosestCoordinate = 0;
+			this.isBeforeRoutePoint = false;
 		}
 
 		// TDO: might not be necessary to store the locations, but perhaps
@@ -328,6 +339,10 @@ public class Shuttle {
 		
 		public boolean hasFoundRoute() {
 			return this.foundRoute;
+		}
+		
+		private int isBeforeRoutePoint() {
+			return (isBeforeRoutePoint) ? -1 : 1;
 		}
 
 		private void determineRouteOfShuttle() {

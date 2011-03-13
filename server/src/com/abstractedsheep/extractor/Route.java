@@ -13,20 +13,72 @@ import com.abstractedsheep.extractor.Shuttle.Point;
  */
 
 public class Route {
-	int idNum;
-	String routeName;
-	ArrayList<Point> coordinateList;
+	private int idNum;
+	private String routeName;
+	private ArrayList<Point> coordinateList;
+	private ArrayList<Double[]> bearingList;
 
 	public Route() {
 		idNum = 0;
 		routeName = "West";
 		this.coordinateList = new ArrayList<Point>();
+		calculateBearings();
 	}
 
 	public Route(int idNum, String routeName) {
 		this.idNum = idNum;
 		this.routeName = routeName;
 		this.coordinateList = new ArrayList<Point>();
+		calculateBearings();
+	}
+	
+	/**
+	 * calculates the bearing between a route position and the position
+	 * both before and after it.
+	 */
+	private void calculateBearings() {
+		this.bearingList = new ArrayList<Double[]>();
+		Point p1 = null, p2 = null, p3 = null;
+		
+		for(int i = 0; i < coordinateList.size(); i++) {
+			p1 = coordinateList.get(i);
+			
+			//ArrayIndexOutOfBoundsException will be thrown if i = 0
+			try {
+				p2 = coordinateList.get(i - 1);
+			} catch(ArrayIndexOutOfBoundsException ex) {
+				int index = coordinateList.size() - 1;
+				p2 = coordinateList.get(index);
+			}
+			//ArrayIndexOutOfBoundsException will be thrown if i >= size() - 1
+			try {
+				p3 = coordinateList.get(i + 1);
+			} catch(ArrayIndexOutOfBoundsException ex) {
+				p3 = coordinateList.get(0);
+			}
+			
+			this.bearingList.add(getBearing(p1, p2, p3));
+		}
+	}
+
+	private Double[] getBearing(Point current, Point prev, Point next) {
+		Double[] array = new Double[2];
+		double deltaLon1 = (current.getLonInRadians() - prev.getLonInRadians()),
+			   deltaLon2 = (next.getLonInRadians() - current.getLonInRadians());
+		
+		double x1 = Math.sin(deltaLon1) * Math.cos(current.getLatInRadians()),
+			   x2 = Math.sin(deltaLon2) * Math.cos(next.getLatInRadians());
+		
+		double y1 = Math.cos(prev.getLatInRadians()) * Math.sin(current.getLatInRadians())
+					- Math.sin(prev.getLatInRadians()) *
+					Math.cos(current.getLatInRadians())*Math.cos(deltaLon1);
+		double y2 = Math.cos(current.getLatInRadians()) * Math.sin(next.getLatInRadians())
+					- Math.sin(current.getLatInRadians()) *
+					Math.cos(next.getLatInRadians())*Math.cos(deltaLon2);
+		
+		array[0] = Math.toDegrees(Math.atan2(y1, x1));
+		array[1] = Math.toDegrees(Math.atan2(y2, x2));
+		return array;
 	}
 
 	/**
