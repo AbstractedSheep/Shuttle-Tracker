@@ -1,4 +1,5 @@
 # Shuttle Tracker
+A suite of applications to make college campus transportation more useful.
 
 ## About
 The Shuttle Tracker project is intended to be a mobile equivalent of the RPI Shuttle Tracker website at `http://shuttles.rpi.edu/`.  The purpose is to provide information on the RPI campus shuttles, including their current locations and when they will arrive at each stop.
@@ -12,6 +13,9 @@ It consists of several parts:
 3. Android and iOS applications, which display recent shuttle positions, the normal shuttle routes and the stops on these routes.  These applications also display ETAs.  The applications poll 2 for shuttle position and ETA information.
 
 Both 1 and 2 are found in the `server/` directory.  The Android and iOS programs are found in the `android/` and `ios/` directories, respectively.
+
+## Server
+Information coming soon.
 
 ## Android
 Information coming soon.
