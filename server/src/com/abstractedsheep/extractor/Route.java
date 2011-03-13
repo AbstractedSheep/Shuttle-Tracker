@@ -16,6 +16,9 @@ public class Route {
 	private int idNum;
 	private String routeName;
 	private ArrayList<Point> coordinateList;
+	/**
+	 * list of initial bearings for each route point.
+	 */
 	private ArrayList<Double[]> bearingList;
 
 	public Route() {
@@ -33,7 +36,7 @@ public class Route {
 	}
 	
 	/**
-	 * calculates the bearing between a route position and the position
+	 * calculates the initial bearing between a route position and the position
 	 * both before and after it.
 	 */
 	private void calculateBearings() {
@@ -101,6 +104,10 @@ public class Route {
 	 */
 	public String getRouteName() {
 		return routeName;
+	}
+	
+	public Double[] getBearingsForPoint(int index) {
+		return this.bearingList.get(index);
 	}
 
 	public void putCoordinate(double lon, double lat) {
