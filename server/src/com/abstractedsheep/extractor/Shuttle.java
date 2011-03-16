@@ -9,6 +9,7 @@ public class Shuttle {
 	private HashMap<String, Stop> stops;
 	private HashMap<String, Integer> stopETA;
 	private ArrayList<Integer> speedList;
+	private int bearing;
 	private String cardinalPoint;
 	private String shuttleName;
 	private int speed;
@@ -34,6 +35,7 @@ public class Shuttle {
 		this.speedList = new ArrayList<Integer>();
 		finder = new RouteFinder(rt);
 		this.lastUpdateTime = System.currentTimeMillis();
+		this.bearing = 0;
 	}
 
 	// This constructor is not required by Jackson, but it makes manually
@@ -52,6 +54,7 @@ public class Shuttle {
 		this.currentLocation = new Point();
 		finder = new RouteFinder(rt);
 		this.lastUpdateTime = System.currentTimeMillis();
+		this.bearing = 0;
 	}	
 	
 	/**
@@ -138,6 +141,9 @@ public class Shuttle {
 	public HashMap<String, Integer> getStopETA() {
 		return stopETA;
 	}
+	public void setBearing(int newBearing) {
+		finder.setBearing(newBearing);
+	}
 	public String getRouteName() {
 		return finder.getRouteName();
 	}
@@ -178,7 +184,7 @@ public class Shuttle {
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
-			double distance = finder.getDistanceToStop(p);
+			double distance = finder.getDistanceToStop(stops.get(name));
 			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000;
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, time);
@@ -228,17 +234,33 @@ public class Shuttle {
 			this.lat = lat;
 			this.lon = lon;
 		}
-
+		/**
+		 * @return latitude of point in degrees
+		 */
 		public double getLat() {
 			return lat;
+		}
+		/**
+		 * @return latitude of point in radians
+		 */
+		public double getLatInRadians() {
+			return Math.toRadians(lat);
 		}
 
 		public void setLat(double lat) {
 			this.lat = lat;
 		}
-
+		/**
+		 * @return longitude of point in degrees
+		 */
 		public double getLon() {
 			return lon;
+		}
+		/**
+		 * @return longitude of point in radians
+		 */
+		public double getLonInRadians() {
+			return Math.toRadians(lon);
 		}
 
 		public void setLon(double lon) {
@@ -277,6 +299,8 @@ public class Shuttle {
 		private Point closestRouteCoor;
 		private double closestDistanceToRoute;
 		private int indexOfClosestCoordinate;
+		private boolean isBeforeRoutePoint;
+		private double currentBearing;
 
 		/**
 		 * 
@@ -293,6 +317,7 @@ public class Shuttle {
 			foundRoute = false;
 			closestRouteCoor = new Point();
 			indexOfClosestCoordinate = 0;
+			this.isBeforeRoutePoint = false;
 		}
 
 		public RouteFinder(ArrayList<Route> rt) {
@@ -301,6 +326,7 @@ public class Shuttle {
 			foundRoute = false;
 			closestRouteCoor = new Point();
 			indexOfClosestCoordinate = 0;
+			this.isBeforeRoutePoint = false;
 		}
 
 		// TDO: might not be necessary to store the locations, but perhaps
@@ -328,6 +354,14 @@ public class Shuttle {
 		
 		public boolean hasFoundRoute() {
 			return this.foundRoute;
+		}
+		
+		private int isBeforeRoutePoint() {
+			return (isBeforeRoutePoint) ? -1 : 1;
+		}
+		
+		public void setBearing(int bearing) {
+			this.currentBearing = bearing;
 		}
 
 		private void determineRouteOfShuttle() {
@@ -390,35 +424,44 @@ public class Shuttle {
 		/**
 		 * calculates distance from stop
 		 * 
-		 * @param stop
-		 *            - desired stop
+		 * @param stop - desired stop
 		 * @return distance to stop.
 		 */
-		public double getDistanceToStop(Point stop) {
+		public double getDistanceToStop(Stop stop) {
 			ArrayList<Point> list = null;
 			double distance = 0.0, distanceToTravel = 0.0;
+			int distanceMultiplier = isBearingbeforeClosestRoutePoint();
+			//ideally, routeList should have only one element
 			for (Route rt : routeList) {
-
-				//if (rt.getIdNum() == routeID) {
-					list = rt.getCoordinateList();
-					int index = indexOfClosestCoordinate + 1;
-					int count = 0;
-					distanceToTravel = calculateDistance(list.get(index - 1));
-					for (count = 0; count <= list.size(); count++) {
-						if (index >= list.size())
-							index = 1;
-						distance = calculateDistance(list.get(index - 1), stop);
-						// distance between this coordinate and the stop is
-						// less than 100 ft
-						if (distance <= .02)
-							return distanceToTravel;
-						distanceToTravel += calculateDistance(list.get(index),
-								list.get(index - 1)) + .003;
-						index++;
-					}
-			//	}
+				list = rt.getCoordinateList();
+				int index = indexOfClosestCoordinate + 1;
+				int count = 0;
+				distanceToTravel = calculateDistance(list.get(index - 1)) * distanceMultiplier;
+				for (count = 0; count <= list.size(); count++, index++) {
+					if (index >= list.size())
+						index = 1;
+					//calculate distance between the currently viewed point in the list
+					//and the stop's position.
+					distance = calculateDistance(list.get(index - 1), stop.getLocation());
+					
+					if (stop.isClosestRoutePoint(list.get(index - 1), this.getRouteID()))
+						return distanceToTravel + distance;
+					distanceToTravel += calculateDistance(list.get(index),
+							list.get(index - 1));
+				}
 			}
 			return distanceToTravel;
+		}
+		
+		//returns -1 if shuttle is before the closest route point
+		//or 1 if is past it.
+		private int isBearingbeforeClosestRoutePoint() {
+			Double[] array = routeList.get(0).getBearingsForPoint(indexOfClosestCoordinate);
+			//current bearing is equal to the initial bearing
+			//to the closest route point +/- 15 degrees
+			if(currentBearing <= array[0] + 15.0 && (currentBearing >= array[0] - 15.0))
+				return -1;
+			return 1;
 		}
 		
 		// TODO: delete the first calculateDistance method and move the second one

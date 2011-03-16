@@ -78,6 +78,14 @@ public class JSONExtractor {
 					readRoutesData();
 			}
 		}
+		
+		addRoutesToStops();
+	}
+
+	private void addRoutesToStops() {
+		for(int i = 0; i < stopList.size(); i++) {
+			stopList.get(i).addRoutesToFinder(routeList);
+		}
 	}
 
 	/**
@@ -199,6 +207,7 @@ public class JSONExtractor {
 				s2 = shuttle;
 				s2.setCurrentLocation(s.getCurrentLocation());
 				s2.setStops(s.getStops(), s.getFinder());
+				s2.setSpeed(s.getSpeed());
 				shuttleList.remove(s);
 				break;
 			}

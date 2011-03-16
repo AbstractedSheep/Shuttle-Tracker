@@ -47,6 +47,7 @@ public class JSONParser {
 			route.putCoordinate(Double.parseDouble(list.get(i + 1)),
 					Double.parseDouble(list.get(i)));
 		}
+		route.calculateBearings();
 		return route;
 	}
 
@@ -65,6 +66,7 @@ public class JSONParser {
 		Shuttle shuttle = new Shuttle(routeList);
 		shuttle.setShuttleId(Integer.parseInt(list.get(0)));
 		shuttle.setName(list.get(1));
+		shuttle.setBearing(Integer.parseInt(list.get(2)));
 		shuttle.setCurrentLocation(new Shuttle.Point(Double.parseDouble(list
 				.get(3)), Double.parseDouble(list.get(4))));
 		shuttle.setSpeed(Integer.parseInt(list.get(5)));
