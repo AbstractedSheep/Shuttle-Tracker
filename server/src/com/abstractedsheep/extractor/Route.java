@@ -39,7 +39,7 @@ public class Route {
 	 * calculates the initial bearing between a route position and the position
 	 * both before and after it.
 	 */
-	private void calculateBearings() {
+	public void calculateBearings() {
 		this.bearingList = new ArrayList<Double[]>();
 		Point p1 = null, p2 = null, p3 = null;
 		
@@ -49,14 +49,15 @@ public class Route {
 			//ArrayIndexOutOfBoundsException will be thrown if i = 0
 			try {
 				p2 = coordinateList.get(i - 1);
-			} catch(ArrayIndexOutOfBoundsException ex) {
+			} catch(IndexOutOfBoundsException ex) {
 				int index = coordinateList.size() - 1;
 				p2 = coordinateList.get(index);
 			}
 			//ArrayIndexOutOfBoundsException will be thrown if i >= size() - 1
 			try {
 				p3 = coordinateList.get(i + 1);
-			} catch(ArrayIndexOutOfBoundsException ex) {
+			} catch(IndexOutOfBoundsException ex) {
+				System.err.println(i + " / " + coordinateList.size());
 				p3 = coordinateList.get(0);
 			}
 			
@@ -106,7 +107,7 @@ public class Route {
 		
 		array[0] = Math.toDegrees(Math.atan2(deltaLon1, dPhi1));
 		array[1] = Math.toDegrees(Math.atan2(deltaLon2, dPhi2));
-		return null;
+		return array;
 	}
 
 	/**

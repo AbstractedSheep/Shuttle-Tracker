@@ -47,6 +47,7 @@ public class JSONParser {
 			route.putCoordinate(Double.parseDouble(list.get(i + 1)),
 					Double.parseDouble(list.get(i)));
 		}
+		route.calculateBearings();
 		return route;
 	}
 

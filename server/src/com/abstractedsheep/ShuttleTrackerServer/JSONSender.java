@@ -76,8 +76,6 @@ public class JSONSender {
 			} catch (SQLException e) {
 			}
 		}
-		
-		printToConsole(shuttleList);
 	}
 	
 	private static void deleteTable(String tableName) {
