@@ -92,7 +92,7 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 	 * @see com.google.android.maps.ItemizedOverlay#onTap(int)
 	 */
 	@Override
-	protected final boolean onTap(int index) {
+	protected boolean onTap(int index) {
 		currentIndex = index;
 		
 		boolean isRecycled;
@@ -142,7 +142,7 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 	/**
 	 * Sets the visibility of this overlay's balloon view to GONE. 
 	 */
-	private void hideBalloon() {
+	public void hideBalloon() {
 		if (balloonView != null) {
 			balloonView.setVisibility(View.GONE);
 		}

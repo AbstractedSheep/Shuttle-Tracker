@@ -43,11 +43,12 @@ import android.util.Log;
 
 public class ShuttleDataService {
 	private ObjectMapper mapper = new ObjectMapper();
-	private Set<IShuttleDataUpdateCallback> callbacks = new HashSet<IShuttleDataUpdateCallback>();
+	private Set<IShuttleServiceCallback> callbacks = new HashSet<IShuttleServiceCallback>();
 	public AtomicBoolean active = new AtomicBoolean(true);
 	private ArrayList<VehicleJson> vehicles;
 	private ArrayList<EtaJson> etas;
 	private RoutesJson routes;
+	private boolean informedNoConnection = false;
 	
 	// Private constructor prevents instantiation from other classes
 	private ShuttleDataService() {
@@ -82,14 +83,19 @@ public class ShuttleDataService {
 			long start = System.currentTimeMillis();
 			parsedClass = mapper.readValue(jsonConnection.getInputStream(), generic);
 			Log.d("Tracker", generic.getName() + " mapping complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+			informedNoConnection = false;
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			if (!informedNoConnection) {
+				informedNoConnection = true;
+				notifyError(IShuttleServiceCallback.NO_CONNECTION_ERROR);
+			}
 			e.printStackTrace();
 		}
-   
+  
     	return parsedClass;
     }
     
@@ -136,24 +142,30 @@ public class ShuttleDataService {
 	};
 	
 	private synchronized void notifyShuttlesUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
-		for (IShuttleDataUpdateCallback c : callbacks) {
+		for (IShuttleServiceCallback c : callbacks) {
 			c.dataUpdated(vehicles, etas);
 		}
 	}
 	
 	private synchronized void notifyRoutesUpdated(RoutesJson routes) {
-		for (IShuttleDataUpdateCallback c : callbacks) {
+		for (IShuttleServiceCallback c : callbacks) {
 			c.routesUpdated(routes);
 		}
 	}
 	
-	public synchronized void registerCallback(IShuttleDataUpdateCallback callback) {
+	private synchronized void notifyError(int errorCode) {
+		for (IShuttleServiceCallback c : callbacks) {
+			c.dataServiceError(errorCode);
+		}
+	}
+	
+	public synchronized void registerCallback(IShuttleServiceCallback callback) {
 		callbacks.add(callback);		
 		callback.dataUpdated(vehicles, etas);
 		callback.routesUpdated(routes);
 	}
 
-	public synchronized void unregisterCallback(IShuttleDataUpdateCallback callback) {
+	public synchronized void unregisterCallback(IShuttleServiceCallback callback) {
 		callbacks.remove(callback);		
 	}
 	

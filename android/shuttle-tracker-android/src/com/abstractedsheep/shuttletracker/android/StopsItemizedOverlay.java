@@ -30,7 +30,6 @@ import java.util.List;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.View;
 
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
@@ -121,8 +120,18 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 	
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 		super.draw(canvas, mapView, shadow);
-		Log.d("Tracker", "Stops drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+		//Log.d("Tracker", "Stops drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+	}
+	
+	@Override
+	protected boolean hitTest(OverlayItem item, Drawable marker, int hitX,
+			int hitY) {
+		Log.d("Tracker", item.getTitle() + " hit at " + hitX + "," + hitY);
+		if (hitX > -5 && hitX < 5 && hitY > -5 && hitY < 5)
+			return true;
+		else
+			return false;
 	}
 }

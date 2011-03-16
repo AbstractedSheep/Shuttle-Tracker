@@ -34,6 +34,7 @@ public class VehicleJson {
 	private int speed;
 	private String update_time;
 	private String cardinal_point;
+	private String name;
 		
 	public int getRoute_id() {
 		return route_id;
@@ -89,6 +90,12 @@ public class VehicleJson {
 	
 	public DirectionalOverlayItem toOverlayItem() {
 		return new DirectionalOverlayItem(new GeoPoint((int)(this.latitude * 1e6), (int)(this.longitude * 1e6)), this.heading, "", "");
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

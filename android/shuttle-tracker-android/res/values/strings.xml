@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, Tracker!</string>
     <string name="app_name">Shuttle Tracker</string>
+<string name="no_conn">Network Connection Lost</string>
 </resources>

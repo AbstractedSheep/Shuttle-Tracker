@@ -30,7 +30,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ExpandableListView;
 
-public class EtaActivity extends Activity implements IShuttleDataUpdateCallback {
+public class EtaActivity extends Activity implements IShuttleServiceCallback {
 	private ArrayList<EtaJson> etas;
 	RoutesJson routes;
 	private ShuttleDataService dataService;
@@ -75,5 +75,8 @@ public class EtaActivity extends Activity implements IShuttleDataUpdateCallback 
 			this.routes = routes;
 			runOnUiThread(setRoutes);
 		}
+	}
+
+	public void dataServiceError(int errorCode) {
 	}
 }
