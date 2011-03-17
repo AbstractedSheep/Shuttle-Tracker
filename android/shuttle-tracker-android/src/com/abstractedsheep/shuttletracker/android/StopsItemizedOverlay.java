@@ -125,13 +125,13 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		//Log.d("Tracker", "Stops drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
 	}
 	
-	@Override
+	/*@Override
 	protected boolean hitTest(OverlayItem item, Drawable marker, int hitX,
 			int hitY) {
 		Log.d("Tracker", item.getTitle() + " hit at " + hitX + "," + hitY);
-		if (hitX > -5 && hitX < 5 && hitY > -5 && hitY < 5)
+		if (hitX > -15 && hitX < 15 && hitY > -15 && hitY < 15)
 			return true;
 		else
 			return false;
-	}
+	}*/
 }

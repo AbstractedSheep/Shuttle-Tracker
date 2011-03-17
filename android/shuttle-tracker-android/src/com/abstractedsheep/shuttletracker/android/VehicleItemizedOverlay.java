@@ -83,7 +83,19 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	@Override
 	protected boolean onTap(int index) {
 		visibleBalloon = idToIndex.inverse().get(index);
-		return super.onTap(index);
+		long now = (new Date()).getTime();
+		Date lastUpdate;
+		try {
+			lastUpdate = formatter.parse(vehicles.get(index).getUpdate_time());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return true;
+		}
+		
+		if ((now - lastUpdate.getTime()) < 60000)
+			return super.onTap(index);
+		else
+			return true;
 	}
 	
 	@Override
