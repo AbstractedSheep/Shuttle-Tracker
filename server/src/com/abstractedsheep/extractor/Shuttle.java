@@ -387,9 +387,15 @@ public class Shuttle {
 					distance = calculateDistance(p1);
 
 					if (distanceArray[index] > distance) {
-						distanceArray[index] = distance;
-						locationArray[index] = p1;
-						indexArray[index] = i;
+						Double[] array = route.getBearingsForPoint(i);
+						if(((array[0] + 15.0 >= this.currentBearing) &&
+							(array[0] - 15.0 <= this.currentBearing)) ||
+							((array[1] + 15.0 >= this.currentBearing) &&
+									(array[1] - 15.0 <= this.currentBearing))) {
+							distanceArray[index] = distance;
+							locationArray[index] = p1;
+							indexArray[index] = i;
+						}
 					}
 					count++;
 				}
