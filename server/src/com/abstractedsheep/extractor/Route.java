@@ -79,9 +79,10 @@ public class Route {
 		double y2 = Math.cos(current.getLatInRadians()) * Math.sin(next.getLatInRadians())
 					- Math.sin(current.getLatInRadians()) *
 					Math.cos(next.getLatInRadians())*Math.cos(deltaLon2);
-		
-		array[0] = Math.toDegrees(Math.atan2(y1, x1));
-		array[1] = Math.toDegrees(Math.atan2(y2, x2));
+		double bearing1 = Math.toDegrees(Math.atan2(y1, x1));
+		double bearing2 = Math.toDegrees(Math.atan2(y2, x2));
+		array[0] = (bearing1 < 0) ? (bearing1 + 360) : bearing1;
+		array[1] = (bearing2 < 0) ? (bearing2 + 360) : bearing2;
 		return array;
 	}
 	
@@ -105,8 +106,10 @@ public class Route {
 			deltaLon2 = (deltaLon2 > 0) ? -(2*Math.PI - deltaLon2) : (2*Math.PI + deltaLon2);
 		}
 		
-		array[0] = Math.toDegrees(Math.atan2(deltaLon1, dPhi1));
-		array[1] = Math.toDegrees(Math.atan2(deltaLon2, dPhi2));
+		double bearing1 = Math.toDegrees(Math.atan2(deltaLon1, dPhi1));
+		double bearing2 = Math.toDegrees(Math.atan2(deltaLon2, dPhi2));
+		array[0] = (bearing1 < 0) ? (bearing1 + 360) : bearing1;
+		array[1] = (bearing2 < 0) ? (bearing2 + 360) : bearing2;
 		return array;
 	}
 

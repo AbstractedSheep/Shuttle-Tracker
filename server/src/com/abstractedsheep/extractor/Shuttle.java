@@ -463,9 +463,11 @@ public class Shuttle {
 		//or 1 if is past it.
 		private int isBearingbeforeClosestRoutePoint() {
 			Double[] array = routeList.get(0).getBearingsForPoint(indexOfClosestCoordinate);
+			Double before = (array[0] <= 0) ? 360 - 15 : (array[0] - 15.0);
+			Double after = (array[0] >= 360) ? 15 : (array[0] + 15.0);
 			//current bearing is equal to the initial bearing
 			//to the closest route point +/- 15 degrees
-			if(currentBearing <= array[0] + 15.0 && (currentBearing >= array[0] - 15.0))
+			if(currentBearing <= after && (currentBearing >= before))
 				return -1;
 			return 1;
 		}
