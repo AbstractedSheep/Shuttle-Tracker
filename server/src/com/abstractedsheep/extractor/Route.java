@@ -64,27 +64,6 @@ public class Route {
 			this.bearingList.add(getConstantBearing(p1, p2, p3));
 		}
 	}
-
-	private Double[] getBearing(Point current, Point prev, Point next) {
-		Double[] array = new Double[2];
-		double deltaLon1 = (current.getLonInRadians() - prev.getLonInRadians()),
-			   deltaLon2 = (next.getLonInRadians() - current.getLonInRadians());
-		
-		double x1 = Math.sin(deltaLon1) * Math.cos(current.getLatInRadians()),
-			   x2 = Math.sin(deltaLon2) * Math.cos(next.getLatInRadians());
-		
-		double y1 = Math.cos(prev.getLatInRadians()) * Math.sin(current.getLatInRadians())
-					- Math.sin(prev.getLatInRadians()) *
-					Math.cos(current.getLatInRadians())*Math.cos(deltaLon1);
-		double y2 = Math.cos(current.getLatInRadians()) * Math.sin(next.getLatInRadians())
-					- Math.sin(current.getLatInRadians()) *
-					Math.cos(next.getLatInRadians())*Math.cos(deltaLon2);
-		double bearing1 = Math.toDegrees(Math.atan2(y1, x1));
-		double bearing2 = Math.toDegrees(Math.atan2(y2, x2));
-		array[0] = (bearing1 < 0) ? (bearing1 + 360) : bearing1;
-		array[1] = (bearing2 < 0) ? (bearing2 + 360) : bearing2;
-		return array;
-	}
 	
 	private Double[] getConstantBearing(Point current, Point prev, Point next) {
 		Double[] array = new Double[2];
