@@ -279,11 +279,11 @@
 
 //	Update the attributes of the current vehicle, usually for the same vehicle in a subsequent
 //	data update.
+//	Note that this does not get a reference to the new vehicles display formatter.
 - (void)copyAttributesExceptLocation:(JSONVehicle *)newVehicle {
 	self.name = newVehicle.name;
 	self.description = newVehicle.description;
 	self.ETAs = newVehicle.ETAs;
-	self.timeDisplayFormatter = newVehicle.timeDisplayFormatter;
 	self.updateTime = newVehicle.updateTime;
 	
 	self.heading = newVehicle.heading;

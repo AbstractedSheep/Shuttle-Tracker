@@ -19,7 +19,7 @@
 }
 
 @property (nonatomic, retain) DataManager *dataManager;
-@property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
+@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
 
 
 @end

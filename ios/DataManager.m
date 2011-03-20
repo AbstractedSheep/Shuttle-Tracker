@@ -8,6 +8,7 @@
 
 #import "DataManager.h"
 #import "EtaWrapper.h"
+#import "IASKSettingsReader.h"
 
 
 @interface DataManager()
@@ -39,6 +40,17 @@
         
         eastEtas = 0;
         westEtas = 0;
+		
+		timeDisplayFormatter = [[NSDateFormatter alloc] init];
+		
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		BOOL use24Time = [[defaults objectForKey:@"use24Time"] boolValue];
+		
+		if (use24Time) {
+			[timeDisplayFormatter setDateFormat:@"HH:mm"];
+		} else {
+			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
+		}
         
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
         shuttleJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
@@ -51,6 +63,9 @@
 		
 		loadVehicleJsonQueue = NULL;
 		loadEtaJsonQueue = NULL;
+		
+		//	Take notice when a setting is changed
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
     }
     
     return self;
@@ -157,6 +172,11 @@
 		
         for (JSONVehicle *existingVehicle in vehicles) {
             if ([existingVehicle.name isEqualToString:newVehicle.name]) {
+				//	Since it may have missed the timeDisplayFormatter when the vehicle
+				//	was created, set it properly every time the vehicle is updated.
+				//	A tiny performance hit for ease of implementation.
+				existingVehicle.timeDisplayFormatter = timeDisplayFormatter;
+
 				[existingVehicle copyAttributesExceptLocation:newVehicle];
 				
                 [UIView animateWithDuration:0.5 animations:^{
@@ -233,11 +253,12 @@
 	vehiclesJsonParser.timeDisplayFormatter = timeDisplayFormatter;
 }
 
+//	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
+//	Currently only handles the 12/24 hour time toggle.
 - (void)settingChanged:(NSNotification *)notification {
 	NSDictionary *info = [notification userInfo];
 	
-	NSLog(@"Class: %@", [info objectForKey:@"use24Time"]);
-	
+	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
 	if ([[notification object] isEqualToString:@"use24Time"]) {
 		if ([[info objectForKey:@"use24Time"] boolValue]) {
 			[timeDisplayFormatter setDateFormat:@"HH:mm"];

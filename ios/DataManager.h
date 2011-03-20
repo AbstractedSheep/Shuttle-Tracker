@@ -43,7 +43,9 @@
 @property (nonatomic, retain) NSArray *etas;
 @property (nonatomic, readonly) NSInteger eastEtas;
 @property (nonatomic, readonly) NSInteger westEtas;
-@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
+@property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
+//	There should be exactly one retain on timeDisplayFormatter, the way that the program
+//	is currently set up.
 
 
 - (void)loadRoutesAndStops;

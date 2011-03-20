@@ -49,19 +49,6 @@
 {
     self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
-	timeDisplayFormatter = [[NSDateFormatter alloc] init];
-	
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	BOOL use24Time = [[defaults objectForKey:@"use24Time"] boolValue];
-	
-	if (use24Time) {
-		[timeDisplayFormatter setDateFormat:@"HH:mm"];
-	} else {
-		[timeDisplayFormatter setDateFormat:@"hh:mm a"];
-	}
-	
-	dataManager.timeDisplayFormatter = timeDisplayFormatter;
-	
     tabBarController = [[UITabBarController alloc] init];
     
     MapViewController *mapViewController = [[MapViewController alloc] init];
@@ -72,6 +59,9 @@
     etasViewController = [[EtasViewController alloc] init];
     etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:[UIImage imageNamed:@"glyphish_clock"] tag:1];
     etasViewController.dataManager = dataManager;
+	
+	//	Note that this class (MainViewController_iPhone) gets a reference to timeDisplayFormatter
+	//	via the init method of its superclass, MainViewController.
 	etasViewController.timeDisplayFormatter = timeDisplayFormatter;
     
     etasTableUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:etasViewController.tableView selector:@selector(reloadData) userInfo:nil repeats:YES];

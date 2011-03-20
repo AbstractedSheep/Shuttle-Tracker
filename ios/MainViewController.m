@@ -7,7 +7,6 @@
 //
 
 #import "MainViewController.h"
-#import "IASKSettingsReader.h"
 
 
 @implementation MainViewController
@@ -29,11 +28,9 @@
 		[defaults registerDefaults:appDefaults];
 		[defaults synchronize];
 		
-		//	Create this in a later method in a subclass!
-        timeDisplayFormatter = nil;
-		
-		//	Set the dataManager to take notice when a setting is changed
-		[[NSNotificationCenter defaultCenter] addObserver:dataManager selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
+		//	dataManager creates a timeDisplayFormatter in its init method, so get
+		//	a reference to it.
+        timeDisplayFormatter = dataManager.timeDisplayFormatter;
     }
     return self;
 }
