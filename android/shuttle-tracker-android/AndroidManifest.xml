@@ -16,6 +16,7 @@
 <activity android:name="EtaActivity" android:label="@string/app_name">
         </activity>
 
+<activity android:name="TrackerPreferences" android:label="@string/app_name"></activity>
 </application>
     <uses-sdk android:minSdkVersion="7" />
     

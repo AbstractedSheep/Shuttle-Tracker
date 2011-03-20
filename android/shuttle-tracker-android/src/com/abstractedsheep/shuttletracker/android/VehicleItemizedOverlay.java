@@ -33,6 +33,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 //import android.util.Log;
@@ -175,23 +176,22 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		Matrix rotate = new Matrix();
 		Bitmap tempBitmap;
 		long now;
+		long age;
+		int opacity;
 		Date lastUpdate;
 			
 		for (VehicleJson v : vehicles) {
 			try {				
 				now = (new Date()).getTime();
 				lastUpdate = formatter.parse(v.getUpdate_time());
-		
-				if ((now - lastUpdate.getTime()) > 600000)
+				age = now - lastUpdate.getTime();
+				if (age > 600000)
 					continue;
 				
 				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
 				pt = p.toPixels(gp, null);
 
-				
 				rotate.reset();
-				
-				
 				
 				if (v.getHeading() > 180) {
 					tempBitmap = coloredMarkersFlipped.get(v.getRoute_id());
@@ -203,9 +203,11 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, tempBitmap.getWidth(), tempBitmap.getHeight(), rotate, true);
 				}
 				
-				canvas.drawBitmap(tempBitmap, pt.x - (tempBitmap.getWidth() / 2), pt.y - (tempBitmap.getHeight() / 2), null);
-				
-				
+				if (age > 60000) {
+					opacity = 255 - ((int) ((double)(age - 60000)/ (double)600000)) * 255;
+					tempBitmap = adjustOpacity(tempBitmap, opacity);
+				}
+				canvas.drawBitmap(tempBitmap, pt.x - (tempBitmap.getWidth() / 2), pt.y - (tempBitmap.getHeight() / 2), null);			
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -224,4 +226,24 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		}
 		return b;
 	}
+	
+	/**
+	 * @param bitmap The source bitmap.
+	 * @param opacity a value between 0 (completely transparent) and 255 (completely
+	 * opaque).
+	 * @return The opacity-adjusted bitmap.  If the source bitmap is mutable it will be
+	 * adjusted and returned, otherwise a new bitmap is created.
+	 */
+	private Bitmap adjustOpacity(Bitmap bitmap, int opacity)
+	{
+	    Bitmap mutableBitmap = bitmap.isMutable()
+	                           ? bitmap
+	                           : bitmap.copy(Bitmap.Config.ARGB_8888, true);
+	    Canvas canvas = new Canvas(mutableBitmap);
+	    int colour = (opacity & 0xFF) << 24;
+	    canvas.drawColor(colour, PorterDuff.Mode.DST_IN);
+	    return mutableBitmap;
+	}
+
+
 }

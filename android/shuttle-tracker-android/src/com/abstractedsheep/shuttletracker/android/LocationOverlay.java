@@ -55,7 +55,7 @@ public class LocationOverlay extends MyLocationOverlay {
 		
 		canvas.save();
 		
-		if (orientation != Float.NaN)
+		if (!Float.isNaN(orientation))
 			canvas.rotate(orientation, currLoc.x, currLoc.y);
 		
 		canvas.drawBitmap(marker, currLoc.x - (marker.getWidth() / 2), currLoc.y - (marker.getHeight() / 2), null);

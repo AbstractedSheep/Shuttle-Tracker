@@ -33,17 +33,26 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MapView.LayoutParams;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 public class TrackerMapActivity extends MapActivity implements IShuttleServiceCallback {
-	public static String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	public static final String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	private static final int PREFERENCES = 1;
 	private MapView map;
 	private VehicleItemizedOverlay shuttlesOverlay;
 	private LocationOverlay myLocationOverlay;
 	private StopsItemizedOverlay stopsOverlay;
 	private ShuttleDataService dataService;
 	private boolean hasRoutes;
+	private SharedPreferences prefs;
 	
     /** Called when the activity is first created. */
     @Override
@@ -54,6 +63,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         setContentView(map);
               
         dataService = ShuttleDataService.getInstance();
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
     
     /** Set up the MapView with the default configuration */
@@ -67,7 +77,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         map.setFocusable(true);
         map.setBuiltInZoomControls(true);
         
-        myLocationOverlay = new LocationOverlay(this, map, R.drawable.shuttle);
+        myLocationOverlay = new LocationOverlay(this, map, R.drawable.shuttle_marker);
         map.getOverlays().add(myLocationOverlay);
     }
     
@@ -114,7 +124,8 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
     protected void onResume() {
     	super.onResume();
     	
-    	myLocationOverlay.enableMyLocation();
+    	if (prefs.getBoolean(TrackerPreferences.MY_LOCATION, true))
+    		myLocationOverlay.enableMyLocation();
     	
     	if (shuttlesOverlay != null)
     		shuttlesOverlay.removeAllVehicles();
@@ -210,5 +221,36 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	}
 
 	public void dataServiceError(int errorCode) {
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.options_menu, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.options:
+			startActivityForResult(new Intent(this, TrackerPreferences.class), PREFERENCES);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		switch (requestCode) {
+		case PREFERENCES:
+			if (prefs.getBoolean(TrackerPreferences.MY_LOCATION, true))
+	    		myLocationOverlay.enableMyLocation();
+			else
+				myLocationOverlay.disableMyLocation();
+		}
 	}
 }
