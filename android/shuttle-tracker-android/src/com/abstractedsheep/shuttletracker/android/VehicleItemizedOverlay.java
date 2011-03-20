@@ -182,7 +182,7 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 				now = (new Date()).getTime();
 				lastUpdate = formatter.parse(v.getUpdate_time());
 		
-				if ((now - lastUpdate.getTime()) > 60000)
+				if ((now - lastUpdate.getTime()) > 600000)
 					continue;
 				
 				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));

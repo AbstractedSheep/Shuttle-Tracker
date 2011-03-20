@@ -38,6 +38,7 @@ import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
+import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 
 import android.content.Context;
 import android.util.Log;
@@ -51,16 +52,18 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
 	private ArrayList<Route> parents = new ArrayList<RoutesJson.Route>();
+	private HashMap<Integer, String> routeNames = new HashMap<Integer, String>();
 	private ArrayList<ArrayList<Stop>> children = new ArrayList<ArrayList<Stop>>();
 	private ArrayList<Stop> favorites = new ArrayList<Stop>();
-	private ArrayList<Integer> favoritesRoutes = new ArrayList<Integer>();
 	SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
 	LayoutInflater inflater;
 	Context ctx;
+	DatabaseHelper db;
 	
 	public EtaListAdapter(Context context, LayoutInflater li) {
 		this.inflater = li;
 		this.ctx = context;
+		db = new DatabaseHelper(context);
 	}
 	
 	public void setRoutes(RoutesJson routes) {
@@ -69,6 +72,7 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		
 		for (Route route : routes.getRoutes()) {
 			parents.add(route);
+			routeNames.put(route.getId(), route.getName());
 			children.add(new ArrayList<Stop>());
 		}
 		
@@ -87,6 +91,8 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		for (ArrayList<Stop> stops : children) {
 			Collections.sort(stops);
 		}
+		
+		loadFavorites();
 		
 		notifyDataSetInvalidated();
 	}
@@ -138,7 +144,7 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 
 	public Stop getChild(int groupPosition, int childPosition) {
 		if (favorites.size() > 0 && groupPosition == 0)
-			return favorites.get(groupPosition);
+			return favorites.get(childPosition);
 		else if (favorites.size() > 0) 
 			return children.get(groupPosition - 1).get(childPosition);
 		else
@@ -187,7 +193,7 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		
 		if (favorites.size() > 0 && groupPosition == 0) {
 			stop = favorites.get(childPosition);
-			eta = etas.get(stop.getShort_name() + favoritesRoutes.get(childPosition));
+			eta = etas.get(stop.getUniqueId());
 		} else if (favorites.size() > 0) {
 			route = parents.get(groupPosition - 1);
 			stop = children.get(groupPosition - 1).get(childPosition);
@@ -206,7 +212,11 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 			etaString = formatter.format(arrival);
 		}
 		
-		tv.setText(stop.getName() + ": " + etaString);
+		if (favorites.size() > 0 && groupPosition == 0) {
+			tv.setText(stop.getName() + ": " + etaString + "\n" + routeNames.get(stop.getFavoriteRoute()));
+		} else {
+			tv.setText(stop.getName() + ": " + etaString);
+		}
 		
 		return v;
 	}
@@ -216,8 +226,9 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 			groupPosition--;
 		
 		if (!favorites.contains(children.get(groupPosition).get(childPosition))) {
-			favorites.add(children.get(groupPosition).get(childPosition));
-			favoritesRoutes.add(parents.get(groupPosition).getId());
+			Stop fav = children.get(groupPosition).get(childPosition);
+			fav.setFavoriteRoute(parents.get(groupPosition).getId());
+			favorites.add(fav);
 		}
 		
 
@@ -227,44 +238,18 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 	
 	public void removeFavorite(int childPosition) {
 		favorites.remove(childPosition);
-		favoritesRoutes.remove(childPosition);
 		
 		notifyDataSetInvalidated();
 	}
 	
 	public void saveFavorites() {
-		ByteArrayOutputStream bos = null;
-		try {
-		        bos = new ByteArrayOutputStream();
-		        ObjectOutputStream obj_out = new ObjectOutputStream(bos);
-		        obj_out.writeObject(favorites);
-		        
-		        FileOutputStream fos = ctx.openFileOutput("favorite_stops", Context.MODE_PRIVATE);
-		        fos.write(bos.toByteArray());
-		        fos.close();
-		} catch (IOException e) {
-		        e.printStackTrace();
-		}
+		db.updateFavorites(favorites);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void loadFavorites() {
-		try {
-			FileInputStream fis = ctx.openFileInput("favorite_stops");
-			byte fileContent[] = new byte[100000];
-			fis.read(fileContent);
-			fis.close();
-			ByteArrayInputStream bis = new ByteArrayInputStream(fileContent);
-	        ObjectInputStream obj_in = new ObjectInputStream(bis);
+	    favorites = db.getFavorites();
 
-	        favorites = (ArrayList<Stop>) obj_in.readObject();
-	        notifyDataSetInvalidated();
-		} catch (IOException e) {
-	        e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-	        e.printStackTrace();
-		}
-
+	    notifyDataSetInvalidated();
 	}
 	
 	public boolean favoritesVisible() {

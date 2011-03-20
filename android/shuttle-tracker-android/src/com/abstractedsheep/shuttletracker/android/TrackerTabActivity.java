@@ -87,6 +87,7 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		this.tabHost.addTab(tab);
 		
 		dataService = ShuttleDataService.getInstance();
+		dataService.setApplicationContext(getApplicationContext());
 		new Thread(dataService.updateRoutes).start();
 	}
 	

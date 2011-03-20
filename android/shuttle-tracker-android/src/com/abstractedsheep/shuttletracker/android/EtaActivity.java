@@ -20,7 +20,6 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
-import java.io.FileInputStream;
 import java.util.ArrayList;
 
 import com.abstractedsheep.shuttletracker.json.EtaJson;
@@ -28,15 +27,11 @@ import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
@@ -95,6 +90,9 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 	private Runnable setRoutes = new Runnable() {
 		public void run() {
 			etaAdapter.setRoutes(routes);
+			
+			if (etaAdapter.favoritesVisible())
+				etaListView.expandGroup(0);
 		}
 	};
 

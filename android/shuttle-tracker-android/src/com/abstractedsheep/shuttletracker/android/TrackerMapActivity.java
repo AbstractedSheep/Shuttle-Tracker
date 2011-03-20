@@ -203,8 +203,10 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	 *  @param routes The list of routes parsed from the JSON, null will cause the function to do nothing.
 	 */
 	public void routesUpdated(RoutesJson routes) {
-		if (routes != null && !hasRoutes)
+		if (routes != null && !hasRoutes) {
 			runOnUiThread(new AddRoutes(routes));
+			runOnUiThread(invalidateMap);
+		}
 	}
 
 	public void dataServiceError(int errorCode) {
