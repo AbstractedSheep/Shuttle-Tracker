@@ -13,7 +13,13 @@ public class RoutesJson {
 	private ArrayList<Route> routes;
 	
 	public static class Stop implements Comparable<Stop> {
+		private int favoriteRoute = -1;
 		private double latitude;
+		
+		public String getUniqueId() {
+			return short_name + favoriteRoute;
+		}
+		
 		public double getLatitude() {
 			return latitude;
 		}
@@ -87,7 +93,29 @@ public class RoutesJson {
 		}
 
 		public int compareTo(Stop another) {
-			return getName().compareTo(another.getName());
+			if (favoriteRoute == -1)
+				return name.compareTo(another.name);
+			else {
+				String s1 = name + favoriteRoute;
+				String s2 = name + another.favoriteRoute;
+				return s1.compareTo(s2);
+			}
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (o instanceof Stop)
+				return this.short_name.equals(((Stop) o).short_name);
+			else
+				return super.equals(o);
+		}
+
+		public int getFavoriteRoute() {
+			return favoriteRoute;
+		}
+
+		public void setFavoriteRoute(int favoriteRoute) {
+			this.favoriteRoute = favoriteRoute;
 		}
 	}
 	

@@ -35,16 +35,22 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+//import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
+import com.google.android.maps.OverlayItem;
 import com.google.android.maps.Projection;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
+import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 
-public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayItem> {
+public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
 
 	private static final int MAGENTA = Color.rgb(255, 0, 255);
 	
@@ -54,29 +60,78 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 	private HashMap<Integer, Bitmap> coloredMarkers = new HashMap<Integer, Bitmap>();
 	private HashMap<Integer, Bitmap> coloredMarkersFlipped = new HashMap<Integer, Bitmap>();
 	private HashMap<Integer, RoutesJson.Route> routes = new HashMap<Integer, RoutesJson.Route>();
+	private BiMap<Integer, Integer> idToIndex = HashBiMap.create();
 	private ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
 	private Drawable marker;
+	private int visibleBalloon = -1;
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	SimpleDateFormat formatter2 = new SimpleDateFormat("MM/dd/yy h:mm:ss a");
 	
-	public VehicleItemizedOverlay(Drawable defaultMarker) {
-		super(boundCenter(defaultMarker));
+	public VehicleItemizedOverlay(Drawable defaultMarker, MapView map) {
+		super(boundCenter(defaultMarker), map);
 		this.marker = boundCenter(defaultMarker);
 		populate();
 		
 		Matrix flip = new Matrix();
 		flip.reset();
 		flip.setScale(-1.0f, 1.0f);
-		
+
 		markerBitmap = ((BitmapDrawable) marker).getBitmap();
 		markerBitmapFlipped = Bitmap.createBitmap(markerBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), flip, true);
+	}
+	
+	@Override
+	protected boolean onTap(int index) {
+		visibleBalloon = idToIndex.inverse().get(index);
+		long now = (new Date()).getTime();
+		Date lastUpdate;
+		try {
+			lastUpdate = formatter.parse(vehicles.get(index).getUpdate_time());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return true;
+		}
+		
+		if ((now - lastUpdate.getTime()) < 60000)
+			return super.onTap(index);
+		else
+			return true;
+	}
+	
+	@Override
+	public void hideBalloon() {
+		visibleBalloon = -1;
+		super.hideBalloon();
+	}
+	
+	public void vehiclesUpdated() {
+		BalloonOverlayView balloonView = getBalloonView();
+		Integer vehicleId = idToIndex.get(visibleBalloon);
+		if (balloonView != null && balloonView.isVisible() && vehicleId != null) {
+			
+			OverlayItem oi = createItem(vehicleId);
+			balloonView.setData(oi);
+			
+			MapView.LayoutParams params = new MapView.LayoutParams(
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, oi.getPoint(),
+					MapView.LayoutParams.BOTTOM_CENTER);
+			params.mode = MapView.LayoutParams.MODE_MAP;
+			
+			balloonView.setVisibility(View.VISIBLE);
+			balloonView.setLayoutParams(params);
+		} else if (balloonView != null && balloonView.isVisible() && vehicleId == null) {
+			hideBalloon();
+		}
 	}
 
 	public synchronized void addVehicle(VehicleJson vehicle) {
 		vehicles.add(vehicle);
+		idToIndex.put(vehicle.getShuttle_id(), vehicles.size() - 1);
 	    populate();
 	}
 	
 	public synchronized void removeAllVehicles() {
+		idToIndex.clear();
 		vehicles.clear();
 		populate();
 	}
@@ -96,7 +151,15 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 	protected synchronized DirectionalOverlayItem createItem(int i) {
 		VehicleJson v = vehicles.get(i);
 		GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
-		return new DirectionalOverlayItem(gp, v.getHeading(), "", "");
+		String updateTime = "";
+		
+		try {
+			updateTime = "Last Updated at\n" + formatter2.format(formatter.parse(v.getUpdate_time()));
+		} catch (ParseException e) {
+			updateTime = v.getUpdate_time();
+		}
+		
+		return new DirectionalOverlayItem(gp, v.getHeading(), v.getName(), updateTime);
 	}
 
 	@Override
@@ -106,7 +169,7 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 	
 	@Override
 	public synchronized void draw(Canvas canvas, MapView mapView, boolean shadow) {
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 		Projection p = mapView.getProjection();
 		Point pt;		
 		Matrix rotate = new Matrix();
@@ -115,12 +178,11 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 		Date lastUpdate;
 			
 		for (VehicleJson v : vehicles) {
-			try {
-				
+			try {				
 				now = (new Date()).getTime();
 				lastUpdate = formatter.parse(v.getUpdate_time());
 		
-				if ((now - lastUpdate.getTime()) > 60000)
+				if ((now - lastUpdate.getTime()) > 600000)
 					continue;
 				
 				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
@@ -128,24 +190,28 @@ public class VehicleItemizedOverlay extends ItemizedOverlay<DirectionalOverlayIt
 
 				
 				rotate.reset();
-				rotate.postRotate(v.getHeading(), markerBitmap.getWidth(), markerBitmap.getHeight() / 2);
+				
 				
 				
 				if (v.getHeading() > 180) {
 					tempBitmap = coloredMarkersFlipped.get(v.getRoute_id());
-					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), rotate, true);
+					rotate.postRotate(v.getHeading(), tempBitmap.getWidth() / 2, tempBitmap.getHeight() / 2);
+					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, tempBitmap.getWidth(), tempBitmap.getHeight(), rotate, true);
 				} else {
 					tempBitmap = coloredMarkers.get(v.getRoute_id());
-					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), rotate, true);
+					rotate.postRotate(v.getHeading(), tempBitmap.getWidth() / 2, tempBitmap.getHeight() / 2);
+					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, tempBitmap.getWidth(), tempBitmap.getHeight(), rotate, true);
 				}
 				
-				canvas.drawBitmap(tempBitmap, pt.x - (markerBitmap.getWidth() / 2), pt.y - (markerBitmap.getHeight() / 2), null);
+				canvas.drawBitmap(tempBitmap, pt.x - (tempBitmap.getWidth() / 2), pt.y - (tempBitmap.getHeight() / 2), null);
+				
+				
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 		}	
 		
-		Log.d("Tracker", "Shuttle drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+		//Log.d("Tracker", "Shuttle drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
 	}
 	
 	private Bitmap recolorBitmap(Bitmap bitmap, int color) {

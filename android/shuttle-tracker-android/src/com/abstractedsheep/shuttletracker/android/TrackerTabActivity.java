@@ -33,12 +33,13 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
+import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
 
 /*
- * !!! All children of this activity MUST implement IShuttleDataUpdateCallback, but the implementation may be empty !!!
+ * !!! All children of this activity MUST implement IShuttleServiceCallback, but the implementation may be empty !!!
  */
-public class TrackerTabActivity extends TabActivity implements IShuttleDataUpdateCallback {
+public class TrackerTabActivity extends TabActivity implements IShuttleServiceCallback {
 	private TabHost tabHost;
 	private ShuttleDataService dataService;
 	ProgressBar titleBarProgress;
@@ -86,6 +87,7 @@ public class TrackerTabActivity extends TabActivity implements IShuttleDataUpdat
 		this.tabHost.addTab(tab);
 		
 		dataService = ShuttleDataService.getInstance();
+		dataService.setApplicationContext(getApplicationContext());
 		new Thread(dataService.updateRoutes).start();
 	}
 	
@@ -97,14 +99,32 @@ public class TrackerTabActivity extends TabActivity implements IShuttleDataUpdat
 	};
 
 	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
-		((IShuttleDataUpdateCallback)getLocalActivityManager().getCurrentActivity()).dataUpdated(vehicles, etas);
+		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).dataUpdated(vehicles, etas);
 		
 	}
 
 	public void routesUpdated(RoutesJson routes) {
-		((IShuttleDataUpdateCallback)getLocalActivityManager().getCurrentActivity()).routesUpdated(routes);
+		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).routesUpdated(routes);
 		if (routes != null) {
 			runOnUiThread(hideIndeterminateProgress);
 		}
+	}
+	
+	private class MakeToast implements Runnable {
+		private int errorCode;
+		public MakeToast(int errorCode) {
+			this.errorCode = errorCode;
+		}
+		public void run() {
+			switch (errorCode) {
+			case IShuttleServiceCallback.NO_CONNECTION_ERROR:
+				Toast.makeText(TrackerTabActivity.this, R.string.no_conn, 10000).show();
+				break;
+			}
+		}
+	}
+
+	public void dataServiceError(int errorCode) {
+		runOnUiThread(new MakeToast(errorCode));
 	}
 }

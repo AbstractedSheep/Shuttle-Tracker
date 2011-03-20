@@ -26,7 +26,10 @@ import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
-public interface IShuttleDataUpdateCallback {
+public interface IShuttleServiceCallback {
+	public static int NO_CONNECTION_ERROR = 1;
+	
 	void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas);
 	void routesUpdated(RoutesJson routes);
+	void dataServiceError(int errorCode);
 }

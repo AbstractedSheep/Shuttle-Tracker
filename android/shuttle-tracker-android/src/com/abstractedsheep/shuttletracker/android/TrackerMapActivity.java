@@ -36,8 +36,8 @@ import com.google.android.maps.MapView.LayoutParams;
 import android.os.Bundle;
 import android.util.Log;
 
-public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdateCallback {
-	public static String MAPS_API_KEY = "01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+public class TrackerMapActivity extends MapActivity implements IShuttleServiceCallback {
+	public static String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 	private MapView map;
 	private VehicleItemizedOverlay shuttlesOverlay;
 	private LocationOverlay myLocationOverlay;
@@ -101,7 +101,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
     		map.getOverlays().add(routesOverlay);
         }        
         
-        shuttlesOverlay = new VehicleItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_color));
+        shuttlesOverlay = new VehicleItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_color), map);
         shuttlesOverlay.putRoutes(routes.getRoutes());
         map.getOverlays().add(shuttlesOverlay);
         
@@ -184,10 +184,18 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
         	for (VehicleJson v : vehicles) {
         		shuttlesOverlay.addVehicle(v);
         	}
+        	
+        	runOnUiThread(vehiclesUpdated);
 		}
 		
 		runOnUiThread(invalidateMap);
 	}
+	
+	Runnable vehiclesUpdated = new Runnable() {
+		public void run() {
+			shuttlesOverlay.vehiclesUpdated();
+		}
+	};
 
 	/**
 	 * Sets up the MapView with the shuttle routes in a thread safe manner. Will not work a second time unless hasRoutes is manually changed to false.
@@ -195,7 +203,12 @@ public class TrackerMapActivity extends MapActivity implements IShuttleDataUpdat
 	 *  @param routes The list of routes parsed from the JSON, null will cause the function to do nothing.
 	 */
 	public void routesUpdated(RoutesJson routes) {
-		if (routes != null && !hasRoutes)
+		if (routes != null && !hasRoutes) {
 			runOnUiThread(new AddRoutes(routes));
+			runOnUiThread(invalidateMap);
+		}
+	}
+
+	public void dataServiceError(int errorCode) {
 	}
 }

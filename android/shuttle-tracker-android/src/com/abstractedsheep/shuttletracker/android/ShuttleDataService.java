@@ -37,17 +37,21 @@ import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleArray;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
+import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 
+import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
 
 public class ShuttleDataService {
 	private ObjectMapper mapper = new ObjectMapper();
-	private Set<IShuttleDataUpdateCallback> callbacks = new HashSet<IShuttleDataUpdateCallback>();
+	private Set<IShuttleServiceCallback> callbacks = new HashSet<IShuttleServiceCallback>();
 	public AtomicBoolean active = new AtomicBoolean(true);
 	private ArrayList<VehicleJson> vehicles;
 	private ArrayList<EtaJson> etas;
 	private RoutesJson routes;
+	private boolean informedNoConnection = false;
+	private Context ctx;
 	
 	// Private constructor prevents instantiation from other classes
 	private ShuttleDataService() {
@@ -64,6 +68,10 @@ public class ShuttleDataService {
 	public static ShuttleDataService getInstance() {
 		return SingletonHolder.INSTANCE;
 	}
+	
+	public void setApplicationContext(Context context) {
+		ctx = context;
+	}
 	 
     /**
      * Uses the Jackson object mapper to read the JSON from a URL into a Java Bean.
@@ -79,17 +87,20 @@ public class ShuttleDataService {
 			URL jsonUrl = new URL(url);
 			URLConnection jsonConnection = jsonUrl.openConnection();
 			
-			long start = System.currentTimeMillis();
 			parsedClass = mapper.readValue(jsonConnection.getInputStream(), generic);
-			Log.d("Tracker", generic.getName() + " mapping complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+			informedNoConnection = false;
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			if (!informedNoConnection) {
+				informedNoConnection = true;
+				notifyError(IShuttleServiceCallback.NO_CONNECTION_ERROR);
+			}
 			e.printStackTrace();
 		}
-   
+  
     	return parsedClass;
     }
     
@@ -97,16 +108,28 @@ public class ShuttleDataService {
 		public void run() {
 			synchronized (this) {
 				RoutesJson tempRoutes;
+				DatabaseHelper db = new DatabaseHelper(ctx);
 				
 				do {
-					tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", RoutesJson.class);
-					if (tempRoutes != null) {
+					if (db.hasRoutes()) {
+						Log.d("Tracker", "has routes");
+						tempRoutes = db.getRoutes();
 						routes = tempRoutes;
 						notifyRoutesUpdated(routes);
+					} else {
+						Log.d("Tracker", "doesnt have routes");
+						tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", RoutesJson.class);
+						if (tempRoutes != null) {
+							routes = tempRoutes;
+							db.putRoutes(routes);
+							notifyRoutesUpdated(routes);
+						}
 					}
 					
 					SystemClock.sleep(5000);
-				} while (tempRoutes == null);				
+				} while (tempRoutes == null);	
+				
+				db.close();
 			}	
 		}
 	};
@@ -136,24 +159,30 @@ public class ShuttleDataService {
 	};
 	
 	private synchronized void notifyShuttlesUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
-		for (IShuttleDataUpdateCallback c : callbacks) {
+		for (IShuttleServiceCallback c : callbacks) {
 			c.dataUpdated(vehicles, etas);
 		}
 	}
 	
 	private synchronized void notifyRoutesUpdated(RoutesJson routes) {
-		for (IShuttleDataUpdateCallback c : callbacks) {
+		for (IShuttleServiceCallback c : callbacks) {
 			c.routesUpdated(routes);
 		}
 	}
 	
-	public synchronized void registerCallback(IShuttleDataUpdateCallback callback) {
+	private synchronized void notifyError(int errorCode) {
+		for (IShuttleServiceCallback c : callbacks) {
+			c.dataServiceError(errorCode);
+		}
+	}
+	
+	public synchronized void registerCallback(IShuttleServiceCallback callback) {
 		callbacks.add(callback);		
 		callback.dataUpdated(vehicles, etas);
 		callback.routesUpdated(routes);
 	}
 
-	public synchronized void unregisterCallback(IShuttleDataUpdateCallback callback) {
+	public synchronized void unregisterCallback(IShuttleServiceCallback callback) {
 		callbacks.remove(callback);		
 	}
 	

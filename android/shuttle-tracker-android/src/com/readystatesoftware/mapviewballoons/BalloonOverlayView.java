@@ -122,5 +122,4 @@ public class BalloonOverlayView extends FrameLayout {
 	}
 	
 	public boolean isVisible() { return visible; }
-
 }
