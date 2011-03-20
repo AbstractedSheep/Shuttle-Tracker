@@ -6,4 +6,7 @@
 <string name="favorites">Favorites</string>
 <string name="add_favorite">Add Favorite</string>
 <string name="remove_favorite">Remove Favorite</string>
+<string name="my_location_title">Display My Location</string>
+<string name="my_location_summary">Track Your GPS Location</string>
+<string name="options">Options</string>
 </resources>

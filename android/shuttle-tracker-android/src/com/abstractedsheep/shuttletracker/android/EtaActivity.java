@@ -27,9 +27,12 @@ import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -127,6 +130,24 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 			return true;
 		default:
 			return super.onContextItemSelected(menuItem);
+		}
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.options_menu, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.options:
+			startActivity(new Intent(this, TrackerPreferences.class));
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

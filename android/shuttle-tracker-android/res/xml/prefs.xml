@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android"
+>
+  <CheckBoxPreference
+    android:key="MY_LOCATION"
+    android:title="@string/my_location_title"
+    android:summary="@string/my_location_summary"
+    android:defaultValue="true"
+  />
+</PreferenceScreen>
