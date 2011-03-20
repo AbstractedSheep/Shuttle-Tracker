@@ -97,7 +97,13 @@
 {
     // Return the number of sections.
     //  One section for each route
-    return 2;
+	NSArray *routeNames = dataManager.routeNames;
+	
+	if (routeNames) {
+		return [routeNames count];
+	} else {
+		return 0;
+	}
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -158,13 +164,24 @@
 }
 
 
+//	Use the short names of the routes, since they display better than the full names
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	NSArray *routeShortNames = dataManager.routeShortNames;
+	
+	if (routeShortNames && [routeShortNames count] > section) {
+		return [routeShortNames objectAtIndex:section];
+	} else {
+		return @"Unknown";
+	}
+	
+	/*
     if (section == 0)
         return @"West Route";
     else if (section == 1)
         return @"East Route";
     else
         return @"Unknown";
+	*/
     
 }
 

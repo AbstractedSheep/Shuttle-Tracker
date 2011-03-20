@@ -247,6 +247,69 @@
     }
 }
 
+
+//	Iterate through the list of routes, and return a list of the route names
+- (NSArray *)routeNames {
+	if (!routes) {
+		return [NSArray arrayWithObject:nil];
+	}
+	
+	NSMutableArray *routeNames = [[[NSMutableArray alloc] init] autorelease];
+	
+	BOOL alreadyCounted;
+	
+	for (KMLRoute *route in routes) {
+		alreadyCounted = NO;
+		
+		for (NSString *existingName in routeNames) {
+			if ([route.name isEqualToString:existingName]) {
+				alreadyCounted = YES;
+			}
+		}
+		
+		if (!alreadyCounted) {
+			[routeNames addObject:route.name];
+		}
+	}
+	
+	return routeNames;
+}
+
+
+//	Iterate as above, but return only the first word from the route names.
+//	This is prettier than the full names.
+- (NSArray *)routeShortNames {
+	if (!routes) {
+		return [NSArray arrayWithObject:nil];
+	}
+	
+	NSMutableArray *routeNames = [[[NSMutableArray alloc] init] autorelease];
+	
+	BOOL alreadyCounted;
+	
+	for (KMLRoute *route in routes) {
+		alreadyCounted = NO;
+		
+		for (NSString *existingName in routeNames) {
+			if ([route.name isEqualToString:existingName]) {
+				alreadyCounted = YES;
+			}
+		}
+		
+		if (!alreadyCounted) {
+			[routeNames addObject:route.name];
+		}
+	}
+	
+	NSMutableArray *routeFirstNames = [[[NSMutableArray alloc] init] autorelease];
+	
+	for (NSString *name in routeNames) {
+		[routeFirstNames addObject:[[name componentsSeparatedByString:@" "] objectAtIndex:0]];
+	}
+	
+	return routeFirstNames;
+}
+
 - (void)setTimeDisplayFormatter:(NSDateFormatter *)newTimeDisplayFormatter {
 	timeDisplayFormatter = newTimeDisplayFormatter;
 	
