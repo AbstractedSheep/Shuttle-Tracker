@@ -7,6 +7,7 @@
 //
 
 #import "MainViewController.h"
+#import "IASKSettingsReader.h"
 
 
 @implementation MainViewController
@@ -22,14 +23,24 @@
 		//	Create the data manager for all of the parts of the application to use.
         dataManager = [[DataManager alloc] init];
 		
+		// Set the application defaults
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"NO" forKey:@"use24Time"];
+		[defaults registerDefaults:appDefaults];
+		[defaults synchronize];
+		
 		//	Create this in a later method in a subclass!
         timeDisplayFormatter = nil;
+		
+		//	Set the dataManager to take notice when a setting is changed
+		[[NSNotificationCenter defaultCenter] addObserver:dataManager selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
     }
     return self;
 }
 
 - (void)dealloc
 {
+	[dataManager release];
     [super dealloc];
 }
 

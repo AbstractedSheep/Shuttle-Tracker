@@ -53,6 +53,9 @@
 		DA39107513365464003EB97B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA39107413365464003EB97B /* MessageUI.framework */; };
 		DA3FC96C1324606000E6FE78 /* glyphish_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96A1324606000E6FE78 /* glyphish_clock.png */; };
 		DA3FC96D1324606000E6FE78 /* glyphish_clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */; };
+		DA577BD713365A1600072CE6 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DA577BD613365A1600072CE6 /* Settings.bundle */; };
+		DA577BDB13365C9800072CE6 /* glyphish_gear.png in Resources */ = {isa = PBXBuildFile; fileRef = DA577BD913365C9800072CE6 /* glyphish_gear.png */; };
+		DA577BDC13365C9800072CE6 /* glyphish_gear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA577BDA13365C9800072CE6 /* glyphish_gear@2x.png */; };
 		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
 		DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B7512F4C84700190FA3 /* MapViewController.m */; };
 		DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */ = {isa = PBXBuildFile; fileRef = DA750B8812F4CB7600190FA3 /* netlink.kml */; };
@@ -147,6 +150,9 @@
 		DA39107413365464003EB97B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		DA3FC96A1324606000E6FE78 /* glyphish_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_clock.png; sourceTree = "<group>"; };
 		DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_clock@2x.png"; sourceTree = "<group>"; };
+		DA577BD613365A1600072CE6 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		DA577BD913365C9800072CE6 /* glyphish_gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_gear.png; sourceTree = "<group>"; };
+		DA577BDA13365C9800072CE6 /* glyphish_gear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_gear@2x.png"; sourceTree = "<group>"; };
 		DA750B7012F4C7D700190FA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		DA750B7412F4C84700190FA3 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MapViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		DA750B7512F4C84700190FA3 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -403,9 +409,12 @@
 		DA750B7C12F4CB6900190FA3 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DA577BD613365A1600072CE6 /* Settings.bundle */,
 				DA750B8812F4CB7600190FA3 /* netlink.kml */,
 				DA3FC96A1324606000E6FE78 /* glyphish_clock.png */,
 				DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */,
+				DA577BD913365C9800072CE6 /* glyphish_gear.png */,
+				DA577BDA13365C9800072CE6 /* glyphish_gear@2x.png */,
 				DA05D6FA1323EE1D00479EAB /* glyphish_map.png */,
 				DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */,
 				DA1F3FB51322FEB500CCB393 /* Shuttle-Icon-smaller@2x.png */,
@@ -487,6 +496,9 @@
 				DA391070133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.xib in Resources */,
 				DA391071133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */,
 				DA391072133652CD003EB97B /* IASKSpecifierValuesView.xib in Resources */,
+				DA577BD713365A1600072CE6 /* Settings.bundle in Resources */,
+				DA577BDB13365C9800072CE6 /* glyphish_gear.png in Resources */,
+				DA577BDC13365C9800072CE6 /* glyphish_gear@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

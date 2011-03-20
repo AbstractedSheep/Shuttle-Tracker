@@ -9,6 +9,7 @@
 #import "MainViewController_iPhone.h"
 #import "MapViewController.h"
 #import "EtasViewController.h"
+#import "IASKAppSettingsViewController.h"
 
 
 @implementation MainViewController_iPhone
@@ -51,7 +52,7 @@
 	timeDisplayFormatter = [[NSDateFormatter alloc] init];
 	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	BOOL use24Time = [[defaults objectForKey:@"Use24Time"] boolValue];
+	BOOL use24Time = [[defaults objectForKey:@"use24Time"] boolValue];
 	
 	if (use24Time) {
 		[timeDisplayFormatter setDateFormat:@"HH:mm"];
@@ -75,9 +76,14 @@
     
     etasTableUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:etasViewController.tableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     
-    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, nil];
+	IASKAppSettingsViewController *settingsViewController = [[IASKAppSettingsViewController alloc] initWithNibName:@"IASKAppSettingsView" bundle:nil];
+	settingsViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2];
+	settingsViewController.delegate = dataManager;
+	
+    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, settingsViewController, nil];
 	[mapViewController release];
 	[etasViewController release];
+	[settingsViewController release];
 	
     [self.view addSubview:tabBarController.view];
     

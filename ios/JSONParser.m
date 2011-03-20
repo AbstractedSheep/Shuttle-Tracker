@@ -307,7 +307,7 @@
 	//	Don't update the subtitle if the displayed text will be the same
 	NSString *newSubtitle;
 	
-	if (timeDisplayFormatter) {
+	if (timeDisplayFormatter) {	//	If the object got a timeDisplayFormatter, use it.
 		newSubtitle = [@"Updated: " stringByAppendingString:[timeDisplayFormatter stringFromDate:updateTime]];
 		
 		//	Check to see if the updated subtitle is the same as the existing one.
@@ -316,7 +316,7 @@
 			self.subtitle = newSubtitle;
 		}
 		
-	} else {
+	} else {	//	If there is no timeDisplayFormatter, just display in 12 hour format
 		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 		[dateFormatter setDateFormat:@"hh:mm a"];
 		

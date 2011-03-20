@@ -11,6 +11,7 @@
 #import "JSONParser.h"
 
 
+//	Manages all of the routes/stops/shuttles data, as well as application settings.
 @interface DataManager : NSObject {
     NSURL *shuttleJsonUrl;
     NSURL *etasJsonUrl;
@@ -47,6 +48,7 @@
 
 - (void)loadRoutesAndStops;
 - (void)updateData;
+- (void)settingChanged:(NSNotification *)notification;
 
 
 @end

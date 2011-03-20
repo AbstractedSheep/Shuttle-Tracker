@@ -233,5 +233,18 @@
 	vehiclesJsonParser.timeDisplayFormatter = timeDisplayFormatter;
 }
 
+- (void)settingChanged:(NSNotification *)notification {
+	NSDictionary *info = [notification userInfo];
+	
+	NSLog(@"Class: %@", [info objectForKey:@"use24Time"]);
+	
+	if ([[notification object] isEqualToString:@"use24Time"]) {
+		if ([[info objectForKey:@"use24Time"] boolValue]) {
+			[timeDisplayFormatter setDateFormat:@"HH:mm"];
+		} else {
+			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
+		}
+	}
+}
 
 @end
