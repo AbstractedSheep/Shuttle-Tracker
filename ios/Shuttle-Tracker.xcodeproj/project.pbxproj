@@ -50,6 +50,7 @@
 		DA391070133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA39105B133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.xib */; };
 		DA391071133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA39105C133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib */; };
 		DA391072133652CD003EB97B /* IASKSpecifierValuesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA39105D133652CD003EB97B /* IASKSpecifierValuesView.xib */; };
+		DA39107513365464003EB97B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA39107413365464003EB97B /* MessageUI.framework */; };
 		DA3FC96C1324606000E6FE78 /* glyphish_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96A1324606000E6FE78 /* glyphish_clock.png */; };
 		DA3FC96D1324606000E6FE78 /* glyphish_clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */; };
 		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
@@ -143,6 +144,7 @@
 		DA39105B133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSTextFieldSpecifierViewCell.xib; sourceTree = "<group>"; };
 		DA39105C133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSToggleSwitchSpecifierViewCell.xib; sourceTree = "<group>"; };
 		DA39105D133652CD003EB97B /* IASKSpecifierValuesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKSpecifierValuesView.xib; sourceTree = "<group>"; };
+		DA39107413365464003EB97B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		DA3FC96A1324606000E6FE78 /* glyphish_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_clock.png; sourceTree = "<group>"; };
 		DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_clock@2x.png"; sourceTree = "<group>"; };
 		DA750B7012F4C7D700190FA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -171,6 +173,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA39107513365464003EB97B /* MessageUI.framework in Frameworks */,
 				DAB2655512FB5D8900A4C5B7 /* CoreLocation.framework in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
@@ -266,6 +269,7 @@
 				DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				DA750B7012F4C7D700190FA3 /* MapKit.framework */,
+				DA39107413365464003EB97B /* MessageUI.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 			);
 			name = Frameworks;

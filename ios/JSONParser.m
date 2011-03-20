@@ -7,7 +7,7 @@
 //
 
 #import "JSONParser.h"
-#import "TouchJSON/Extensions/NSDictionary_JSONExtensions.h"
+#import "NSDictionary_JSONExtensions.h"
 #import "EtaWrapper.h"
 
 
