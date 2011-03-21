@@ -9,7 +9,7 @@
 #import "MapViewController.h"
 #import "KMLParser.h"
 #import "JSONParser.h"
-
+#import "IASKSettingsReader.h"
 
 @interface MapViewController()
 - (void)managedRoutesLoaded;
@@ -58,9 +58,6 @@
         [self managedRoutesLoaded];
 	});
     
-    //  Show the user's location on the map
-    _mapView.showsUserLocation = YES;
-    
     //  The student union is at -73.6765441399,42.7302712352
     //  The center point used here is a bit south of it
     MKCoordinateRegion region;
@@ -74,6 +71,18 @@
     vehicleUpdateTimer = nil;
     
     vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(refreshVehicleData) userInfo:nil repeats:YES];
+	
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
+	
+	if (useLocation) {
+		//  Show the user's location on the map
+		_mapView.showsUserLocation = YES;
+	}
+	
+	//	Take notice when a setting is changed.
+	//	Note that this is not the only object that takes notice.
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
 }
 
 
@@ -274,6 +283,22 @@
     return nil;
 }
 
+
+//	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
+//	Currently only handles turning on or off showing the user's location.
+//	Other objects may also do something when a setting is changed.
+- (void)settingChanged:(NSNotification *)notification {
+	NSDictionary *info = [notification userInfo];
+	
+	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
+	if ([[notification object] isEqualToString:@"useLocation"]) {
+		if ([[info objectForKey:@"useLocation"] boolValue]) {
+			_mapView.showsUserLocation = YES;
+		} else {
+			_mapView.showsUserLocation = NO;
+		}
+	}
+}
 
 
 @end

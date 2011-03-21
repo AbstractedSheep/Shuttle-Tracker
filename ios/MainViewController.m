@@ -24,7 +24,8 @@
 		
 		// Set the application defaults
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"NO" forKey:@"use24Time"];
+		NSDictionary *appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"NO", @"YES", @"YES", nil] 
+																forKeys:[NSArray arrayWithObjects:@"use24Time", @"useLocation", @"findClosestStop", nil]];
 		[defaults registerDefaults:appDefaults];
 		[defaults synchronize];
 		

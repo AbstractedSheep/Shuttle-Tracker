@@ -65,6 +65,7 @@
 		loadEtaJsonQueue = NULL;
 		
 		//	Take notice when a setting is changed
+		//	Note that this is not the only object that takes notice.
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
     }
     
@@ -318,6 +319,7 @@
 
 //	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
 //	Currently only handles the 12/24 hour time toggle.
+//	Other objects may also do something when a setting is changed.
 - (void)settingChanged:(NSNotification *)notification {
 	NSDictionary *info = [notification userInfo];
 	

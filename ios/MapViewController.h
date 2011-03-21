@@ -41,5 +41,7 @@
 @property (nonatomic, assign) DataManager *dataManager;
 @property (nonatomic, assign) NSMutableArray *vehicles;
 
+- (void)settingChanged:(NSNotification *)notification;
+
 
 @end
