@@ -2,12 +2,10 @@ package com.abstractedsheep.shuttletracker.sql;
 
 import java.util.ArrayList;
 
-import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route.Coord;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
-import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.content.ContentValues;
 import android.content.Context;

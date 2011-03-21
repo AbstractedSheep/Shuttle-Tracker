@@ -42,7 +42,7 @@ import android.widget.TabHost.TabSpec;
 public class TrackerTabActivity extends TabActivity implements IShuttleServiceCallback {
 	private TabHost tabHost;
 	private ShuttleDataService dataService;
-	ProgressBar titleBarProgress;
+	private ProgressBar titleBarProgress;
 	
 	@Override
 	protected void onPause() {
@@ -86,9 +86,19 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		tab.setIndicator("ETA", getResources().getDrawable(R.drawable.clock));
 		this.tabHost.addTab(tab);
 		
+		if (savedInstanceState != null)
+			this.tabHost.setCurrentTab(savedInstanceState.getInt("open_tab", 0));
+			
 		dataService = ShuttleDataService.getInstance();
 		dataService.setApplicationContext(getApplicationContext());
 		new Thread(dataService.updateRoutes).start();
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putInt("open_tab", this.tabHost.getCurrentTab());
+		
+		super.onSaveInstanceState(outState);
 	}
 	
 	Runnable hideIndeterminateProgress = new Runnable() {

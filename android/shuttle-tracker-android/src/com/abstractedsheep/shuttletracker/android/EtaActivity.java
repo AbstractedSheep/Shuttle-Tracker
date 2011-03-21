@@ -29,6 +29,7 @@ import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -54,7 +55,7 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 		setContentView(R.layout.eta);
 		
 		etaListView = (ExpandableListView) findViewById(R.id.eta_list);
-		etaAdapter = new EtaListAdapter(this, getLayoutInflater());
+		etaAdapter = new EtaListAdapter(this, getLayoutInflater(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
 		etaListView.setAdapter(etaAdapter);
 		etaListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
 			public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {

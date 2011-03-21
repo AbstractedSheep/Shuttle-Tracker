@@ -20,13 +20,6 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +34,7 @@ import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 
 import android.content.Context;
-import android.util.Log;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,14 +48,17 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 	private HashMap<Integer, String> routeNames = new HashMap<Integer, String>();
 	private ArrayList<ArrayList<Stop>> children = new ArrayList<ArrayList<Stop>>();
 	private ArrayList<Stop> favorites = new ArrayList<Stop>();
-	SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
-	LayoutInflater inflater;
-	Context ctx;
-	DatabaseHelper db;
+	private SimpleDateFormat formatter12 = new SimpleDateFormat("h:mm a");
+	private SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
+	private LayoutInflater inflater;
+	private Context ctx;
+	private DatabaseHelper db;
+	private SharedPreferences prefs;
 	
-	public EtaListAdapter(Context context, LayoutInflater li) {
+	public EtaListAdapter(Context context, LayoutInflater li, SharedPreferences prefs) {
 		this.inflater = li;
 		this.ctx = context;
+		this.prefs = prefs;
 		db = new DatabaseHelper(context);
 	}
 	
@@ -184,8 +180,10 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 
 	public View getChildView(int groupPosition, int childPosition,
 			boolean isLastChild, View convertView, ViewGroup parent) {
-		View v = inflater.inflate(R.layout.simple_list_item_1, null);
-		TextView tv = (TextView) v.findViewById(R.id.text1);
+		View v = inflater.inflate(R.layout.eta_list_item, null);
+		TextView text = (TextView) v.findViewById(R.id.text1);
+		TextView subText = (TextView) v.findViewById(R.id.text2);
+		TextView timeText = (TextView) v.findViewById(R.id.text3);
 		
 		Route route;
 		Stop stop;
@@ -209,13 +207,21 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		if (eta != null) {
 			long now = (new Date()).getTime();
 			Date arrival = new Date(now + eta.getEta());
-			etaString = formatter.format(arrival);
+			
+			if (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false))
+				etaString = formatter24.format(arrival);
+			else
+				etaString = formatter12.format(arrival);
 		}
 		
+		text.setText(stop.getName());
+		timeText.setText(etaString);
+		
 		if (favorites.size() > 0 && groupPosition == 0) {
-			tv.setText(stop.getName() + ": " + etaString + "\n" + routeNames.get(stop.getFavoriteRoute()));
+			subText.setVisibility(View.VISIBLE);
+			subText.setText(routeNames.get(stop.getFavoriteRoute()));
 		} else {
-			tv.setText(stop.getName() + ": " + etaString);
+			subText.setVisibility(View.GONE);
 		}
 		
 		return v;

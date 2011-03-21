@@ -35,7 +35,6 @@ import com.google.android.maps.MapView.LayoutParams;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -77,7 +76,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         map.setFocusable(true);
         map.setBuiltInZoomControls(true);
         
-        myLocationOverlay = new LocationOverlay(this, map, R.drawable.shuttle_marker);
+        myLocationOverlay = new LocationOverlay(this, map, R.drawable.glyphish_location_arrow);
         map.getOverlays().add(myLocationOverlay);
     }
     
@@ -89,7 +88,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
     private void addRoutes(RoutesJson routes) {
     	Log.d("Tracker", "addRoutes()");
     	hasRoutes = true;
-        stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map);
+        stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
         PathOverlay routesOverlay;
         Style style;
         ArrayList<GeoPoint> points;
@@ -111,7 +110,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
     		map.getOverlays().add(routesOverlay);
         }        
         
-        shuttlesOverlay = new VehicleItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_color), map);
+        shuttlesOverlay = new VehicleItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_color), map, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
         shuttlesOverlay.putRoutes(routes.getRoutes());
         map.getOverlays().add(shuttlesOverlay);
         

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -40,10 +41,13 @@ import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class ShuttleDataService {
+public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	private ObjectMapper mapper = new ObjectMapper();
 	private Set<IShuttleServiceCallback> callbacks = new HashSet<IShuttleServiceCallback>();
 	public AtomicBoolean active = new AtomicBoolean(true);
@@ -52,6 +56,8 @@ public class ShuttleDataService {
 	private RoutesJson routes;
 	private boolean informedNoConnection = false;
 	private Context ctx;
+	private SharedPreferences prefs;
+	private AtomicInteger updateRate = new AtomicInteger(5000);
 	
 	// Private constructor prevents instantiation from other classes
 	private ShuttleDataService() {
@@ -71,6 +77,9 @@ public class ShuttleDataService {
 	
 	public void setApplicationContext(Context context) {
 		ctx = context;
+		prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+		prefs.registerOnSharedPreferenceChangeListener(this);
+		updateRate.set(prefs.getInt(TrackerPreferences.UPDATE_RATE, 5));
 	}
 	 
     /**
@@ -153,7 +162,7 @@ public class ShuttleDataService {
 					}
 				}	
 				
-				SystemClock.sleep(5000);
+				SystemClock.sleep(updateRate.get());
 			}
 		}
 	};
@@ -196,5 +205,9 @@ public class ShuttleDataService {
 
 	public synchronized RoutesJson getRoutes() {
 		return routes;
+	}
+
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+		updateRate.set(Integer.parseInt(sharedPreferences.getString(TrackerPreferences.UPDATE_RATE, "5000")));
 	}	
 }

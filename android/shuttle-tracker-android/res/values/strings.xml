@@ -9,4 +9,9 @@
 <string name="my_location_title">Display My Location</string>
 <string name="my_location_summary">Track Your GPS Location</string>
 <string name="options">Options</string>
+<string name="use_24_hr_time">Use 24 Hour Time</string>
+<string name="use_24_hr_on">Display All Times in 24 Hour Format</string>
+<string name="use_24_hr_off">Display All Times in 12 Hour Format</string>
+<string name="update_rate_title">Update Rate</string>
+<string name="update_rate_summary">Set How Often to Check for New Data</string>
 </resources>
