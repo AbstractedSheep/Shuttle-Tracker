@@ -51,6 +51,7 @@
 		DA391071133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA39105C133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib */; };
 		DA391072133652CD003EB97B /* IASKSpecifierValuesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA39105D133652CD003EB97B /* IASKSpecifierValuesView.xib */; };
 		DA39107513365464003EB97B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA39107413365464003EB97B /* MessageUI.framework */; };
+		DA3E181A1337F74F002D4453 /* MainViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = DA3E18191337F74F002D4453 /* MainViewController_iPad.m */; };
 		DA3FC96C1324606000E6FE78 /* glyphish_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96A1324606000E6FE78 /* glyphish_clock.png */; };
 		DA3FC96D1324606000E6FE78 /* glyphish_clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */; };
 		DA577BD713365A1600072CE6 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DA577BD613365A1600072CE6 /* Settings.bundle */; };
@@ -148,6 +149,8 @@
 		DA39105C133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSToggleSwitchSpecifierViewCell.xib; sourceTree = "<group>"; };
 		DA39105D133652CD003EB97B /* IASKSpecifierValuesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKSpecifierValuesView.xib; sourceTree = "<group>"; };
 		DA39107413365464003EB97B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		DA3E18181337F74F002D4453 /* MainViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController_iPad.h; sourceTree = "<group>"; };
+		DA3E18191337F74F002D4453 /* MainViewController_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController_iPad.m; sourceTree = "<group>"; };
 		DA3FC96A1324606000E6FE78 /* glyphish_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_clock.png; sourceTree = "<group>"; };
 		DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_clock@2x.png"; sourceTree = "<group>"; };
 		DA577BD613365A1600072CE6 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -202,10 +205,10 @@
 		2860E324111B887F00E27156 /* iPhone */ = {
 			isa = PBXGroup;
 			children = (
-				DAE5C9C213063BEC0014AEFE /* MainViewController_iPhone.h */,
-				DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */,
 				2860E325111B887F00E27156 /* AppDelegate_iPhone.h */,
 				2860E326111B887F00E27156 /* AppDelegate_iPhone.m */,
+				DAE5C9C213063BEC0014AEFE /* MainViewController_iPhone.h */,
+				DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */,
 				2860E327111B887F00E27156 /* MainWindow_iPhone.xib */,
 			);
 			path = iPhone;
@@ -216,6 +219,8 @@
 			children = (
 				2860E32B111B888700E27156 /* AppDelegate_iPad.h */,
 				2860E32C111B888700E27156 /* AppDelegate_iPad.m */,
+				DA3E18181337F74F002D4453 /* MainViewController_iPad.h */,
+				DA3E18191337F74F002D4453 /* MainViewController_iPad.m */,
 				2860E32D111B888700E27156 /* MainWindow_iPad.xib */,
 			);
 			path = iPad;
@@ -544,6 +549,7 @@
 				DA39106A133652CD003EB97B /* IASKSlider.m in Sources */,
 				DA39106B133652CD003EB97B /* IASKSwitch.m in Sources */,
 				DA39106C133652CD003EB97B /* IASKTextField.m in Sources */,
+				DA3E181A1337F74F002D4453 /* MainViewController_iPad.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

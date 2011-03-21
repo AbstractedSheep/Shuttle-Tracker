@@ -31,9 +31,11 @@
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
-    CGRect rect = CGRectMake(0.0f, 0.0f, 320.0f, 411.0f);
-    
-	self.view = [[UIView alloc] initWithFrame:rect];
+    CGRect rect = [[UIScreen mainScreen] bounds];
+	
+	UIView *theView = [[UIView alloc] initWithFrame:rect];
+	self.view = theView;
+	[theView release];
     
 	_mapView = [[MKMapView alloc] initWithFrame:rect];
     _mapView.delegate = self;
@@ -58,10 +60,10 @@
         [self managedRoutesLoaded];
 	});
     
-    //  The student union is at -73.6765441399,42.7302712352
+    //  The RPI student union is at -73.6765441399,42.7302712352
     //  The center point used here is a bit south of it
     MKCoordinateRegion region;
-    region.center.latitude = 42.7302;
+    region.center.latitude = 42.7292;
     region.center.longitude = -73.6750;
     region.span.latitudeDelta = 0.0200;
     region.span.longitudeDelta = 0.0132;
@@ -214,6 +216,12 @@
     [_mapView release];
 	[shuttleImage release];
     [super dealloc];
+}
+
+- (void)setDataManager:(DataManager *)newDataManager {
+	dataManager = newDataManager;
+	
+	vehicles = newDataManager.vehicles;
 }
 
 #pragma mark MKMapViewDelegate

@@ -54,7 +54,6 @@
     MapViewController *mapViewController = [[MapViewController alloc] init];
     mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0];
     mapViewController.dataManager = dataManager;
-	mapViewController.vehicles = dataManager.vehicles;
     
     etasViewController = [[EtasViewController alloc] init];
     etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:[UIImage imageNamed:@"glyphish_clock"] tag:1];
@@ -76,17 +75,6 @@
 	[settingsViewController release];
 	
     [self.view addSubview:tabBarController.view];
-    
-}
-
-
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-	//	Schedule a timer to make the DataManager pull new data every 5 seconds
-    dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:dataManager selector:@selector(updateData) userInfo:nil repeats:YES];
 }
 
 

@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class MapViewController;
+@class MainViewController_iPad;
 
 @interface AppDelegate_iPad : NSObject <UIApplicationDelegate> {
     UIWindow *window;
-	MapViewController *mapVC;
+	MainViewController_iPad *mapVC;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
