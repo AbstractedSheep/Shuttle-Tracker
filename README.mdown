@@ -15,7 +15,7 @@ It consists of several parts:
 Both 1 and 2 are found in the `server/` directory.  The Android and iOS programs are found in the `android/` and `ios/` directories, respectively.
 
 ## Server
-Information coming soon.
+Note: Certain values have been hard-coded into certain java files, such as the link to the shuttle data in JSONExtractor.java, while other values are being read in from the sts.properties file, which is designed to hold information to connect to the database.
 
 ## Android
 Information coming soon.
