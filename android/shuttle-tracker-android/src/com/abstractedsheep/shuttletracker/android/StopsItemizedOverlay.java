@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -44,11 +45,14 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 
 	private ArrayList<Stop> stops = new ArrayList<Stop>();
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
-	SimpleDateFormat formatter = new SimpleDateFormat("hh:mm a");
+	private SimpleDateFormat formatter12 = new SimpleDateFormat("hh:mm a");
+	private SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
+	private SharedPreferences prefs;
 	
 	
-	public StopsItemizedOverlay(Drawable defaultMarker, MapView mapView) {
+	public StopsItemizedOverlay(Drawable defaultMarker, MapView mapView, SharedPreferences prefs) {
 		super(boundCenter(defaultMarker), mapView);
+		this.prefs = prefs;
 		populate();
 	}
 
@@ -84,7 +88,6 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		BalloonOverlayView bov = getBalloonView();
 		int index = getCurrentIndex();
 		if (bov != null && index >= 0 && bov.isVisible()) {
-			Log.d("Tracker", "Refreshing balloon");
 			bov.setData(createItem(index));
 		}
 	}
@@ -101,7 +104,8 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 			eta = etas.get(s.getShort_name() + r.getId());
 			if (eta != null) {
 				arrival = new Date(now + eta.getEta());
-				snippet += (!snippet.equals("") ? "\n" : "") + r.getName() + ": " + formatter.format(arrival);
+				snippet += (!snippet.equals("") ? "\n" : "") + r.getName() + ": " + (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false) ? 
+						formatter24.format(arrival) : formatter12.format(arrival));
 			}
 		}
 		
@@ -125,13 +129,14 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		//Log.d("Tracker", "Stops drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
 	}
 	
-	/*@Override
+	/*
+	@Override
 	protected boolean hitTest(OverlayItem item, Drawable marker, int hitX,
 			int hitY) {
-		Log.d("Tracker", item.getTitle() + " hit at " + hitX + "," + hitY);
-		if (hitX > -15 && hitX < 15 && hitY > -15 && hitY < 15)
+		if (hitX > -20 && hitX < 20 && hitY > -20 && hitY < 20)
 			return true;
 		else
 			return false;
-	}*/
+	}
+	*/
 }

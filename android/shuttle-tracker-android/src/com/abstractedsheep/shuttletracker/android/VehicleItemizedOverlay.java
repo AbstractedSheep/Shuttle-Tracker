@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -52,9 +53,7 @@ import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 
 public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
-
 	private static final int MAGENTA = Color.rgb(255, 0, 255);
-	
 	
 	private Bitmap markerBitmap;
 	private Bitmap markerBitmapFlipped;
@@ -65,12 +64,15 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	private ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
 	private Drawable marker;
 	private int visibleBalloon = -1;
-	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	SimpleDateFormat formatter2 = new SimpleDateFormat("MM/dd/yy h:mm:ss a");
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private SimpleDateFormat formatter12 = new SimpleDateFormat("MM/dd/yy h:mm:ss a");
+	private SimpleDateFormat formatter24 = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+	private SharedPreferences prefs;
 	
-	public VehicleItemizedOverlay(Drawable defaultMarker, MapView map) {
+	public VehicleItemizedOverlay(Drawable defaultMarker, MapView map, SharedPreferences prefs) {
 		super(boundCenter(defaultMarker), map);
 		this.marker = boundCenter(defaultMarker);
+		this.prefs = prefs;
 		populate();
 		
 		Matrix flip = new Matrix();
@@ -155,7 +157,11 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		String updateTime = "";
 		
 		try {
-			updateTime = "Last Updated at\n" + formatter2.format(formatter.parse(v.getUpdate_time()));
+			if (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false)) {
+				updateTime = "Last Updated at\n" + formatter24.format(formatter.parse(v.getUpdate_time()));
+			} else {
+				updateTime = "Last Updated at\n" + formatter12.format(formatter.parse(v.getUpdate_time()));
+			}
 		} catch (ParseException e) {
 			updateTime = v.getUpdate_time();
 		}

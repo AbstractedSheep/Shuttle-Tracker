@@ -23,6 +23,9 @@ package com.abstractedsheep.shuttletracker.android;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -31,34 +34,39 @@ import android.location.Location;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
+import com.google.android.maps.Projection;
 
 public class LocationOverlay extends MyLocationOverlay {
 
-	private Context context;
-	private int markerResource;
+	private Bitmap marker;
+	private Paint accuracyPaint = new Paint();
+	Matrix rotate = new Matrix();
 	
 	public LocationOverlay(Context context, MapView mapView, int markerResource) {
 		super(context, mapView);
-		this.markerResource = markerResource;
-		this.context = context;
+		Drawable d = context.getResources().getDrawable(markerResource);
+		marker = ((BitmapDrawable) d).getBitmap();
+		accuracyPaint.setAntiAlias(true);
+		accuracyPaint.setColor(Color.BLUE);
+		accuracyPaint.setAlpha(50);
 	}
 	
 	@Override
 	protected void drawMyLocation(Canvas canvas, MapView mapView,
-			Location lastFix, GeoPoint myLocation, long when) {		
-		Point currLoc = mapView.getProjection().toPixels(myLocation, null);
+			Location lastFix, GeoPoint myLocation, long when) {
+		Projection p = mapView.getProjection();
+		float accuracy = p.metersToEquatorPixels(lastFix.getAccuracy());
+		Point currLoc = p.toPixels(myLocation, null);
+		float orientation = lastFix.getBearing() - 45;
+				
+		if (accuracy > 10.0f) {
+			canvas.drawCircle(currLoc.x, currLoc.y, accuracy, accuracyPaint);
+		}
 		
-		Drawable d = context.getResources().getDrawable(this.markerResource);
-		Bitmap marker = ((BitmapDrawable) d).getBitmap();
-	
-		float orientation = getOrientation();
-		
-		canvas.save();
-		
-		if (!Float.isNaN(orientation))
-			canvas.rotate(orientation, currLoc.x, currLoc.y);
-		
-		canvas.drawBitmap(marker, currLoc.x - (marker.getWidth() / 2), currLoc.y - (marker.getHeight() / 2), null);
+		rotate.reset();
+		rotate.postRotate(orientation, marker.getWidth() / 2, marker.getHeight() / 2);
+		Bitmap rotatedMarker = Bitmap.createBitmap(marker, 0, 0, marker.getWidth(), marker.getHeight(), rotate, true);
+		canvas.drawBitmap(rotatedMarker, currLoc.x - (marker.getWidth() / 2), currLoc.y - (marker.getHeight() / 2), null);
 		canvas.restore();
 	}
 

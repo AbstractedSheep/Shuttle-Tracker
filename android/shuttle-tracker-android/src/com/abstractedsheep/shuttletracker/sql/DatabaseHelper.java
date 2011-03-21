@@ -2,12 +2,10 @@ package com.abstractedsheep.shuttletracker.sql;
 
 import java.util.ArrayList;
 
-import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route.Coord;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
-import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -88,7 +86,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		Log.d("Tracker", "Dropping...");
 		db.execSQL("DROP TABLE IF EXISTS "+StopsTable.tableName);
 		db.execSQL("DROP TABLE IF EXISTS "+RoutesTable.tableName);
 		db.execSQL("DROP TABLE IF EXISTS "+RoutePointsTable.tableName);
@@ -255,16 +252,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	public void updateFavorites(ArrayList<Stop> favorites) {
-		Log.d("Tracker", "Updating...");
 		SQLiteDatabase db = this.getReadableDatabase();
 		ContentValues cv = new ContentValues();
 		cv.put(StopsOnRoutesTable.colFavorite, 0);
 		db.update(StopsOnRoutesTable.tableName, cv, null, null);
 		
 		for (Stop s : favorites) {
-			Log.d("Tracker", "Updating " + s.getShort_name());
 			db.execSQL("UPDATE " + StopsOnRoutesTable.tableName + " SET " + StopsOnRoutesTable.colFavorite + 
-					" = 1 WHERE " + StopsOnRoutesTable.colStopId + " = '" + s.getShort_name() + "'");
+					" = 1 WHERE " + StopsOnRoutesTable.colStopId + " = '" + s.getShort_name() + "' AND " +
+					StopsOnRoutesTable.colRouteId + " = " + s.getFavoriteRoute());
 		}
 		
 		db.close();
@@ -291,6 +287,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			cur.moveToNext();
 		}
 		cur.close();
+		db.close();
 		return result;
 	}
 }

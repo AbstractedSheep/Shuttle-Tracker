@@ -8,4 +8,21 @@
     android:summary="@string/my_location_summary"
     android:defaultValue="true"
   />
+  <CheckBoxPreference
+  	android:key="USE_24_HOUR"
+  	android:title="@string/use_24_hr_time"
+  	android:summaryOn="@string/use_24_hr_on"
+  	android:summaryOff="@string/use_24_hr_off"
+  	android:defaultValue="false"
+  />
+  <!-- 
+  <ListPreference
+  	android:key="UPDATE_RATE"
+  	android:title="@string/update_rate_title"
+  	android:summary="@string/update_rate_summary"
+  	android:entries="@array/update_rate"
+  	android:entryValues="@array/update_rate_values"
+  	android:defaultValue="5"
+  /> -->
+  
 </PreferenceScreen>
