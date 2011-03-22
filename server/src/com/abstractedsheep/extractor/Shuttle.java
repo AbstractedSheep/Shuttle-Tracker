@@ -62,7 +62,7 @@ public class Shuttle {
 	 * @param newShuttle
 	 */
 	public void updateShuttle(Shuttle newShuttle) {
-		this.setCurrentLocation(newShuttle.getCurrentLocation());
+		this.setCurrentLocation(newShuttle.getCurrentLocation(), System.currentTimeMillis());
 	}
 	
 	// Jackson will not work unless all of the variables have accessors and
@@ -120,10 +120,10 @@ public class Shuttle {
 	public  Point getCurrentLocation() {
 		return currentLocation;
 	}
-	public void setCurrentLocation(Point newLocation) {
+	public void setCurrentLocation(Point newLocation, long time) {
 		this.currentLocation = newLocation;
 		finder.changeCurrentLocation(currentLocation);
-		this.lastUpdateTime = System.currentTimeMillis();
+		this.lastUpdateTime = time;
 	}
 	public long getLastUpdateTime() { return this.lastUpdateTime; }
 	public String getCardinalPoint() {
@@ -205,7 +205,8 @@ public class Shuttle {
 		for(String name : tempList.keySet()) {
 			for(int i = 0; i < valueList.size(); i++) {
 				if(tempList.get(name) == valueList.get(i)) {
-					stopETA.put(name, valueList.get(i) + (1000 * (30 * i)));
+					stopETA.put(name, (int) Math.abs(valueList.get(i) + (1000 * (30 * i)) - 
+							(System.currentTimeMillis() - this.lastUpdateTime)));
 					break;
 				}
 			}
