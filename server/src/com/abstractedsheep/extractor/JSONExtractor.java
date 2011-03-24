@@ -79,7 +79,7 @@ public class JSONExtractor {
 					readRoutesData();
 			}
 		}
-		
+		parser.close();
 		addRoutesToStops();
 	}
 
@@ -197,6 +197,7 @@ public class JSONExtractor {
 				}
 			}
 		}
+		parser.close();
 	}
 
 	// pretty sure this is very inefficient
