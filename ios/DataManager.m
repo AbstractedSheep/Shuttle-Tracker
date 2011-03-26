@@ -145,6 +145,8 @@
 }
 
 
+//	Pull updated vehicle data and posts a notification that it has done so.
+//	Note that the notification is not on the main thread.
 - (void)updateVehicleData {
     
 	if (!loadVehicleJsonQueue) {

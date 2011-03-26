@@ -14,8 +14,10 @@
 @interface MapViewController()
 - (void)managedRoutesLoaded;
 - (void)vehiclesUpdated:(NSNotification *)notification;
+//	Adding routes and stops is not guaranteed to be done on the main thread.
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
+//	Adding vehicles is done on the main thread.
 - (void)addKmlVehicle:(KMLVehicle *)vehicle;
 - (void)addJsonVehicle:(JSONVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
@@ -162,11 +164,11 @@
 }
 
 - (void)addKmlVehicle:(KMLVehicle *)vehicle {
-    [_mapView addAnnotation:vehicle];
+    [_mapView performSelectorOnMainThread:@selector(addAnnotation:) withObject:vehicle waitUntilDone:NO];
 }
 
 - (void)addJsonVehicle:(JSONVehicle *)vehicle {
-    [_mapView addAnnotation:vehicle];
+    [_mapView performSelectorOnMainThread:@selector(addAnnotation:) withObject:vehicle waitUntilDone:NO];
 }
 
 
