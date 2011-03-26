@@ -108,8 +108,12 @@
     [super dealloc];
 }
 
+//  Load the routes/stops KML file asynchronously
 - (void)loadRoutesAndStops {
-    [self loadFromKml];
+    dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
+	dispatch_async(loadRoutesQueue, ^{
+        [self loadFromKml];
+	});
 }
 
 - (void)loadFromKml {
@@ -123,12 +127,13 @@
 
 //  TODO: Remove this or adjust it to be appropriate for DataManager. Taken from MapViewController.
 - (void)routeKmlLoaded {
-    
     routes = [routeKmlParser routes];
     [routes retain];
     
     stops = [routeKmlParser stops];
     [stops retain];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
     
 }
 

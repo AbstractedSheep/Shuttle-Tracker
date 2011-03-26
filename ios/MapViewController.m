@@ -53,12 +53,10 @@
     routeLines = [[NSMutableArray alloc] init];
     routeLineViews = [[NSMutableArray alloc] init];
     
-    //  Load the routes/stops KML file asynchronously
-    dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
-	dispatch_async(loadRoutesQueue, ^{
-        [dataManager loadRoutesAndStops];
-        [self managedRoutesLoaded];
-	});
+	//	Take notice when the routes and stops are updated.
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded) name:kDMVehiclesUpdated object:nil];
+	
+	[dataManager loadRoutesAndStops];
     
     //  The RPI student union is at -73.6765441399,42.7302712352
     //  The center point used here is a bit south of it

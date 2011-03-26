@@ -10,6 +10,7 @@
 #import "KMLParser.h"
 #import "JSONParser.h"
 
+#define kDMRoutesandStopsLoaded				@"kDMRoutesandStopsLoaded"
 #define kDMVehiclesUpdated					@"kDMVehiclesUpdated"
 
 
