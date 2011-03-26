@@ -301,7 +301,7 @@
                 routePlacemark = (KMLRoute *)currentPlacemark;
                 
                 //  Store the list of coordinates in the route
-                routePlacemark.lineString = [[trimmedAccumulation componentsSeparatedByString:@"\n"] autorelease];
+				routePlacemark.lineString = [trimmedAccumulation componentsSeparatedByString:@"\n"];
                 
                 break;
                 
@@ -404,10 +404,10 @@
 
 - (void)setColorString:(NSString *)newColorString {
     colorString = newColorString;
-    
     [colorString retain];
     
     color = [self UIColorFromRGBAString:colorString];
+	[color retain];
 }
 
 

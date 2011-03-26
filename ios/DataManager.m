@@ -110,10 +110,7 @@
 
 //  Load the routes/stops KML file asynchronously
 - (void)loadRoutesAndStops {
-    dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
-	dispatch_async(loadRoutesQueue, ^{
-        [self loadFromKml];
-	});
+	[self loadFromKml];
 }
 
 - (void)loadFromKml {
@@ -121,8 +118,12 @@
     NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
     
     routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
-    [routeKmlParser parse];
-    [self routeKmlLoaded];
+	
+	dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
+	dispatch_async(loadRoutesQueue, ^{
+        [routeKmlParser parse];
+		[self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:NO];
+	});
 }
 
 //  TODO: Remove this or adjust it to be appropriate for DataManager. Taken from MapViewController.

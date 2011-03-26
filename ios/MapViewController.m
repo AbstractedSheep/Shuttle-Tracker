@@ -54,7 +54,7 @@
     routeLineViews = [[NSMutableArray alloc] init];
     
 	//	Take notice when the routes and stops are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded) name:kDMVehiclesUpdated object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded) name:kDMRoutesandStopsLoaded object:nil];
 	
 	[dataManager loadRoutesAndStops];
     
@@ -87,18 +87,12 @@
 
 //  The routes and stops were loaded in the dataManager
 - (void)managedRoutesLoaded {
-    routes = [dataManager routes];
-    [routes retain];
-    
-    stops = [dataManager stops];
-    [stops retain];
-    
-    for (KMLRoute *route in routes) {
-        [self performSelectorOnMainThread:@selector(addRoute:) withObject:route waitUntilDone:YES];
+    for (KMLRoute *route in [dataManager routes]) {
+        [self addRoute:route];
     }
     
-    for (KMLStop *stop in stops) {
-        [self performSelectorOnMainThread:@selector(addStop:) withObject:stop waitUntilDone:YES];
+    for (KMLStop *stop in [dataManager stops]) {
+        [self addStop:stop];
     }
 }
 

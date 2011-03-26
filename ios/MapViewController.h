@@ -23,9 +23,6 @@
     
     NSURL *shuttleJSONUrl;
     
-    NSArray *routes;
-    NSArray *stops;
-    
     NSMutableArray *vehicles;
     
     NSMutableArray *routeLines;
