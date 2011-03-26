@@ -6,8 +6,10 @@ import java.util.HashMap;
 import com.abstractedsheep.extractor.Shuttle.Point;
 
 /**
- * sample output latitude 42.7302712352 longitude -73.6765441399 name Student
- * Union short_name union id 1 name West Route id 2 name East Campus
+ * This class is designed to hold information about a stop from netlink.js.
+ * Each stop object will have a location, a name and an instance of the RouteFinder
+ * class. This inner class is similar to the one used in the Shuttle class, and helps
+ * the Shuttle class determine the distance to each stop.
  * 
  * @author jonnau
  * 
@@ -129,7 +131,12 @@ public class Stop {
 		
 		finder.determineClosestRoutePointOfStop();
 	}
-	
+	/**
+	 * @param coordinate
+	 * @param routeID
+	 * @return returns true if the given route point is the same
+	 * 		   as the stop's closest route point.
+	 */
 	public boolean isClosestRoutePoint(Shuttle.Point coordinate, int routeID) {
 		return finder.isSamePosition(coordinate, routeID);
 	}
@@ -168,7 +175,10 @@ public class Stop {
 				return true;
 			return false;
 		}
-
+		
+		/**
+		 * See {@link Shuttle.RouteFinder.determineRouteOfShuttle}
+		 */
 		private void determineClosestRoutePointOfStop() {
 			
 			// using the given routes, determine which route the
@@ -204,16 +214,12 @@ public class Stop {
 				this.locList.add(locationArray[i]);
 		}
 		
-		// TODO: delete the first calculateDistance method and move the second one
-		// to RouteFinder
 		/**
 		 * calculates the straight line distance between the given stop location and
 		 * the shuttle's location The formula used to calculate this distance is the
-		 * haversine formula {@link http
-		 * ://www.movable-type.co.uk/scripts/latlong.html}
+		 * haversine formula {@link www.movable-type.co.uk/scripts/latlong.html}
 		 * 
-		 * @param p
-		 *            - stop's location
+		 * @param p - stop's location
 		 * @return distance to stop
 		 */
 		private double calculateDistance(Point p) {

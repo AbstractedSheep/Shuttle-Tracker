@@ -11,15 +11,25 @@ import java.util.HashSet;
 import com.abstractedsheep.extractor.Shuttle;
 
 /**
- * Connects to http://www.abstractedsheep.com/phpMyAdmin/ and writes data to the
- * DB
- * 
+ * Connects to the server {@link http://www.abstractedsheep.com/phpMyAdmin/} and writes data to the
+ * DB table
+ * TODO: This program writes specifically to one table in the database called shutle_eta, for the sake of
+ * 		 making the code more robust, it might be better to include this table in the file sts.properties along with
+ * 		 the other data to connect to the database.
  * @author jonnau
  * 
  */
 public class JSONSender {
 	private static Connection conn;
 	
+	/**
+	 * Method connections to the MySQL server using the arguments in the file sts.properties.
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 * @throws SQLException
+	 */
 	public static void connectToDatabase() throws InstantiationException, IllegalAccessException,
 											ClassNotFoundException, IOException, SQLException {
 		String driver = "com.mysql.jdbc.Driver";
@@ -33,9 +43,9 @@ public class JSONSender {
 	}
 	
 	/**
-	 * save this data to the database
-	 * 
-	 * @param shuttleList
+	 * Writes the shuttle ETA data to the database. This is done through the use of
+	 * MySQL commands.
+	 * @param shuttleList - shuttle data to be written to the desired table
 	 */
 	public static void saveToDatabase(HashSet<Shuttle> shuttleList) {
 		try {
@@ -44,7 +54,7 @@ public class JSONSender {
 			Statement stmt = conn.createStatement();
 			for (Shuttle shuttle : shuttleList) {
 				for (String stop : shuttle.getStopETA().keySet()) {
-					//update table in DB
+					//update shuttle_eta table values in DB
 					String sql = "UPDATE shuttle_eta SET eta = '"
 							+ shuttle.getStopETA().get(stop)
 							+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
@@ -52,7 +62,9 @@ public class JSONSender {
 							+ shuttle.getStops().get(stop).getShortName() + "' AND route = '" +
 							shuttle.getRouteId() + "'";
 					int updateCount = stmt.executeUpdate(sql);
-
+					
+					//if updateCount = 0, then the shuttle does not exist in the database.
+					//to resolve this, insert the values into the DB as opposed to updating them.
 					if (updateCount == 0) {
 						String insertHeader = "INSERT INTO shuttle_eta (shuttle_id, stop_id, eta, route)\n";
 						String interValues = "VALUES ("
@@ -70,6 +82,7 @@ public class JSONSender {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
+			//after writing the values to the DB, close the connection to the database.
 			try {
 				if (conn != null)
 					conn.close();
@@ -78,6 +91,10 @@ public class JSONSender {
 		}
 	}
 	
+	/**
+	 * Delete the values in the database table
+	 * @param tableName this value is currently not used
+	 */
 	private static void deleteTable(String tableName) {
 		try {
 			Statement stm = conn.createStatement();
@@ -86,7 +103,11 @@ public class JSONSender {
 			stm.executeUpdate(sql);
 		} catch(SQLException e) {}
 	}
-
+	
+	/**
+	 * Outputs the shuttle ETA information to the console for quick debugging.
+	 * @param shuttleList - shuttle data
+	 */
 	public static void printToConsole(HashSet<Shuttle> shuttleList) {
 		for(Shuttle shuttle : shuttleList) {
 			System.out.println(shuttle.getName() + " " + shuttle.getShuttleId() + " " + shuttle.getRouteName() + " " + shuttle.getRouteId());
@@ -95,7 +116,12 @@ public class JSONSender {
 			}
 		}
 	}
-
+	
+	/**
+	 * @param path path to sts.properties file
+	 * @return returns the arguments from the sts.properties file
+	 * @throws IOException
+	 */
 	private static String[] getArgumentsFromPropertiesFile(String path)
 			throws IOException {
 		String[] values = new String[3];
@@ -111,7 +137,9 @@ public class JSONSender {
 		buf.close();
 		return values;
 	}
-
+	
+	//Used by printToConsole method in order to make the arrival times show up
+	//in a more readable format.
 	private static String getTimeStamp(Integer integer) {
 		String str = new Timestamp(System.currentTimeMillis() + integer)
 				.toString();

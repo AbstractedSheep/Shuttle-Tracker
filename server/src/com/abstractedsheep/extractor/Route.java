@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import com.abstractedsheep.extractor.Shuttle.Point;
 
 /**
- * Sample output from JSONExtractor.java color #E1501B id 1 name West Route
- * width 4 latitude 42.72276 longitude -73.67982 latitude 42.72326 longitude
- * -73.68052
- * 
+ * This class is designed to hold information about a shuttle route.
+ * The route would contain a list of geographical coordinates composing the route,
+ * its name and ID number. Also, the bearing between each route point, the one before it
+ * as well as the one after it is done in order to give a sense of traveling direction
+ * along the route.
  * @author jonnau
  * 
  */
@@ -65,6 +66,16 @@ public class Route {
 		}
 	}
 	
+	/**
+	 * Method calculates the constant bearing between the current route point and the one
+	 * immediately following it as well as the bearing between the current route point
+	 * and the one immediately before it.
+	 * @param current - route point in the coordinate list at index n
+	 * @param prev - route point in the coordinate list at index n-1 
+	 * @param next - route point in the coordinate list at index n+1
+	 * @return Method returns an array containing the bearing between current and prev
+	 * 		   as well as the bearing between current and next
+	 */
 	private Double[] getConstantBearing(Point current, Point prev, Point next) {
 		Double[] array = new Double[2];
 		double deltaLat1 = (current.getLatInRadians() - prev.getLatInRadians()),
@@ -113,16 +124,23 @@ public class Route {
 	public String getRouteName() {
 		return routeName;
 	}
-	
+	/**
+	 * returns the constant bearings for the route point
+	 * at the given index
+	 * @param index - idnex of the desired route point
+	 * @return the bearings between the desired route point
+	 * 		   and the one before it as well as the bearing between
+	 * 		   the desired route point and the one after it
+	 */
 	public Double[] getBearingsForPoint(int index) {
 		return this.bearingList.get(index);
 	}
-
+	//place coordinate in list as two double values
 	public void putCoordinate(double lon, double lat) {
 		Point p = new Shuttle.Point(lat, lon);
 		this.coordinateList.add(p);
 	}
-
+	//place coordinate in list as a Point object
 	public void putCoordinate(Point coordinate) {
 		this.coordinateList.add(coordinate);
 	}

@@ -4,18 +4,29 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
+/**
+ * The purpose of this class is to hold information about a shuttle from
+ * the current.js file being read in by JSONExtractor. Each shuttle contains
+ * information about its current location, when that shuttle was last updated,
+ * its name, current heading, the route it is on and the stops it will visit.
+ * This information is then used to determine how long it will take the shuttle
+ * to reach each stop on its list, while accommodating enough time for when the shuttle
+ * might wait at each stop.
+ * @author jonnau
+ * @author wagnea
+ */
 public class Shuttle {
 	private int shuttleId;
 	private HashMap<String, Stop> stops;
 	private HashMap<String, Integer> stopETA;
 	private ArrayList<Integer> speedList;
-	private int bearing;
 	private String cardinalPoint;
 	private String shuttleName;
 	private int speed;
 	private Point currentLocation;
 	private RouteFinder finder;
 	private long lastUpdateTime;
+	private int bearing;
 
 	// Jackson requires a constructor with no parameters to be available
 	// Also notice 'this.' preceding the variables, this makes it clear that the
@@ -120,41 +131,30 @@ public class Shuttle {
 	public  Point getCurrentLocation() {
 		return currentLocation;
 	}
+	
+	/**
+	 * Change the current state of the shuttle's location
+	 * and change value of the most recent update time to time.
+	 * @param newLocation - new shuttle location
+	 * @param time - most recent update time
+	 */
 	public void setCurrentLocation(Point newLocation, long time) {
 		this.currentLocation = newLocation;
 		finder.changeCurrentLocation(currentLocation);
 		this.lastUpdateTime = time;
 	}
 	public long getLastUpdateTime() { return this.lastUpdateTime; }
-	public String getCardinalPoint() {
-		return cardinalPoint;
-	}
-	public void setCardinalPoint(String cardinalPoint) {
-		this.cardinalPoint = cardinalPoint;
-	}
-	public String getName() {
-		return shuttleName;
-	}
-	public void setName(String newName) {
-		this.shuttleName = newName;
-	}
-	public HashMap<String, Integer> getStopETA() {
-		return stopETA;
-	}
-	public void setBearing(int newBearing) {
-		finder.setBearing(newBearing);
-	}
-	public String getRouteName() {
-		return finder.getRouteName();
-	}
+	public String getCardinalPoint() { return cardinalPoint; }
+	public void setCardinalPoint(String cardinalPoint) { this.cardinalPoint = cardinalPoint;}
+	public String getName() { return shuttleName; }
+	public void setName(String newName) { this.shuttleName = newName; }
+	public HashMap<String, Integer> getStopETA() { return stopETA; }
+	public void setBearing(int newBearing) { finder.setBearing(newBearing); }
+	public String getRouteName() { return finder.getRouteName(); }
 	public RouteFinder getFinder() {return this.finder; }
 	//these two methods get values from the inner RouteFinder class.
-	public boolean hasFoundRoute() {
-		return finder.hasFoundRoute();
-	}
-	public boolean isTooFarFromRoute() {
-		return finder.isShuttleOnRoute();
-	}
+	public boolean hasFoundRoute() { return finder.hasFoundRoute(); }
+	public boolean isTooFarFromRoute() { return finder.isShuttleOnRoute(); }
 
 	// These next two methods are not required by Jackson
 	// They are here to add data to stops
@@ -289,12 +289,10 @@ public class Shuttle {
 	 * @author jonnau
 	 * 
 	 */
-	@SuppressWarnings("unused")
 	private class RouteFinder {
 		ArrayList<Route> routeList;
 		ArrayList<Point> locList;
 		// this value is allowable error in degrees (~5-10 feet)
-		private double tolerance = (5.0 * Math.pow(10, -4));
 		private boolean foundRoute;
 		// this is the route coordinate closest to the shuttle's position.
 		private Point closestRouteCoor;
@@ -345,26 +343,23 @@ public class Shuttle {
 			return (this.closestDistanceToRoute >= .07);
 		}
 		
-		public int getRouteID() {
-			return routeList.get(0).getIdNum();
-		}
+		//these getters and setters return values related to the shuttle
+		public int getRouteID() { return routeList.get(0).getIdNum();}
+		public String getRouteName() { return routeList.get(0).getRouteName();}
+		public boolean hasFoundRoute() { return this.foundRoute; }
+		public void setBearing(int bearing) {this.currentBearing = bearing; }
 		
-		public String getRouteName() {
-			return routeList.get(0).getRouteName();
-		}
-		
-		public boolean hasFoundRoute() {
-			return this.foundRoute;
-		}
-		
-		private int isBeforeRoutePoint() {
-			return (isBeforeRoutePoint) ? -1 : 1;
-		}
-		
-		public void setBearing(int bearing) {
-			this.currentBearing = bearing;
-		}
-
+		/**
+		 * This method determines the route that the shuttle is on by going through
+		 * all of the coordinate lists in the route list and computing the distance between
+		 * the shuttle's location and all of the coordinates composing each route. The shortest
+		 * distances is between all of the routes is then compared and the route with the 
+		 * shortest distance measurement to the shuttle's current location is presumed to be
+		 * the route the shuttle is currently on. It should be noted that the difference between the
+		 * distances has to be considerable (greater than .01 miles), else an assumption will be made
+		 * with regards to the shuttle's current route until the difference is noticeable. The reason for this
+		 * is because the shuttle might travel along an area that houses multiple routes.
+		 */
 		private void determineRouteOfShuttle() {
 			
 			// using the given routes, determine which route the
@@ -386,7 +381,8 @@ public class Shuttle {
 						i = 0;
 					p1 = list.get(i);
 					distance = calculateDistance(p1);
-
+					//if the new distance value is shorter than the old one, then
+					//change it.
 					if (distanceArray[index] > distance) {
 						Double[] array = route.getBearingsForPoint(i);
 						if(((array[0] + 15.0 >= this.currentBearing) &&
@@ -402,8 +398,6 @@ public class Shuttle {
 				}
 				index++;
 			}
-			
-			//System.out.println(distanceArray[0] + " " + distanceArray[1]);
 			
 			if(routeList.size() < 2) {
 				this.closestRouteCoor = locationArray[0];
@@ -473,16 +467,12 @@ public class Shuttle {
 			return 1;
 		}
 		
-		// TODO: delete the first calculateDistance method and move the second one
-		// to RouteFinder
 		/**
 		 * calculates the straight line distance between the given stop location and
 		 * the shuttle's location The formula used to calculate this distance is the
-		 * haversine formula {@link http
-		 * ://www.movable-type.co.uk/scripts/latlong.html}
+		 * haversine formula {@link movable-type.co.uk/scripts/latlong.html}
 		 * 
-		 * @param p
-		 *            - stop's location
+		 * @param p - stop's location
 		 * @return distance to stop
 		 */
 		private double calculateDistance(Point p) {
