@@ -17,6 +17,16 @@ Both 1 and 2 are found in the `server/` directory.  The Android and iOS programs
 ## Server
 Note: Certain values have been hard-coded into certain java files, such as the link to the shuttle data in JSONExtractor.java, while other values are being read in from the sts.properties file, which is designed to hold information to connect to the database.
 
+###Compiling
+Import the contents of Shuttle-Tracker/server to your preferred Java IDE (e.g. NetBeans or Eclipse). If you choose to use Eclipse, then just use the project file located in Shuttle-Tracker/server. The shuttle data processing code is contained within the src folder and most of the website code is contained under WebContent.
+
+###Execution
+To run the Java program, several pieces of information are required:
+    1) The http link to the shuttle data (located in JSONExtractor.java as shuttleURL)
+    2) The http link to the route and stop data (located in JSONExtractor.java as routeURL)
+    3) A file called sts.properties, which should contain the link to your MySQL database as well as the username and password to access that database (in that order). This file should be located in the working directory of the project, or where ever you choose to place the runnable executable. It should be noted that JSONSender,java, which gets the data from this file will, by default, look for the file in the current working directory.
+
+After inputting this information, run the main method located in ShuttleTrackerServer.java. When creating the java runnable file, make sure to package all of the used libraries with the project.
 ## Android
 Information coming soon.
 
