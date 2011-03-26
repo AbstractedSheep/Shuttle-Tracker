@@ -3,6 +3,7 @@ package com.abstractedsheep.extractor;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -78,7 +79,7 @@ public class JSONExtractor {
 					readRoutesData();
 			}
 		}
-		
+		parser.close();
 		addRoutesToStops();
 	}
 
@@ -170,8 +171,9 @@ public class JSONExtractor {
 	 * extracts the shuttle data from the corresponding json file.
 	 * 
 	 * @throws IOException
+	 * @throws ParseException 
 	 */
-	public void readShuttleData() throws IOException {
+	public void readShuttleData() throws IOException, ParseException {
 		parser = f.createJsonParser(shuttleURL);
 		parser.nextToken();
 		while (parser.nextToken() != JsonToken.END_ARRAY) { // keep reading the
@@ -195,6 +197,7 @@ public class JSONExtractor {
 				}
 			}
 		}
+		parser.close();
 	}
 
 	// pretty sure this is very inefficient
@@ -205,7 +208,7 @@ public class JSONExtractor {
 			// if s exists, then modify its current location (as s2)
 			if (shuttle.equals(s)) {
 				s2 = shuttle;
-				s2.setCurrentLocation(s.getCurrentLocation());
+				s2.setCurrentLocation(s.getCurrentLocation(), s.getLastUpdateTime());
 				s2.setStops(s.getStops(), s.getFinder());
 				s2.setSpeed(s.getSpeed());
 				shuttleList.remove(s);
@@ -233,6 +236,7 @@ public class JSONExtractor {
 		//or is too far from either route, then delete that shuttle from the list
 		//such that the ETAs are not skewed.
 		for(Shuttle s : tempList) {
+			System.out.println(Math.abs(s.getLastUpdateTime() - System.currentTimeMillis()));
 			if(Math.abs(s.getLastUpdateTime() - System.currentTimeMillis()) > (1000 * 15 * 3)) {
 				shuttleList.remove(s);
 			} else if(s.isTooFarFromRoute()) {
@@ -248,6 +252,9 @@ public class JSONExtractor {
 			// ex.readRouteData();
 			ex.readShuttleData();
 		} catch (IOException e) {
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

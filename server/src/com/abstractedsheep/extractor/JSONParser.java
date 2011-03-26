@@ -3,8 +3,12 @@
  */
 package com.abstractedsheep.extractor;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 /**
  * @author jonnau
@@ -60,15 +64,20 @@ public class JSONParser {
 	 *            - list of stops
 	 * @param routeList
 	 * @return shuttle object
+	 * @throws ParseException 
 	 */
 	public static Shuttle listToShuttle(ArrayList<String> list,
-			ArrayList<Stop> stopList, ArrayList<Route> routeList) {
+			ArrayList<Stop> stopList, ArrayList<Route> routeList) throws ParseException {
+		SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		dt.setTimeZone(TimeZone.getTimeZone("GMT"));
+		Date date = new Date(dt.parse(list.get(6)).getTime());
+		long time = System.currentTimeMillis(), parsedTime = dt.parse(dt.format(date)).getTime();
 		Shuttle shuttle = new Shuttle(routeList);
 		shuttle.setShuttleId(Integer.parseInt(list.get(0)));
 		shuttle.setName(list.get(1));
 		shuttle.setBearing(Integer.parseInt(list.get(2)));
 		shuttle.setCurrentLocation(new Shuttle.Point(Double.parseDouble(list
-				.get(3)), Double.parseDouble(list.get(4))));
+				.get(3)), Double.parseDouble(list.get(4))), time);
 		shuttle.setSpeed(Integer.parseInt(list.get(5)));
 		shuttle.setCardinalPoint(list.get(list.size() - 1));
 		// TODO: determine whether this shuttle goes on the west route or east
