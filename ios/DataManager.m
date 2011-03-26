@@ -156,18 +156,6 @@
     
 }
 
-- (void)updateVehicleDataWithInterval:(CGFloat)secs {
-	if (!loadVehicleJsonQueue) {
-		loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
-	}
-    
-    dispatch_async(loadVehicleJsonQueue, ^{
-        if ([vehiclesJsonParser parseShuttles]) {
-            [self performSelectorOnMainThread:@selector(vehicleJsonRefresh) withObject:nil waitUntilDone:YES];
-        }
-    });
-}
-
 - (void)vehicleJsonRefresh {
     BOOL alreadyAdded = NO;
     

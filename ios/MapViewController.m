@@ -14,7 +14,6 @@
 @interface MapViewController()
 - (void)managedRoutesLoaded;
 - (void)vehiclesUpdated:(NSNotification *)notification;
-- (void)refreshEtaData;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
 - (void)addKmlVehicle:(KMLVehicle *)vehicle;
@@ -128,12 +127,6 @@
 		}
 	}
 }
-
-//  Do nothing as of yet
-- (void)refreshEtaData {
-    
-}
-
 
 - (void)addRoute:(KMLRoute *)route {
     NSArray *temp;
