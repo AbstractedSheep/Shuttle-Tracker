@@ -10,6 +10,8 @@
 #import "KMLParser.h"
 #import "JSONParser.h"
 
+#define kDMVehiclesUpdated					@"kDMVehiclesUpdated"
+
 
 //	Manages all of the routes/stops/shuttles data, as well as application settings.
 @interface DataManager : NSObject {

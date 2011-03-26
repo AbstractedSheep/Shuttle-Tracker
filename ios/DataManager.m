@@ -148,6 +148,9 @@
     dispatch_async(loadVehicleJsonQueue, ^{
         if ([vehiclesJsonParser parseShuttles]) {
             [self performSelectorOnMainThread:@selector(vehicleJsonRefresh) withObject:nil waitUntilDone:YES];
+			[[NSNotificationCenter defaultCenter] postNotificationName:kDMVehiclesUpdated
+																object:vehicles 
+															  userInfo:[NSDictionary dictionaryWithObject:vehicles forKey:@"vehicles"]];
         }
     });
     

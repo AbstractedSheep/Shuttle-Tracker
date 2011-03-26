@@ -13,12 +13,14 @@
 
 @interface MapViewController()
 - (void)managedRoutesLoaded;
+- (void)vehiclesUpdated:(NSNotification *)notification;
 - (void)refreshVehicleData;
 - (void)refreshEtaData;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
 - (void)addKmlVehicle:(KMLVehicle *)vehicle;
 - (void)addJsonVehicle:(JSONVehicle *)vehicle;
+- (void)settingChanged:(NSNotification *)notification;
 
 @end
 
@@ -72,7 +74,7 @@
     
     vehicleUpdateTimer = nil;
     
-    vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(refreshVehicleData) userInfo:nil repeats:YES];
+    //vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(refreshVehicleData) userInfo:nil repeats:YES];
 	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
@@ -85,6 +87,9 @@
 	//	Take notice when a setting is changed.
 	//	Note that this is not the only object that takes notice.
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
+	
+	//	Take notice when vehicles are updated.
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vehiclesUpdated:) name:kDMVehiclesUpdated object:nil];
 }
 
 
@@ -105,6 +110,29 @@
     }
 }
 
+
+//	A notification is sent by DataManager whenever the vehicles are updated.
+- (void)vehiclesUpdated:(NSNotification *)notification {
+	NSDictionary *info = [notification userInfo];
+	
+	NSArray *dmVehicles = [info objectForKey:@"vehicles"];
+	
+	if (!dmVehicles) {
+		return;
+	}
+	
+	for (JSONVehicle *vehicle in dmVehicles) {
+		if ([[_mapView annotations] indexOfObject:vehicle] == NSNotFound) {
+			[self addJsonVehicle:vehicle];
+		}
+	}
+	
+	for (id existingObject in [_mapView annotations]) {
+		if ([existingObject isKindOfClass:[JSONVehicle class]] && [dmVehicles indexOfObject:existingObject] == NSNotFound) {
+			[_mapView removeAnnotation:existingObject];
+		}
+	}
+}
 
 //  Grab the most recent data from the data manager and use it
 - (void)refreshVehicleData {
@@ -181,6 +209,24 @@
 - (void)addJsonVehicle:(JSONVehicle *)vehicle {
     [_mapView addAnnotation:vehicle];
 }
+
+
+//	InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
+//	settingChanged currently only handles turning on or off showing the user's location.
+//	Other objects may also do something when a setting is changed.
+- (void)settingChanged:(NSNotification *)notification {
+	NSDictionary *info = [notification userInfo];
+	
+	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
+	if ([[notification object] isEqualToString:@"useLocation"]) {
+		if ([[info objectForKey:@"useLocation"] boolValue]) {
+			_mapView.showsUserLocation = YES;
+		} else {
+			_mapView.showsUserLocation = NO;
+		}
+	}
+}
+
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -289,23 +335,6 @@
     }
     
     return nil;
-}
-
-
-//	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
-//	Currently only handles turning on or off showing the user's location.
-//	Other objects may also do something when a setting is changed.
-- (void)settingChanged:(NSNotification *)notification {
-	NSDictionary *info = [notification userInfo];
-	
-	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
-	if ([[notification object] isEqualToString:@"useLocation"]) {
-		if ([[info objectForKey:@"useLocation"] boolValue]) {
-			_mapView.showsUserLocation = YES;
-		} else {
-			_mapView.showsUserLocation = NO;
-		}
-	}
 }
 
 
