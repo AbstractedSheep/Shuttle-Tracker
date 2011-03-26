@@ -22,8 +22,11 @@ Import the contents of Shuttle-Tracker/server to your preferred Java IDE (e.g. N
 
 ###Execution
 To run the Java program, several pieces of information are required:
+
 1. The http link to the shuttle data (located in JSONExtractor.java as shuttleURL)
+
 2. The http link to the route and stop data (located in JSONExtractor.java as routeURL)
+
 3. A file called sts.properties, which should contain the link to your MySQL database as well as the username and password to access that database (in that order). This file should be located in the working directory of the project, or where ever you choose to place the runnable executable. It should be noted that JSONSender,java, which gets the data from this file will, by default, look for the file in the current working directory.
 
 After inputting this information, run the main method located in ShuttleTrackerServer.java. When creating the java runnable file, make sure to package all of the used libraries with the project.
