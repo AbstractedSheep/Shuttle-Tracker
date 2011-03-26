@@ -31,7 +31,6 @@
     NSMutableArray *routeLines;
     NSMutableArray *routeLineViews;
     
-    NSTimer *vehicleUpdateTimer;
     NSTimer *etaUpdateTimer;
 	
 	UIImage *shuttleImage;

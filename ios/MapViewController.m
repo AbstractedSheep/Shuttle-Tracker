@@ -14,7 +14,6 @@
 @interface MapViewController()
 - (void)managedRoutesLoaded;
 - (void)vehiclesUpdated:(NSNotification *)notification;
-- (void)refreshVehicleData;
 - (void)refreshEtaData;
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
@@ -71,10 +70,6 @@
     region.span.longitudeDelta = 0.0132;
     
     _mapView.region = region;
-    
-    vehicleUpdateTimer = nil;
-    
-    //vehicleUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:self selector:@selector(refreshVehicleData) userInfo:nil repeats:YES];
 	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
@@ -133,27 +128,6 @@
 		}
 	}
 }
-
-//  Grab the most recent data from the data manager and use it
-- (void)refreshVehicleData {
-	
-	if (!vehicles) {
-		return;
-	}
-	
-	for (JSONVehicle *vehicle in vehicles) {
-		if ([[_mapView annotations] indexOfObject:vehicle] == NSNotFound) {
-			[self addJsonVehicle:vehicle];
-		}
-	}
-	
-	for (id existingObject in [_mapView annotations]) {
-		if ([existingObject isKindOfClass:[JSONVehicle class]] && [vehicles indexOfObject:existingObject] == NSNotFound) {
-			[_mapView removeAnnotation:existingObject];
-		}
-	}
-}
-
 
 //  Do nothing as of yet
 - (void)refreshEtaData {
@@ -253,10 +227,6 @@
 - (void)dealloc {
     if (routeKmlParser) {
         [routeKmlParser release];
-    }
-    
-    if (vehicleUpdateTimer) {
-        [vehicleUpdateTimer invalidate];
     }
     
     [_mapView release];
