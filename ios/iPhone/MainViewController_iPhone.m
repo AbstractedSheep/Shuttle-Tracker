@@ -66,13 +66,17 @@
     etasTableUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:etasViewController.tableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     
 	IASKAppSettingsViewController *settingsViewController = [[IASKAppSettingsViewController alloc] initWithNibName:@"IASKAppSettingsView" bundle:nil];
-	settingsViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2];
+	settingsViewController.title = @"Settings";
 	settingsViewController.delegate = dataManager;
 	
-    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, settingsViewController, nil];
+	UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+	[settingsViewController release];
+	settingsNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2];
+	
+    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, settingsNavController, nil];
 	[mapViewController release];
 	[etasViewController release];
-	[settingsViewController release];
+	[settingsNavController release];
 	
     [self.view addSubview:tabBarController.view];
 }

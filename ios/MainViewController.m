@@ -8,6 +8,9 @@
 
 #import "MainViewController.h"
 
+@interface MainViewController ()
+- (void)changeDataUpdateRate:(NSNotification *)notification;
+@end
 
 @implementation MainViewController
 
@@ -24,16 +27,30 @@
 		
 		// Set the application defaults
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		NSDictionary *appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"NO", @"YES", @"YES", nil] 
-																forKeys:[NSArray arrayWithObjects:@"use24Time", @"useLocation", @"findClosestStop", nil]];
+		NSDictionary *appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"NO", @"YES", @"YES", [NSNumber numberWithInt:5], nil] 
+																forKeys:[NSArray arrayWithObjects:@"use24Time", @"useLocation", @"findClosestStop", @"dataUpdateInterval", nil]];
 		[defaults registerDefaults:appDefaults];
 		[defaults synchronize];
 		
 		//	dataManager creates a timeDisplayFormatter in its init method, so get
 		//	a reference to it.
         timeDisplayFormatter = dataManager.timeDisplayFormatter;
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeDataUpdateRate:) name:@"dataUpdateInterval" object:nil];
     }
     return self;
+}
+
+- (void)changeDataUpdateRate:(NSNotification *)notification {
+	//	Invalidate the timer so another can be made with a different interval.
+	[dataUpdateTimer invalidate];
+	
+	NSDictionary *info = [notification userInfo];
+	
+	float updateInterval = [[info objectForKey:@"dataUpdateInterval"] floatValue];
+	
+	//	Schedule a timer to make the DataManager pull new data every 5 seconds
+    dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:dataManager selector:@selector(updateData) userInfo:nil repeats:YES];
 }
 
 - (void)dealloc
@@ -45,8 +62,11 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	float updateInterval = [[defaults objectForKey:@"dataUpdateInterval"] floatValue];
+	
 	//	Schedule a timer to make the DataManager pull new data every 5 seconds
-    dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:5.0f target:dataManager selector:@selector(updateData) userInfo:nil repeats:YES];
+    dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:dataManager selector:@selector(updateData) userInfo:nil repeats:YES];
 }
 
 - (void)didReceiveMemoryWarning
