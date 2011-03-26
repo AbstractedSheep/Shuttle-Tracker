@@ -9,6 +9,12 @@ import java.util.HashSet;
 import com.abstractedsheep.extractor.*;
 
 /**
+ * This is the main class that will run all of the server code.
+ * This class retrieves the stop and route data upon initialization from
+ * {@link JSONExtractor.readRouteData()} and periodically gets the shuttle data
+ * from {@linkplain JSONExtractor.readShuttleData()} every five seconds. The shuttle data
+ * then undergoes some processing in order to determine the arrival times to each stop on
+ * each shuttle's route, after which this arrival time data is written to MySQL database.
  * @author jonnau
  * 
  */
@@ -23,7 +29,11 @@ public class ShuttleTrackerServer {
 		// read the shuttle data and calculate the ETAs in the background
 		startThread();
 	}
-
+	
+	/**
+	 * Starts periodically reading the shuttle data from JSONExtractor's shuttleURL
+	 * every five seconds.
+	 */
 	private void startThread() {
 		Thread t = new Thread(new Runnable() {
 			@Override
@@ -35,7 +45,11 @@ public class ShuttleTrackerServer {
 
 		t.start();
 	}
-
+	
+	/**
+	 * Gets the shuttle data {@link JSONExtractor.shuttleURL}, processes the
+	 * information and then writes the data to the database.
+	 */
 	private void readDynamicData() {
 		while (true) {
 			try {
