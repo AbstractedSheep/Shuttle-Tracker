@@ -9,7 +9,7 @@ import com.abstractedsheep.extractor.Shuttle.Point;
  * its name and ID number. Also, the bearing between each route point, the one before it
  * as well as the one after it is done in order to give a sense of traveling direction
  * along the route.
- * @author jonnau
+ * @author saiumesh
  * 
  */
 

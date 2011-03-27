@@ -12,7 +12,7 @@ import java.util.HashMap;
  * This information is then used to determine how long it will take the shuttle
  * to reach each stop on its list, while accommodating enough time for when the shuttle
  * might wait at each stop.
- * @author jonnau
+ * @author saiumesh
  * @author wagnea
  */
 public class Shuttle {

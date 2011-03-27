@@ -17,7 +17,7 @@ import org.codehaus.jackson.JsonToken;
  * The purpose of this class is to extract the jsons from the rpi shuttle server
  * and process the data.
  * 
- * @author jonnau
+ * @author saiumesh
  * 
  */
 public class JSONExtractor {

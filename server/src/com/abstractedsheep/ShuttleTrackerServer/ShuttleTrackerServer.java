@@ -15,7 +15,7 @@ import com.abstractedsheep.extractor.*;
  * from {@linkplain JSONExtractor.readShuttleData()} every five seconds. The shuttle data
  * then undergoes some processing in order to determine the arrival times to each stop on
  * each shuttle's route, after which this arrival time data is written to MySQL database.
- * @author jonnau
+ * @author saiumesh
  * 
  */
 public class ShuttleTrackerServer {
