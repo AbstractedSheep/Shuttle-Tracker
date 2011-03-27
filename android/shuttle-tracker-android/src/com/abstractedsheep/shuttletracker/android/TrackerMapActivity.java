@@ -20,6 +20,7 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
+import java.util.Date;
 import java.util.ArrayList;
 
 import com.abstractedsheep.kml.Style;
@@ -52,6 +53,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	private ShuttleDataService dataService;
 	private boolean hasRoutes;
 	private SharedPreferences prefs;
+	private TimestampOverlay timestampOverlay;
 	
     /** Called when the activity is first created. */
     @Override
@@ -116,6 +118,9 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         
         stopsOverlay.addAllStops(routes.getStops());
         map.getOverlays().add(stopsOverlay);
+        
+        timestampOverlay = new TimestampOverlay(prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false));
+        map.getOverlays().add(timestampOverlay);
     }
     
    
@@ -195,6 +200,9 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         		shuttlesOverlay.addVehicle(v);
         	}
         	
+        	timestampOverlay.setLastUpdateTime(new Date());
+        	timestampOverlay.setStatusText(getResources().getString(R.string.status_ok));
+        	
         	runOnUiThread(vehiclesUpdated);
 		}
 		
@@ -220,6 +228,16 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	}
 
 	public void dataServiceError(int errorCode) {
+		switch (errorCode) {
+		case (IShuttleServiceCallback.NO_CONNECTION_ERROR):
+			// Make the shuttle display clear when the connection is lost
+			dataUpdated(new ArrayList<VehicleJson>(), null);
+			timestampOverlay.setStatusText(getResources().getString(R.string.status_no_conn));
+			runOnUiThread(invalidateMap);
+			break;
+		default:
+			break;
+		}
 	}
 	
 	@Override
@@ -250,6 +268,8 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	    		myLocationOverlay.enableMyLocation();
 			else
 				myLocationOverlay.disableMyLocation();
+			if (timestampOverlay != null)
+				timestampOverlay.set24Hour(prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false));
 		}
 	}
 }

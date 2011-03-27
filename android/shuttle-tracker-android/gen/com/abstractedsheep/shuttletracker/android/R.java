@@ -70,6 +70,8 @@ public final class R {
         public static final int no_conn=0x7f060002;
         public static final int options=0x7f060008;
         public static final int remove_favorite=0x7f060005;
+        public static final int status_no_conn=0x7f06000f;
+        public static final int status_ok=0x7f06000e;
         public static final int update_rate_summary=0x7f06000d;
         public static final int update_rate_title=0x7f06000c;
         public static final int use_24_hr_off=0x7f06000b;

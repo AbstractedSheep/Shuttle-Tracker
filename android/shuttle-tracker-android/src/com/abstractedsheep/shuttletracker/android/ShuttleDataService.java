@@ -79,7 +79,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		ctx = context;
 		prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		prefs.registerOnSharedPreferenceChangeListener(this);
-		updateRate.set(prefs.getInt(TrackerPreferences.UPDATE_RATE, 5));
+		updateRate.set(prefs.getInt(TrackerPreferences.UPDATE_RATE, 5000));
 	}
 	 
     /**

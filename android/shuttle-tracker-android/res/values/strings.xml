@@ -14,4 +14,6 @@
 <string name="use_24_hr_off">Display All Times in 12 Hour Format</string>
 <string name="update_rate_title">Update Rate</string>
 <string name="update_rate_summary">Set How Often to Check for New Data</string>
+<string name="status_ok">OK</string>
+<string name="status_no_conn">No Network</string>
 </resources>

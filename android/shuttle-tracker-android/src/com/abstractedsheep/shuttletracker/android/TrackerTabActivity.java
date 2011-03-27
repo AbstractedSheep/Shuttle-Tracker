@@ -136,5 +136,6 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 
 	public void dataServiceError(int errorCode) {
 		runOnUiThread(new MakeToast(errorCode));
+		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).dataServiceError(errorCode);
 	}
 }
