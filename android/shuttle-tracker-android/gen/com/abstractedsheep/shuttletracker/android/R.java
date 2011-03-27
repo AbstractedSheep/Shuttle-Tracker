@@ -40,6 +40,7 @@ public final class R {
         public static final int balloon_main_layout=0x7f080002;
         public static final int balloon_text=0x7f080001;
         public static final int balloon_title=0x7f080000;
+        public static final int center_map=0x7f08000d;
         public static final int close_img_button=0x7f080006;
         public static final int eta_list=0x7f080007;
         public static final int layout=0x7f080008;
@@ -58,11 +59,13 @@ public final class R {
         public static final int tab=0x7f030006;
     }
     public static final class menu {
-        public static final int options_menu=0x7f070000;
+        public static final int map_options=0x7f070000;
+        public static final int options_menu=0x7f070001;
     }
     public static final class string {
         public static final int add_favorite=0x7f060004;
         public static final int app_name=0x7f060001;
+        public static final int center_map=0x7f060010;
         public static final int favorites=0x7f060003;
         public static final int hello=0x7f060000;
         public static final int my_location_summary=0x7f060007;
