@@ -71,6 +71,10 @@
 		DAA49A9D13412AB60011AB81 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9913412AB60011AB81 /* Icon-Small@2x.png */; };
 		DAA49A9E13412AB60011AB81 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9A13412AB60011AB81 /* iTunesArtwork */; };
 		DAA49A9F13412AB60011AB81 /* Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9B13412AB60011AB81 /* Small-50.png */; };
+		DAA49AA7134152D40011AB81 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49AA6134152D40011AB81 /* Default.png */; };
+		DAA49AA9134152D90011AB81 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49AA8134152D80011AB81 /* Default@2x.png */; };
+		DAA49AAB134153530011AB81 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49AAA134153530011AB81 /* Default-Landscape~ipad.png */; };
+		DAA49AAD1341535A0011AB81 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49AAC1341535A0011AB81 /* Default-Portrait~ipad.png */; };
 		DAACF009131F2E980074FA4C /* stop_marker.png in Resources */ = {isa = PBXBuildFile; fileRef = DAACF008131F2E980074FA4C /* stop_marker.png */; };
 		DAB2655512FB5D8900A4C5B7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */; };
 		DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */; };
@@ -179,6 +183,10 @@
 		DAA49A9913412AB60011AB81 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
 		DAA49A9A13412AB60011AB81 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		DAA49A9B13412AB60011AB81 /* Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Small-50.png"; sourceTree = "<group>"; };
+		DAA49AA6134152D40011AB81 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		DAA49AA8134152D80011AB81 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		DAA49AAA134153530011AB81 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		DAA49AAC1341535A0011AB81 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		DAACF008131F2E980074FA4C /* stop_marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_marker.png; sourceTree = "<group>"; };
 		DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DAC9AB3B1311AF85008E8555 /* EtaWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaWrapper.h; sourceTree = "<group>"; };
@@ -424,6 +432,7 @@
 		DA750B7C12F4CB6900190FA3 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DAA49AAE134153670011AB81 /* Launch Images */,
 				DA577BD613365A1600072CE6 /* Settings.bundle */,
 				DA750B8812F4CB7600190FA3 /* netlink.kml */,
 				DA3FC96A1324606000E6FE78 /* glyphish_clock.png */,
@@ -444,6 +453,17 @@
 				DAACF008131F2E980074FA4C /* stop_marker.png */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		DAA49AAE134153670011AB81 /* Launch Images */ = {
+			isa = PBXGroup;
+			children = (
+				DAA49AAC1341535A0011AB81 /* Default-Portrait~ipad.png */,
+				DAA49AAA134153530011AB81 /* Default-Landscape~ipad.png */,
+				DAA49AA8134152D80011AB81 /* Default@2x.png */,
+				DAA49AA6134152D40011AB81 /* Default.png */,
+			);
+			name = "Launch Images";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -524,6 +544,10 @@
 				DAA49A9D13412AB60011AB81 /* Icon-Small@2x.png in Resources */,
 				DAA49A9E13412AB60011AB81 /* iTunesArtwork in Resources */,
 				DAA49A9F13412AB60011AB81 /* Small-50.png in Resources */,
+				DAA49AA7134152D40011AB81 /* Default.png in Resources */,
+				DAA49AA9134152D90011AB81 /* Default@2x.png in Resources */,
+				DAA49AAB134153530011AB81 /* Default-Landscape~ipad.png in Resources */,
+				DAA49AAD1341535A0011AB81 /* Default-Portrait~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
