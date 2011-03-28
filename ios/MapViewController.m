@@ -28,7 +28,6 @@
 @implementation MapViewController
 
 @synthesize dataManager;
-@synthesize vehicles;
 
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
@@ -221,11 +220,6 @@
     [super dealloc];
 }
 
-- (void)setDataManager:(DataManager *)newDataManager {
-	dataManager = newDataManager;
-	
-	vehicles = newDataManager.vehicles;
-}
 
 #pragma mark MKMapViewDelegate
 
