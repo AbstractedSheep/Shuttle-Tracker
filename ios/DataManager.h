@@ -12,6 +12,7 @@
 
 #define kDMRoutesandStopsLoaded				@"kDMRoutesandStopsLoaded"
 #define kDMVehiclesUpdated					@"kDMVehiclesUpdated"
+#define kDMEtasUpdated						@"kDMEtasUpdated"
 
 
 //	Manages all of the routes/stops/shuttles data, as well as application settings.

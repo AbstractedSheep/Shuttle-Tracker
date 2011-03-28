@@ -63,7 +63,7 @@
 	//	via the init method of its superclass, MainViewController.
 	etasViewController.timeDisplayFormatter = timeDisplayFormatter;
     
-    etasTableUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:etasViewController.tableView selector:@selector(reloadData) userInfo:nil repeats:YES];
+    //etasTableUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:3.0f target:etasViewController.tableView selector:@selector(reloadData) userInfo:nil repeats:YES];
     
 	IASKAppSettingsViewController *settingsViewController = [[IASKAppSettingsViewController alloc] initWithNibName:@"IASKAppSettingsView" bundle:nil];
 	settingsViewController.title = @"Settings";

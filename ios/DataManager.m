@@ -218,6 +218,9 @@
     dispatch_async(loadEtaJsonQueue, ^{
         if ([etasJsonParser parseEtas]) {
             [self performSelectorOnMainThread:@selector(etaJsonRefresh) withObject:nil waitUntilDone:YES];
+			[[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
+																object:self 
+															  userInfo:[NSDictionary dictionaryWithObject:etas forKey:@"ETAs"]];
         }
     });
     

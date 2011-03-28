@@ -13,7 +13,7 @@
     DataManager *dataManager;
     
     NSTimer *dataUpdateTimer;
-    NSTimer *etasTableUpdateTimer;
+    //NSTimer *etasTableUpdateTimer;
     
 	NSDateFormatter *timeDisplayFormatter;
 }
