@@ -196,7 +196,7 @@
 	
 	for (JSONVehicle *vehicle in vehicles) {
 		//	Remove vehicles which have not been updated for three minutes
-		if ([vehicle.updateTime timeIntervalSinceNow] < -180.0f) {
+		if ([vehicle.updateTime timeIntervalSinceNow] < -45.0f) {
 			[vehiclesToRemove addObject:vehicle];
 		}
 	}
