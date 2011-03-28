@@ -26,6 +26,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -41,6 +42,7 @@ public class LocationOverlay extends MyLocationOverlay {
 
 	private Bitmap marker;
 	private Paint accuracyPaint = new Paint();
+	private Paint strokePaint = new Paint();
 	Matrix rotate = new Matrix();
 	
 	public LocationOverlay(Context context, MapView mapView, int markerResource) {
@@ -49,13 +51,17 @@ public class LocationOverlay extends MyLocationOverlay {
 		marker = ((BitmapDrawable) d).getBitmap();
 		accuracyPaint.setAntiAlias(true);
 		accuracyPaint.setColor(Color.BLUE);
-		accuracyPaint.setAlpha(50);
+		accuracyPaint.setAlpha(20);
+		strokePaint.setAntiAlias(true);
+		strokePaint.setStyle(Style.STROKE);
+		strokePaint.setColor(Color.BLUE);
+		strokePaint.setAlpha(80);
+		strokePaint.setStrokeWidth(2);
 	}
 	
 	@Override
 	protected void drawMyLocation(Canvas canvas, MapView mapView,
 			Location lastFix, GeoPoint myLocation, long when) {
-		Log.d("Tracker", "Drawing Location, enabled= " + String.valueOf(isMyLocationEnabled()));
 		if (isMyLocationEnabled()) {
 			Projection p = mapView.getProjection();
 			float accuracy = p.metersToEquatorPixels(lastFix.getAccuracy());
@@ -63,6 +69,7 @@ public class LocationOverlay extends MyLocationOverlay {
 			float orientation = lastFix.getBearing() - 45;
 					
 			if (accuracy > 10.0f) {
+				canvas.drawCircle(currLoc.x, currLoc.y, accuracy, strokePaint);
 				canvas.drawCircle(currLoc.x, currLoc.y, accuracy, accuracyPaint);
 			}
 			
