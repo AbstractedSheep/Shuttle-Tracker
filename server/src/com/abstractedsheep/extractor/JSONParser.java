@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 /**
- * @author jonnau
- * @author
+ * Parses the data given by JSONExtractor in order to create an object.
+ * @author saiumesh
  */
 public class JSONParser {
 	/**

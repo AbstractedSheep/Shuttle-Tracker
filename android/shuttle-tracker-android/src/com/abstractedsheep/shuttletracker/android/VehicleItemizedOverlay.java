@@ -95,7 +95,7 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 			return true;
 		}
 		
-		if ((now - lastUpdate.getTime()) < 60000)
+		if ((now - lastUpdate.getTime()) < 45000)
 			return super.onTap(index);
 		else
 			return true;
@@ -191,7 +191,7 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 				now = (new Date()).getTime();
 				lastUpdate = formatter.parse(v.getUpdate_time());
 				age = now - lastUpdate.getTime();
-				if (age > 600000)
+				if (age > 45000)
 					continue;
 				
 				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
@@ -209,10 +209,6 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 					tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, tempBitmap.getWidth(), tempBitmap.getHeight(), rotate, true);
 				}
 				
-				if (age > 60000) {
-					opacity = 255 - ((int) ((double)(age - 60000)/ (double)600000)) * 255;
-					tempBitmap = adjustOpacity(tempBitmap, opacity);
-				}
 				canvas.drawBitmap(tempBitmap, pt.x - (tempBitmap.getWidth() / 2), pt.y - (tempBitmap.getHeight() / 2), null);			
 			} catch (ParseException e) {
 				e.printStackTrace();
@@ -232,24 +228,4 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		}
 		return b;
 	}
-	
-	/**
-	 * @param bitmap The source bitmap.
-	 * @param opacity a value between 0 (completely transparent) and 255 (completely
-	 * opaque).
-	 * @return The opacity-adjusted bitmap.  If the source bitmap is mutable it will be
-	 * adjusted and returned, otherwise a new bitmap is created.
-	 */
-	private Bitmap adjustOpacity(Bitmap bitmap, int opacity)
-	{
-	    Bitmap mutableBitmap = bitmap.isMutable()
-	                           ? bitmap
-	                           : bitmap.copy(Bitmap.Config.ARGB_8888, true);
-	    Canvas canvas = new Canvas(mutableBitmap);
-	    int colour = (opacity & 0xFF) << 24;
-	    canvas.drawColor(colour, PorterDuff.Mode.DST_IN);
-	    return mutableBitmap;
-	}
-
-
 }

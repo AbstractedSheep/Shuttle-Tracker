@@ -11,7 +11,7 @@ import com.abstractedsheep.extractor.Shuttle.Point;
  * class. This inner class is similar to the one used in the Shuttle class, and helps
  * the Shuttle class determine the distance to each stop.
  * 
- * @author jonnau
+ * @author saiumesh
  * 
  */
 public class Stop {

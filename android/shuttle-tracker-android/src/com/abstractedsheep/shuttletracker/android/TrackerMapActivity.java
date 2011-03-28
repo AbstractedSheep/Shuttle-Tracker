@@ -20,6 +20,7 @@
 
 package com.abstractedsheep.shuttletracker.android;
 
+import java.util.Date;
 import java.util.ArrayList;
 
 import com.abstractedsheep.kml.Style;
@@ -44,6 +45,9 @@ import android.view.MenuItem;
 
 public class TrackerMapActivity extends MapActivity implements IShuttleServiceCallback {
 	public static final String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	private static final int DEFAULT_LAT = 42729640;
+	private static final int DEFAULT_LON = -73681280;
+	private static final int DEFAULT_ZOOM = 15;
 	private static final int PREFERENCES = 1;
 	private MapView map;
 	private VehicleItemizedOverlay shuttlesOverlay;
@@ -52,6 +56,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	private ShuttleDataService dataService;
 	private boolean hasRoutes;
 	private SharedPreferences prefs;
+	private TimestampOverlay timestampOverlay;
 	
     /** Called when the activity is first created. */
     @Override
@@ -70,8 +75,8 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
     	map = new MapView(this, MAPS_API_KEY);
     	LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, new GeoPoint(0, 0), 0);
         map.setLayoutParams(lp);
-        map.getController().setZoom(15);
-        map.getController().setCenter(new GeoPoint(42729640, -73681280));
+        map.getController().setZoom(DEFAULT_ZOOM);
+        map.getController().setCenter(new GeoPoint(DEFAULT_LAT, DEFAULT_LON));
         map.setClickable(true);
         map.setFocusable(true);
         map.setBuiltInZoomControls(true);
@@ -116,6 +121,9 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         
         stopsOverlay.addAllStops(routes.getStops());
         map.getOverlays().add(stopsOverlay);
+        
+        timestampOverlay = new TimestampOverlay(prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false));
+        map.getOverlays().add(timestampOverlay);
     }
     
    
@@ -195,6 +203,9 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         		shuttlesOverlay.addVehicle(v);
         	}
         	
+        	timestampOverlay.setLastUpdateTime(new Date());
+        	timestampOverlay.setStatusText(getResources().getString(R.string.status_ok));
+        	
         	runOnUiThread(vehiclesUpdated);
 		}
 		
@@ -220,12 +231,22 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	}
 
 	public void dataServiceError(int errorCode) {
+		switch (errorCode) {
+		case (IShuttleServiceCallback.NO_CONNECTION_ERROR):
+			// Make the shuttle display clear when the connection is lost
+			dataUpdated(new ArrayList<VehicleJson>(), null);
+			timestampOverlay.setStatusText(getResources().getString(R.string.status_no_conn));
+			runOnUiThread(invalidateMap);
+			break;
+		default:
+			break;
+		}
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.options_menu, menu);
+		inflater.inflate(R.menu.map_options, menu);
 		return true;
 	}
 	
@@ -234,6 +255,13 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 		switch (item.getItemId()) {
 		case R.id.options:
 			startActivityForResult(new Intent(this, TrackerPreferences.class), PREFERENCES);
+			return true;
+		case R.id.center_map:
+			if (myLocationOverlay.isMyLocationEnabled())
+				map.getController().animateTo(myLocationOverlay.getMyLocation());
+			else
+				map.getController().animateTo(new GeoPoint(DEFAULT_LAT, DEFAULT_LON));
+			map.getController().setZoom(DEFAULT_ZOOM);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -250,6 +278,8 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	    		myLocationOverlay.enableMyLocation();
 			else
 				myLocationOverlay.disableMyLocation();
+			if (timestampOverlay != null)
+				timestampOverlay.set24Hour(prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false));
 		}
 	}
 }

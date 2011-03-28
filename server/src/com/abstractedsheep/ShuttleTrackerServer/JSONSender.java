@@ -16,7 +16,7 @@ import com.abstractedsheep.extractor.Shuttle;
  * TODO: This program writes specifically to one table in the database called shutle_eta, for the sake of
  * 		 making the code more robust, it might be better to include this table in the file sts.properties along with
  * 		 the other data to connect to the database.
- * @author jonnau
+ * @author saiumesh
  * 
  */
 public class JSONSender {
