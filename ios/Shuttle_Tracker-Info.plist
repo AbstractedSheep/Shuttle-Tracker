@@ -23,8 +23,6 @@
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.abstractedsheep.${PRODUCT_NAME:rfc1034identifier}</string>
-	<key>UIPrerenderedIcon</key>
-	<true/>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -43,6 +41,8 @@
 	<string>MainWindow_iPhone</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow_iPad</string>
+	<key>UIPrerenderedIcon</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
