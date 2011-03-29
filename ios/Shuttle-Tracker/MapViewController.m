@@ -13,11 +13,14 @@
 
 @interface MapViewController()
 - (void)managedRoutesLoaded;
+//	notifyVehiclesUpdated may not be called on the main thread, so use it to call
+//	vehicles updated on the main thread.
+- (void)notifyVehiclesUpdated:(NSNotification *)notification;
 - (void)vehiclesUpdated:(NSNotification *)notification;
 //	Adding routes and stops is not guaranteed to be done on the main thread.
 - (void)addRoute:(KMLRoute *)route;
 - (void)addStop:(KMLStop *)stop;
-//	Adding vehicles is done on the main thread.
+//	Adding vehicles should only be done on the main thread.
 - (void)addKmlVehicle:(KMLVehicle *)vehicle;
 - (void)addJsonVehicle:(JSONVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
@@ -79,7 +82,7 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
 	
 	//	Take notice when vehicles are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(vehiclesUpdated:) name:kDMVehiclesUpdated object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:) name:kDMVehiclesUpdated object:nil];
 }
 
 
@@ -94,6 +97,11 @@
     }
 }
 
+//	A notification is sent by DataManager whenever the vehicles are updated.
+//	Call the work function vehiclesUpdated on the main thread.
+- (void)notifyVehiclesUpdated:(NSNotification *)notification {
+	[self performSelectorOnMainThread:@selector(vehiclesUpdated:) withObject:notification waitUntilDone:NO];
+}
 
 //	A notification is sent by DataManager whenever the vehicles are updated.
 - (void)vehiclesUpdated:(NSNotification *)notification {
@@ -160,11 +168,11 @@
 }
 
 - (void)addKmlVehicle:(KMLVehicle *)vehicle {
-    [_mapView performSelectorOnMainThread:@selector(addAnnotation:) withObject:vehicle waitUntilDone:NO];
+    [_mapView addAnnotation:vehicle];
 }
 
 - (void)addJsonVehicle:(JSONVehicle *)vehicle {
-    [_mapView performSelectorOnMainThread:@selector(addAnnotation:) withObject:vehicle waitUntilDone:NO];
+    [_mapView addAnnotation:vehicle];
 }
 
 
