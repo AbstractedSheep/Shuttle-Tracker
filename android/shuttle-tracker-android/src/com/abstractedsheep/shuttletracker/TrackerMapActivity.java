@@ -18,17 +18,24 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.android;
+package com.abstractedsheep.shuttletracker;
 
 import java.util.Date;
 import java.util.ArrayList;
 
-import com.abstractedsheep.kml.Style;
+import com.abstractedsheep.shuttletracker.MapsApiKey;
+import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.Style;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route.Coord;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
+import com.abstractedsheep.shuttletracker.mapoverlay.LocationOverlay;
+import com.abstractedsheep.shuttletracker.mapoverlay.PathOverlay;
+import com.abstractedsheep.shuttletracker.mapoverlay.StopsItemizedOverlay;
+import com.abstractedsheep.shuttletracker.mapoverlay.TimestampOverlay;
+import com.abstractedsheep.shuttletracker.mapoverlay.VehicleItemizedOverlay;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -38,13 +45,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 public class TrackerMapActivity extends MapActivity implements IShuttleServiceCallback {
-	public static final String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ"; //"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 	private static final int DEFAULT_LAT = 42729640;
 	private static final int DEFAULT_LON = -73681280;
 	private static final int DEFAULT_ZOOM = 15;
@@ -72,7 +77,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
     
     /** Set up the MapView with the default configuration */
     private void initMap() {
-    	map = new MapView(this, MAPS_API_KEY);
+    	map = new MapView(this, MapsApiKey.MAPS_API_KEY);
     	LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, new GeoPoint(0, 0), 0);
         map.setLayoutParams(lp);
         map.getController().setZoom(DEFAULT_ZOOM);
@@ -91,7 +96,6 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
      * @param routes The list of routes parsed from the JSON
      */
     private void addRoutes(RoutesJson routes) {
-    	Log.d("Tracker", "addRoutes()");
     	hasRoutes = true;
         stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
         PathOverlay routesOverlay;
@@ -100,7 +104,6 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         
         
         for (Route r : routes.getRoutes()) {
-        	Log.d("Tracker", "Creating route " + r.getName());
         	style = new Style();
         	style.setColor(r.getColor());
         	style.setWidth(r.getWidth());
@@ -111,7 +114,6 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
     		}
     		
     		routesOverlay.setPoints(points);
-    		Log.d("Tracker", "Adding route " + r.getName());
     		map.getOverlays().add(routesOverlay);
         }        
         

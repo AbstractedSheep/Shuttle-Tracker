@@ -18,7 +18,7 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.android;
+package com.abstractedsheep.shuttletracker.mapoverlay;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -31,7 +31,6 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;

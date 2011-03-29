@@ -18,10 +18,11 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.android;
+package com.abstractedsheep.shuttletracker;
 
 import java.util.ArrayList;
 
+import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
@@ -29,9 +30,7 @@ import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
-import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
@@ -42,7 +41,6 @@ import android.widget.TabHost.TabSpec;
 public class TrackerTabActivity extends TabActivity implements IShuttleServiceCallback {
 	private TabHost tabHost;
 	private ShuttleDataService dataService;
-	private ProgressBar titleBarProgress;
 	
 	@Override
 	protected void onPause() {
@@ -67,7 +65,6 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.tab);
-		Log.d("Tracker", "Progress Set");
 		setProgressBarIndeterminateVisibility(true);
 		
 		this.tabHost = getTabHost();
@@ -103,7 +100,6 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 	
 	Runnable hideIndeterminateProgress = new Runnable() {
 		public void run() {
-			Log.d("Tracker", "Progress Stopped");
 			setProgressBarIndeterminateVisibility(false);
 		}
 	};

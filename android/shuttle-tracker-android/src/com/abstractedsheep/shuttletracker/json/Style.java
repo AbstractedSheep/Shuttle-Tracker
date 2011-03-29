@@ -18,7 +18,7 @@
  *  
  */
 
-package com.abstractedsheep.kml;
+package com.abstractedsheep.shuttletracker.json;
 
 import android.graphics.Color;
 

@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.abstractedsheep.shuttletracker.android.R;
+import com.abstractedsheep.shuttletracker.R;
 import com.google.android.maps.OverlayItem;
 
 /**

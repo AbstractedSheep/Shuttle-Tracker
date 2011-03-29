@@ -18,7 +18,7 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.android;
+package com.abstractedsheep.shuttletracker.mapoverlay;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;

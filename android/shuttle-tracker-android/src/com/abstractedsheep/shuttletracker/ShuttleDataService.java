@@ -18,7 +18,7 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.android;
+package com.abstractedsheep.shuttletracker;
 
 import java.io.IOException;
 import java.net.URL;
@@ -45,7 +45,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	private ObjectMapper mapper = new ObjectMapper();
@@ -121,12 +120,10 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 				
 				do {
 					if (db.hasRoutes()) {
-						Log.d("Tracker", "has routes");
 						tempRoutes = db.getRoutes();
 						routes = tempRoutes;
 						notifyRoutesUpdated(routes);
 					} else {
-						Log.d("Tracker", "doesnt have routes");
 						tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", RoutesJson.class);
 						if (tempRoutes != null) {
 							routes = tempRoutes;
