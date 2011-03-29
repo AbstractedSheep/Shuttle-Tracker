@@ -17,7 +17,7 @@ Both 1 and 2 are found in the `server/` directory.  The Android and iOS programs
 ## License
 The Android application, in the 'android/' directory, and the server applications, in the 'server/' directory, are available under the GNU GPLv3 license as specified in the COPYING file.  Files under different licenses will say so in their headers.
 
-The iOS application, in the 'ios/' directory, is available under the Simplified BSD License, as specified in the LICENSE file in its directory, unless otherwise specified in a file.
+The iOS application, in the 'ios/' directory, is available under the Simplified BSD License.  It also incorporates code under the MIT License.  Licenses are specified in the LICENSE- files in the 'ios/' directory, unless otherwise specified in a file.
 
 ## Server
 Note: Certain values have been hard-coded into certain java files, such as the link to the shuttle data in JSONExtractor.java, while other values are being read in from the sts.properties file, which is designed to hold information to connect to the database.

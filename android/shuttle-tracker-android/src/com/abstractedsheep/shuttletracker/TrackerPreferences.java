@@ -18,44 +18,21 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.json;
+package com.abstractedsheep.shuttletracker;
 
-public class EtaJson {
-	private String stop_id;
-	private String name;
-	private int shuttle_id;
-	private int eta;
-	private int route;
+import com.abstractedsheep.shuttletracker.R;
+
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+
+public class TrackerPreferences extends PreferenceActivity {
+	public static final String MY_LOCATION = "MY_LOCATION";
+	public static final String USE_24_HOUR = "USE_24_HOUR";
+	public static final String UPDATE_RATE = "UPDATE_RATE";
 	
-	public String getStop_id() {
-		return stop_id;
-	}
-	public void setStop_id(String stop_id) {
-		this.stop_id = stop_id;
-	}
-	public int getShuttle_id() {
-		return shuttle_id;
-	}
-	public void setShuttle_id(int shuttle_id) {
-		this.shuttle_id = shuttle_id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public int getRoute() {
-		return route;
-	}
-	public void setRoute(int route) {
-		this.route = route;
-	}
-	public int getEta() {
-		return eta;
-	}
-	public void setEta(int eta) {
-		this.eta = eta;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		addPreferencesFromResource(R.xml.prefs);
 	}
 }
-	

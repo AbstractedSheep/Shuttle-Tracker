@@ -18,44 +18,9 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.json;
+package com.abstractedsheep.shuttletracker;
 
-public class EtaJson {
-	private String stop_id;
-	private String name;
-	private int shuttle_id;
-	private int eta;
-	private int route;
-	
-	public String getStop_id() {
-		return stop_id;
-	}
-	public void setStop_id(String stop_id) {
-		this.stop_id = stop_id;
-	}
-	public int getShuttle_id() {
-		return shuttle_id;
-	}
-	public void setShuttle_id(int shuttle_id) {
-		this.shuttle_id = shuttle_id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public int getRoute() {
-		return route;
-	}
-	public void setRoute(int route) {
-		this.route = route;
-	}
-	public int getEta() {
-		return eta;
-	}
-	public void setEta(int eta) {
-		this.eta = eta;
-	}
+public class MapsApiKey {
+	public static final String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	//"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 }
-	
