@@ -3,479 +3,475 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
-		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		2860E328111B887F00E27156 /* AppDelegate_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E326111B887F00E27156 /* AppDelegate_iPhone.m */; };
-		2860E329111B887F00E27156 /* MainWindow_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2860E327111B887F00E27156 /* MainWindow_iPhone.xib */; };
-		2860E32E111B888700E27156 /* AppDelegate_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = 2860E32C111B888700E27156 /* AppDelegate_iPad.m */; };
-		2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2860E32D111B888700E27156 /* MainWindow_iPad.xib */; };
-		288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765FC0DF74451002DB57D /* CoreGraphics.framework */; };
-		DA05D6FC1323EE1D00479EAB /* glyphish_map.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D6FA1323EE1D00479EAB /* glyphish_map.png */; };
-		DA05D6FD1323EE1D00479EAB /* glyphish_map@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */; };
-		DA11549B130B5BA50004E7D0 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115486130B5BA50004E7D0 /* CDataScanner.m */; };
-		DA11549C130B5BA50004E7D0 /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115489130B5BA50004E7D0 /* CFilteringJSONSerializer.m */; };
-		DA11549D130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DA11548B130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.m */; };
-		DA11549E130B5BA50004E7D0 /* CJSONSerializedData.m in Sources */ = {isa = PBXBuildFile; fileRef = DA11548D130B5BA50004E7D0 /* CJSONSerializedData.m */; };
-		DA11549F130B5BA50004E7D0 /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115490130B5BA50004E7D0 /* CDataScanner_Extensions.m */; };
-		DA1154A0130B5BA50004E7D0 /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115492130B5BA50004E7D0 /* NSDictionary_JSONExtensions.m */; };
-		DA1154A1130B5BA50004E7D0 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115495130B5BA50004E7D0 /* CJSONDeserializer.m */; };
-		DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115497130B5BA50004E7D0 /* CJSONScanner.m */; };
-		DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DA115499130B5BA50004E7D0 /* CJSONSerializer.m */; };
-		DA215D5E1311B9C600CBEF62 /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA215D5D1311B9C600CBEF62 /* EtasViewController.m */; };
-		DA39105E133652CD003EB97B /* IASKAppSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA391038133652CD003EB97B /* IASKAppSettingsViewController.m */; };
-		DA39105F133652CD003EB97B /* IASKAppSettingsWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA39103A133652CD003EB97B /* IASKAppSettingsWebViewController.m */; };
-		DA391060133652CD003EB97B /* IASKSpecifierValuesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA39103C133652CD003EB97B /* IASKSpecifierValuesViewController.m */; };
-		DA391061133652CD003EB97B /* IASKSettingsReader.m in Sources */ = {isa = PBXBuildFile; fileRef = DA39103F133652CD003EB97B /* IASKSettingsReader.m */; };
-		DA391062133652CD003EB97B /* IASKSettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = DA391041133652CD003EB97B /* IASKSettingsStore.m */; };
-		DA391063133652CD003EB97B /* IASKSettingsStoreFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DA391043133652CD003EB97B /* IASKSettingsStoreFile.m */; };
-		DA391064133652CD003EB97B /* IASKSettingsStoreUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = DA391045133652CD003EB97B /* IASKSettingsStoreUserDefaults.m */; };
-		DA391065133652CD003EB97B /* IASKSpecifier.m in Sources */ = {isa = PBXBuildFile; fileRef = DA391047133652CD003EB97B /* IASKSpecifier.m */; };
-		DA391066133652CD003EB97B /* IASKPSSliderSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA39104A133652CD003EB97B /* IASKPSSliderSpecifierViewCell.m */; };
-		DA391067133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA39104C133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.m */; };
-		DA391068133652CD003EB97B /* IASKPSTitleValueSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA39104E133652CD003EB97B /* IASKPSTitleValueSpecifierViewCell.m */; };
-		DA391069133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DA391050133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.m */; };
-		DA39106A133652CD003EB97B /* IASKSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = DA391052133652CD003EB97B /* IASKSlider.m */; };
-		DA39106B133652CD003EB97B /* IASKSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = DA391054133652CD003EB97B /* IASKSwitch.m */; };
-		DA39106C133652CD003EB97B /* IASKTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = DA391056133652CD003EB97B /* IASKTextField.m */; };
-		DA39106D133652CD003EB97B /* IASKAppSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA391058133652CD003EB97B /* IASKAppSettingsView.xib */; };
-		DA39106E133652CD003EB97B /* IASKAppSettingsWebView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA391059133652CD003EB97B /* IASKAppSettingsWebView.xib */; };
-		DA39106F133652CD003EB97B /* IASKPSSliderSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA39105A133652CD003EB97B /* IASKPSSliderSpecifierViewCell.xib */; };
-		DA391070133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA39105B133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.xib */; };
-		DA391071133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA39105C133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib */; };
-		DA391072133652CD003EB97B /* IASKSpecifierValuesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA39105D133652CD003EB97B /* IASKSpecifierValuesView.xib */; };
-		DA39107513365464003EB97B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA39107413365464003EB97B /* MessageUI.framework */; };
-		DA3E181A1337F74F002D4453 /* MainViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = DA3E18191337F74F002D4453 /* MainViewController_iPad.m */; };
-		DA3FC96C1324606000E6FE78 /* glyphish_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96A1324606000E6FE78 /* glyphish_clock.png */; };
-		DA3FC96D1324606000E6FE78 /* glyphish_clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */; };
-		DA577BD713365A1600072CE6 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DA577BD613365A1600072CE6 /* Settings.bundle */; };
-		DA577BDB13365C9800072CE6 /* glyphish_gear.png in Resources */ = {isa = PBXBuildFile; fileRef = DA577BD913365C9800072CE6 /* glyphish_gear.png */; };
-		DA577BDC13365C9800072CE6 /* glyphish_gear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA577BDA13365C9800072CE6 /* glyphish_gear@2x.png */; };
-		DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA750B7012F4C7D700190FA3 /* MapKit.framework */; };
-		DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B7512F4C84700190FA3 /* MapViewController.m */; };
-		DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */ = {isa = PBXBuildFile; fileRef = DA750B8812F4CB7600190FA3 /* netlink.kml */; };
-		DA750B8C12F4CC7D00190FA3 /* KMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DA750B8B12F4CC7D00190FA3 /* KMLParser.m */; };
-		DA8249651306F331004FBB50 /* JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DA8249641306F331004FBB50 /* JSONParser.m */; };
-		DAA0367E13149335005D3E86 /* shuttle_color.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA0367C13149335005D3E86 /* shuttle_color.png */; };
-		DAA0367F13149335005D3E86 /* shuttle.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA0367D13149335005D3E86 /* shuttle.png */; };
-		DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA8E13119C3800EDE54E /* DataManager.m */; };
-		DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAA0DA951311A2F100EDE54E /* MainViewController.m */; };
-		DAA49A9213412A980011AB81 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9113412A980011AB81 /* Icon.png */; };
-		DAA49A9513412A9C0011AB81 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9413412A9C0011AB81 /* Icon@2x.png */; };
-		DAA49A9713412AA50011AB81 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9613412AA50011AB81 /* Icon-72.png */; };
-		DAA49A9C13412AB60011AB81 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9813412AB60011AB81 /* Icon-Small.png */; };
-		DAA49A9D13412AB60011AB81 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9913412AB60011AB81 /* Icon-Small@2x.png */; };
-		DAA49A9E13412AB60011AB81 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9A13412AB60011AB81 /* iTunesArtwork */; };
-		DAA49A9F13412AB60011AB81 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49A9B13412AB60011AB81 /* Icon-Small-50.png */; };
-		DAA49AA7134152D40011AB81 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49AA6134152D40011AB81 /* Default.png */; };
-		DAA49AA9134152D90011AB81 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49AA8134152D80011AB81 /* Default@2x.png */; };
-		DAA49AAB134153530011AB81 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49AAA134153530011AB81 /* Default-Landscape~ipad.png */; };
-		DAA49AAD1341535A0011AB81 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAA49AAC1341535A0011AB81 /* Default-Portrait~ipad.png */; };
-		DAACF009131F2E980074FA4C /* stop_marker.png in Resources */ = {isa = PBXBuildFile; fileRef = DAACF008131F2E980074FA4C /* stop_marker.png */; };
-		DAB2655512FB5D8900A4C5B7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */; };
-		DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */; };
-		DAE5C9C413063BEC0014AEFE /* MainViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */; };
+		DAD407041341635100F05D88 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DAD407021341635100F05D88 /* InfoPlist.strings */; };
+		DAD407071341635100F05D88 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407061341635100F05D88 /* main.m */; };
+		DAD4070A1341635100F05D88 /* Shuttle_TrackerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */; };
+		DAD4070E1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4070D1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m */; };
+		DAD407111341635100F05D88 /* MainWindow_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD4070F1341635100F05D88 /* MainWindow_iPhone.xib */; };
+		DAD407151341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407141341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m */; };
+		DAD407181341635100F05D88 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407161341635100F05D88 /* MainWindow_iPad.xib */; };
+		DAD40737134165F300F05D88 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD40736134165F300F05D88 /* CoreLocation.framework */; };
+		DAD4073A134165FF00F05D88 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD40739134165FF00F05D88 /* MapKit.framework */; };
+		DAD4073C1341660300F05D88 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD4073B1341660300F05D88 /* MessageUI.framework */; };
+		DAD407541341666500F05D88 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4073F1341666500F05D88 /* CDataScanner.m */; };
+		DAD407551341666500F05D88 /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407421341666500F05D88 /* CFilteringJSONSerializer.m */; };
+		DAD407561341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407441341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m */; };
+		DAD407571341666500F05D88 /* CJSONSerializedData.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407461341666500F05D88 /* CJSONSerializedData.m */; };
+		DAD407581341666500F05D88 /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407491341666500F05D88 /* CDataScanner_Extensions.m */; };
+		DAD407591341666500F05D88 /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4074B1341666500F05D88 /* NSDictionary_JSONExtensions.m */; };
+		DAD4075A1341666500F05D88 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4074E1341666500F05D88 /* CJSONDeserializer.m */; };
+		DAD4075B1341666500F05D88 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407501341666500F05D88 /* CJSONScanner.m */; };
+		DAD4075C1341666500F05D88 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407521341666500F05D88 /* CJSONSerializer.m */; };
+		DAD407861341667300F05D88 /* IASKAppSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407601341667300F05D88 /* IASKAppSettingsViewController.m */; };
+		DAD407871341667300F05D88 /* IASKAppSettingsWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407621341667300F05D88 /* IASKAppSettingsWebViewController.m */; };
+		DAD407881341667300F05D88 /* IASKSpecifierValuesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407641341667300F05D88 /* IASKSpecifierValuesViewController.m */; };
+		DAD407891341667300F05D88 /* IASKSettingsReader.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407671341667300F05D88 /* IASKSettingsReader.m */; };
+		DAD4078A1341667300F05D88 /* IASKSettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407691341667300F05D88 /* IASKSettingsStore.m */; };
+		DAD4078B1341667300F05D88 /* IASKSettingsStoreFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4076B1341667300F05D88 /* IASKSettingsStoreFile.m */; };
+		DAD4078C1341667300F05D88 /* IASKSettingsStoreUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4076D1341667300F05D88 /* IASKSettingsStoreUserDefaults.m */; };
+		DAD4078D1341667300F05D88 /* IASKSpecifier.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4076F1341667300F05D88 /* IASKSpecifier.m */; };
+		DAD4078E1341667300F05D88 /* IASKPSSliderSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407721341667300F05D88 /* IASKPSSliderSpecifierViewCell.m */; };
+		DAD4078F1341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407741341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m */; };
+		DAD407901341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407761341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m */; };
+		DAD407911341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407781341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m */; };
+		DAD407921341667300F05D88 /* IASKSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4077A1341667300F05D88 /* IASKSlider.m */; };
+		DAD407931341667300F05D88 /* IASKSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4077C1341667300F05D88 /* IASKSwitch.m */; };
+		DAD407941341667300F05D88 /* IASKTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4077E1341667300F05D88 /* IASKTextField.m */; };
+		DAD407951341667300F05D88 /* IASKAppSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407801341667300F05D88 /* IASKAppSettingsView.xib */; };
+		DAD407961341667300F05D88 /* IASKAppSettingsWebView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407811341667300F05D88 /* IASKAppSettingsWebView.xib */; };
+		DAD407971341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407821341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib */; };
+		DAD407981341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407831341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib */; };
+		DAD407991341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407841341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib */; };
+		DAD4079A1341667300F05D88 /* IASKSpecifierValuesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407851341667300F05D88 /* IASKSpecifierValuesView.xib */; };
+		DAD407A9134166C200F05D88 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A2134166C100F05D88 /* DataManager.m */; };
+		DAD407AA134166C200F05D88 /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A3134166C100F05D88 /* EtasViewController.m */; };
+		DAD407AB134166C200F05D88 /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A4134166C100F05D88 /* EtaWrapper.m */; };
+		DAD407AC134166C200F05D88 /* JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A5134166C100F05D88 /* JSONParser.m */; };
+		DAD407AD134166C200F05D88 /* KMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A6134166C100F05D88 /* KMLParser.m */; };
+		DAD407AE134166C200F05D88 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A7134166C100F05D88 /* MainViewController.m */; };
+		DAD407AF134166C200F05D88 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A8134166C200F05D88 /* MapViewController.m */; };
+		DAD407B8134168A200F05D88 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DAD407B7134168A200F05D88 /* Settings.bundle */; };
+		DAD407C2134168CA00F05D88 /* glyphish_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407B9134168CA00F05D88 /* glyphish_clock.png */; };
+		DAD407C3134168CA00F05D88 /* glyphish_clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BA134168CA00F05D88 /* glyphish_clock@2x.png */; };
+		DAD407C4134168CA00F05D88 /* glyphish_gear.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BB134168CA00F05D88 /* glyphish_gear.png */; };
+		DAD407C5134168CA00F05D88 /* glyphish_gear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BC134168CA00F05D88 /* glyphish_gear@2x.png */; };
+		DAD407C6134168CA00F05D88 /* glyphish_map.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BD134168CA00F05D88 /* glyphish_map.png */; };
+		DAD407C7134168CA00F05D88 /* glyphish_map@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BE134168CA00F05D88 /* glyphish_map@2x.png */; };
+		DAD407C8134168CA00F05D88 /* shuttle_color.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BF134168CA00F05D88 /* shuttle_color.png */; };
+		DAD407C9134168CA00F05D88 /* shuttle.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407C0134168CA00F05D88 /* shuttle.png */; };
+		DAD407CA134168CA00F05D88 /* stop_marker.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407C1134168CA00F05D88 /* stop_marker.png */; };
+		DAD407CC134168E500F05D88 /* netlink.kml in Resources */ = {isa = PBXBuildFile; fileRef = DAD407CB134168E500F05D88 /* netlink.kml */; };
+		DAD407D6134169A600F05D88 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D3134169A600F05D88 /* Icon-Small-50.png */; };
+		DAD407D7134169A600F05D88 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D4134169A600F05D88 /* Icon-Small.png */; };
+		DAD407D8134169A600F05D88 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D5134169A600F05D88 /* Icon-Small@2x.png */; };
+		DAD407DA13416B2300F05D88 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D913416B2300F05D88 /* Icon.png */; };
+		DAD407DC13416B2800F05D88 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407DB13416B2800F05D88 /* Icon@2x.png */; };
+		DAD407DE13416B3000F05D88 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407DD13416B3000F05D88 /* Icon-72.png */; };
+		DAD407E21341701500F05D88 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD407E11341701500F05D88 /* UIKit.framework */; };
+		DAD407EE1341704E00F05D88 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD407ED1341704D00F05D88 /* CoreGraphics.framework */; };
+		DAD407F01341709A00F05D88 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD407EF1341709A00F05D88 /* Foundation.framework */; };
+		DAD4080413417A1E00F05D88 /* MainViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4080313417A1E00F05D88 /* MainViewController_iPhone.m */; };
+		DAD4080713417A3B00F05D88 /* MainViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4080613417A3B00F05D88 /* MainViewController_iPad.m */; };
+		DAD4080913417B5D00F05D88 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4080813417B5D00F05D88 /* Default.png */; };
+		DAD4080B13417B6100F05D88 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4080A13417B6100F05D88 /* Default@2x.png */; };
+		DAD4080D13417B6900F05D88 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4080C13417B6900F05D88 /* Default-Portrait~ipad.png */; };
+		DAD4080F13417B6D00F05D88 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4080E13417B6D00F05D88 /* Default-Landscape~ipad.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		1D6058910D05DD3D006BFB54 /* Shuttle-Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shuttle-Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		2860E325111B887F00E27156 /* AppDelegate_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AppDelegate_iPhone.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		2860E326111B887F00E27156 /* AppDelegate_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppDelegate_iPhone.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		2860E327111B887F00E27156 /* MainWindow_iPhone.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow_iPhone.xib; sourceTree = "<group>"; };
-		2860E32B111B888700E27156 /* AppDelegate_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = AppDelegate_iPad.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		2860E32C111B888700E27156 /* AppDelegate_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppDelegate_iPad.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		2860E32D111B888700E27156 /* MainWindow_iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow_iPad.xib; sourceTree = "<group>"; };
-		288765FC0DF74451002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = main.m; path = Shared/main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		32CA4F630368D1EE00C91783 /* Shuttle_Tracker_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Shuttle_Tracker_Prefix.pch; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		8D1107310486CEB800E47090 /* Shuttle_Tracker-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Shuttle_Tracker-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
-		DA05D6FA1323EE1D00479EAB /* glyphish_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_map.png; sourceTree = "<group>"; };
-		DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_map@2x.png"; sourceTree = "<group>"; };
-		DA115485130B5BA50004E7D0 /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner.h; sourceTree = "<group>"; };
-		DA115486130B5BA50004E7D0 /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner.m; sourceTree = "<group>"; };
-		DA115488130B5BA50004E7D0 /* CFilteringJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFilteringJSONSerializer.h; sourceTree = "<group>"; };
-		DA115489130B5BA50004E7D0 /* CFilteringJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFilteringJSONSerializer.m; sourceTree = "<group>"; };
-		DA11548A130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer_BlocksExtensions.h; sourceTree = "<group>"; };
-		DA11548B130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer_BlocksExtensions.m; sourceTree = "<group>"; };
-		DA11548C130B5BA50004E7D0 /* CJSONSerializedData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializedData.h; sourceTree = "<group>"; };
-		DA11548D130B5BA50004E7D0 /* CJSONSerializedData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializedData.m; sourceTree = "<group>"; };
-		DA11548F130B5BA50004E7D0 /* CDataScanner_Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner_Extensions.h; sourceTree = "<group>"; };
-		DA115490130B5BA50004E7D0 /* CDataScanner_Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner_Extensions.m; sourceTree = "<group>"; };
-		DA115491130B5BA50004E7D0 /* NSDictionary_JSONExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionary_JSONExtensions.h; sourceTree = "<group>"; };
-		DA115492130B5BA50004E7D0 /* NSDictionary_JSONExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDictionary_JSONExtensions.m; sourceTree = "<group>"; };
-		DA115494130B5BA50004E7D0 /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer.h; sourceTree = "<group>"; };
-		DA115495130B5BA50004E7D0 /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer.m; sourceTree = "<group>"; };
-		DA115496130B5BA50004E7D0 /* CJSONScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONScanner.h; sourceTree = "<group>"; };
-		DA115497130B5BA50004E7D0 /* CJSONScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner.m; sourceTree = "<group>"; };
-		DA115498130B5BA50004E7D0 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
-		DA115499130B5BA50004E7D0 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
-		DA11549A130B5BA50004E7D0 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
-		DA215D5C1311B9C600CBEF62 /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtasViewController.h; sourceTree = "<group>"; };
-		DA215D5D1311B9C600CBEF62 /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtasViewController.m; sourceTree = "<group>"; };
-		DA31240012FDC69C00F90B79 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = KMLParser.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		DA391037133652CD003EB97B /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
-		DA391038133652CD003EB97B /* IASKAppSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsViewController.m; sourceTree = "<group>"; };
-		DA391039133652CD003EB97B /* IASKAppSettingsWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsWebViewController.h; sourceTree = "<group>"; };
-		DA39103A133652CD003EB97B /* IASKAppSettingsWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsWebViewController.m; sourceTree = "<group>"; };
-		DA39103B133652CD003EB97B /* IASKSpecifierValuesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSpecifierValuesViewController.h; sourceTree = "<group>"; };
-		DA39103C133652CD003EB97B /* IASKSpecifierValuesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSpecifierValuesViewController.m; sourceTree = "<group>"; };
-		DA39103E133652CD003EB97B /* IASKSettingsReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsReader.h; sourceTree = "<group>"; };
-		DA39103F133652CD003EB97B /* IASKSettingsReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsReader.m; sourceTree = "<group>"; };
-		DA391040133652CD003EB97B /* IASKSettingsStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsStore.h; sourceTree = "<group>"; };
-		DA391041133652CD003EB97B /* IASKSettingsStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsStore.m; sourceTree = "<group>"; };
-		DA391042133652CD003EB97B /* IASKSettingsStoreFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsStoreFile.h; sourceTree = "<group>"; };
-		DA391043133652CD003EB97B /* IASKSettingsStoreFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsStoreFile.m; sourceTree = "<group>"; };
-		DA391044133652CD003EB97B /* IASKSettingsStoreUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsStoreUserDefaults.h; sourceTree = "<group>"; };
-		DA391045133652CD003EB97B /* IASKSettingsStoreUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsStoreUserDefaults.m; sourceTree = "<group>"; };
-		DA391046133652CD003EB97B /* IASKSpecifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSpecifier.h; sourceTree = "<group>"; };
-		DA391047133652CD003EB97B /* IASKSpecifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSpecifier.m; sourceTree = "<group>"; };
-		DA391049133652CD003EB97B /* IASKPSSliderSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSSliderSpecifierViewCell.h; sourceTree = "<group>"; };
-		DA39104A133652CD003EB97B /* IASKPSSliderSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSSliderSpecifierViewCell.m; sourceTree = "<group>"; };
-		DA39104B133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSTextFieldSpecifierViewCell.h; sourceTree = "<group>"; };
-		DA39104C133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSTextFieldSpecifierViewCell.m; sourceTree = "<group>"; };
-		DA39104D133652CD003EB97B /* IASKPSTitleValueSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSTitleValueSpecifierViewCell.h; sourceTree = "<group>"; };
-		DA39104E133652CD003EB97B /* IASKPSTitleValueSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSTitleValueSpecifierViewCell.m; sourceTree = "<group>"; };
-		DA39104F133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSToggleSwitchSpecifierViewCell.h; sourceTree = "<group>"; };
-		DA391050133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSToggleSwitchSpecifierViewCell.m; sourceTree = "<group>"; };
-		DA391051133652CD003EB97B /* IASKSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSlider.h; sourceTree = "<group>"; };
-		DA391052133652CD003EB97B /* IASKSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSlider.m; sourceTree = "<group>"; };
-		DA391053133652CD003EB97B /* IASKSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSwitch.h; sourceTree = "<group>"; };
-		DA391054133652CD003EB97B /* IASKSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSwitch.m; sourceTree = "<group>"; };
-		DA391055133652CD003EB97B /* IASKTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKTextField.h; sourceTree = "<group>"; };
-		DA391056133652CD003EB97B /* IASKTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKTextField.m; sourceTree = "<group>"; };
-		DA391058133652CD003EB97B /* IASKAppSettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKAppSettingsView.xib; sourceTree = "<group>"; };
-		DA391059133652CD003EB97B /* IASKAppSettingsWebView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKAppSettingsWebView.xib; sourceTree = "<group>"; };
-		DA39105A133652CD003EB97B /* IASKPSSliderSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSSliderSpecifierViewCell.xib; sourceTree = "<group>"; };
-		DA39105B133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSTextFieldSpecifierViewCell.xib; sourceTree = "<group>"; };
-		DA39105C133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSToggleSwitchSpecifierViewCell.xib; sourceTree = "<group>"; };
-		DA39105D133652CD003EB97B /* IASKSpecifierValuesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKSpecifierValuesView.xib; sourceTree = "<group>"; };
-		DA39107413365464003EB97B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		DA3E18181337F74F002D4453 /* MainViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController_iPad.h; sourceTree = "<group>"; };
-		DA3E18191337F74F002D4453 /* MainViewController_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController_iPad.m; sourceTree = "<group>"; };
-		DA3FC96A1324606000E6FE78 /* glyphish_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_clock.png; sourceTree = "<group>"; };
-		DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_clock@2x.png"; sourceTree = "<group>"; };
-		DA577BD613365A1600072CE6 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		DA577BD913365C9800072CE6 /* glyphish_gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_gear.png; sourceTree = "<group>"; };
-		DA577BDA13365C9800072CE6 /* glyphish_gear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_gear@2x.png"; sourceTree = "<group>"; };
-		DA750B7012F4C7D700190FA3 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		DA750B7412F4C84700190FA3 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MapViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		DA750B7512F4C84700190FA3 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MapViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		DA750B8812F4CB7600190FA3 /* netlink.kml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; lineEnding = 0; path = netlink.kml; sourceTree = "<group>"; };
-		DA750B8B12F4CC7D00190FA3 /* KMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = KMLParser.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		DA8249631306F331004FBB50 /* JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONParser.h; sourceTree = "<group>"; };
-		DA8249641306F331004FBB50 /* JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONParser.m; sourceTree = "<group>"; };
-		DAA0367C13149335005D3E86 /* shuttle_color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color.png; sourceTree = "<group>"; };
-		DAA0367D13149335005D3E86 /* shuttle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle.png; sourceTree = "<group>"; };
-		DAA0DA8D13119C3800EDE54E /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
-		DAA0DA8E13119C3800EDE54E /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
-		DAA0DA941311A2F100EDE54E /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		DAA0DA951311A2F100EDE54E /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
-		DAA49A9113412A980011AB81 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		DAA49A9413412A9C0011AB81 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
-		DAA49A9613412AA50011AB81 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
-		DAA49A9813412AB60011AB81 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
-		DAA49A9913412AB60011AB81 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
-		DAA49A9A13412AB60011AB81 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
-		DAA49A9B13412AB60011AB81 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
-		DAA49AA6134152D40011AB81 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		DAA49AA8134152D80011AB81 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		DAA49AAA134153530011AB81 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
-		DAA49AAC1341535A0011AB81 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
-		DAACF008131F2E980074FA4C /* stop_marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_marker.png; sourceTree = "<group>"; };
-		DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		DAC9AB3B1311AF85008E8555 /* EtaWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaWrapper.h; sourceTree = "<group>"; };
-		DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
-		DAE5C9C213063BEC0014AEFE /* MainViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController_iPhone.h; sourceTree = "<group>"; };
-		DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController_iPhone.m; sourceTree = "<group>"; };
+		DAD406F51341635100F05D88 /* Shuttle-Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shuttle-Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DAD407011341635100F05D88 /* Shuttle-Tracker-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Shuttle-Tracker-Info.plist"; sourceTree = "<group>"; };
+		DAD407031341635100F05D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DAD407051341635100F05D88 /* Shuttle-Tracker-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shuttle-Tracker-Prefix.pch"; sourceTree = "<group>"; };
+		DAD407061341635100F05D88 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		DAD407081341635100F05D88 /* Shuttle_TrackerAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shuttle_TrackerAppDelegate.h; sourceTree = "<group>"; };
+		DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Shuttle_TrackerAppDelegate.m; sourceTree = "<group>"; };
+		DAD4070C1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Shuttle_TrackerAppDelegate_iPhone.h; path = iPhone/Shuttle_TrackerAppDelegate_iPhone.h; sourceTree = "<group>"; };
+		DAD4070D1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Shuttle_TrackerAppDelegate_iPhone.m; path = iPhone/Shuttle_TrackerAppDelegate_iPhone.m; sourceTree = "<group>"; };
+		DAD407101341635100F05D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = iPhone/en.lproj/MainWindow_iPhone.xib; sourceTree = "<group>"; };
+		DAD407131341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Shuttle_TrackerAppDelegate_iPad.h; path = iPad/Shuttle_TrackerAppDelegate_iPad.h; sourceTree = "<group>"; };
+		DAD407141341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Shuttle_TrackerAppDelegate_iPad.m; path = iPad/Shuttle_TrackerAppDelegate_iPad.m; sourceTree = "<group>"; };
+		DAD407171341635100F05D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = iPad/en.lproj/MainWindow_iPad.xib; sourceTree = "<group>"; };
+		DAD40736134165F300F05D88 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		DAD40739134165FF00F05D88 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		DAD4073B1341660300F05D88 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		DAD4073E1341666500F05D88 /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner.h; sourceTree = "<group>"; };
+		DAD4073F1341666500F05D88 /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner.m; sourceTree = "<group>"; };
+		DAD407411341666500F05D88 /* CFilteringJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFilteringJSONSerializer.h; sourceTree = "<group>"; };
+		DAD407421341666500F05D88 /* CFilteringJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFilteringJSONSerializer.m; sourceTree = "<group>"; };
+		DAD407431341666500F05D88 /* CJSONDeserializer_BlocksExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer_BlocksExtensions.h; sourceTree = "<group>"; };
+		DAD407441341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer_BlocksExtensions.m; sourceTree = "<group>"; };
+		DAD407451341666500F05D88 /* CJSONSerializedData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializedData.h; sourceTree = "<group>"; };
+		DAD407461341666500F05D88 /* CJSONSerializedData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializedData.m; sourceTree = "<group>"; };
+		DAD407481341666500F05D88 /* CDataScanner_Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner_Extensions.h; sourceTree = "<group>"; };
+		DAD407491341666500F05D88 /* CDataScanner_Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner_Extensions.m; sourceTree = "<group>"; };
+		DAD4074A1341666500F05D88 /* NSDictionary_JSONExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionary_JSONExtensions.h; sourceTree = "<group>"; };
+		DAD4074B1341666500F05D88 /* NSDictionary_JSONExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDictionary_JSONExtensions.m; sourceTree = "<group>"; };
+		DAD4074D1341666500F05D88 /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer.h; sourceTree = "<group>"; };
+		DAD4074E1341666500F05D88 /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer.m; sourceTree = "<group>"; };
+		DAD4074F1341666500F05D88 /* CJSONScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONScanner.h; sourceTree = "<group>"; };
+		DAD407501341666500F05D88 /* CJSONScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner.m; sourceTree = "<group>"; };
+		DAD407511341666500F05D88 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
+		DAD407521341666500F05D88 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
+		DAD407531341666500F05D88 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
+		DAD4075F1341667300F05D88 /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
+		DAD407601341667300F05D88 /* IASKAppSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsViewController.m; sourceTree = "<group>"; };
+		DAD407611341667300F05D88 /* IASKAppSettingsWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsWebViewController.h; sourceTree = "<group>"; };
+		DAD407621341667300F05D88 /* IASKAppSettingsWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsWebViewController.m; sourceTree = "<group>"; };
+		DAD407631341667300F05D88 /* IASKSpecifierValuesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSpecifierValuesViewController.h; sourceTree = "<group>"; };
+		DAD407641341667300F05D88 /* IASKSpecifierValuesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSpecifierValuesViewController.m; sourceTree = "<group>"; };
+		DAD407661341667300F05D88 /* IASKSettingsReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsReader.h; sourceTree = "<group>"; };
+		DAD407671341667300F05D88 /* IASKSettingsReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsReader.m; sourceTree = "<group>"; };
+		DAD407681341667300F05D88 /* IASKSettingsStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsStore.h; sourceTree = "<group>"; };
+		DAD407691341667300F05D88 /* IASKSettingsStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsStore.m; sourceTree = "<group>"; };
+		DAD4076A1341667300F05D88 /* IASKSettingsStoreFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsStoreFile.h; sourceTree = "<group>"; };
+		DAD4076B1341667300F05D88 /* IASKSettingsStoreFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsStoreFile.m; sourceTree = "<group>"; };
+		DAD4076C1341667300F05D88 /* IASKSettingsStoreUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsStoreUserDefaults.h; sourceTree = "<group>"; };
+		DAD4076D1341667300F05D88 /* IASKSettingsStoreUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsStoreUserDefaults.m; sourceTree = "<group>"; };
+		DAD4076E1341667300F05D88 /* IASKSpecifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSpecifier.h; sourceTree = "<group>"; };
+		DAD4076F1341667300F05D88 /* IASKSpecifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSpecifier.m; sourceTree = "<group>"; };
+		DAD407711341667300F05D88 /* IASKPSSliderSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSSliderSpecifierViewCell.h; sourceTree = "<group>"; };
+		DAD407721341667300F05D88 /* IASKPSSliderSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSSliderSpecifierViewCell.m; sourceTree = "<group>"; };
+		DAD407731341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSTextFieldSpecifierViewCell.h; sourceTree = "<group>"; };
+		DAD407741341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSTextFieldSpecifierViewCell.m; sourceTree = "<group>"; };
+		DAD407751341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSTitleValueSpecifierViewCell.h; sourceTree = "<group>"; };
+		DAD407761341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSTitleValueSpecifierViewCell.m; sourceTree = "<group>"; };
+		DAD407771341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSToggleSwitchSpecifierViewCell.h; sourceTree = "<group>"; };
+		DAD407781341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSToggleSwitchSpecifierViewCell.m; sourceTree = "<group>"; };
+		DAD407791341667300F05D88 /* IASKSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSlider.h; sourceTree = "<group>"; };
+		DAD4077A1341667300F05D88 /* IASKSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSlider.m; sourceTree = "<group>"; };
+		DAD4077B1341667300F05D88 /* IASKSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSwitch.h; sourceTree = "<group>"; };
+		DAD4077C1341667300F05D88 /* IASKSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSwitch.m; sourceTree = "<group>"; };
+		DAD4077D1341667300F05D88 /* IASKTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKTextField.h; sourceTree = "<group>"; };
+		DAD4077E1341667300F05D88 /* IASKTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKTextField.m; sourceTree = "<group>"; };
+		DAD407801341667300F05D88 /* IASKAppSettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKAppSettingsView.xib; sourceTree = "<group>"; };
+		DAD407811341667300F05D88 /* IASKAppSettingsWebView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKAppSettingsWebView.xib; sourceTree = "<group>"; };
+		DAD407821341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSSliderSpecifierViewCell.xib; sourceTree = "<group>"; };
+		DAD407831341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSTextFieldSpecifierViewCell.xib; sourceTree = "<group>"; };
+		DAD407841341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSToggleSwitchSpecifierViewCell.xib; sourceTree = "<group>"; };
+		DAD407851341667300F05D88 /* IASKSpecifierValuesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKSpecifierValuesView.xib; sourceTree = "<group>"; };
+		DAD4079B134166C100F05D88 /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
+		DAD4079C134166C100F05D88 /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtasViewController.h; sourceTree = "<group>"; };
+		DAD4079D134166C100F05D88 /* EtaWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaWrapper.h; sourceTree = "<group>"; };
+		DAD4079E134166C100F05D88 /* JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONParser.h; sourceTree = "<group>"; };
+		DAD4079F134166C100F05D88 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMLParser.h; sourceTree = "<group>"; };
+		DAD407A0134166C100F05D88 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		DAD407A1134166C100F05D88 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
+		DAD407A2134166C100F05D88 /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
+		DAD407A3134166C100F05D88 /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtasViewController.m; sourceTree = "<group>"; };
+		DAD407A4134166C100F05D88 /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
+		DAD407A5134166C100F05D88 /* JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONParser.m; sourceTree = "<group>"; };
+		DAD407A6134166C100F05D88 /* KMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMLParser.m; sourceTree = "<group>"; };
+		DAD407A7134166C100F05D88 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		DAD407A8134166C200F05D88 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
+		DAD407B7134168A200F05D88 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		DAD407B9134168CA00F05D88 /* glyphish_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_clock.png; sourceTree = "<group>"; };
+		DAD407BA134168CA00F05D88 /* glyphish_clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_clock@2x.png"; sourceTree = "<group>"; };
+		DAD407BB134168CA00F05D88 /* glyphish_gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_gear.png; sourceTree = "<group>"; };
+		DAD407BC134168CA00F05D88 /* glyphish_gear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_gear@2x.png"; sourceTree = "<group>"; };
+		DAD407BD134168CA00F05D88 /* glyphish_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_map.png; sourceTree = "<group>"; };
+		DAD407BE134168CA00F05D88 /* glyphish_map@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_map@2x.png"; sourceTree = "<group>"; };
+		DAD407BF134168CA00F05D88 /* shuttle_color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color.png; sourceTree = "<group>"; };
+		DAD407C0134168CA00F05D88 /* shuttle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle.png; sourceTree = "<group>"; };
+		DAD407C1134168CA00F05D88 /* stop_marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_marker.png; sourceTree = "<group>"; };
+		DAD407CB134168E500F05D88 /* netlink.kml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = netlink.kml; sourceTree = "<group>"; };
+		DAD407D3134169A600F05D88 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
+		DAD407D4134169A600F05D88 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
+		DAD407D5134169A600F05D88 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
+		DAD407D913416B2300F05D88 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		DAD407DB13416B2800F05D88 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		DAD407DD13416B3000F05D88 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		DAD407E11341701500F05D88 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		DAD407ED1341704D00F05D88 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		DAD407EF1341709A00F05D88 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		DAD4080213417A1E00F05D88 /* MainViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController_iPhone.h; path = iPhone/MainViewController_iPhone.h; sourceTree = "<group>"; };
+		DAD4080313417A1E00F05D88 /* MainViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController_iPhone.m; path = iPhone/MainViewController_iPhone.m; sourceTree = "<group>"; };
+		DAD4080513417A3B00F05D88 /* MainViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController_iPad.h; path = iPad/MainViewController_iPad.h; sourceTree = "<group>"; };
+		DAD4080613417A3B00F05D88 /* MainViewController_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController_iPad.m; path = iPad/MainViewController_iPad.m; sourceTree = "<group>"; };
+		DAD4080813417B5D00F05D88 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		DAD4080A13417B6100F05D88 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		DAD4080C13417B6900F05D88 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		DAD4080E13417B6D00F05D88 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
+		DAD406F21341635100F05D88 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA39107513365464003EB97B /* MessageUI.framework in Frameworks */,
-				DAB2655512FB5D8900A4C5B7 /* CoreLocation.framework in Frameworks */,
-				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
-				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
-				DA750B7112F4C7D700190FA3 /* MapKit.framework in Frameworks */,
-				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
+				DAD407F01341709A00F05D88 /* Foundation.framework in Frameworks */,
+				DAD407EE1341704E00F05D88 /* CoreGraphics.framework in Frameworks */,
+				DAD407E21341701500F05D88 /* UIKit.framework in Frameworks */,
+				DAD4073C1341660300F05D88 /* MessageUI.framework in Frameworks */,
+				DAD4073A134165FF00F05D88 /* MapKit.framework in Frameworks */,
+				DAD40737134165F300F05D88 /* CoreLocation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		19C28FACFE9D520D11CA2CBB /* Products */ = {
+		DAD406EA1341635100F05D88 = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Shuttle-Tracker.app */,
+				DAD4080E13417B6D00F05D88 /* Default-Landscape~ipad.png */,
+				DAD4080C13417B6900F05D88 /* Default-Portrait~ipad.png */,
+				DAD4080A13417B6100F05D88 /* Default@2x.png */,
+				DAD4080813417B5D00F05D88 /* Default.png */,
+				DAD407DD13416B3000F05D88 /* Icon-72.png */,
+				DAD407DB13416B2800F05D88 /* Icon@2x.png */,
+				DAD407D913416B2300F05D88 /* Icon.png */,
+				DAD406FF1341635100F05D88 /* Shuttle-Tracker */,
+				DAD4075D1341667300F05D88 /* InAppSettingsKit */,
+				DAD4073D1341666500F05D88 /* TouchJSON */,
+				DAD406F81341635100F05D88 /* Frameworks */,
+				DAD406F61341635100F05D88 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DAD406F61341635100F05D88 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DAD406F51341635100F05D88 /* Shuttle-Tracker.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2860E324111B887F00E27156 /* iPhone */ = {
+		DAD406F81341635100F05D88 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2860E325111B887F00E27156 /* AppDelegate_iPhone.h */,
-				2860E326111B887F00E27156 /* AppDelegate_iPhone.m */,
-				DAE5C9C213063BEC0014AEFE /* MainViewController_iPhone.h */,
-				DAE5C9C313063BEC0014AEFE /* MainViewController_iPhone.m */,
-				2860E327111B887F00E27156 /* MainWindow_iPhone.xib */,
-			);
-			path = iPhone;
-			sourceTree = "<group>";
-		};
-		2860E32A111B888700E27156 /* iPad */ = {
-			isa = PBXGroup;
-			children = (
-				2860E32B111B888700E27156 /* AppDelegate_iPad.h */,
-				2860E32C111B888700E27156 /* AppDelegate_iPad.m */,
-				DA3E18181337F74F002D4453 /* MainViewController_iPad.h */,
-				DA3E18191337F74F002D4453 /* MainViewController_iPad.m */,
-				2860E32D111B888700E27156 /* MainWindow_iPad.xib */,
-			);
-			path = iPad;
-			sourceTree = "<group>";
-		};
-		28EEBF621118D79A00187D67 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				8D1107310486CEB800E47090 /* Shuttle_Tracker-Info.plist */,
-			);
-			name = Shared;
-			sourceTree = "<group>";
-		};
-		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
-			isa = PBXGroup;
-			children = (
-				2860E32A111B888700E27156 /* iPad */,
-				2860E324111B887F00E27156 /* iPhone */,
-				28EEBF621118D79A00187D67 /* Shared */,
-				29B97315FDCFA39411CA2CEA /* Other Sources */,
-				DA115484130B5BA50004E7D0 /* TouchJSON */,
-				DA391035133652CD003EB97B /* InAppSettingsKit */,
-				29B97323FDCFA39411CA2CEA /* Frameworks */,
-				19C28FACFE9D520D11CA2CBB /* Products */,
-				DA750B7C12F4CB6900190FA3 /* Resources */,
-			);
-			name = CustomTemplate;
-			sourceTree = "<group>";
-		};
-		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				32CA4F630368D1EE00C91783 /* Shuttle_Tracker_Prefix.pch */,
-				DAA0DA8D13119C3800EDE54E /* DataManager.h */,
-				DAA0DA8E13119C3800EDE54E /* DataManager.m */,
-				DA215D5C1311B9C600CBEF62 /* EtasViewController.h */,
-				DA215D5D1311B9C600CBEF62 /* EtasViewController.m */,
-				DAC9AB3B1311AF85008E8555 /* EtaWrapper.h */,
-				DAC9AB3C1311AF85008E8555 /* EtaWrapper.m */,
-				DAA0DA941311A2F100EDE54E /* MainViewController.h */,
-				DAA0DA951311A2F100EDE54E /* MainViewController.m */,
-				DA31240012FDC69C00F90B79 /* KMLParser.h */,
-				DA750B8B12F4CC7D00190FA3 /* KMLParser.m */,
-				29B97316FDCFA39411CA2CEA /* main.m */,
-				DA750B7412F4C84700190FA3 /* MapViewController.h */,
-				DA750B7512F4C84700190FA3 /* MapViewController.m */,
-				DA8249631306F331004FBB50 /* JSONParser.h */,
-				DA8249641306F331004FBB50 /* JSONParser.m */,
-			);
-			name = "Other Sources";
-			sourceTree = "<group>";
-		};
-		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
-				DAB2655412FB5D8900A4C5B7 /* CoreLocation.framework */,
-				1D30AB110D05D00D00671497 /* Foundation.framework */,
-				DA750B7012F4C7D700190FA3 /* MapKit.framework */,
-				DA39107413365464003EB97B /* MessageUI.framework */,
-				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
+				DAD407EF1341709A00F05D88 /* Foundation.framework */,
+				DAD407ED1341704D00F05D88 /* CoreGraphics.framework */,
+				DAD407E11341701500F05D88 /* UIKit.framework */,
+				DAD4073B1341660300F05D88 /* MessageUI.framework */,
+				DAD40739134165FF00F05D88 /* MapKit.framework */,
+				DAD40736134165F300F05D88 /* CoreLocation.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		DA115484130B5BA50004E7D0 /* TouchJSON */ = {
+		DAD406FF1341635100F05D88 /* Shuttle-Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				DA115485130B5BA50004E7D0 /* CDataScanner.h */,
-				DA115486130B5BA50004E7D0 /* CDataScanner.m */,
-				DA115487130B5BA50004E7D0 /* Experimental */,
-				DA11548E130B5BA50004E7D0 /* Extensions */,
-				DA115493130B5BA50004E7D0 /* JSON */,
+				DAD407081341635100F05D88 /* Shuttle_TrackerAppDelegate.h */,
+				DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */,
+				DAD4079B134166C100F05D88 /* DataManager.h */,
+				DAD4079C134166C100F05D88 /* EtasViewController.h */,
+				DAD4079D134166C100F05D88 /* EtaWrapper.h */,
+				DAD4079E134166C100F05D88 /* JSONParser.h */,
+				DAD4079F134166C100F05D88 /* KMLParser.h */,
+				DAD407A0134166C100F05D88 /* MainViewController.h */,
+				DAD407A1134166C100F05D88 /* MapViewController.h */,
+				DAD407A2134166C100F05D88 /* DataManager.m */,
+				DAD407A3134166C100F05D88 /* EtasViewController.m */,
+				DAD407A4134166C100F05D88 /* EtaWrapper.m */,
+				DAD407A5134166C100F05D88 /* JSONParser.m */,
+				DAD407A6134166C100F05D88 /* KMLParser.m */,
+				DAD407A7134166C100F05D88 /* MainViewController.m */,
+				DAD407A8134166C200F05D88 /* MapViewController.m */,
+				DAD407B7134168A200F05D88 /* Settings.bundle */,
+				DAD407B61341689200F05D88 /* Images */,
+				DAD407CB134168E500F05D88 /* netlink.kml */,
+				DAD4070B1341635100F05D88 /* iPhone */,
+				DAD407121341635100F05D88 /* iPad */,
+				DAD407001341635100F05D88 /* Supporting Files */,
+			);
+			path = "Shuttle-Tracker";
+			sourceTree = "<group>";
+		};
+		DAD407001341635100F05D88 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				DAD407011341635100F05D88 /* Shuttle-Tracker-Info.plist */,
+				DAD407021341635100F05D88 /* InfoPlist.strings */,
+				DAD407051341635100F05D88 /* Shuttle-Tracker-Prefix.pch */,
+				DAD407061341635100F05D88 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DAD4070B1341635100F05D88 /* iPhone */ = {
+			isa = PBXGroup;
+			children = (
+				DAD4070C1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.h */,
+				DAD4070D1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m */,
+				DAD4080213417A1E00F05D88 /* MainViewController_iPhone.h */,
+				DAD4080313417A1E00F05D88 /* MainViewController_iPhone.m */,
+				DAD4070F1341635100F05D88 /* MainWindow_iPhone.xib */,
+			);
+			name = iPhone;
+			sourceTree = "<group>";
+		};
+		DAD407121341635100F05D88 /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+				DAD407131341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.h */,
+				DAD407141341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m */,
+				DAD4080513417A3B00F05D88 /* MainViewController_iPad.h */,
+				DAD4080613417A3B00F05D88 /* MainViewController_iPad.m */,
+				DAD407161341635100F05D88 /* MainWindow_iPad.xib */,
+			);
+			name = iPad;
+			sourceTree = "<group>";
+		};
+		DAD4073D1341666500F05D88 /* TouchJSON */ = {
+			isa = PBXGroup;
+			children = (
+				DAD4073E1341666500F05D88 /* CDataScanner.h */,
+				DAD4073F1341666500F05D88 /* CDataScanner.m */,
+				DAD407401341666500F05D88 /* Experimental */,
+				DAD407471341666500F05D88 /* Extensions */,
+				DAD4074C1341666500F05D88 /* JSON */,
 			);
 			path = TouchJSON;
 			sourceTree = "<group>";
 		};
-		DA115487130B5BA50004E7D0 /* Experimental */ = {
+		DAD407401341666500F05D88 /* Experimental */ = {
 			isa = PBXGroup;
 			children = (
-				DA115488130B5BA50004E7D0 /* CFilteringJSONSerializer.h */,
-				DA115489130B5BA50004E7D0 /* CFilteringJSONSerializer.m */,
-				DA11548A130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.h */,
-				DA11548B130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.m */,
-				DA11548C130B5BA50004E7D0 /* CJSONSerializedData.h */,
-				DA11548D130B5BA50004E7D0 /* CJSONSerializedData.m */,
+				DAD407411341666500F05D88 /* CFilteringJSONSerializer.h */,
+				DAD407421341666500F05D88 /* CFilteringJSONSerializer.m */,
+				DAD407431341666500F05D88 /* CJSONDeserializer_BlocksExtensions.h */,
+				DAD407441341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m */,
+				DAD407451341666500F05D88 /* CJSONSerializedData.h */,
+				DAD407461341666500F05D88 /* CJSONSerializedData.m */,
 			);
 			path = Experimental;
 			sourceTree = "<group>";
 		};
-		DA11548E130B5BA50004E7D0 /* Extensions */ = {
+		DAD407471341666500F05D88 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				DA11548F130B5BA50004E7D0 /* CDataScanner_Extensions.h */,
-				DA115490130B5BA50004E7D0 /* CDataScanner_Extensions.m */,
-				DA115491130B5BA50004E7D0 /* NSDictionary_JSONExtensions.h */,
-				DA115492130B5BA50004E7D0 /* NSDictionary_JSONExtensions.m */,
+				DAD407481341666500F05D88 /* CDataScanner_Extensions.h */,
+				DAD407491341666500F05D88 /* CDataScanner_Extensions.m */,
+				DAD4074A1341666500F05D88 /* NSDictionary_JSONExtensions.h */,
+				DAD4074B1341666500F05D88 /* NSDictionary_JSONExtensions.m */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		DA115493130B5BA50004E7D0 /* JSON */ = {
+		DAD4074C1341666500F05D88 /* JSON */ = {
 			isa = PBXGroup;
 			children = (
-				DA115494130B5BA50004E7D0 /* CJSONDeserializer.h */,
-				DA115495130B5BA50004E7D0 /* CJSONDeserializer.m */,
-				DA115496130B5BA50004E7D0 /* CJSONScanner.h */,
-				DA115497130B5BA50004E7D0 /* CJSONScanner.m */,
-				DA115498130B5BA50004E7D0 /* CJSONSerializer.h */,
-				DA115499130B5BA50004E7D0 /* CJSONSerializer.m */,
-				DA11549A130B5BA50004E7D0 /* JSONRepresentation.h */,
+				DAD4074D1341666500F05D88 /* CJSONDeserializer.h */,
+				DAD4074E1341666500F05D88 /* CJSONDeserializer.m */,
+				DAD4074F1341666500F05D88 /* CJSONScanner.h */,
+				DAD407501341666500F05D88 /* CJSONScanner.m */,
+				DAD407511341666500F05D88 /* CJSONSerializer.h */,
+				DAD407521341666500F05D88 /* CJSONSerializer.m */,
+				DAD407531341666500F05D88 /* JSONRepresentation.h */,
 			);
 			path = JSON;
 			sourceTree = "<group>";
 		};
-		DA391035133652CD003EB97B /* InAppSettingsKit */ = {
+		DAD4075D1341667300F05D88 /* InAppSettingsKit */ = {
 			isa = PBXGroup;
 			children = (
-				DA391036133652CD003EB97B /* Controllers */,
-				DA39103D133652CD003EB97B /* Models */,
-				DA391048133652CD003EB97B /* Views */,
-				DA391057133652CD003EB97B /* Xibs */,
+				DAD4075E1341667300F05D88 /* Controllers */,
+				DAD407651341667300F05D88 /* Models */,
+				DAD407701341667300F05D88 /* Views */,
+				DAD4077F1341667300F05D88 /* Xibs */,
 			);
 			path = InAppSettingsKit;
 			sourceTree = "<group>";
 		};
-		DA391036133652CD003EB97B /* Controllers */ = {
+		DAD4075E1341667300F05D88 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				DA391037133652CD003EB97B /* IASKAppSettingsViewController.h */,
-				DA391038133652CD003EB97B /* IASKAppSettingsViewController.m */,
-				DA391039133652CD003EB97B /* IASKAppSettingsWebViewController.h */,
-				DA39103A133652CD003EB97B /* IASKAppSettingsWebViewController.m */,
-				DA39103B133652CD003EB97B /* IASKSpecifierValuesViewController.h */,
-				DA39103C133652CD003EB97B /* IASKSpecifierValuesViewController.m */,
+				DAD4075F1341667300F05D88 /* IASKAppSettingsViewController.h */,
+				DAD407601341667300F05D88 /* IASKAppSettingsViewController.m */,
+				DAD407611341667300F05D88 /* IASKAppSettingsWebViewController.h */,
+				DAD407621341667300F05D88 /* IASKAppSettingsWebViewController.m */,
+				DAD407631341667300F05D88 /* IASKSpecifierValuesViewController.h */,
+				DAD407641341667300F05D88 /* IASKSpecifierValuesViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
 		};
-		DA39103D133652CD003EB97B /* Models */ = {
+		DAD407651341667300F05D88 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				DA39103E133652CD003EB97B /* IASKSettingsReader.h */,
-				DA39103F133652CD003EB97B /* IASKSettingsReader.m */,
-				DA391040133652CD003EB97B /* IASKSettingsStore.h */,
-				DA391041133652CD003EB97B /* IASKSettingsStore.m */,
-				DA391042133652CD003EB97B /* IASKSettingsStoreFile.h */,
-				DA391043133652CD003EB97B /* IASKSettingsStoreFile.m */,
-				DA391044133652CD003EB97B /* IASKSettingsStoreUserDefaults.h */,
-				DA391045133652CD003EB97B /* IASKSettingsStoreUserDefaults.m */,
-				DA391046133652CD003EB97B /* IASKSpecifier.h */,
-				DA391047133652CD003EB97B /* IASKSpecifier.m */,
+				DAD407661341667300F05D88 /* IASKSettingsReader.h */,
+				DAD407671341667300F05D88 /* IASKSettingsReader.m */,
+				DAD407681341667300F05D88 /* IASKSettingsStore.h */,
+				DAD407691341667300F05D88 /* IASKSettingsStore.m */,
+				DAD4076A1341667300F05D88 /* IASKSettingsStoreFile.h */,
+				DAD4076B1341667300F05D88 /* IASKSettingsStoreFile.m */,
+				DAD4076C1341667300F05D88 /* IASKSettingsStoreUserDefaults.h */,
+				DAD4076D1341667300F05D88 /* IASKSettingsStoreUserDefaults.m */,
+				DAD4076E1341667300F05D88 /* IASKSpecifier.h */,
+				DAD4076F1341667300F05D88 /* IASKSpecifier.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		DA391048133652CD003EB97B /* Views */ = {
+		DAD407701341667300F05D88 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				DA391049133652CD003EB97B /* IASKPSSliderSpecifierViewCell.h */,
-				DA39104A133652CD003EB97B /* IASKPSSliderSpecifierViewCell.m */,
-				DA39104B133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.h */,
-				DA39104C133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.m */,
-				DA39104D133652CD003EB97B /* IASKPSTitleValueSpecifierViewCell.h */,
-				DA39104E133652CD003EB97B /* IASKPSTitleValueSpecifierViewCell.m */,
-				DA39104F133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.h */,
-				DA391050133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.m */,
-				DA391051133652CD003EB97B /* IASKSlider.h */,
-				DA391052133652CD003EB97B /* IASKSlider.m */,
-				DA391053133652CD003EB97B /* IASKSwitch.h */,
-				DA391054133652CD003EB97B /* IASKSwitch.m */,
-				DA391055133652CD003EB97B /* IASKTextField.h */,
-				DA391056133652CD003EB97B /* IASKTextField.m */,
+				DAD407711341667300F05D88 /* IASKPSSliderSpecifierViewCell.h */,
+				DAD407721341667300F05D88 /* IASKPSSliderSpecifierViewCell.m */,
+				DAD407731341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.h */,
+				DAD407741341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m */,
+				DAD407751341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.h */,
+				DAD407761341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m */,
+				DAD407771341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.h */,
+				DAD407781341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m */,
+				DAD407791341667300F05D88 /* IASKSlider.h */,
+				DAD4077A1341667300F05D88 /* IASKSlider.m */,
+				DAD4077B1341667300F05D88 /* IASKSwitch.h */,
+				DAD4077C1341667300F05D88 /* IASKSwitch.m */,
+				DAD4077D1341667300F05D88 /* IASKTextField.h */,
+				DAD4077E1341667300F05D88 /* IASKTextField.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		DA391057133652CD003EB97B /* Xibs */ = {
+		DAD4077F1341667300F05D88 /* Xibs */ = {
 			isa = PBXGroup;
 			children = (
-				DA391058133652CD003EB97B /* IASKAppSettingsView.xib */,
-				DA391059133652CD003EB97B /* IASKAppSettingsWebView.xib */,
-				DA39105A133652CD003EB97B /* IASKPSSliderSpecifierViewCell.xib */,
-				DA39105B133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.xib */,
-				DA39105C133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib */,
-				DA39105D133652CD003EB97B /* IASKSpecifierValuesView.xib */,
+				DAD407801341667300F05D88 /* IASKAppSettingsView.xib */,
+				DAD407811341667300F05D88 /* IASKAppSettingsWebView.xib */,
+				DAD407821341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib */,
+				DAD407831341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib */,
+				DAD407841341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib */,
+				DAD407851341667300F05D88 /* IASKSpecifierValuesView.xib */,
 			);
 			path = Xibs;
 			sourceTree = "<group>";
 		};
-		DA750B7C12F4CB6900190FA3 /* Resources */ = {
+		DAD407B61341689200F05D88 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				DAA49AAE134153670011AB81 /* Launch Images */,
-				DA577BD613365A1600072CE6 /* Settings.bundle */,
-				DA750B8812F4CB7600190FA3 /* netlink.kml */,
-				DA3FC96A1324606000E6FE78 /* glyphish_clock.png */,
-				DA3FC96B1324606000E6FE78 /* glyphish_clock@2x.png */,
-				DA577BD913365C9800072CE6 /* glyphish_gear.png */,
-				DA577BDA13365C9800072CE6 /* glyphish_gear@2x.png */,
-				DA05D6FA1323EE1D00479EAB /* glyphish_map.png */,
-				DA05D6FB1323EE1D00479EAB /* glyphish_map@2x.png */,
-				DAA49A9613412AA50011AB81 /* Icon-72.png */,
-				DAA49A9413412A9C0011AB81 /* Icon@2x.png */,
-				DAA49A9113412A980011AB81 /* Icon.png */,
-				DAA49A9813412AB60011AB81 /* Icon-Small.png */,
-				DAA49A9913412AB60011AB81 /* Icon-Small@2x.png */,
-				DAA49A9A13412AB60011AB81 /* iTunesArtwork */,
-				DAA49A9B13412AB60011AB81 /* Icon-Small-50.png */,
-				DAA0367C13149335005D3E86 /* shuttle_color.png */,
-				DAA0367D13149335005D3E86 /* shuttle.png */,
-				DAACF008131F2E980074FA4C /* stop_marker.png */,
+				DAD407D3134169A600F05D88 /* Icon-Small-50.png */,
+				DAD407D4134169A600F05D88 /* Icon-Small.png */,
+				DAD407D5134169A600F05D88 /* Icon-Small@2x.png */,
+				DAD407B9134168CA00F05D88 /* glyphish_clock.png */,
+				DAD407BA134168CA00F05D88 /* glyphish_clock@2x.png */,
+				DAD407BB134168CA00F05D88 /* glyphish_gear.png */,
+				DAD407BC134168CA00F05D88 /* glyphish_gear@2x.png */,
+				DAD407BD134168CA00F05D88 /* glyphish_map.png */,
+				DAD407BE134168CA00F05D88 /* glyphish_map@2x.png */,
+				DAD407BF134168CA00F05D88 /* shuttle_color.png */,
+				DAD407C0134168CA00F05D88 /* shuttle.png */,
+				DAD407C1134168CA00F05D88 /* stop_marker.png */,
 			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
-		DAA49AAE134153670011AB81 /* Launch Images */ = {
-			isa = PBXGroup;
-			children = (
-				DAA49AAC1341535A0011AB81 /* Default-Portrait~ipad.png */,
-				DAA49AAA134153530011AB81 /* Default-Landscape~ipad.png */,
-				DAA49AA8134152D80011AB81 /* Default@2x.png */,
-				DAA49AA6134152D40011AB81 /* Default.png */,
-			);
-			name = "Launch Images";
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* Shuttle-Tracker */ = {
+		DAD406F41341635100F05D88 /* Shuttle-Tracker */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Shuttle-Tracker" */;
+			buildConfigurationList = DAD4071B1341635100F05D88 /* Build configuration list for PBXNativeTarget "Shuttle-Tracker" */;
 			buildPhases = (
-				1D60588D0D05DD3D006BFB54 /* Resources */,
-				1D60588E0D05DD3D006BFB54 /* Sources */,
-				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+				DAD406F11341635100F05D88 /* Sources */,
+				DAD406F21341635100F05D88 /* Frameworks */,
+				DAD406F31341635100F05D88 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -483,211 +479,237 @@
 			);
 			name = "Shuttle-Tracker";
 			productName = "Shuttle-Tracker";
-			productReference = 1D6058910D05DD3D006BFB54 /* Shuttle-Tracker.app */;
+			productReference = DAD406F51341635100F05D88 /* Shuttle-Tracker.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		29B97313FDCFA39411CA2CEA /* Project object */ = {
+		DAD406EC1341635100F05D88 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				ORGANIZATIONNAME = "Brendon Justin";
+				ORGANIZATIONNAME = "Naga Softworks, LLC";
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Shuttle-Tracker" */;
-			compatibilityVersion = "Xcode 3.1";
+			buildConfigurationList = DAD406EF1341635100F05D88 /* Build configuration list for PBXProject "Shuttle-Tracker" */;
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
-			hasScannedForEncodings = 1;
+			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
-				Japanese,
-				French,
-				German,
+				en,
 			);
-			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			mainGroup = DAD406EA1341635100F05D88;
+			productRefGroup = DAD406F61341635100F05D88 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* Shuttle-Tracker */,
+				DAD406F41341635100F05D88 /* Shuttle-Tracker */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1D60588D0D05DD3D006BFB54 /* Resources */ = {
+		DAD406F31341635100F05D88 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2860E329111B887F00E27156 /* MainWindow_iPhone.xib in Resources */,
-				2860E32F111B888700E27156 /* MainWindow_iPad.xib in Resources */,
-				DA750B8912F4CB7600190FA3 /* netlink.kml in Resources */,
-				DAA0367E13149335005D3E86 /* shuttle_color.png in Resources */,
-				DAA0367F13149335005D3E86 /* shuttle.png in Resources */,
-				DAACF009131F2E980074FA4C /* stop_marker.png in Resources */,
-				DA05D6FC1323EE1D00479EAB /* glyphish_map.png in Resources */,
-				DA05D6FD1323EE1D00479EAB /* glyphish_map@2x.png in Resources */,
-				DA3FC96C1324606000E6FE78 /* glyphish_clock.png in Resources */,
-				DA3FC96D1324606000E6FE78 /* glyphish_clock@2x.png in Resources */,
-				DA39106D133652CD003EB97B /* IASKAppSettingsView.xib in Resources */,
-				DA39106E133652CD003EB97B /* IASKAppSettingsWebView.xib in Resources */,
-				DA39106F133652CD003EB97B /* IASKPSSliderSpecifierViewCell.xib in Resources */,
-				DA391070133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.xib in Resources */,
-				DA391071133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */,
-				DA391072133652CD003EB97B /* IASKSpecifierValuesView.xib in Resources */,
-				DA577BD713365A1600072CE6 /* Settings.bundle in Resources */,
-				DA577BDB13365C9800072CE6 /* glyphish_gear.png in Resources */,
-				DA577BDC13365C9800072CE6 /* glyphish_gear@2x.png in Resources */,
-				DAA49A9213412A980011AB81 /* Icon.png in Resources */,
-				DAA49A9513412A9C0011AB81 /* Icon@2x.png in Resources */,
-				DAA49A9713412AA50011AB81 /* Icon-72.png in Resources */,
-				DAA49A9C13412AB60011AB81 /* Icon-Small.png in Resources */,
-				DAA49A9D13412AB60011AB81 /* Icon-Small@2x.png in Resources */,
-				DAA49A9E13412AB60011AB81 /* iTunesArtwork in Resources */,
-				DAA49A9F13412AB60011AB81 /* Icon-Small-50.png in Resources */,
-				DAA49AA7134152D40011AB81 /* Default.png in Resources */,
-				DAA49AA9134152D90011AB81 /* Default@2x.png in Resources */,
-				DAA49AAB134153530011AB81 /* Default-Landscape~ipad.png in Resources */,
-				DAA49AAD1341535A0011AB81 /* Default-Portrait~ipad.png in Resources */,
+				DAD407041341635100F05D88 /* InfoPlist.strings in Resources */,
+				DAD407111341635100F05D88 /* MainWindow_iPhone.xib in Resources */,
+				DAD407181341635100F05D88 /* MainWindow_iPad.xib in Resources */,
+				DAD407951341667300F05D88 /* IASKAppSettingsView.xib in Resources */,
+				DAD407961341667300F05D88 /* IASKAppSettingsWebView.xib in Resources */,
+				DAD407971341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib in Resources */,
+				DAD407981341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib in Resources */,
+				DAD407991341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */,
+				DAD4079A1341667300F05D88 /* IASKSpecifierValuesView.xib in Resources */,
+				DAD407B8134168A200F05D88 /* Settings.bundle in Resources */,
+				DAD407C2134168CA00F05D88 /* glyphish_clock.png in Resources */,
+				DAD407C3134168CA00F05D88 /* glyphish_clock@2x.png in Resources */,
+				DAD407C4134168CA00F05D88 /* glyphish_gear.png in Resources */,
+				DAD407C5134168CA00F05D88 /* glyphish_gear@2x.png in Resources */,
+				DAD407C6134168CA00F05D88 /* glyphish_map.png in Resources */,
+				DAD407C7134168CA00F05D88 /* glyphish_map@2x.png in Resources */,
+				DAD407C8134168CA00F05D88 /* shuttle_color.png in Resources */,
+				DAD407C9134168CA00F05D88 /* shuttle.png in Resources */,
+				DAD407CA134168CA00F05D88 /* stop_marker.png in Resources */,
+				DAD407CC134168E500F05D88 /* netlink.kml in Resources */,
+				DAD407D6134169A600F05D88 /* Icon-Small-50.png in Resources */,
+				DAD407D7134169A600F05D88 /* Icon-Small.png in Resources */,
+				DAD407D8134169A600F05D88 /* Icon-Small@2x.png in Resources */,
+				DAD407DA13416B2300F05D88 /* Icon.png in Resources */,
+				DAD407DC13416B2800F05D88 /* Icon@2x.png in Resources */,
+				DAD407DE13416B3000F05D88 /* Icon-72.png in Resources */,
+				DAD4080913417B5D00F05D88 /* Default.png in Resources */,
+				DAD4080B13417B6100F05D88 /* Default@2x.png in Resources */,
+				DAD4080D13417B6900F05D88 /* Default-Portrait~ipad.png in Resources */,
+				DAD4080F13417B6D00F05D88 /* Default-Landscape~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		1D60588E0D05DD3D006BFB54 /* Sources */ = {
+		DAD406F11341635100F05D88 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
-				2860E328111B887F00E27156 /* AppDelegate_iPhone.m in Sources */,
-				2860E32E111B888700E27156 /* AppDelegate_iPad.m in Sources */,
-				DA750B7612F4C84700190FA3 /* MapViewController.m in Sources */,
-				DA750B8C12F4CC7D00190FA3 /* KMLParser.m in Sources */,
-				DAE5C9C413063BEC0014AEFE /* MainViewController_iPhone.m in Sources */,
-				DA8249651306F331004FBB50 /* JSONParser.m in Sources */,
-				DA11549B130B5BA50004E7D0 /* CDataScanner.m in Sources */,
-				DA11549C130B5BA50004E7D0 /* CFilteringJSONSerializer.m in Sources */,
-				DA11549D130B5BA50004E7D0 /* CJSONDeserializer_BlocksExtensions.m in Sources */,
-				DA11549E130B5BA50004E7D0 /* CJSONSerializedData.m in Sources */,
-				DA11549F130B5BA50004E7D0 /* CDataScanner_Extensions.m in Sources */,
-				DA1154A0130B5BA50004E7D0 /* NSDictionary_JSONExtensions.m in Sources */,
-				DA1154A1130B5BA50004E7D0 /* CJSONDeserializer.m in Sources */,
-				DA1154A2130B5BA50004E7D0 /* CJSONScanner.m in Sources */,
-				DA1154A3130B5BA50004E7D0 /* CJSONSerializer.m in Sources */,
-				DAA0DA8F13119C3800EDE54E /* DataManager.m in Sources */,
-				DAA0DA961311A2F100EDE54E /* MainViewController.m in Sources */,
-				DAC9AB3D1311AF85008E8555 /* EtaWrapper.m in Sources */,
-				DA215D5E1311B9C600CBEF62 /* EtasViewController.m in Sources */,
-				DA39105E133652CD003EB97B /* IASKAppSettingsViewController.m in Sources */,
-				DA39105F133652CD003EB97B /* IASKAppSettingsWebViewController.m in Sources */,
-				DA391060133652CD003EB97B /* IASKSpecifierValuesViewController.m in Sources */,
-				DA391061133652CD003EB97B /* IASKSettingsReader.m in Sources */,
-				DA391062133652CD003EB97B /* IASKSettingsStore.m in Sources */,
-				DA391063133652CD003EB97B /* IASKSettingsStoreFile.m in Sources */,
-				DA391064133652CD003EB97B /* IASKSettingsStoreUserDefaults.m in Sources */,
-				DA391065133652CD003EB97B /* IASKSpecifier.m in Sources */,
-				DA391066133652CD003EB97B /* IASKPSSliderSpecifierViewCell.m in Sources */,
-				DA391067133652CD003EB97B /* IASKPSTextFieldSpecifierViewCell.m in Sources */,
-				DA391068133652CD003EB97B /* IASKPSTitleValueSpecifierViewCell.m in Sources */,
-				DA391069133652CD003EB97B /* IASKPSToggleSwitchSpecifierViewCell.m in Sources */,
-				DA39106A133652CD003EB97B /* IASKSlider.m in Sources */,
-				DA39106B133652CD003EB97B /* IASKSwitch.m in Sources */,
-				DA39106C133652CD003EB97B /* IASKTextField.m in Sources */,
-				DA3E181A1337F74F002D4453 /* MainViewController_iPad.m in Sources */,
+				DAD407071341635100F05D88 /* main.m in Sources */,
+				DAD4070A1341635100F05D88 /* Shuttle_TrackerAppDelegate.m in Sources */,
+				DAD4070E1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m in Sources */,
+				DAD407151341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m in Sources */,
+				DAD407541341666500F05D88 /* CDataScanner.m in Sources */,
+				DAD407551341666500F05D88 /* CFilteringJSONSerializer.m in Sources */,
+				DAD407561341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m in Sources */,
+				DAD407571341666500F05D88 /* CJSONSerializedData.m in Sources */,
+				DAD407581341666500F05D88 /* CDataScanner_Extensions.m in Sources */,
+				DAD407591341666500F05D88 /* NSDictionary_JSONExtensions.m in Sources */,
+				DAD4075A1341666500F05D88 /* CJSONDeserializer.m in Sources */,
+				DAD4075B1341666500F05D88 /* CJSONScanner.m in Sources */,
+				DAD4075C1341666500F05D88 /* CJSONSerializer.m in Sources */,
+				DAD407861341667300F05D88 /* IASKAppSettingsViewController.m in Sources */,
+				DAD407871341667300F05D88 /* IASKAppSettingsWebViewController.m in Sources */,
+				DAD407881341667300F05D88 /* IASKSpecifierValuesViewController.m in Sources */,
+				DAD407891341667300F05D88 /* IASKSettingsReader.m in Sources */,
+				DAD4078A1341667300F05D88 /* IASKSettingsStore.m in Sources */,
+				DAD4078B1341667300F05D88 /* IASKSettingsStoreFile.m in Sources */,
+				DAD4078C1341667300F05D88 /* IASKSettingsStoreUserDefaults.m in Sources */,
+				DAD4078D1341667300F05D88 /* IASKSpecifier.m in Sources */,
+				DAD4078E1341667300F05D88 /* IASKPSSliderSpecifierViewCell.m in Sources */,
+				DAD4078F1341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m in Sources */,
+				DAD407901341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m in Sources */,
+				DAD407911341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m in Sources */,
+				DAD407921341667300F05D88 /* IASKSlider.m in Sources */,
+				DAD407931341667300F05D88 /* IASKSwitch.m in Sources */,
+				DAD407941341667300F05D88 /* IASKTextField.m in Sources */,
+				DAD407A9134166C200F05D88 /* DataManager.m in Sources */,
+				DAD407AA134166C200F05D88 /* EtasViewController.m in Sources */,
+				DAD407AB134166C200F05D88 /* EtaWrapper.m in Sources */,
+				DAD407AC134166C200F05D88 /* JSONParser.m in Sources */,
+				DAD407AD134166C200F05D88 /* KMLParser.m in Sources */,
+				DAD407AE134166C200F05D88 /* MainViewController.m in Sources */,
+				DAD407AF134166C200F05D88 /* MapViewController.m in Sources */,
+				DAD4080413417A1E00F05D88 /* MainViewController_iPhone.m in Sources */,
+				DAD4080713417A3B00F05D88 /* MainViewController_iPad.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		DAD407021341635100F05D88 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DAD407031341635100F05D88 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		DAD4070F1341635100F05D88 /* MainWindow_iPhone.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DAD407101341635100F05D88 /* en */,
+			);
+			name = MainWindow_iPhone.xib;
+			sourceTree = "<group>";
+		};
+		DAD407161341635100F05D88 /* MainWindow_iPad.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DAD407171341635100F05D88 /* en */,
+			);
+			name = MainWindow_iPad.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
-		1D6058940D05DD3E006BFB54 /* Debug */ = {
+		DAD407191341635100F05D88 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DAD4071A1341635100F05D88 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DAD4071C1341635100F05D88 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Shuttle_Tracker_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "Shuttle_Tracker-Info.plist";
+				GCC_PREFIX_HEADER = "Shuttle-Tracker/Shuttle-Tracker-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = "Shuttle-Tracker/Shuttle-Tracker-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = "Shuttle-Tracker";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
-		1D6058950D05DD3E006BFB54 /* Release */ = {
+		DAD4071D1341635100F05D88 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Shuttle_Tracker_Prefix.pch;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INFOPLIST_FILE = "Shuttle_Tracker-Info.plist";
+				GCC_PREFIX_HEADER = "Shuttle-Tracker/Shuttle-Tracker-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				INFOPLIST_FILE = "Shuttle-Tracker/Shuttle-Tracker-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PRODUCT_NAME = "Shuttle-Tracker";
-				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		C01FCF4F08A954540054247B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				PREBINDING = NO;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		C01FCF5008A954540054247B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PREBINDING = NO;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "Shuttle-Tracker" */ = {
+		DAD406EF1341635100F05D88 /* Build configuration list for PBXProject "Shuttle-Tracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1D6058940D05DD3E006BFB54 /* Debug */,
-				1D6058950D05DD3E006BFB54 /* Release */,
+				DAD407191341635100F05D88 /* Debug */,
+				DAD4071A1341635100F05D88 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Shuttle-Tracker" */ = {
+		DAD4071B1341635100F05D88 /* Build configuration list for PBXNativeTarget "Shuttle-Tracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C01FCF4F08A954540054247B /* Debug */,
-				C01FCF5008A954540054247B /* Release */,
+				DAD4071C1341635100F05D88 /* Debug */,
+				DAD4071D1341635100F05D88 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+	rootObject = DAD406EC1341635100F05D88 /* Project object */;
 }
