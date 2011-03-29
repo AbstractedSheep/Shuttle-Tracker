@@ -18,7 +18,7 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.android;
+package com.abstractedsheep.shuttletracker.mapoverlay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 //import android.util.Log;
 
-import com.abstractedsheep.kml.Style;
+import com.abstractedsheep.shuttletracker.json.Style;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;

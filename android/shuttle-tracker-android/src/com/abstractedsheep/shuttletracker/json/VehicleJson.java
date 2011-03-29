@@ -20,7 +20,7 @@
 
 package com.abstractedsheep.shuttletracker.json;
 
-import com.abstractedsheep.shuttletracker.android.DirectionalOverlayItem;
+import com.abstractedsheep.shuttletracker.mapoverlay.DirectionalOverlayItem;
 import com.google.android.maps.GeoPoint;
 
 public class VehicleJson {

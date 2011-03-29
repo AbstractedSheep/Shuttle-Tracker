@@ -18,10 +18,11 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.android;
+package com.abstractedsheep.shuttletracker;
 
 import java.util.ArrayList;
 
+import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
@@ -76,6 +77,13 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 		
 		dataService = ShuttleDataService.getInstance();
 		routesUpdated(dataService.getRoutes());
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		
+		dataUpdated(null, dataService.getCurrentEtas());
 	}
    
 	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {

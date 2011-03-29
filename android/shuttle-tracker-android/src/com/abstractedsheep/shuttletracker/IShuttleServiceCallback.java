@@ -18,44 +18,18 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.json;
+package com.abstractedsheep.shuttletracker;
 
-public class EtaJson {
-	private String stop_id;
-	private String name;
-	private int shuttle_id;
-	private int eta;
-	private int route;
+import java.util.ArrayList;
+
+import com.abstractedsheep.shuttletracker.json.EtaJson;
+import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.VehicleJson;
+
+public interface IShuttleServiceCallback {
+	public static int NO_CONNECTION_ERROR = 1;
 	
-	public String getStop_id() {
-		return stop_id;
-	}
-	public void setStop_id(String stop_id) {
-		this.stop_id = stop_id;
-	}
-	public int getShuttle_id() {
-		return shuttle_id;
-	}
-	public void setShuttle_id(int shuttle_id) {
-		this.shuttle_id = shuttle_id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public int getRoute() {
-		return route;
-	}
-	public void setRoute(int route) {
-		this.route = route;
-	}
-	public int getEta() {
-		return eta;
-	}
-	public void setEta(int eta) {
-		this.eta = eta;
-	}
+	void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas);
+	void routesUpdated(RoutesJson routes);
+	void dataServiceError(int errorCode);
 }
-	

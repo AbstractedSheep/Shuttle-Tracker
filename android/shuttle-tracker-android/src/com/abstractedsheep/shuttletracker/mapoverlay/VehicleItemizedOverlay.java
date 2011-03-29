@@ -18,7 +18,7 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.android;
+package com.abstractedsheep.shuttletracker.mapoverlay;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,13 +34,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-//import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
+import com.abstractedsheep.shuttletracker.TrackerPreferences;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.google.android.maps.GeoPoint;
@@ -183,7 +182,6 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		Bitmap tempBitmap;
 		long now;
 		long age;
-		int opacity;
 		Date lastUpdate;
 			
 		for (VehicleJson v : vehicles) {

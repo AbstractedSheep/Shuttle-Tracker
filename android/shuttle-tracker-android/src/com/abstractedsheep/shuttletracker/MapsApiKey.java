@@ -18,18 +18,9 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.android;
+package com.abstractedsheep.shuttletracker;
 
-import java.util.ArrayList;
-
-import com.abstractedsheep.shuttletracker.json.EtaJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson;
-import com.abstractedsheep.shuttletracker.json.VehicleJson;
-
-public interface IShuttleServiceCallback {
-	public static int NO_CONNECTION_ERROR = 1;
-	
-	void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas);
-	void routesUpdated(RoutesJson routes);
-	void dataServiceError(int errorCode);
+public class MapsApiKey {
+	public static final String MAPS_API_KEY = "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
+	//"01JOmSJBxx1voRKERKRP3C2v-43vBsKl74-b9Og"; "01JOmSJBxx1vR0lM4z_VkVIYfWwZcOgZ6q1VAaQ";
 }
