@@ -21,12 +21,16 @@
     }
     return self;
 }
+*/
 
 - (void)dealloc
 {
+	if (mapViewController) {
+		[mapViewController release];
+	}
+
     [super dealloc];
 }
-*/
 
 - (void)didReceiveMemoryWarning
 {
@@ -44,7 +48,7 @@
 {
 	self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
-	MapViewController *mapViewController = [[MapViewController alloc] init];
+	mapViewController = [[MapViewController alloc] init];
     mapViewController.dataManager = dataManager;
 	
 	[self.view addSubview:mapViewController.view];

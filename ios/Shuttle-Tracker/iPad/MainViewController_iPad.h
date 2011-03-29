@@ -9,10 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "MainViewController.h"
 
+@class MapViewController;
 
 @interface MainViewController_iPad : MainViewController {
+	MapViewController *mapViewController;
     
 }
 
+@property (nonatomic, retain) MapViewController *mapViewController;
 
 @end
