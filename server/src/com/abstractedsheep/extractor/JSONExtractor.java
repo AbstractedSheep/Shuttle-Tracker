@@ -237,7 +237,7 @@ public class JSONExtractor {
 		//such that the ETAs are not skewed.
 		for(Shuttle s : tempList) {
 			System.out.println(Math.abs(s.getLastUpdateTime() - System.currentTimeMillis()));
-			if(Math.abs(s.getLastUpdateTime() - System.currentTimeMillis()) > (1000 * 15 * 3)) {
+			if(Math.abs(s.getLastUpdateTime() - System.currentTimeMillis()) > (1000 * 15 * 4)) {
 				shuttleList.remove(s);
 			} else if(s.isTooFarFromRoute()) {
 				shuttleList.remove(s);
