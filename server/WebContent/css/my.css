@@ -14,12 +14,33 @@ BODY, TD {
 {
     display:block;
 }
-h1
+#map 
+{ 
+width:500px; height:500px;
+}
+table.ETAtable 
+{
+	table-layout:auto;
+	
+}
+#output
+{
+    width:500px;
+} 
+h1	
 {
 font-family:verdana;
 font-size:36px;
 font-style:italic;
 color:gray;
+text-align:left;
+}
+h3
+{
+font-family:verdana;
+font-size:24px;
+font-style:bold;
+color:green;
 text-align:left;
 }
 p
@@ -40,6 +61,19 @@ table,td
     border               : 1px solid #CCC;
     border-collapse      : collapse;
   font                 : small/1.5 "Tahoma", "Bitstream Vera Sans", Verdana, Helvetica, sans-serif;
+  max-width:425px;
+}
+td.ETA
+{
+	width:50%;
+}
+tbody td.favorite
+{
+    border-left:none;
+}
+tbody th.favorite
+{
+    border-left:none;
 }
 table
 {
@@ -91,6 +125,7 @@ caption
     padding               : 10px 0;
     color                 : #666;
 }
+
 table a:link
 {
     color                 : #666;

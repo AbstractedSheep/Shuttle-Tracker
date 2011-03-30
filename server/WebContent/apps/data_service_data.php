@@ -9,7 +9,7 @@ class DataServiceData
         return $data_from_db;
     }
     
-    function getNextEta($route_id) {
+    function getNextEta($route_id, $stop_id='') {
         /* get stop ETA time of next shuttle
             if stop_id not supplied, retrieve ETAs for all stops 
             TIMEDIFF(now(), shuttle_eta.eta) <= 0
@@ -17,31 +17,36 @@ class DataServiceData
         $sql = "SELECT  shuttle_eta.stop_id, 
                         stops.name 'stop_name', 
                         shuttle_eta.shuttle_id,  
-                        shuttle_eta.eta AS eta
+                        shuttle_eta.eta AS eta,
+                        shuttle_eta.route
                     FROM ( 
                         SELECT stop_id, min(shuttle_eta.eta) AS eta_min 
                             FROM shuttle_eta
-                           WHERE 1
+                           WHERE shuttle_eta.route = " . $route_id . " 
                            GROUP BY stop_id
                          ) as best_etas
                     LEFT JOIN shuttle_eta   ON shuttle_eta.stop_id = best_etas.stop_id AND shuttle_eta.eta = best_etas.eta_min
                     LEFT JOIN stops         ON stops.stop_id = best_etas.stop_id 
                     LEFT JOIN shuttles      ON shuttles.shuttle_id = shuttle_eta.shuttle_id
                     WHERE 1 ";
-        if ($route_id)
-            $sql .= " AND shuttle_eta.route = '". $route_id . "' ";
+        //if ($route_id)
+        //   $sql .= " AND shuttle_eta.route = '". $route_id . "' ";
+		if ($stop_id)
+            $sql .= " AND shuttle_eta.stop_id = '". $stop_id . "' ";
 
         return db_query_array($sql);
     }
     
     
-    function getAllEta($route_id='', $shuttle_id='') {
+    function getAllEta($route_id='', $shuttle_id='', $stop_id='') {
         /* get stop ETA time of next shuttle
             if stop_id not supplied, retrieve ETAs for all stops 
         */
         $sql = "SELECT shuttle_eta.*, stops.name FROM shuttle_eta LEFT JOIN stops ON stops.stop_id = shuttle_eta.stop_id WHERE 1 ";
         if ($route_id)
             $sql .= " AND shuttle_eta.route = '". $route_id . "' ";
+		if ($stop_id)
+            $sql .= " AND shuttle_eta.stop_id = '". $stop_id . "' ";
         if ($shuttle_id)
             $sql .= " AND shuttle_eta.shuttle_id = '". $shuttle_id . "' ";     
         $result = db_query_array($sql);
@@ -57,11 +62,13 @@ class DataServiceData
     }
     function getShuttlePositions() {
        /* Get all current shuttle positions from the DB */
-       $sql = "SELECT s1.shuttle_id, s1.heading, X(s1.location) AS latitude, Y(s1.location) AS longitude, s1.speed, s1.cardinal_point, s1.update_time, s1.route_id FROM shuttle_coords AS s1, (
+       $sql = "SELECT s1.shuttle_id, s1.heading, X(s1.location) AS latitude, Y(s1.location) AS longitude, s1.speed, s1.cardinal_point, s1.update_time, s1.route_id, shuttles.name FROM shuttle_coords AS s1
+                JOIN shuttles ON s1.shuttle_id = shuttles.shuttle_id, (
                 SELECT shuttle_id, MAX( update_time ) AS maxdate
                 FROM shuttle_coords
                 GROUP BY shuttle_id
        ) AS s2
+       
        WHERE s1.shuttle_id = s2.shuttle_id
        AND s1.update_time = s2.maxdate";
        

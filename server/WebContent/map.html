@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+  html { height: 100% }
+  body { height: 100%; margin: 0px; padding: 0px }
+  #map_canvas { height: 100% }
+</style>
+<script type="text/javascript"
+    src="http://maps.google.com/maps/api/js?sensor=true&amp;key=ABQIAAAAOCTHylaOYOTc5g-_pCj8shSvS8Smej8DQ7j_pE7rX2KkSsk7qxQvVVhsMNeDyqo6NAc2ZwJet-r3CA">
+</script>
+<script type="text/javascript">
+  function initialize() {
+    var latlng = new google.maps.LatLng(42.729697,-73.677174);
+    var myOptions = {
+      zoom: 6,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map_canvas"),
+        myOptions);
+        var url_end = (new Date()).valueOf();
+        var kml = "http://shuttles.rpi.edu/displays/netlink.kml?nocache=" + url_end;
+        var ctaLayer = new google.maps.KmlLayer(kml);
+    ctaLayer.setMap(map);
+  }
+
+</script>
+</head>
+<body onload="initialize()">
+  <div id="map_canvas" style="width:100%; height:100%"></div>
+</body>
+</html>
