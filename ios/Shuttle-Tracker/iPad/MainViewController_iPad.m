@@ -12,6 +12,8 @@
 
 @implementation MainViewController_iPad
 
+@synthesize mapViewController;
+
 /*
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {

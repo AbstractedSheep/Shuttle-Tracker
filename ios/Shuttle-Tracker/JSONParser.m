@@ -62,6 +62,8 @@
 			return NO;
         }
         
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
             JSONVehicle *vehicle = [[JSONVehicle alloc] init];
@@ -97,6 +99,8 @@
             [vehicles addObject:vehicle];
             [vehicle release];
         }
+		
+		[pool release];
         
         return YES;
     }
@@ -141,6 +145,8 @@
 			return NO;
 		}
         
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
             EtaWrapper *eta = [[EtaWrapper alloc] init];
@@ -169,6 +175,8 @@
             [etas addObject:eta];
             [eta release];
         }
+		
+		[pool release];
         
         return YES;
     }

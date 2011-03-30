@@ -104,7 +104,15 @@
     if (etas) {
         [etas release];
     }
+	
+	if (loadVehicleJsonQueue) {
+		dispatch_release(loadVehicleJsonQueue);
+	}
     
+	if (loadEtaJsonQueue) {
+		dispatch_release(loadEtaJsonQueue);
+	}
+	
     [super dealloc];
 }
 
@@ -124,6 +132,8 @@
         [routeKmlParser parse];
 		[self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:NO];
 	});
+	
+	dispatch_release(loadRoutesQueue);
 }
 
 //  TODO: Remove this or adjust it to be appropriate for DataManager. Taken from MapViewController.
