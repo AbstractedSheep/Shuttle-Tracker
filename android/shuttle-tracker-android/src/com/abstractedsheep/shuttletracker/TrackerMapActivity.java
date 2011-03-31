@@ -237,7 +237,8 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 		case (IShuttleServiceCallback.NO_CONNECTION_ERROR):
 			// Make the shuttle display clear when the connection is lost
 			dataUpdated(new ArrayList<VehicleJson>(), null);
-			timestampOverlay.setStatusText(getResources().getString(R.string.status_no_conn));
+			if (timestampOverlay != null)
+				timestampOverlay.setStatusText(getResources().getString(R.string.status_no_conn));
 			runOnUiThread(invalidateMap);
 			break;
 		default:
