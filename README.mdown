@@ -56,7 +56,6 @@ Run project normally.
 Use the adb program in android-sdk/platform-tools with the command 'adb install <apk file path>'
 
 ## iOS (iPhone/iPod Touch/iPad)
-Note: The iOS application's first general release on the official iOS App Store is planned to be around 3/26/11.
 
 ### Compiling
 Open `ios/Shuttle-Tracker.xcodeproj` in XCode and compile normally.
