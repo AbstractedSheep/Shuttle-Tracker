@@ -10,6 +10,8 @@
 #import "EtaWrapper.h"
 #import "IASKSettingsReader.h"
 
+#define kRemoveShuttleThreshold		90.0f
+
 
 @interface DataManager()
 - (void)loadFromKml;
@@ -208,7 +210,7 @@
 	
 	for (JSONVehicle *vehicle in vehicles) {
 		//	Remove vehicles which have not been updated for three minutes
-		if ([vehicle.updateTime timeIntervalSinceNow] < -45.0f) {
+		if ([vehicle.updateTime timeIntervalSinceNow] < -kRemoveShuttleThreshold) {
 			[vehiclesToRemove addObject:vehicle];
 		}
 	}
