@@ -32,7 +32,7 @@
 			<key>Key</key>
 			<string>useLocation</string>
 			<key>Title</key>
-			<string>Current Location</string>
+			<string>Show My Location</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
