@@ -25,9 +25,24 @@
 		//	Create the data manager for all of the parts of the application to use.
         dataManager = [[DataManager alloc] init];
 		
+		// Check if 12 or 24 hour mode
+		BOOL use24Time = NO;
+		
+		NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
+		[timeFormatter setTimeStyle:NSDateFormatterMediumStyle];
+		
+		NSMutableArray *dateArray = [[NSMutableArray alloc] init];
+		[dateArray setArray:[[timeFormatter stringFromDate:[NSDate date]] componentsSeparatedByString:@" "]];
+		
+		if ([dateArray count] == 1) // if no am/pm extension exists
+			use24Time = YES;
+		
+		[timeFormatter release];
+		[dateArray release];
+		
 		// Set the application defaults
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		NSDictionary *appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:@"NO", @"YES", @"YES", [NSNumber numberWithInt:5], nil] 
+		NSDictionary *appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:use24Time ? @"YES" : @"NO", @"YES", @"YES", [NSNumber numberWithInt:5], nil] 
 																forKeys:[NSArray arrayWithObjects:@"use24Time", @"useLocation", @"findClosestStop", @"dataUpdateInterval", nil]];
 		[defaults registerDefaults:appDefaults];
 		[defaults synchronize];
