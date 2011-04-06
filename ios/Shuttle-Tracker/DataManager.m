@@ -28,6 +28,7 @@
 @synthesize stops;
 @synthesize vehicles;
 @synthesize etas;
+@synthesize numberEtas;
 @synthesize eastEtas;
 @synthesize westEtas;
 @synthesize timeDisplayFormatter;
@@ -38,6 +39,7 @@
         routes = nil;
         stops = nil;
         
+		numberEtas = [[NSMutableDictionary alloc] init];
         eastEtas = 0;
         westEtas = 0;
 		
@@ -240,11 +242,37 @@
     [etas release];
     etas = [etasJsonParser.etas copy];
     
+	[numberEtas release];
+	numberEtas = [[NSMutableDictionary alloc] init];
+	
     westEtas = 0;
     eastEtas = 0;
     
     for (EtaWrapper *eta in etas) {
-        if (eta.route == 1) {
+		NSString *routeName = nil;
+		
+		NSArray *currentRouteNames = [self routeNames];
+		
+		//	Ensure that there are at least as many routes as the route ID number.
+		if (eta.route <= [currentRouteNames count]) {
+			routeName = [currentRouteNames objectAtIndex:eta.route - 1];
+		}
+		
+        if (routeName) {
+			NSNumber *routeEtas = [numberEtas objectForKey:routeName];
+			
+			NSNumber *newNumberEtas;
+			
+			if (routeEtas != nil) {
+				newNumberEtas = [NSNumber numberWithInt:[routeEtas intValue] + 1];
+				[numberEtas setObject:newNumberEtas forKey:routeName];
+			} else {
+				newNumberEtas = [NSNumber numberWithInt:1];
+				[numberEtas setObject:newNumberEtas forKey:routeName];
+			}
+		}
+		
+		if (eta.route == 1) {
             westEtas++;
         } else if (eta.route == 2) {
             eastEtas++;
@@ -254,7 +282,9 @@
     for (EtaWrapper *eta in etas) {
         for (KMLStop *stop in stops) {
             if (NULL) {
-                //None
+                //	None
+				//	Eventually, this should set the next ETA for
+				//	each stop, for each route that the stop is on.
             }
         }
     }
@@ -327,6 +357,24 @@
 	timeDisplayFormatter = newTimeDisplayFormatter;
 	
 	vehiclesJsonParser.timeDisplayFormatter = timeDisplayFormatter;
+}
+
+//	Get the number of etas for the routeNo'th route.
+//	routeNo is expected to be 0-indexed in the method call.
+- (int)numberEtasForRoute:(int)routeNo {
+	if (!routes || routeNo > [routes count]) {
+		return 0;
+	}
+	
+	KMLRoute *route = [routes objectAtIndex:routeNo];
+	
+	if (route) {
+		NSNumber *noEtas = [numberEtas objectForKey:route.name];
+		
+		return noEtas ? [noEtas intValue] : 0;
+	}
+	
+	return 0;
 }
 
 //	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.

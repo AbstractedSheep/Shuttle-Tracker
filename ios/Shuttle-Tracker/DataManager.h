@@ -32,6 +32,7 @@
     NSMutableArray *vehicles;
     
     NSArray *etas;
+	NSMutableDictionary *numberEtas;
     NSInteger eastEtas;
     NSInteger westEtas;
 	
@@ -45,6 +46,7 @@
 @property (nonatomic, retain) NSArray *stops;
 @property (nonatomic, retain) NSMutableArray *vehicles;
 @property (nonatomic, retain) NSArray *etas;
+@property (nonatomic, retain) NSDictionary *numberEtas;
 @property (nonatomic, readonly) NSInteger eastEtas;
 @property (nonatomic, readonly) NSInteger westEtas;
 @property (nonatomic, readonly) NSArray *routeNames;
@@ -56,6 +58,7 @@
 
 - (void)loadRoutesAndStops;
 - (void)updateData;
+- (int)numberEtasForRoute:(int)routeNo;
 - (void)settingChanged:(NSNotification *)notification;
 
 

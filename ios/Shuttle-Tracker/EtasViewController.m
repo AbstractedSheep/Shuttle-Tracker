@@ -111,15 +111,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    //	West route first, because that's the one I use often
-    if (section == 0) {
-        return dataManager.westEtas;
-    } else if (section == 1) {
-        return dataManager.eastEtas;
-        
-    } else {
-        return 0;
-    }
+	return [dataManager numberEtasForRoute:section];
     
 }
 
