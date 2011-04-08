@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C54F623134F9FB700A38505 /* netlink.js in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F622134F9FB700A38505 /* netlink.js */; };
 		DAD407041341635100F05D88 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DAD407021341635100F05D88 /* InfoPlist.strings */; };
 		DAD407071341635100F05D88 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407061341635100F05D88 /* main.m */; };
 		DAD4070A1341635100F05D88 /* Shuttle_TrackerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */; };
@@ -83,6 +84,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C54F622134F9FB700A38505 /* netlink.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = netlink.js; sourceTree = "<group>"; };
 		DAD406F51341635100F05D88 /* Shuttle-Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shuttle-Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAD407011341635100F05D88 /* Shuttle-Tracker-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Shuttle-Tracker-Info.plist"; sourceTree = "<group>"; };
 		DAD407031341635100F05D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -275,6 +277,7 @@
 				DAD407A8134166C200F05D88 /* MapViewController.m */,
 				DAD407B7134168A200F05D88 /* Settings.bundle */,
 				DAD407B61341689200F05D88 /* Images */,
+				5C54F622134F9FB700A38505 /* netlink.js */,
 				DAD407CB134168E500F05D88 /* netlink.kml */,
 				DAD4070B1341635100F05D88 /* iPhone */,
 				DAD407121341635100F05D88 /* iPad */,
@@ -589,6 +592,7 @@
 				DAD407AF134166C200F05D88 /* MapViewController.m in Sources */,
 				DAD4080413417A1E00F05D88 /* MainViewController_iPhone.m in Sources */,
 				DAD4080713417A3B00F05D88 /* MainViewController_iPad.m in Sources */,
+				5C54F623134F9FB700A38505 /* netlink.js in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
