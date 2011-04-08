@@ -30,6 +30,7 @@
 @synthesize stops;
 @synthesize vehicles;
 @synthesize etas;
+@synthesize soonestEtas;
 @synthesize numberEtas;
 @synthesize eastEtas;
 @synthesize westEtas;
@@ -40,6 +41,8 @@
     if ((self = [super init])) {
         routes = nil;
         stops = nil;
+        
+        numberStops = [[NSMutableDictionary alloc] init];
         
 		numberEtas = [[NSMutableDictionary alloc] init];
         eastEtas = 0;
@@ -55,6 +58,8 @@
 		} else {
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
+        
+        onlyNextEtas = [[defaults objectForKey:@"onlyNextEtas"] boolValue];
         
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
         shuttleJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
@@ -107,6 +112,10 @@
     
     if (etas) {
         [etas release];
+    }
+    
+    if (soonestEtas) {
+        [soonestEtas release];
     }
 	
 	if (loadVehicleJsonQueue) {
@@ -244,6 +253,9 @@
     [etas release];
     etas = [etasJsonParser.etas copy];
     
+    [soonestEtas release];
+    soonestEtas = [[NSMutableArray alloc] init];
+    
 	[numberEtas release];
 	numberEtas = [[NSMutableDictionary alloc] init];
 	
@@ -274,6 +286,21 @@
 			}
 		}
 		
+        BOOL addThis = YES;
+        
+        //  Check to see if the current eta is the next one for its associated stop
+        for (EtaWrapper *soonEta in soonestEtas) {
+            if ([eta.stopName isEqualToString:soonEta.stopName] && eta.stopId == soonEta.stopId) {
+                if ([eta.eta timeIntervalSinceDate:soonEta.eta] > 0) {
+                    addThis = NO;
+                }
+            }
+        }
+        
+        if (addThis) {
+            [soonestEtas addObject:eta];
+        }
+        
 		if (eta.route == 1) {
             westEtas++;
         } else if (eta.route == 2) {
@@ -281,7 +308,7 @@
         }
     }
     
-    for (EtaWrapper *eta in etas) {
+    for (EtaWrapper *eta in soonestEtas) {
         for (KMLStop *stop in stops) {
             if (NULL) {
                 //	None
@@ -371,8 +398,14 @@
 	KMLRoute *route = [routes objectAtIndex:routeNo];
 	
 	if (route) {
-		NSNumber *noEtas = [numberEtas objectForKey:route.name];
-		
+		NSNumber *noEtas;
+        
+        if (onlyNextEtas) {
+            //  Wabbajack
+        } else {
+            noEtas = [numberEtas objectForKey:route.name];
+        }
+        
 		return noEtas ? [noEtas intValue] : 0;
 	}
 	
@@ -392,7 +425,13 @@
 		} else {
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
-	}
+	} else if ([[notification object] isEqualToString:@"onlyNextETAs"]) {
+        if ([[info objectForKey:@"onlyNextETAs"] boolValue]) {
+            onlyNextEtas = YES;
+        } else {
+            onlyNextEtas = NO;
+        }
+    }
 }
 
 @end

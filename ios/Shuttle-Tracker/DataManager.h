@@ -25,17 +25,20 @@
     JSONParser *vehiclesJsonParser;
     JSONParser *etasJsonParser;
     
-    
     NSArray *routes;
     NSArray *stops;
+    NSMutableDictionary *numberStops;
     
     NSMutableArray *vehicles;
     
     NSArray *etas;
+    NSMutableArray *soonestEtas;
 	NSMutableDictionary *numberEtas;
     NSInteger eastEtas;
     NSInteger westEtas;
 	
+    BOOL onlyNextEtas;
+    
 	dispatch_queue_t loadVehicleJsonQueue;
 	dispatch_queue_t loadEtaJsonQueue;
 	
@@ -46,6 +49,7 @@
 @property (nonatomic, retain) NSArray *stops;
 @property (nonatomic, retain) NSMutableArray *vehicles;
 @property (nonatomic, retain) NSArray *etas;
+@property (nonatomic, retain) NSArray *soonestEtas;
 @property (nonatomic, retain) NSDictionary *numberEtas;
 @property (nonatomic, readonly) NSInteger eastEtas;
 @property (nonatomic, readonly) NSInteger westEtas;
