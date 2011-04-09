@@ -22,6 +22,7 @@
     
     KMLParser *routeKmlParser;
     KMLParser *vehiclesKmlParser;
+    JSONParser *routesStopsJsonParser;
     JSONParser *vehiclesJsonParser;
     JSONParser *etasJsonParser;
     

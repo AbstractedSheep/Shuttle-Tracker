@@ -61,6 +61,9 @@
         
         onlyNextEtas = [[defaults objectForKey:@"onlyNextEtas"] boolValue];
         
+        NSURL *routesJsonUrl = [NSURL URLWithString:@"http://shuttles.rpi.edu/displays/netlink.js"];
+        routesStopsJsonParser = [[JSONParser alloc] initWithUrl:routesJsonUrl];
+        
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
         shuttleJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
         vehiclesJsonParser = [[JSONParser alloc] initWithUrl:shuttleJsonUrl];
@@ -131,7 +134,8 @@
 
 //  Load the routes/stops KML file asynchronously
 - (void)loadRoutesAndStops {
-	[self loadFromKml];
+//	[self loadFromKml];
+    [routesStopsJsonParser parseRoutesandStops];
 }
 
 - (void)loadFromKml {
@@ -323,7 +327,7 @@
 //	Iterate through the list of routes, and return a list of the route names
 - (NSArray *)routeNames {
 	if (!routes) {
-		return [NSArray arrayWithObject:nil];
+		return [NSArray arrayWithObjects:nil];
 	}
 	
 	NSMutableArray *routeNames = [[[NSMutableArray alloc] init] autorelease];

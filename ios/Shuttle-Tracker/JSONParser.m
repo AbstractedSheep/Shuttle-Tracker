@@ -9,10 +9,12 @@
 #import "JSONParser.h"
 #import "NSDictionary_JSONExtensions.h"
 #import "EtaWrapper.h"
-
+#import "MapPlacemark.h"
 
 @implementation JSONParser
 
+@synthesize routes;
+@synthesize stops;
 @synthesize vehicles;
 @synthesize etas;
 @synthesize timeDisplayFormatter;
@@ -35,6 +37,96 @@
     }
     
     return self;
+}
+
+
+//  TODO:  Routes parsing
+- (BOOL)parseRoutesandStops {
+    NSError *theError = nil;
+    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
+    NSDictionary *jsonDict = nil;
+    
+    [routes release];
+    
+    if (theError) {
+        NSLog(@"Error retrieving JSON data");
+        
+        return NO;
+    } else {
+        if (jsonString) {
+            jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
+        } else {
+            jsonDict = nil;
+			
+			return NO;
+        }
+        
+        NSMutableArray *mutableRoutes = [[NSMutableArray alloc] init];
+        NSMutableArray *mutableStops = [[NSMutableArray alloc] init];
+        
+		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		
+        NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
+        
+        NSEnumerator *enumerator = [jsonStops objectEnumerator];
+        NSDictionary *value;
+        
+        NSString *string;
+        
+        while ((value = [enumerator nextObject])) {
+            MapStop *stop = [[MapStop alloc] init];
+            
+            CLLocationCoordinate2D coordinate;
+            
+            string = [value objectForKey:@"latitude"];
+            coordinate.latitude = [string floatValue];
+            
+            string = [value objectForKey:@"longitude"];
+            coordinate.longitude = [string floatValue];
+            
+            stop.coordinate = coordinate;
+            
+            string = [value objectForKey:@"name"];
+            stop.name = string;
+            
+            string = [value objectForKey:@"short_name"];
+            stop.shortName = string;
+            
+            NSDictionary *routesDict = [value objectForKey:@"routes"];
+            NSEnumerator *routesEnum = [routesDict objectEnumerator];
+            NSDictionary *routeValues;
+            
+            NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
+            NSMutableArray *tempRouteNames = [[NSMutableArray alloc] init];
+            
+            NSNumber *number;
+            
+            while ((routeValues = [routesEnum nextObject])) {
+                number = [routeValues objectForKey:@"id"];
+                [tempRouteIds addObject:number];
+                
+                string = [routeValues objectForKey:@"name"];
+                [tempRouteNames addObject:string];
+            }
+            
+            stop.routeIds = tempRouteIds;
+            stop.routeNames = tempRouteNames;
+            
+            [mutableStops addObject:stop];
+            [stop release];
+        }
+        
+        [stops release];
+        stops = mutableStops;
+		
+		[pool release];
+        [mutableRoutes release];
+        
+        return YES;
+    }
+    
+    return NO;
+
 }
 
 

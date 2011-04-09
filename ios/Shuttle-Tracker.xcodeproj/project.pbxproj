@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5C54F623134F9FB700A38505 /* netlink.js in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F622134F9FB700A38505 /* netlink.js */; };
+		5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F626134FC14100A38505 /* MapPlacemark.m */; };
 		DAD407041341635100F05D88 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DAD407021341635100F05D88 /* InfoPlist.strings */; };
 		DAD407071341635100F05D88 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407061341635100F05D88 /* main.m */; };
 		DAD4070A1341635100F05D88 /* Shuttle_TrackerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */; };
@@ -85,6 +86,8 @@
 
 /* Begin PBXFileReference section */
 		5C54F622134F9FB700A38505 /* netlink.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = netlink.js; sourceTree = "<group>"; };
+		5C54F625134FC14100A38505 /* MapPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPlacemark.h; sourceTree = "<group>"; };
+		5C54F626134FC14100A38505 /* MapPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPlacemark.m; sourceTree = "<group>"; };
 		DAD406F51341635100F05D88 /* Shuttle-Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shuttle-Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAD407011341635100F05D88 /* Shuttle-Tracker-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Shuttle-Tracker-Info.plist"; sourceTree = "<group>"; };
 		DAD407031341635100F05D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -267,11 +270,13 @@
 				DAD4079E134166C100F05D88 /* JSONParser.h */,
 				DAD4079F134166C100F05D88 /* KMLParser.h */,
 				DAD407A0134166C100F05D88 /* MainViewController.h */,
+				5C54F625134FC14100A38505 /* MapPlacemark.h */,
 				DAD407A1134166C100F05D88 /* MapViewController.h */,
 				DAD407A2134166C100F05D88 /* DataManager.m */,
 				DAD407A3134166C100F05D88 /* EtasViewController.m */,
 				DAD407A4134166C100F05D88 /* EtaWrapper.m */,
 				DAD407A5134166C100F05D88 /* JSONParser.m */,
+				5C54F626134FC14100A38505 /* MapPlacemark.m */,
 				DAD407A6134166C100F05D88 /* KMLParser.m */,
 				DAD407A7134166C100F05D88 /* MainViewController.m */,
 				DAD407A8134166C200F05D88 /* MapViewController.m */,
@@ -593,6 +598,7 @@
 				DAD4080413417A1E00F05D88 /* MainViewController_iPhone.m in Sources */,
 				DAD4080713417A3B00F05D88 /* MainViewController_iPad.m in Sources */,
 				5C54F623134F9FB700A38505 /* netlink.js in Sources */,
+				5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

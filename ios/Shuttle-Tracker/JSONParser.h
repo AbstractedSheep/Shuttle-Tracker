@@ -11,6 +11,9 @@
 
 
 @interface JSONParser : NSObject {
+    NSArray *routes;
+    NSArray *stops;
+    
     NSMutableArray *vehicles;
     NSMutableArray *etas;
     
@@ -18,12 +21,15 @@
 	NSDateFormatter *timeDisplayFormatter;
 }
 
+@property (nonatomic, retain) NSArray *routes;
+@property (nonatomic, retain) NSArray *stops;
 @property (nonatomic, retain) NSMutableArray *vehicles;
 @property (nonatomic, retain) NSMutableArray *etas;
 @property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
 
 
 - (id)initWithUrl:(NSURL *)url;
+- (BOOL)parseRoutesandStops;
 - (BOOL)parseShuttles;
 - (BOOL)parseEtas;
 
