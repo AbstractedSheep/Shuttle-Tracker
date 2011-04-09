@@ -34,19 +34,21 @@
         jsonUrl = url;
         [jsonUrl retain];
         
+        routes = [NSArray arrayWithObjects:nil];
+        stops = [NSArray arrayWithObjects:nil];
     }
     
     return self;
 }
 
 
-//  TODO:  Routes parsing
 - (BOOL)parseRoutesandStops {
     NSError *theError = nil;
     NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
     NSDictionary *jsonDict = nil;
     
     [routes release];
+    [stops release];
     
     if (theError) {
         NSLog(@"Error retrieving JSON data");
@@ -64,16 +66,63 @@
         NSMutableArray *mutableRoutes = [[NSMutableArray alloc] init];
         NSMutableArray *mutableStops = [[NSMutableArray alloc] init];
         
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-		
-        NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
-        
-        NSEnumerator *enumerator = [jsonStops objectEnumerator];
+		NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
         NSDictionary *value;
-        
         NSString *string;
         
-        while ((value = [enumerator nextObject])) {
+        NSDictionary *jsonRoutes = [jsonDict objectForKey:@"routes"];
+        
+        NSEnumerator *routesEnum = [jsonRoutes objectEnumerator];
+		
+        while ((value = [routesEnum nextObject])) {
+            PlacemarkStyle *style = [[PlacemarkStyle alloc] init];
+            
+            string = [value objectForKey:@"color"];
+            style.colorString = string;
+            
+            string = [value objectForKey:@"id"];
+            style.idTag = string;
+            
+            NSNumber *number = [value objectForKey:@"width"];
+            style.width = [number intValue];
+            
+            MapRoute *route = [[MapRoute alloc] init];
+            route.style = style;
+            
+            string = [value objectForKey:@"name"];
+            route.name = string;
+            
+            NSDictionary *coordsDict = [value objectForKey:@"coords"];
+            NSEnumerator *coordsEnum = [coordsDict objectEnumerator];
+            NSDictionary *coordsValues;
+            
+            NSMutableArray *coordsString = [[NSMutableArray alloc] init];
+            
+            CLLocationCoordinate2D coordinate;
+            
+            while ((coordsValues = [coordsEnum nextObject])) {
+                string = [coordsValues objectForKey:@"latitude"];
+                coordinate.latitude = [string floatValue];
+                
+                string = [coordsValues objectForKey:@"longitutde"];
+                coordinate.longitude = [string floatValue];
+                
+                [coordsString addObject:[NSString stringWithFormat:@"%f, %f\n", coordinate.latitude, coordinate.longitude]];
+            }
+            
+            route.lineString = coordsString;
+            
+            [mutableRoutes addObject:route];
+            [route release];
+        }
+        
+        routes = mutableRoutes;
+        
+        NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
+        
+        NSEnumerator *stopsEnum = [jsonStops objectEnumerator];
+        
+        while ((value = [stopsEnum nextObject])) {
             MapStop *stop = [[MapStop alloc] init];
             
             CLLocationCoordinate2D coordinate;
@@ -116,11 +165,9 @@
             [stop release];
         }
         
-        [stops release];
         stops = mutableStops;
 		
-		[pool release];
-        [mutableRoutes release];
+		[smallPool release];
         
         return YES;
     }
@@ -154,7 +201,7 @@
 			return NO;
         }
         
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
 		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
@@ -192,7 +239,7 @@
             [vehicle release];
         }
 		
-		[pool release];
+		[smallPool release];
         
         return YES;
     }
@@ -237,7 +284,7 @@
 			return NO;
 		}
         
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
 		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
@@ -268,7 +315,7 @@
             [eta release];
         }
 		
-		[pool release];
+		[smallPool release];
         
         return YES;
     }
@@ -277,6 +324,9 @@
 }
 
 - (void)dealloc {
+    [routes release];
+    [stops release];
+    
     [super dealloc];
     [etas release];
     [vehicles release];

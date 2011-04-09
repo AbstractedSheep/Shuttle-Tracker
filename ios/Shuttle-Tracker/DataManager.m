@@ -135,7 +135,11 @@
 //  Load the routes/stops KML file asynchronously
 - (void)loadRoutesAndStops {
 //	[self loadFromKml];
+    
     [routesStopsJsonParser parseRoutesandStops];
+    
+    routes = routesStopsJsonParser.routes;
+    stops = routesStopsJsonParser.stops;
 }
 
 - (void)loadFromKml {
@@ -402,7 +406,7 @@
 	KMLRoute *route = [routes objectAtIndex:routeNo];
 	
 	if (route) {
-		NSNumber *noEtas;
+		NSNumber *noEtas = nil;
         
         if (onlyNextEtas) {
             //  Wabbajack

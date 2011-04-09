@@ -40,18 +40,12 @@
 	NSString *colorString;
 	UIColor *color;
 	int width;
-    
-	enum Styles {
-		lineStyle,
-		nilStyle
-    } styleType;
 }
 
 @property (nonatomic, retain) NSString *idTag;
 @property (nonatomic, retain) NSString *colorString;
 @property (nonatomic, readonly) UIColor *color;
 @property (nonatomic) int width;
-@property (nonatomic) enum Styles styleType;
 
 @end
 

@@ -22,13 +22,47 @@
 
 @end
 
+@interface PlacemarkStyle ()
+
+- (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString;
+
+@end
+
 @implementation PlacemarkStyle
 
 @synthesize idTag;
 @synthesize color;
 @synthesize colorString;
 @synthesize width;
-@synthesize styleType;
+
+- (void)setColorString:(NSString *)newColorString {
+    colorString = newColorString;
+    [colorString retain];
+    
+    color = [self UIColorFromRGBAString:colorString];
+	[color retain];
+}
+
+
+//  Take an NSString formatted as such: RRGGBBAA and return a UIColor
+- (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString {
+    NSScanner *scanner;
+    unsigned int rgbaValue;
+    
+    if (rgbaString) {
+        scanner = [NSScanner scannerWithString:rgbaString];
+        [scanner scanHexInt:&rgbaValue];
+        
+    } else {
+        rgbaValue = 0;
+    }
+    
+    //  For whatever reason, the color comes in as ABGR
+    return [UIColor colorWithRed:((float)((rgbaValue & 0xFF)))/255.0
+                           green:((float)((rgbaValue & 0xFF00) >> 8))/255.0
+                            blue:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
+                           alpha:((float)((rgbaValue & 0xFF000000) >> 24))/255.0];
+}
 
 @end
 
