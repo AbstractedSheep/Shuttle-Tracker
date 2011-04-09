@@ -9,6 +9,7 @@
 #import "MapViewController.h"
 #import "KMLParser.h"
 #import "JSONParser.h"
+#import "MapPlacemark.h"
 #import "IASKSettingsReader.h"
 
 @interface MapViewController()
@@ -18,8 +19,8 @@
 - (void)notifyVehiclesUpdated:(NSNotification *)notification;
 - (void)vehiclesUpdated:(NSNotification *)notification;
 //	Adding routes and stops is not guaranteed to be done on the main thread.
-- (void)addRoute:(KMLRoute *)route;
-- (void)addStop:(KMLStop *)stop;
+- (void)addRoute:(MapRoute *)route;
+- (void)addStop:(MapStop *)stop;
 //	Adding vehicles should only be done on the main thread.
 - (void)addKmlVehicle:(KMLVehicle *)vehicle;
 - (void)addJsonVehicle:(JSONVehicle *)vehicle;
@@ -88,11 +89,21 @@
 
 //  The routes and stops were loaded in the dataManager
 - (void)managedRoutesLoaded {
+    /*
     for (KMLRoute *route in [dataManager routes]) {
         [self addRoute:route];
     }
     
     for (KMLStop *stop in [dataManager stops]) {
+        [self addStop:stop];
+    }
+     */
+    
+    for (MapRoute *route in [dataManager routes]) {
+        [self addRoute:route];
+    }
+    
+    for (MapStop *stop in [dataManager stops]) {
         [self addStop:stop];
     }
 }
@@ -126,7 +137,7 @@
 	}
 }
 
-- (void)addRoute:(KMLRoute *)route {
+- (void)addRoute:(MapRoute *)route {
     NSArray *temp;
     CLLocationCoordinate2D clLoc;
     MKMapPoint *points = malloc(sizeof(MKMapPoint) * route.lineString.count);
@@ -162,7 +173,7 @@
     [_mapView addOverlay:polyLine];
 }
 
-- (void)addStop:(KMLStop *)stop {
+- (void)addStop:(MapStop *)stop {
     [_mapView addAnnotation:stop];
     
 }
@@ -251,16 +262,16 @@
     if (annotation == _mapView.userLocation)
         return nil;
     
-    if ([annotation isKindOfClass:[KMLStop class]]) {
-		if ([(KMLStop *)annotation annotationView]) {
-			return [(KMLStop *)annotation annotationView];
+    if ([annotation isKindOfClass:[MapStop class]]) {
+		if ([(MapStop *)annotation annotationView]) {
+			return [(MapStop *)annotation annotationView];
 		}
 		
-		MKAnnotationView *stopAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
+		MKAnnotationView *stopAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(MapStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
         stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
         stopAnnotationView.canShowCallout = YES;
         
-        [(KMLStop *)annotation setAnnotationView:stopAnnotationView];
+        [(MapStop *)annotation setAnnotationView:stopAnnotationView];
 		
 		return stopAnnotationView;
         

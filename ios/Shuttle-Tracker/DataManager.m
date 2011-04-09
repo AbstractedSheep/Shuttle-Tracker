@@ -6,6 +6,7 @@
 //  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
+#import "MapPlacemark.h"
 #import "DataManager.h"
 #import "EtaWrapper.h"
 #import "IASKSettingsReader.h"
@@ -14,6 +15,8 @@
 
 
 @interface DataManager()
+- (void)loadFromJson;
+- (void)routeJsonLoaded;
 - (void)loadFromKml;
 - (void)routeKmlLoaded;
 - (void)updateVehicleData;
@@ -136,10 +139,27 @@
 - (void)loadRoutesAndStops {
 //	[self loadFromKml];
     
-    [routesStopsJsonParser parseRoutesandStops];
-    
+    [self loadFromJson];
+}
+
+- (void)loadFromJson {
+    dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
+	dispatch_async(loadRoutesQueue, ^{
+        [routeKmlParser parse];
+		[self performSelectorOnMainThread:@selector(routeJsonLoaded) withObject:nil waitUntilDone:NO];
+	});
+	
+	dispatch_release(loadRoutesQueue);
+}
+
+- (void)routeJsonLoaded {
     routes = routesStopsJsonParser.routes;
+    [routes retain];
+    
     stops = routesStopsJsonParser.stops;
+    [stops retain];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
 }
 
 - (void)loadFromKml {
@@ -338,7 +358,7 @@
 	
 	BOOL alreadyCounted;
 	
-	for (KMLRoute *route in routes) {
+	for (MapRoute *route in routes) {
 		alreadyCounted = NO;
 		
 		for (NSString *existingName in routeNames) {
@@ -367,7 +387,7 @@
 	
 	BOOL alreadyCounted;
 	
-	for (KMLRoute *route in routes) {
+	for (MapRoute *route in routes) {
 		alreadyCounted = NO;
 		
 		for (NSString *existingName in routeNames) {
@@ -403,7 +423,7 @@
 		return 0;
 	}
 	
-	KMLRoute *route = [routes objectAtIndex:routeNo];
+	MapRoute *route = [routes objectAtIndex:routeNo];
 	
 	if (route) {
 		NSNumber *noEtas = nil;
