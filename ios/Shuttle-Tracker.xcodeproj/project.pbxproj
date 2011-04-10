@@ -65,7 +65,6 @@
 		DAD407C8134168CA00F05D88 /* shuttle_color.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BF134168CA00F05D88 /* shuttle_color.png */; };
 		DAD407C9134168CA00F05D88 /* shuttle.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407C0134168CA00F05D88 /* shuttle.png */; };
 		DAD407CA134168CA00F05D88 /* stop_marker.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407C1134168CA00F05D88 /* stop_marker.png */; };
-		DAD407CC134168E500F05D88 /* netlink.kml in Resources */ = {isa = PBXBuildFile; fileRef = DAD407CB134168E500F05D88 /* netlink.kml */; };
 		DAD407D6134169A600F05D88 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D3134169A600F05D88 /* Icon-Small-50.png */; };
 		DAD407D7134169A600F05D88 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D4134169A600F05D88 /* Icon-Small.png */; };
 		DAD407D8134169A600F05D88 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D5134169A600F05D88 /* Icon-Small@2x.png */; };
@@ -180,7 +179,6 @@
 		DAD407BF134168CA00F05D88 /* shuttle_color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color.png; sourceTree = "<group>"; };
 		DAD407C0134168CA00F05D88 /* shuttle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle.png; sourceTree = "<group>"; };
 		DAD407C1134168CA00F05D88 /* stop_marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_marker.png; sourceTree = "<group>"; };
-		DAD407CB134168E500F05D88 /* netlink.kml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = netlink.kml; sourceTree = "<group>"; };
 		DAD407D3134169A600F05D88 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
 		DAD407D4134169A600F05D88 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
 		DAD407D5134169A600F05D88 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
@@ -278,7 +276,6 @@
 				DAD407B7134168A200F05D88 /* Settings.bundle */,
 				DAD407B61341689200F05D88 /* Images */,
 				5C54F622134F9FB700A38505 /* netlink.js */,
-				DAD407CB134168E500F05D88 /* netlink.kml */,
 				DAD4070B1341635100F05D88 /* iPhone */,
 				DAD407121341635100F05D88 /* iPad */,
 				DAD407001341635100F05D88 /* Supporting Files */,
@@ -534,7 +531,6 @@
 				DAD407C8134168CA00F05D88 /* shuttle_color.png in Resources */,
 				DAD407C9134168CA00F05D88 /* shuttle.png in Resources */,
 				DAD407CA134168CA00F05D88 /* stop_marker.png in Resources */,
-				DAD407CC134168E500F05D88 /* netlink.kml in Resources */,
 				DAD407D6134169A600F05D88 /* Icon-Small-50.png in Resources */,
 				DAD407D7134169A600F05D88 /* Icon-Small.png in Resources */,
 				DAD407D8134169A600F05D88 /* Icon-Small@2x.png in Resources */,
