@@ -86,6 +86,7 @@
 		5C54F622134F9FB700A38505 /* netlink.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = netlink.js; sourceTree = "<group>"; };
 		5C54F625134FC14100A38505 /* MapPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPlacemark.h; sourceTree = "<group>"; };
 		5C54F626134FC14100A38505 /* MapPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPlacemark.m; sourceTree = "<group>"; };
+		5CACD345135262BC00A4CD75 /* DataUrls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataUrls.h; sourceTree = "<group>"; };
 		DAD406F51341635100F05D88 /* Shuttle-Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shuttle-Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAD407011341635100F05D88 /* Shuttle-Tracker-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Shuttle-Tracker-Info.plist"; sourceTree = "<group>"; };
 		DAD407031341635100F05D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -260,6 +261,7 @@
 				DAD407081341635100F05D88 /* Shuttle_TrackerAppDelegate.h */,
 				DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */,
 				DAD4079B134166C100F05D88 /* DataManager.h */,
+				5CACD345135262BC00A4CD75 /* DataUrls.h */,
 				DAD4079C134166C100F05D88 /* EtasViewController.h */,
 				DAD4079D134166C100F05D88 /* EtaWrapper.h */,
 				DAD4079E134166C100F05D88 /* JSONParser.h */,

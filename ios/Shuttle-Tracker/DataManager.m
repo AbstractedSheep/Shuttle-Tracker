@@ -10,6 +10,7 @@
 #import "DataManager.h"
 #import "EtaWrapper.h"
 #import "IASKSettingsReader.h"
+#import "DataUrls.h"
 
 #define kRemoveShuttleThreshold		90.0f
 
@@ -62,14 +63,14 @@
         
         onlyNextEtas = [[defaults objectForKey:@"onlyNextEtas"] boolValue];
         
-        NSURL *routesJsonUrl = [NSURL URLWithString:@"http://shuttles.rpi.edu/displays/netlink.js"];
+        NSURL *routesJsonUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
         routesStopsJsonParser = [[JSONParser alloc] initWithUrl:routesJsonUrl];
         
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
-        shuttleJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
+        shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
         vehiclesJsonParser = [[JSONParser alloc] initWithUrl:shuttleJsonUrl];
         
-        etasJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta"];
+        etasJsonUrl = [NSURL URLWithString:kDMEtasUrl];
         etasJsonParser = [[JSONParser alloc] initWithUrl:etasJsonUrl];
         
         vehicles = [[NSMutableArray alloc] init];
