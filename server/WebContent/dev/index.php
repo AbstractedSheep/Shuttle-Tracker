@@ -5,6 +5,10 @@
 
 //var_dump($etas);
 include("header.php");
+include_once("application.php");
+include_once("apps/data_service.php");  
+include_once("apps/routecoorddistances.php");
+
 ?>
  
 
@@ -31,7 +35,8 @@ include("header.php");
     </div>
 <div data-role="content">
 <?
-   include("loadETA.php"); 
+   DataService::displayETAs();
+   DataServiceData::recordStats("Get Next ETA"); 
 ?>
 </div>
 <? 
