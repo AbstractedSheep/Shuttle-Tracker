@@ -7,7 +7,6 @@
 //
 
 #import "MapViewController.h"
-#import "KMLParser.h"
 #import "JSONParser.h"
 #import "MapPlacemark.h"
 #import "IASKSettingsReader.h"
@@ -22,7 +21,6 @@
 - (void)addRoute:(MapRoute *)route;
 - (void)addStop:(MapStop *)stop;
 //	Adding vehicles should only be done on the main thread.
-- (void)addKmlVehicle:(KMLVehicle *)vehicle;
 - (void)addJsonVehicle:(JSONVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
 
@@ -89,16 +87,6 @@
 
 //  The routes and stops were loaded in the dataManager
 - (void)managedRoutesLoaded {
-    /*
-    for (KMLRoute *route in [dataManager routes]) {
-        [self addRoute:route];
-    }
-    
-    for (KMLStop *stop in [dataManager stops]) {
-        [self addStop:stop];
-    }
-     */
-    
     for (MapRoute *route in [dataManager routes]) {
         [self addRoute:route];
     }
@@ -178,10 +166,6 @@
     
 }
 
-- (void)addKmlVehicle:(KMLVehicle *)vehicle {
-    [_mapView addAnnotation:vehicle];
-}
-
 - (void)addJsonVehicle:(JSONVehicle *)vehicle {
     [_mapView addAnnotation:vehicle];
 }
@@ -227,10 +211,6 @@
 
 
 - (void)dealloc {
-    if (routeKmlParser) {
-        [routeKmlParser release];
-    }
-    
     [_mapView release];
 	[shuttleImage release];
     [super dealloc];
@@ -274,19 +254,6 @@
         [(MapStop *)annotation setAnnotationView:stopAnnotationView];
 		
 		return stopAnnotationView;
-        
-    } else if ([annotation isKindOfClass:[KMLVehicle class]]) {
-        if ([(KMLVehicle *)annotation annotationView]) {
-            return [(KMLVehicle *)annotation annotationView];
-        }
-        
-        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(KMLVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        vehicleAnnotationView.image = shuttleImage;
-        vehicleAnnotationView.canShowCallout = YES;
-        
-        [(KMLVehicle *)annotation setAnnotationView:vehicleAnnotationView];
-		
-		return vehicleAnnotationView;
     } else if ([annotation isKindOfClass:[JSONVehicle class]]) {
         if ([(JSONVehicle *)annotation annotationView]) {
             return [(JSONVehicle *)annotation annotationView];

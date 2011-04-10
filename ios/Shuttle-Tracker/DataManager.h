@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "KMLParser.h"
 #import "JSONParser.h"
 
 #define kDMRoutesandStopsLoaded				@"kDMRoutesandStopsLoaded"
@@ -20,8 +19,6 @@
     NSURL *shuttleJsonUrl;
     NSURL *etasJsonUrl;
     
-    KMLParser *routeKmlParser;
-    KMLParser *vehiclesKmlParser;
     JSONParser *routesStopsJsonParser;
     JSONParser *vehiclesJsonParser;
     JSONParser *etasJsonParser;

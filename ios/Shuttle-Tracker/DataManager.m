@@ -17,8 +17,6 @@
 @interface DataManager()
 - (void)loadFromJson;
 - (void)routeJsonLoaded;
-- (void)loadFromKml;
-- (void)routeKmlLoaded;
 - (void)updateVehicleData;
 - (void)vehicleJsonRefresh;
 - (void)updateEtaData;
@@ -88,14 +86,6 @@
 }
 
 - (void)dealloc {
-    if (routeKmlParser) {
-        [routeKmlParser release];
-    }
-    
-    if (vehiclesKmlParser) {
-        [vehiclesKmlParser release];
-    }
-    
     if (vehiclesJsonParser) {
         [vehiclesJsonParser release];
     }
@@ -135,10 +125,8 @@
     [super dealloc];
 }
 
-//  Load the routes/stops KML file asynchronously
+//  Load the routes/stops from JSON asynchronously
 - (void)loadRoutesAndStops {
-//	[self loadFromKml];
-    
     [self loadFromJson];
 }
 
@@ -160,33 +148,6 @@
     [stops retain];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
-}
-
-- (void)loadFromKml {
-    //  Use the local copy of the routes/stops KML file
-    NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
-    
-    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
-	
-	dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
-	dispatch_async(loadRoutesQueue, ^{
-        [routeKmlParser parse];
-		[self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:NO];
-	});
-	
-	dispatch_release(loadRoutesQueue);
-}
-
-//  TODO: Remove this or adjust it to be appropriate for DataManager. Taken from MapViewController.
-- (void)routeKmlLoaded {
-    routes = [routeKmlParser routes];
-    [routes retain];
-    
-    stops = [routeKmlParser stops];
-    [stops retain];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
-    
 }
 
 
@@ -337,7 +298,7 @@
     }
     
     for (EtaWrapper *eta in soonestEtas) {
-        for (KMLStop *stop in stops) {
+        for (MapStop *stop in stops) {
             if (NULL) {
                 //	None
 				//	Eventually, this should set the next ETA for

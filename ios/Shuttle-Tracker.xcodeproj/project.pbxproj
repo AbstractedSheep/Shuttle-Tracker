@@ -53,7 +53,6 @@
 		DAD407AA134166C200F05D88 /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A3134166C100F05D88 /* EtasViewController.m */; };
 		DAD407AB134166C200F05D88 /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A4134166C100F05D88 /* EtaWrapper.m */; };
 		DAD407AC134166C200F05D88 /* JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A5134166C100F05D88 /* JSONParser.m */; };
-		DAD407AD134166C200F05D88 /* KMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A6134166C100F05D88 /* KMLParser.m */; };
 		DAD407AE134166C200F05D88 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A7134166C100F05D88 /* MainViewController.m */; };
 		DAD407AF134166C200F05D88 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A8134166C200F05D88 /* MapViewController.m */; };
 		DAD407B8134168A200F05D88 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DAD407B7134168A200F05D88 /* Settings.bundle */; };
@@ -163,14 +162,12 @@
 		DAD4079C134166C100F05D88 /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtasViewController.h; sourceTree = "<group>"; };
 		DAD4079D134166C100F05D88 /* EtaWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaWrapper.h; sourceTree = "<group>"; };
 		DAD4079E134166C100F05D88 /* JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONParser.h; sourceTree = "<group>"; };
-		DAD4079F134166C100F05D88 /* KMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMLParser.h; sourceTree = "<group>"; };
 		DAD407A0134166C100F05D88 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		DAD407A1134166C100F05D88 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
 		DAD407A2134166C100F05D88 /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		DAD407A3134166C100F05D88 /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtasViewController.m; sourceTree = "<group>"; };
 		DAD407A4134166C100F05D88 /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
 		DAD407A5134166C100F05D88 /* JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONParser.m; sourceTree = "<group>"; };
-		DAD407A6134166C100F05D88 /* KMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMLParser.m; sourceTree = "<group>"; };
 		DAD407A7134166C100F05D88 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		DAD407A8134166C200F05D88 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
 		DAD407B7134168A200F05D88 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -268,7 +265,6 @@
 				DAD4079C134166C100F05D88 /* EtasViewController.h */,
 				DAD4079D134166C100F05D88 /* EtaWrapper.h */,
 				DAD4079E134166C100F05D88 /* JSONParser.h */,
-				DAD4079F134166C100F05D88 /* KMLParser.h */,
 				DAD407A0134166C100F05D88 /* MainViewController.h */,
 				5C54F625134FC14100A38505 /* MapPlacemark.h */,
 				DAD407A1134166C100F05D88 /* MapViewController.h */,
@@ -277,7 +273,6 @@
 				DAD407A4134166C100F05D88 /* EtaWrapper.m */,
 				DAD407A5134166C100F05D88 /* JSONParser.m */,
 				5C54F626134FC14100A38505 /* MapPlacemark.m */,
-				DAD407A6134166C100F05D88 /* KMLParser.m */,
 				DAD407A7134166C100F05D88 /* MainViewController.m */,
 				DAD407A8134166C200F05D88 /* MapViewController.m */,
 				DAD407B7134168A200F05D88 /* Settings.bundle */,
@@ -592,7 +587,6 @@
 				DAD407AA134166C200F05D88 /* EtasViewController.m in Sources */,
 				DAD407AB134166C200F05D88 /* EtaWrapper.m in Sources */,
 				DAD407AC134166C200F05D88 /* JSONParser.m in Sources */,
-				DAD407AD134166C200F05D88 /* KMLParser.m in Sources */,
 				DAD407AE134166C200F05D88 /* MainViewController.m in Sources */,
 				DAD407AF134166C200F05D88 /* MapViewController.m in Sources */,
 				DAD4080413417A1E00F05D88 /* MainViewController_iPhone.m in Sources */,
