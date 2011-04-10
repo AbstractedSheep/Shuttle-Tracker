@@ -369,6 +369,9 @@ public class Shuttle {
 			double[] distanceArray = { 999, 999 }; // TODO: to make the code
 													// more robust, turn it into
 													// an arraylist?
+			HashMap<Integer, Double> distanceMap = new HashMap<Integer, Double>();
+			HashMap<Integer, Point> locationMap = new HashMap<Integer, Point>();
+			HashMap<Integer, Integer> indexMap = new HashMap<Integer, Integer>();
 			Point[] locationArray = { new Point(), new Point() };
 			int[] indexArray = { 0, 0 };
 			int index = 0;
@@ -376,6 +379,7 @@ public class Shuttle {
 
 			for (Route route : routeList) {
 				list = route.getCoordinateList();
+				distanceMap.put(route.getIdNum(), 999.0);
 				for (int i = indexOfClosestCoordinate, count = 0; count < list.size(); i++) {
 					if(i > list.size() - 1)
 						i = 0;
@@ -383,43 +387,68 @@ public class Shuttle {
 					distance = calculateDistance(p1);
 					//if the new distance value is shorter than the old one, then
 					//change it.
-					if (distanceArray[index] > distance) {
+					if (distanceMap.get(route.getIdNum()) > distance) {
 						Double[] array = route.getBearingsForPoint(i);
 						if(((array[0] + 15.0 >= this.currentBearing) &&
 							(array[0] - 15.0 <= this.currentBearing)) ||
 							((array[1] + 15.0 >= this.currentBearing) &&
 									(array[1] - 15.0 <= this.currentBearing))) {
-							distanceArray[index] = distance;
-							locationArray[index] = p1;
-							indexArray[index] = i;
+							distanceMap.put(route.getIdNum(), distance);
+							locationMap.put(route.getIdNum(), p1);
+							indexMap.put(route.getIdNum(), i);
 						}
 					}
 					count++;
 				}
-				index++;
 			}
 			
+			index = defineLocationValues(distanceMap);
 			if(routeList.size() < 2) {
-				this.closestRouteCoor = locationArray[0];
-				this.indexOfClosestCoordinate = indexArray[0];
-				this.closestDistanceToRoute = distanceArray[0];
+				this.closestRouteCoor = locationMap.get(index);
+				this.indexOfClosestCoordinate = indexMap.get(index);
+				this.closestDistanceToRoute = distanceMap.get(index);
 				return;
 			}
 			
 			//the shuttle's route has only been determined iff the difference
 			//between the closest points on the East and West routes is greater
 			//than ~32 feet...
-			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .01) {
+			if (index > 0) {
 				this.foundRoute = true;
-				this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
+				this.routeList.retainAll(routeList.subList(index, index));
 			}
+			else
+				index = -index;
 			//Since the overlapped region is still part of both routes,
 			//the shuttle can still give valid ETAs.
-			this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ?
-									locationArray[0] : locationArray[1];
-			//this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
-			this.indexOfClosestCoordinate = indexArray[this.getRouteID() - 1];
-			this.closestDistanceToRoute = distanceArray[this.getRouteID() - 1];
+			this.closestRouteCoor = locationMap.get(index);
+			this.indexOfClosestCoordinate = indexMap.get(index);
+			this.closestDistanceToRoute = distanceMap.get(index);
+		}
+		
+		private int defineLocationValues(HashMap<Integer, Double> distanceMap) {
+			ArrayList<Double> distanceList = new ArrayList<Double>(distanceMap.values());
+			int i = 0;
+			Collections.sort(distanceList);
+			//the smallest and second smallest distance values
+			try{
+				double smallestValue = distanceList.get(0), smallValue = distanceList.get(1);
+				double delta = Math.abs(smallestValue - smallValue);
+				for(int index : distanceMap.keySet()) {
+					if((distanceMap.get(index) == smallestValue) && (delta >= .01))
+						i = index;
+					//if the difference between the two smallest distances is no greater than
+					//.01 miles, then the shuttle is probably on an overlapped region.
+					else
+						i = -index;
+				}
+				
+				return i;
+			} catch(Exception ex) {
+				//ArrayOutofBoundsException might be thrown...
+				//return the first id if that is the case.
+				return 1;
+			}
 		}
 
 		/**

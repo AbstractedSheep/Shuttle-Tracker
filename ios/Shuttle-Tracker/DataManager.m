@@ -10,6 +10,7 @@
 #import "DataManager.h"
 #import "EtaWrapper.h"
 #import "IASKSettingsReader.h"
+#import "DataUrls.h"
 
 #define kRemoveShuttleThreshold		90.0f
 
@@ -17,8 +18,6 @@
 @interface DataManager()
 - (void)loadFromJson;
 - (void)routeJsonLoaded;
-- (void)loadFromKml;
-- (void)routeKmlLoaded;
 - (void)updateVehicleData;
 - (void)vehicleJsonRefresh;
 - (void)updateEtaData;
@@ -64,14 +63,14 @@
         
         onlyNextEtas = [[defaults objectForKey:@"onlyNextEtas"] boolValue];
         
-        NSURL *routesJsonUrl = [NSURL URLWithString:@"http://shuttles.rpi.edu/displays/netlink.js"];
+        NSURL *routesJsonUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
         routesStopsJsonParser = [[JSONParser alloc] initWithUrl:routesJsonUrl];
         
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
-        shuttleJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
+        shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
         vehiclesJsonParser = [[JSONParser alloc] initWithUrl:shuttleJsonUrl];
         
-        etasJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta"];
+        etasJsonUrl = [NSURL URLWithString:kDMEtasUrl];
         etasJsonParser = [[JSONParser alloc] initWithUrl:etasJsonUrl];
         
         vehicles = [[NSMutableArray alloc] init];
@@ -88,14 +87,6 @@
 }
 
 - (void)dealloc {
-    if (routeKmlParser) {
-        [routeKmlParser release];
-    }
-    
-    if (vehiclesKmlParser) {
-        [vehiclesKmlParser release];
-    }
-    
     if (vehiclesJsonParser) {
         [vehiclesJsonParser release];
     }
@@ -135,17 +126,15 @@
     [super dealloc];
 }
 
-//  Load the routes/stops KML file asynchronously
+//  Load the routes/stops from JSON asynchronously
 - (void)loadRoutesAndStops {
-//	[self loadFromKml];
-    
     [self loadFromJson];
 }
 
 - (void)loadFromJson {
     dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
 	dispatch_async(loadRoutesQueue, ^{
-        [routeKmlParser parse];
+        [routesStopsJsonParser parseRoutesandStops];
 		[self performSelectorOnMainThread:@selector(routeJsonLoaded) withObject:nil waitUntilDone:NO];
 	});
 	
@@ -160,33 +149,6 @@
     [stops retain];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
-}
-
-- (void)loadFromKml {
-    //  Use the local copy of the routes/stops KML file
-    NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
-    
-    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
-	
-	dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
-	dispatch_async(loadRoutesQueue, ^{
-        [routeKmlParser parse];
-		[self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:NO];
-	});
-	
-	dispatch_release(loadRoutesQueue);
-}
-
-//  TODO: Remove this or adjust it to be appropriate for DataManager. Taken from MapViewController.
-- (void)routeKmlLoaded {
-    routes = [routeKmlParser routes];
-    [routes retain];
-    
-    stops = [routeKmlParser stops];
-    [stops retain];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
-    
 }
 
 
@@ -337,7 +299,7 @@
     }
     
     for (EtaWrapper *eta in soonestEtas) {
-        for (KMLStop *stop in stops) {
+        for (MapStop *stop in stops) {
             if (NULL) {
                 //	None
 				//	Eventually, this should set the next ETA for
