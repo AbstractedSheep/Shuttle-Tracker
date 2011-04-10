@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import android.content.SharedPreferences;
@@ -42,7 +43,6 @@ import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 
 public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
-
 	private ArrayList<Stop> stops = new ArrayList<Stop>();
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
 	private SimpleDateFormat formatter12 = new SimpleDateFormat("hh:mm a");
