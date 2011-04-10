@@ -34,8 +34,8 @@
         jsonUrl = url;
         [jsonUrl retain];
         
-        routes = [NSArray arrayWithObjects:nil];
-        stops = [NSArray arrayWithObjects:nil];
+        routes = [[NSArray alloc] initWithObjects:nil];
+        stops = [[NSArray alloc] initWithObjects:nil];
     }
     
     return self;
@@ -46,9 +46,6 @@
     NSError *theError = nil;
     NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
     NSDictionary *jsonDict = nil;
-    
-    [routes release];
-    [stops release];
     
     if (theError) {
         NSLog(@"Error retrieving JSON data");
@@ -76,17 +73,18 @@
 		
         while ((value = [routesEnum nextObject])) {
             PlacemarkStyle *style = [[PlacemarkStyle alloc] init];
+            MapRoute *route = [[MapRoute alloc] init];
             
             string = [value objectForKey:@"color"];
             style.colorString = string;
             
             string = [value objectForKey:@"id"];
             style.idTag = string;
+            route.idTag = string;
             
             NSNumber *number = [value objectForKey:@"width"];
             style.width = [number intValue];
             
-            MapRoute *route = [[MapRoute alloc] init];
             route.style = style;
             
             string = [value objectForKey:@"name"];
@@ -104,18 +102,20 @@
                 string = [coordsValues objectForKey:@"latitude"];
                 coordinate.latitude = [string floatValue];
                 
-                string = [coordsValues objectForKey:@"longitutde"];
+                string = [coordsValues objectForKey:@"longitude"];
                 coordinate.longitude = [string floatValue];
                 
-                [coordsString addObject:[NSString stringWithFormat:@"%f, %f\n", coordinate.latitude, coordinate.longitude]];
+                [coordsString addObject:[NSString stringWithFormat:@"%f, %f", coordinate.longitude, coordinate.latitude]];
             }
             
             route.lineString = coordsString;
+            [coordsString release];
             
             [mutableRoutes addObject:route];
             [route release];
         }
         
+        [routes release];
         routes = mutableRoutes;
         
         NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
@@ -165,6 +165,7 @@
             [stop release];
         }
         
+        [stops release];
         stops = mutableStops;
 		
 		[smallPool release];

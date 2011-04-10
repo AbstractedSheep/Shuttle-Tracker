@@ -9,6 +9,13 @@
 #import "KMLParser.h"
 #import <MapKit/MapKit.h>
 
+//  The KML includes colors in ABGR format.  They must be converted to UIColors
+//  through a custom function.
+@interface UIColor (rgbacolor)
+
++ (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString;
+
+@end
 
 @implementation KMLParser
 
@@ -372,11 +379,6 @@
 #pragma mark -
 #pragma mark KML Objects
 
-@interface KMLStyle ()
-
-- (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString;
-
-@end
 @implementation KMLStyle
 
 @synthesize idTag;
@@ -406,29 +408,8 @@
     colorString = newColorString;
     [colorString retain];
     
-    color = [self UIColorFromRGBAString:colorString];
+    color = [UIColor UIColorFromRGBAString:colorString];
 	[color retain];
-}
-
-
-//  Take an NSString formatted as such: RRGGBBAA and return a UIColor
-- (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString {
-    NSScanner *scanner;
-    unsigned int rgbaValue;
-    
-    if (rgbaString) {
-        scanner = [NSScanner scannerWithString:rgbaString];
-        [scanner scanHexInt:&rgbaValue];
-        
-    } else {
-        rgbaValue = 0;
-    }
-    
-    //  For whatever reason, the color comes in as ABGR
-    return [UIColor colorWithRed:((float)((rgbaValue & 0xFF)))/255.0
-                           green:((float)((rgbaValue & 0xFF00) >> 8))/255.0
-                            blue:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
-                           alpha:((float)((rgbaValue & 0xFF000000) >> 24))/255.0];
 }
 
 @end
@@ -516,3 +497,28 @@
 
 @end
 
+@implementation UIColor (rgbacolor)
+
+//  Take an NSString formatted as such: RRGGBBAA and return a UIColor
++ (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString {
+    NSScanner *scanner;
+    unsigned int rgbaValue;
+    
+    if (rgbaString) {
+        scanner = [NSScanner scannerWithString:rgbaString];
+        [scanner scanHexInt:&rgbaValue];
+        
+    } else {
+        rgbaValue = 0;
+    }
+    
+    //  For whatever reason, the color comes in as ABGR
+    UIColor *colorToReturn = [UIColor colorWithRed:((float)((rgbaValue & 0xFF)))/255.0
+                           green:((float)((rgbaValue & 0xFF00) >> 8))/255.0
+                            blue:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
+                           alpha:((float)((rgbaValue & 0xFF000000) >> 24))/255.0];
+    
+    return colorToReturn;
+}
+
+@end

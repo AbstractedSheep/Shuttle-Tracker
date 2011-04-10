@@ -9,6 +9,13 @@
 #import "MapPlacemark.h"
 
 
+@interface UIColor (stringcolor)
+
++ (UIColor *)UIColorFromRGBString:(NSString *)rgbString;
++ (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString;
+
+@end
+
 @implementation MapPlacemark
 
 @synthesize name;
@@ -19,12 +26,6 @@
 @synthesize styleUrl;
 @synthesize style;
 @synthesize timeDisplayFormatter;
-
-@end
-
-@interface PlacemarkStyle ()
-
-- (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString;
 
 @end
 
@@ -39,29 +40,8 @@
     colorString = newColorString;
     [colorString retain];
     
-    color = [self UIColorFromRGBAString:colorString];
+    color = [UIColor UIColorFromRGBString:colorString];
 	[color retain];
-}
-
-
-//  Take an NSString formatted as such: RRGGBBAA and return a UIColor
-- (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString {
-    NSScanner *scanner;
-    unsigned int rgbaValue;
-    
-    if (rgbaString) {
-        scanner = [NSScanner scannerWithString:rgbaString];
-        [scanner scanHexInt:&rgbaValue];
-        
-    } else {
-        rgbaValue = 0;
-    }
-    
-    //  For whatever reason, the color comes in as ABGR
-    return [UIColor colorWithRed:((float)((rgbaValue & 0xFF)))/255.0
-                           green:((float)((rgbaValue & 0xFF00) >> 8))/255.0
-                            blue:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
-                           alpha:((float)((rgbaValue & 0xFF000000) >> 24))/255.0];
 }
 
 @end
@@ -87,6 +67,16 @@
     return self;
 }
 
+//  The subtitle for a map pin
+- (NSString *)subtitle {
+    return description;
+}
+
+//  The title for a map pin
+- (NSString *)title {
+    return name;
+}
+
 @end
 
 @implementation MapStop
@@ -106,6 +96,58 @@
 
 - (void)copyAttributesExceptLocation:(MapVehicle *)newVehicle {
     
+}
+
+@end
+
+@implementation UIColor (stringcolor)
+
+//  Take an NSString formatted as such: RRGGBB and return a UIColor
+//  Note that this removes any '#' characters from rgbString
+//  before doing anything.
++ (UIColor *)UIColorFromRGBString:(NSString *)rgbString {
+    NSScanner *scanner;
+    unsigned int rgbValue;
+    
+    rgbString = [rgbString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
+    
+    if (rgbString) {
+        scanner = [NSScanner scannerWithString:rgbString];
+        [scanner scanHexInt:&rgbValue];
+        
+    } else {
+        rgbValue = 0;
+    }
+    
+    //  From the JSON, color comes as RGB
+    UIColor *colorToReturn = [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0
+                                             green:((float)((rgbValue & 0xFF00) >> 8))/255.0
+                                              blue:((float)((rgbValue & 0xFF)))/255.0
+                                             alpha:1];
+    
+    return colorToReturn;
+}
+
+//  Take an NSString formatted as such: RRGGBBAA and return a UIColor
++ (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString {
+    NSScanner *scanner;
+    unsigned int rgbaValue;
+    
+    if (rgbaString) {
+        scanner = [NSScanner scannerWithString:rgbaString];
+        [scanner scanHexInt:&rgbaValue];
+        
+    } else {
+        rgbaValue = 0;
+    }
+    
+    //  Assume ABGR format and convert appropriately
+    UIColor *colorToReturn = [UIColor colorWithRed:((float)((rgbaValue & 0xFF)))/255.0
+                                             green:((float)((rgbaValue & 0xFF00) >> 8))/255.0
+                                              blue:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
+                                             alpha:((float)((rgbaValue & 0xFF000000) >> 24))/255.0];
+    
+    return colorToReturn;
 }
 
 @end

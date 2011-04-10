@@ -145,7 +145,7 @@
 - (void)loadFromJson {
     dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
 	dispatch_async(loadRoutesQueue, ^{
-        [routeKmlParser parse];
+        [routesStopsJsonParser parseRoutesandStops];
 		[self performSelectorOnMainThread:@selector(routeJsonLoaded) withObject:nil waitUntilDone:NO];
 	});
 	
