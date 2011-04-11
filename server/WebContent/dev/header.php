@@ -100,7 +100,7 @@
 $("#refresh").click(function(){
     jQuery.ajax({
             url:'loadETA.php',
-            data: "", /* can put parameter list here like :  action=abc&id=123   etc*/
+            dataType: "json", /* can put parameter list here like :  action=abc&id=123   etc*/
             success:function(obj){
                 if(obj){
                     if(obj.error){
