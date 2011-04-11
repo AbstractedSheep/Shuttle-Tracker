@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C54F623134F9FB700A38505 /* netlink.js in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F622134F9FB700A38505 /* netlink.js */; };
 		5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F626134FC14100A38505 /* MapPlacemark.m */; };
 		DAD407041341635100F05D88 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DAD407021341635100F05D88 /* InfoPlist.strings */; };
 		DAD407071341635100F05D88 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407061341635100F05D88 /* main.m */; };
@@ -83,7 +82,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5C54F622134F9FB700A38505 /* netlink.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = netlink.js; sourceTree = "<group>"; };
 		5C54F625134FC14100A38505 /* MapPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPlacemark.h; sourceTree = "<group>"; };
 		5C54F626134FC14100A38505 /* MapPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPlacemark.m; sourceTree = "<group>"; };
 		5CACD345135262BC00A4CD75 /* DataUrls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataUrls.h; sourceTree = "<group>"; };
@@ -277,7 +275,6 @@
 				DAD407A8134166C200F05D88 /* MapViewController.m */,
 				DAD407B7134168A200F05D88 /* Settings.bundle */,
 				DAD407B61341689200F05D88 /* Images */,
-				5C54F622134F9FB700A38505 /* netlink.js */,
 				DAD4070B1341635100F05D88 /* iPhone */,
 				DAD407121341635100F05D88 /* iPad */,
 				DAD407001341635100F05D88 /* Supporting Files */,
@@ -589,7 +586,6 @@
 				DAD407AF134166C200F05D88 /* MapViewController.m in Sources */,
 				DAD4080413417A1E00F05D88 /* MainViewController_iPhone.m in Sources */,
 				DAD4080713417A3B00F05D88 /* MainViewController_iPad.m in Sources */,
-				5C54F623134F9FB700A38505 /* netlink.js in Sources */,
 				5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
