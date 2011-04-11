@@ -11,6 +11,110 @@
 #import "MapPlacemark.h"
 #import "IASKSettingsReader.h"
 
+//	From Stack Overflow (SO), with modifications:
+@implementation UIImage (magentatocolor)
+
+typedef enum {
+    ALPHA = 0,
+    BLUE = 1,
+    GREEN = 2,
+    RED = 3
+} PIXELS;
+
+
+//  Convert the magenta pixels in an image to a new color.
+//  Returns a new image with retain count 1.
+- (UIImage *)convertMagentatoColor:(UIColor *)newColor {
+    CGSize size = [self size];
+    int width = size.width;
+    int height = size.height;
+    
+    // the pixels will be painted to this array
+    uint32_t *pixels = (uint32_t *) malloc(width * height * sizeof(uint32_t));
+    
+    // clear the pixels so any transparency is preserved
+    memset(pixels, 0, width * height * sizeof(uint32_t));
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // create a context with RGBA pixels
+    CGContextRef context = CGBitmapContextCreate(pixels, width, height, 8, width * sizeof(uint32_t), colorSpace, 
+                                                 kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedLast);
+    
+    //  Get an array of the rgb values of the new color
+    const CGFloat *rgb = CGColorGetComponents(newColor.CGColor);
+    
+    // paint the bitmap to our context which will fill in the pixels array
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), [self CGImage]);
+    
+    for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
+            uint8_t *rgbaPixel = (uint8_t *) &pixels[y * width + x];
+            
+            //  If the color of the current pixel is magenta, which is (255, 0, 255) in RGB,
+            //  change the color to the new color.
+            if (rgbaPixel[RED] == 255 && rgbaPixel[GREEN] == 0 && rgbaPixel[BLUE] == 255) {
+                rgbaPixel[RED] = rgb[0];
+                rgbaPixel[GREEN] = rgb[1];
+                rgbaPixel[BLUE] = rgb[2];
+            }
+        }
+    }
+    
+    // create a new CGImageRef from our context with the modified pixels
+    CGImageRef image = CGBitmapContextCreateImage(context);
+    
+    // we're done with the context, color space, and pixels
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    free(pixels);
+    
+    // make a new UIImage to return
+    UIImage *resultUIImage = [UIImage imageWithCGImage:image];
+    [resultUIImage retain];
+    
+    // we're done with image now too
+    CGImageRelease(image);
+    
+    return resultUIImage;
+}
+
+//	(not from SO:)
+UIImage *createGrayCopy(UIImage *source)
+{
+	int width = source.size.width;
+	int height = source.size.height;
+    
+	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+    
+	CGContextRef context = CGBitmapContextCreate (nil,
+                                                  width,
+                                                  height,
+                                                  8,      // bits per component
+                                                  0,
+                                                  colorSpace,
+                                                  kCGImageAlphaNone);
+    
+	CGColorSpaceRelease(colorSpace);
+    
+	if (context == NULL) {
+		return nil;
+	}
+    
+	CGContextDrawImage(context,
+                       CGRectMake(0, 0, width, height), source.CGImage);
+    
+	UIImage *grayImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];
+	CGContextRelease(context);
+    
+	return grayImage;
+}
+//	End not from SO
+
+@end
+//	End from SO
+
+
 @interface MapViewController()
 - (void)managedRoutesLoaded;
 //	notifyVehiclesUpdated may not be called on the main thread, so use it to call
