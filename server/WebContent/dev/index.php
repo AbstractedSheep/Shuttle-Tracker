@@ -5,6 +5,7 @@
 
 //var_dump($etas);
 include("header.php");
+
 ?>
  
 
@@ -26,13 +27,22 @@ include("header.php");
 
 <div data-role="page" id="eta">
     <div  data-role="header" class="ui-bar" data-inline="true"> 
-        <h1>RPI Shuttle Tracking</h1> 
+        <h1>RPI Shuttle Tracking</h1>
+        <a href="#" data-role="button" id="refresh">Refresh</a> 
             
     </div>
 <div data-role="content">
-<?
-   include("loadETA.php"); 
-?>
+    <div id="favorite" data-role="collapsible">
+        <h3>Favorites</h3>
+    </div>
+
+    <div id="west" data-role="collapsible">
+        <h3>West Route</h3>
+    </div>
+    
+    <div id="east" data-role="collapsible">
+        <h3>East Route</h3>
+    </div>
 </div>
 <? 
 include("footer.php"); 

@@ -14,7 +14,7 @@
     </div>
 </div><!-- /header -->  
 <div data-role="content">
-<iframe style="width:100%; height:100%" src="mapdisplay.php"></iframe>
+<iframe style="width:100%; height:84%" src="mapdisplay.php"></iframe>
 </div><!-- /content -->
 <div data-role="footer" data-position="fixed" class="ui-bar-a" role="banner" data-id="footer">
     <div data-role="navbar" role="navigation">

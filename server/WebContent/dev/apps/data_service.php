@@ -20,11 +20,12 @@ class DataService
     {
         $etas = DataServiceData::getNextEta($route, $stop);
         /* display the ETA information */
+        ob_start();
         ?><ul data-role="listview" data-theme="g"> <?
         if (is_array($etas) && count($etas)) {
             foreach ($etas as $eta) {
                 ?> 
-                <li><a href="details.php?<?=$eta[stop_name]?>"></a> <p class="ui-li-aside">
+                <li><a href="details.php?<?=$eta[stop_name]?>"><?=$eta[stop_name]?></a><p class="ui-li-aside">
                 <?
                 if ($eta[route] == 1 && $fav == true) {
                     echo "West  "; 
@@ -43,35 +44,24 @@ class DataService
             ?><li>This shuttle data is too old to display.</li><?
         }
         ?></ul><?
-    }     
+        
+        return ob_get_contents();
+        $ob_end_clean();
+        
+         
+    } 
+       
     
     function displayETAs()
     { //$etas = DataServiceData::getNextEta();
     
-?>
+        $etas["fav"] = dataService::drawETAs("2","union",true);
         
-        <div id="favorite" data-role="collapsible">
-			<h3>Favorites</h3>
-        <?
-        dataService::drawETAs("2","union",true);
-        
-        ?>
-        </div>
+        $etas["west"] = dataService::drawETAs("1",'',false);
 
-        <div id="west" data-role="collapsible">
-			<h3>West Route</h3>
-        <?
-        dataService::drawETAs("1",'',false);
-        ?>
-        </div>
-		
-        <div id="east" data-role="collapsible">
-			<h3>East Route</h3>
-        <?
-        dataService::drawETAs("2",'',false);
-        ?>
-        </div>
-<?
+        $etas["east"] = dataService::drawETAs("2",'',false);
+
+        return json_encode($etas);
     }
 }
 ?>

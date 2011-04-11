@@ -9,8 +9,8 @@
         
     <div data-role="navbar" role="navigation">
         <ul class="ui-grid-a">
-            <li class="ui-block-a"><a href="map.php" data-transition="flip" data-role="button" id="map">Map</a>  </li>
-            <li class="ui-block-b"><a href="#eta" data-transition="flip" data-role="button" id="eta">ETA</a></li>
+            <li class="ui-block-a"><a href="map.php" data-transition="slidedown" data-role="button" id="map">Map</a>  </li>
+            <li class="ui-block-b"><a href="#eta" data-transition="slideup" data-role="button" id="eta">ETA</a></li>
         </ul>
     </div>
 </div> 

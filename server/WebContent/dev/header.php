@@ -72,12 +72,12 @@
 //      }, 300000);
 //    });
 //}
-// $(document).ready(function() {
+ $(document).ready(function() {
      
           
     
- // functions for auto-refreshing every 5 seconds and switching from map to ETA    
-     
+  //functions for auto-refreshing every 5 seconds and switching from map to ETA    
+//     
 //     $("#output").load("loadETA.php");
 //     refreshId = setInterval(function() {
 //      $("#output").load("loadETA.php"); }, 5000);
@@ -86,8 +86,8 @@
 //      launchWindow("#dialog");
 //      
 //      }, 300000);                
-     
-     //$("#map").click(function(){
+//     
+//     $("#map").click(function(){
 //        $.mobile.changePage("map.php", "slideup", false, false);
 //     });
 //        
@@ -96,9 +96,32 @@
 //        refreshId = setInterval(function() {
 //      $("#output").load("loadETA.php"); }, 5000);
 //     }); 
+
+$("#refresh").click(function(){
+    jQuery.ajax({
+            url:'loadETA.php',
+            dataType: "json", /* can put parameter list here like :  action=abc&id=123   etc*/
+            success:function(obj){
+                if(obj){
+                    if(obj.error){
+                        alert(obj.error);
+                    } else {
+                        // Change to a stop button
+                        $('#favorite')
+                            .html(obj.favorite);
+                        $('#west')
+                            .html(obj.west);
+                        $('#east')
+                            .html(obj.east);
+                    }
+                }
+            }
+
+        });
+});
       
    
-//});
+});
 
 
 </script>
