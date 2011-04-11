@@ -55,30 +55,12 @@ class DataService
     function displayETAs()
     { //$etas = DataServiceData::getNextEta();
     
-?>
-        
-        <div id="favorite" data-role="collapsible">
-			<h3>Favorites</h3>
-        <?
         $etas["fav"] = dataService::drawETAs("2","union",true);
         
-        ?>
-        </div>
-
-        <div id="west" data-role="collapsible">
-			<h3>West Route</h3>
-        <?
         $etas["west"] = dataService::drawETAs("1",'',false);
-        ?>
-        </div>
-		
-        <div id="east" data-role="collapsible">
-			<h3>East Route</h3>
-        <?
+
         $etas["east"] = dataService::drawETAs("2",'',false);
-        ?>
-        </div>
-        <?
+
         return json_encode($etas);
     }
 }
