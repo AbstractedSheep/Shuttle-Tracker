@@ -26,6 +26,7 @@
     NSMutableArray *routeLineViews;
 	
 	UIImage *shuttleImage;
+    NSMutableArray *shuttleImages;
     
 }
 

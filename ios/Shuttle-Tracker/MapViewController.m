@@ -79,38 +79,6 @@ typedef enum {
     return resultUIImage;
 }
 
-//	(not from SO:)
-UIImage *createGrayCopy(UIImage *source)
-{
-	int width = source.size.width;
-	int height = source.size.height;
-    
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-    
-	CGContextRef context = CGBitmapContextCreate (nil,
-                                                  width,
-                                                  height,
-                                                  8,      // bits per component
-                                                  0,
-                                                  colorSpace,
-                                                  kCGImageAlphaNone);
-    
-	CGColorSpaceRelease(colorSpace);
-    
-	if (context == NULL) {
-		return nil;
-	}
-    
-	CGContextDrawImage(context,
-                       CGRectMake(0, 0, width, height), source.CGImage);
-    
-	UIImage *grayImage = [UIImage imageWithCGImage:CGBitmapContextCreateImage(context)];
-	CGContextRelease(context);
-    
-	return grayImage;
-}
-//	End not from SO
-
 @end
 //	End from SO
 
@@ -179,6 +147,8 @@ UIImage *createGrayCopy(UIImage *source)
 		//  Show the user's location on the map
 		_mapView.showsUserLocation = YES;
 	}
+    
+    shuttleImages = [[NSMutableArray alloc] init];
 	
 	//	Take notice when a setting is changed.
 	//	Note that this is not the only object that takes notice.
