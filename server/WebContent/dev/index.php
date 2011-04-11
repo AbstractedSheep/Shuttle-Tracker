@@ -5,9 +5,6 @@
 
 //var_dump($etas);
 include("header.php");
-include_once("application.php");
-include_once("apps/data_service.php");  
-include_once("apps/routecoorddistances.php");
 
 ?>
  
@@ -30,14 +27,12 @@ include_once("apps/routecoorddistances.php");
 
 <div data-role="page" id="eta">
     <div  data-role="header" class="ui-bar" data-inline="true"> 
-        <h1>RPI Shuttle Tracking</h1> 
+        <h1>RPI Shuttle Tracking</h1>
+        <a href="#" data-role="button" id="refresh">Refresh</a> 
             
     </div>
 <div data-role="content">
-<?
-   DataService::displayETAs();
-   DataServiceData::recordStats("Get Next ETA"); 
-?>
+<? include("loadETA.php"); ?>
 </div>
 <? 
 include("footer.php"); 
