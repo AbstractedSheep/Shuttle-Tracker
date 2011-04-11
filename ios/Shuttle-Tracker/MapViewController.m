@@ -11,6 +11,12 @@
 #import "MapPlacemark.h"
 #import "IASKSettingsReader.h"
 
+@interface UIImage (magentatocolor)
+
+- (UIImage *)convertMagentatoColor:(UIColor *)newColor;
+
+@end
+
 //	From Stack Overflow (SO), with modifications:
 @implementation UIImage (magentatocolor)
 
@@ -30,6 +36,7 @@ typedef enum {
     int height = size.height;
     
     // the pixels will be painted to this array
+    //  Note that this will hold integer values [0,255]
     uint32_t *pixels = (uint32_t *) malloc(width * height * sizeof(uint32_t));
     
     // clear the pixels so any transparency is preserved
@@ -41,10 +48,12 @@ typedef enum {
     CGContextRef context = CGBitmapContextCreate(pixels, width, height, 8, width * sizeof(uint32_t), colorSpace, 
                                                  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedLast);
     
-    //  Get an array of the rgb values of the new color
+    //  Get an array of the rgb values of the new color.
+    //  Note that these values are floating point values on [0,1] 
     const CGFloat *rgb = CGColorGetComponents(newColor.CGColor);
     
     // paint the bitmap to our context which will fill in the pixels array
+    //  Again, the pixels array is storing integer values [0,255]
     CGContextDrawImage(context, CGRectMake(0, 0, width, height), [self CGImage]);
     
     for(int y = 0; y < height; y++) {
@@ -54,9 +63,9 @@ typedef enum {
             //  If the color of the current pixel is magenta, which is (255, 0, 255) in RGB,
             //  change the color to the new color.
             if (rgbaPixel[RED] == 255 && rgbaPixel[GREEN] == 0 && rgbaPixel[BLUE] == 255) {
-                rgbaPixel[RED] = rgb[0];
-                rgbaPixel[GREEN] = rgb[1];
-                rgbaPixel[BLUE] = rgb[2];
+                rgbaPixel[RED] = rgb[0] * 255.0f;
+                rgbaPixel[GREEN] = rgb[1] * 255.0f;
+                rgbaPixel[BLUE] = rgb[2] * 255.0f;
             }
         }
     }
@@ -116,6 +125,9 @@ typedef enum {
 	
 	shuttleImage = [UIImage imageNamed:@"shuttle"];
 	[shuttleImage retain];
+    
+    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color"];
+    [magentaShuttleImage retain];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -148,7 +160,7 @@ typedef enum {
 		_mapView.showsUserLocation = YES;
 	}
     
-    shuttleImages = [[NSMutableArray alloc] init];
+    shuttleImages = [[NSMutableDictionary alloc] init];
 	
 	//	Take notice when a setting is changed.
 	//	Note that this is not the only object that takes notice.
@@ -199,6 +211,9 @@ typedef enum {
 	}
 }
 
+
+//  Add the overlay for the route to the map view, and create a shuttle image with
+//  a color matching the route's color
 - (void)addRoute:(MapRoute *)route {
     NSArray *temp;
     CLLocationCoordinate2D clLoc;
@@ -206,6 +221,7 @@ typedef enum {
     
     int counter = 0;
     
+    //  Create an array of coordinates for the polyline which will represent the route
     for (NSString *coordinate in route.lineString) {
         temp = [coordinate componentsSeparatedByString:@","];
         
@@ -233,6 +249,15 @@ typedef enum {
     routeView.strokeColor = route.style.color;
     
     [_mapView addOverlay:polyLine];
+    
+    //  Create the colored shuttle image for the route
+    UIImage *coloredImage;
+    
+    if (route.style.color) {
+        coloredImage = [magentaShuttleImage convertMagentatoColor:route.style.color];
+        
+        [shuttleImages setValue:coloredImage forKey:route.idTag];
+    }
 }
 
 - (void)addStop:(MapStop *)stop {
@@ -329,15 +354,34 @@ typedef enum {
 		
 		return stopAnnotationView;
     } else if ([annotation isKindOfClass:[JSONVehicle class]]) {
-        if ([(JSONVehicle *)annotation annotationView]) {
-            return [(JSONVehicle *)annotation annotationView];
+        JSONVehicle *vehicle = (JSONVehicle *)annotation;
+        
+        if ([vehicle annotationView]) {
+            //  Check to see if the vehicle's image is the plain shuttle image.
+            //  If it is, check for a colored shuttle image for the shuttle's route.
+            //  Set the shuttle's image to the colored one, if we have it.
+            if ([[vehicle annotationView] image] == shuttleImage) {
+                if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
+                    [[vehicle annotationView] setImage:[shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]]];
+                }
+            }
+            
+            return [vehicle annotationView];
         }
         
-        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(JSONVehicle *)annotation reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        vehicleAnnotationView.image = shuttleImage;
+        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:vehicle reuseIdentifier:@"vehicleAnnotation"] autorelease];
+        
+        //  Check if there is a colored shuttle image for the shuttle's current route.
+        //  If there is, use it.
+        if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
+            vehicleAnnotationView.image = [shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]];
+        } else {
+            vehicleAnnotationView.image = shuttleImage;
+        }
+        
         vehicleAnnotationView.canShowCallout = YES;
         
-        [(JSONVehicle *)annotation setAnnotationView:vehicleAnnotationView];
+        [vehicle setAnnotationView:vehicleAnnotationView];
 		
 		return vehicleAnnotationView;
     }
