@@ -106,7 +106,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
      */
     private void addRoutes(RoutesJson routes) {
     	hasRoutes = true;
-        stopsOverlay = new StopsItemizedOverlay(getResources().getDrawable(R.drawable.stop_marker), map, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+        stopsOverlay = new StopsItemizedOverlay(this, getResources().getDrawable(R.drawable.stop_marker), map, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
         routeOverlays = new HashMap<Integer, PathOverlay>();
         PathOverlay routeOverlay;
         Style style;
@@ -138,7 +138,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         for (Stop s : routes.getStops()) {
         	for (Route r : routes.getRoutes()) {
         		for (Stop.Route sr : s.getRoutes()) {
-        			if (sr.getId() == r.getId()) {
+        			if (r.getVisible() && sr.getId() == r.getId()) {
         				stopsOverlay.addStop(s);
         				cont = true;
         				continue;
@@ -223,13 +223,13 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 			runOnUiThread(new PutEtas(etas));
 		}
 		
-		if (vehicles != null && shuttlesOverlay != null) {
+		if (vehicles != null && shuttlesOverlay != null && timestampOverlay != null) {
 			shuttlesOverlay.removeAllVehicles();
         
         	for (VehicleJson v : vehicles) {
         		shuttlesOverlay.addVehicle(v);
         	}
-        	
+
         	timestampOverlay.setLastUpdateTime(new Date());
         	timestampOverlay.setStatusText(getResources().getString(R.string.status_ok));
         	
@@ -302,12 +302,13 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 						dialog.dismiss();
 						dataService.reloadFavoriteRoutes();
 						stopsOverlay.removeAllStops();
+						map.invalidate();
 						boolean cont = false;
 					    RoutesJson routes = dataService.getRoutes();   
 				        for (Stop s : routes.getStops()) {
 				        	for (Route r : routes.getRoutes()) {
 				        		for (Stop.Route sr : s.getRoutes()) {
-				        			if (sr.getId() == r.getId()) {
+				        			if (r.getVisible() && sr.getId() == r.getId()) {
 				        				stopsOverlay.addStop(s);
 				        				cont = true;
 				        				continue;
@@ -316,7 +317,6 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 				        		if (cont) { cont = false; continue; }
 				        	}
 				        }
-				        map.getOverlays().add(stopsOverlay);
 				        
 						map.invalidate();
 					}

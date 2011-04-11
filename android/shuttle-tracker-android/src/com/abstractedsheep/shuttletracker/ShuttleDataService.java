@@ -172,6 +172,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	public void reloadFavoriteRoutes() {
 		DatabaseHelper db = new DatabaseHelper(ctx);
 		routes = db.getRoutes();
+		db.close();
 	}
 	
 	private synchronized void notifyShuttlesUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {

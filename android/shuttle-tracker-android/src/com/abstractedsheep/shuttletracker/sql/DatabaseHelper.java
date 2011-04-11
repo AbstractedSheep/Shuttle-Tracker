@@ -352,4 +352,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.close();
 		return result;
 	}
+	
+	public boolean isRouteVisible(int routeId) {
+		boolean result = false;
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor cur = db.rawQuery("SELECT * FROM " + RoutesTable.tableName +
+				" WHERE " + RoutesTable.colId + "=" + routeId +
+				" AND " + RoutesTable.colVisible + "=1", null);
+		if (cur.getCount() > 0) {
+			result = true;
+		}
+		
+		cur.close();
+		db.close();
+		return result;
+	}
 }
