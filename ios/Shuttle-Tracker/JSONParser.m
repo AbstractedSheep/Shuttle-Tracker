@@ -212,7 +212,7 @@
             
             //  Set the vehicle properties to the corresponding JSON values
             for (NSString *string in dict) {
-                if ([string isEqualToString:@"shuttle_id"]) {
+                if ([string isEqualToString:@"name"]) {
                     vehicle.name = [dict objectForKey:string];
                 } else if ([string isEqualToString:@"latitude"]) {
                     coordinate.latitude = [[dict objectForKey:string] floatValue];
@@ -342,6 +342,7 @@
 
 @synthesize name;
 @synthesize description;
+@synthesize title;
 @synthesize subtitle;
 @synthesize coordinate;
 @synthesize annotationView;
@@ -359,10 +360,12 @@
     return self;
 }
 
+
 //  Title is the main line of text displayed in the callout of an MKAnnotation
 - (NSString *)title {
 	return name;
 }
+
 
 //	Description is an internal only thing now.  It used to be used for the subtitle
 //	as well, but if that behavior is desired, add it in a subclass' implementation
@@ -387,6 +390,7 @@
     
     return self;
 }
+
 
 @end
 
@@ -439,12 +443,6 @@
 	
 	self.heading = newVehicle.heading;
 	self.routeNo = newVehicle.routeNo;
-}
-
-
-//  Title is the main line of text displayed in the callout of an MKAnnotation
-- (NSString *)title {
-	return (routeNo - 1) ? @"East Shuttle" : @"West Shuttle";
 }
 
 

@@ -50,7 +50,7 @@
 }
 
 @property (nonatomic, retain) NSString *name;
-@property (nonatomic, readonly) NSString *title;
+@property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *description;
 @property (nonatomic, retain) NSString *subtitle;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
