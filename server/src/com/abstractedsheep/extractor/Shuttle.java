@@ -3,6 +3,7 @@ package com.abstractedsheep.extractor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * The purpose of this class is to hold information about a shuttle from
@@ -422,7 +423,7 @@ public class Shuttle {
 					count++;
 				}
 			}
-			
+			//technically, index is the route id...
 			index = defineLocationValues(distanceMap);
 			if(routeList.size() < 2) {
 				this.closestRouteCoor = locationMap.get(index);
@@ -436,7 +437,11 @@ public class Shuttle {
 			//than ~32 feet...
 			if (index > 0) {
 				this.foundRoute = true;
-				this.routeList.retainAll(routeList.subList(index, index));
+				ArrayList<Route> tempList = new ArrayList<Route>(routeList);
+				for(int i = 0; i < tempList.size(); i++) {
+					if(tempList.get(i).getIdNum() != index)
+						this.routeList.remove(i);
+				}
 			}
 			else
 				index = -index;
