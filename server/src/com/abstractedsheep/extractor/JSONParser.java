@@ -78,7 +78,7 @@ public class JSONParser {
 		shuttle.setName(list.get(1));
 		shuttle.setBearing(Integer.parseInt(list.get(2)));
 		shuttle.setCurrentLocation(new Shuttle.Point(Double.parseDouble(list
-				.get(3)), Double.parseDouble(list.get(4))), parsedTime);
+				.get(3)), Double.parseDouble(list.get(4))), time);
 		shuttle.setSpeed(Integer.parseInt(list.get(5)));
 		shuttle.setCardinalPoint(list.get(list.size() - 1));
 		// TODO: determine whether this shuttle goes on the west route or east
