@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class Shuttle {
 	private int shuttleId;
 	private HashMap<String, Stop> stops;
-	private HashMap<String, Integer> stopETA;
+	private HashMap<String, ArrayList<Integer>> stopETA;
 	private ArrayList<Integer> speedList;
 	private String cardinalPoint;
 	private String shuttleName;
@@ -38,7 +38,7 @@ public class Shuttle {
 	public Shuttle(ArrayList<Route> rt) {
 		this.shuttleId = -1;
 		this.stops = new HashMap<String, Stop>();
-		this.stopETA = new HashMap<String, Integer>();
+		this.stopETA = new HashMap<String, ArrayList<Integer>>();
 		this.shuttleName = "Bus 42";
 		this.cardinalPoint = "North";
 		this.speed = 0;
@@ -57,7 +57,7 @@ public class Shuttle {
 		// same as the global
 		this.shuttleId = shuttleId;
 		this.stops = new HashMap<String, Stop>();
-		this.stopETA = new HashMap<String, Integer>();
+		this.stopETA = new HashMap<String, ArrayList<Integer>>();
 		this.speedList = new ArrayList<Integer>();
 		this.shuttleName = "Bus 42";
 		this.cardinalPoint = "North";
@@ -148,7 +148,7 @@ public class Shuttle {
 	public void setCardinalPoint(String cardinalPoint) { this.cardinalPoint = cardinalPoint;}
 	public String getName() { return shuttleName; }
 	public void setName(String newName) { this.shuttleName = newName; }
-	public HashMap<String, Integer> getStopETA() { return stopETA; }
+	public HashMap<String, ArrayList<Integer>> getStopETA() { return stopETA; }
 	public void setBearing(int newBearing) { finder.setBearing(newBearing); }
 	public String getRouteName() { return finder.getRouteName(); }
 	public RouteFinder getFinder() {return this.finder; }
@@ -181,13 +181,19 @@ public class Shuttle {
 		// writing to a file easier.
 		Point p = null;
 		int count = 0;
+		ArrayList<Integer> timeList = new ArrayList<Integer>();
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(stops.get(name));
 			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000;
+			
+			for(int i = 0; i < 10; i++) {
+				timeList.add(time + (720000 * i));
+			}
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
-			this.stopETA.put(name, time);
+			this.stopETA.put(name, timeList);
+			timeList.clear();
 			count++;
 		}
 		
@@ -198,19 +204,34 @@ public class Shuttle {
 	 * added a 30 second time delay for each stop (except the first one).
 	 */
 	private void addTimeDelayToStops() {
-		ArrayList<Integer> valueList = new ArrayList<Integer>(stopETA.values());
-		Collections.sort(valueList);
-		HashMap<String, Integer> tempList = new HashMap<String, Integer>(stopETA);
+		ArrayList<ArrayList<Integer>> valueList = new ArrayList<ArrayList<Integer>>(stopETA.values());
+		ArrayList<Integer> indexedValueList = null;
+		int index = 0;
+		
+		HashMap<String, ArrayList<Integer>> tempList = new HashMap<String, ArrayList<Integer>>(stopETA);
 		
 		for(String name : tempList.keySet()) {
-			for(int i = 0; i < valueList.size(); i++) {
-				if(tempList.get(name) == valueList.get(i)) {
-					stopETA.put(name, (int) Math.abs(valueList.get(i) + (1000 * (30 * i)) - 
+			indexedValueList = returnValueList(index, valueList);
+			Collections.sort(indexedValueList);
+			for(int i = 0; i < indexedValueList.size(); i++) {
+				if(tempList.get(name).get(index) == indexedValueList.get(i)) {
+					tempList.get(name).set(index, (int) Math.abs(indexedValueList.get(i) + (1000 * (30 * i)) - 
 							(System.currentTimeMillis() - this.lastUpdateTime)));
+					stopETA.put(name, tempList.get(name));
 					break;
 				}
 			}
+			index++;
 		}
+	}
+	
+	private ArrayList<Integer> returnValueList(int index, ArrayList<ArrayList<Integer>> valueList) {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		
+		for(ArrayList<Integer> temp : valueList) {
+			list.add(temp.get(index));
+		}
+		return list;
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import com.abstractedsheep.extractor.Shuttle;
@@ -71,7 +72,7 @@ public class JSONSender {
 								+ shuttle.getShuttleId() + ",'"
 								+ shuttle.getStops().get(stop).getShortName()
 								+ "','"
-								+ shuttle.getStopETA().get(stop)
+								+ parseTimes(shuttle.getStopETA().get(stop))
 								+ "', '"
 								+ shuttle.getRouteId() + "')";
 						stmt.executeUpdate(insertHeader + interValues);
@@ -91,6 +92,14 @@ public class JSONSender {
 		}
 	}
 	
+	private static String parseTimes(ArrayList<Integer> arrayList) {
+		String str = "";
+		for(int i : arrayList) {
+			str += i + ";";
+		}
+		return (str.substring(0, str.length() - 2));
+	}
+
 	/**
 	 * Delete the values in the database table
 	 * @param tableName this value is currently not used
@@ -112,7 +121,7 @@ public class JSONSender {
 		for(Shuttle shuttle : shuttleList) {
 			System.out.println(shuttle.getName() + " " + shuttle.getShuttleId() + " " + shuttle.getRouteName() + " " + shuttle.getRouteId());
 			for(String name : shuttle.getStopETA().keySet()) {
-				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name)) + " " + (shuttle.getStopETA().get(name)) / (1000 * 60));
+				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name).get(0)) + " " + (shuttle.getStopETA().get(name).get(0)) / (1000 * 60));
 			}
 		}
 	}
