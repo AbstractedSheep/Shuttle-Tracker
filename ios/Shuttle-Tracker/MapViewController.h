@@ -11,15 +11,12 @@
 #import "DataManager.h"
 
 
-@class KMLParser, JSONParser;
+@class JSONParser;
 
 @interface MapViewController : UIViewController <MKMapViewDelegate> {
 	MKMapView *_mapView;
     
     DataManager *dataManager;
-    
-    KMLParser *routeKmlParser;
-    KMLParser *vehiclesKmlParser;
     
     NSURL *shuttleJSONUrl;
     
@@ -29,6 +26,8 @@
     NSMutableArray *routeLineViews;
 	
 	UIImage *shuttleImage;
+    UIImage *magentaShuttleImage;
+    NSMutableDictionary *shuttleImages;
     
 }
 

@@ -9,10 +9,12 @@
 #import "JSONParser.h"
 #import "NSDictionary_JSONExtensions.h"
 #import "EtaWrapper.h"
-
+#import "MapPlacemark.h"
 
 @implementation JSONParser
 
+@synthesize routes;
+@synthesize stops;
 @synthesize vehicles;
 @synthesize etas;
 @synthesize timeDisplayFormatter;
@@ -32,9 +34,147 @@
         jsonUrl = url;
         [jsonUrl retain];
         
+        routes = [[NSArray alloc] initWithObjects:nil];
+        stops = [[NSArray alloc] initWithObjects:nil];
     }
     
     return self;
+}
+
+
+- (BOOL)parseRoutesandStops {
+    NSError *theError = nil;
+    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
+    NSDictionary *jsonDict = nil;
+    
+    if (theError) {
+        NSLog(@"Error retrieving JSON data");
+        
+        return NO;
+    } else {
+        if (jsonString) {
+            jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
+        } else {
+            jsonDict = nil;
+			
+			return NO;
+        }
+        
+        NSMutableArray *mutableRoutes = [[NSMutableArray alloc] init];
+        NSMutableArray *mutableStops = [[NSMutableArray alloc] init];
+        
+		NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
+        NSDictionary *value;
+        NSString *string;
+        
+        NSDictionary *jsonRoutes = [jsonDict objectForKey:@"routes"];
+        
+        NSEnumerator *routesEnum = [jsonRoutes objectEnumerator];
+		
+        while ((value = [routesEnum nextObject])) {
+            PlacemarkStyle *style = [[PlacemarkStyle alloc] init];
+            MapRoute *route = [[MapRoute alloc] init];
+            
+            string = [value objectForKey:@"color"];
+            style.colorString = string;
+            
+            string = [value objectForKey:@"id"];
+            style.idTag = string;
+            route.idTag = string;
+            
+            NSNumber *number = [value objectForKey:@"width"];
+            style.width = [number intValue];
+            
+            route.style = style;
+            
+            string = [value objectForKey:@"name"];
+            route.name = string;
+            
+            NSDictionary *coordsDict = [value objectForKey:@"coords"];
+            NSEnumerator *coordsEnum = [coordsDict objectEnumerator];
+            NSDictionary *coordsValues;
+            
+            NSMutableArray *coordsString = [[NSMutableArray alloc] init];
+            
+            CLLocationCoordinate2D coordinate;
+            
+            while ((coordsValues = [coordsEnum nextObject])) {
+                string = [coordsValues objectForKey:@"latitude"];
+                coordinate.latitude = [string floatValue];
+                
+                string = [coordsValues objectForKey:@"longitude"];
+                coordinate.longitude = [string floatValue];
+                
+                [coordsString addObject:[NSString stringWithFormat:@"%f, %f", coordinate.longitude, coordinate.latitude]];
+            }
+            
+            route.lineString = coordsString;
+            [coordsString release];
+            
+            [mutableRoutes addObject:route];
+            [route release];
+        }
+        
+        [routes release];
+        routes = mutableRoutes;
+        
+        NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
+        
+        NSEnumerator *stopsEnum = [jsonStops objectEnumerator];
+        
+        while ((value = [stopsEnum nextObject])) {
+            MapStop *stop = [[MapStop alloc] init];
+            
+            CLLocationCoordinate2D coordinate;
+            
+            string = [value objectForKey:@"latitude"];
+            coordinate.latitude = [string floatValue];
+            
+            string = [value objectForKey:@"longitude"];
+            coordinate.longitude = [string floatValue];
+            
+            stop.coordinate = coordinate;
+            
+            string = [value objectForKey:@"name"];
+            stop.name = string;
+            
+            string = [value objectForKey:@"short_name"];
+            stop.shortName = string;
+            
+            NSDictionary *routesDict = [value objectForKey:@"routes"];
+            NSEnumerator *routesEnum = [routesDict objectEnumerator];
+            NSDictionary *routeValues;
+            
+            NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
+            NSMutableArray *tempRouteNames = [[NSMutableArray alloc] init];
+            
+            NSNumber *number;
+            
+            while ((routeValues = [routesEnum nextObject])) {
+                number = [routeValues objectForKey:@"id"];
+                [tempRouteIds addObject:number];
+                
+                string = [routeValues objectForKey:@"name"];
+                [tempRouteNames addObject:string];
+            }
+            
+            stop.routeIds = tempRouteIds;
+            stop.routeNames = tempRouteNames;
+            
+            [mutableStops addObject:stop];
+            [stop release];
+        }
+        
+        [stops release];
+        stops = mutableStops;
+		
+		[smallPool release];
+        
+        return YES;
+    }
+    
+    return NO;
+
 }
 
 
@@ -62,7 +202,7 @@
 			return NO;
         }
         
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
 		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
@@ -72,7 +212,7 @@
             
             //  Set the vehicle properties to the corresponding JSON values
             for (NSString *string in dict) {
-                if ([string isEqualToString:@"shuttle_id"]) {
+                if ([string isEqualToString:@"name"]) {
                     vehicle.name = [dict objectForKey:string];
                 } else if ([string isEqualToString:@"latitude"]) {
                     coordinate.latitude = [[dict objectForKey:string] floatValue];
@@ -100,7 +240,7 @@
             [vehicle release];
         }
 		
-		[pool release];
+		[smallPool release];
         
         return YES;
     }
@@ -145,7 +285,7 @@
 			return NO;
 		}
         
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
 		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
@@ -176,7 +316,7 @@
             [eta release];
         }
 		
-		[pool release];
+		[smallPool release];
         
         return YES;
     }
@@ -185,6 +325,9 @@
 }
 
 - (void)dealloc {
+    [routes release];
+    [stops release];
+    
     [super dealloc];
     [etas release];
     [vehicles release];
@@ -199,6 +342,7 @@
 
 @synthesize name;
 @synthesize description;
+@synthesize title;
 @synthesize subtitle;
 @synthesize coordinate;
 @synthesize annotationView;
@@ -216,10 +360,12 @@
     return self;
 }
 
+
 //  Title is the main line of text displayed in the callout of an MKAnnotation
 - (NSString *)title {
 	return name;
 }
+
 
 //	Description is an internal only thing now.  It used to be used for the subtitle
 //	as well, but if that behavior is desired, add it in a subclass' implementation
@@ -244,6 +390,7 @@
     
     return self;
 }
+
 
 @end
 
@@ -296,12 +443,6 @@
 	
 	self.heading = newVehicle.heading;
 	self.routeNo = newVehicle.routeNo;
-}
-
-
-//  Title is the main line of text displayed in the callout of an MKAnnotation
-- (NSString *)title {
-	return (routeNo - 1) ? @"East Shuttle" : @"West Shuttle";
 }
 
 

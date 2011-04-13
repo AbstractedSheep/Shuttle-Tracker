@@ -3,6 +3,7 @@ package com.abstractedsheep.extractor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * The purpose of this class is to hold information about a shuttle from
@@ -18,7 +19,7 @@ import java.util.HashMap;
 public class Shuttle {
 	private int shuttleId;
 	private HashMap<String, Stop> stops;
-	private HashMap<String, Integer> stopETA;
+	private HashMap<String, ArrayList<Integer>> stopETA;
 	private ArrayList<Integer> speedList;
 	private String cardinalPoint;
 	private String shuttleName;
@@ -38,7 +39,7 @@ public class Shuttle {
 	public Shuttle(ArrayList<Route> rt) {
 		this.shuttleId = -1;
 		this.stops = new HashMap<String, Stop>();
-		this.stopETA = new HashMap<String, Integer>();
+		this.stopETA = new HashMap<String, ArrayList<Integer>>();
 		this.shuttleName = "Bus 42";
 		this.cardinalPoint = "North";
 		this.speed = 0;
@@ -57,7 +58,7 @@ public class Shuttle {
 		// same as the global
 		this.shuttleId = shuttleId;
 		this.stops = new HashMap<String, Stop>();
-		this.stopETA = new HashMap<String, Integer>();
+		this.stopETA = new HashMap<String, ArrayList<Integer>>();
 		this.speedList = new ArrayList<Integer>();
 		this.shuttleName = "Bus 42";
 		this.cardinalPoint = "North";
@@ -148,7 +149,7 @@ public class Shuttle {
 	public void setCardinalPoint(String cardinalPoint) { this.cardinalPoint = cardinalPoint;}
 	public String getName() { return shuttleName; }
 	public void setName(String newName) { this.shuttleName = newName; }
-	public HashMap<String, Integer> getStopETA() { return stopETA; }
+	public HashMap<String, ArrayList<Integer>> getStopETA() { return stopETA; }
 	public void setBearing(int newBearing) { finder.setBearing(newBearing); }
 	public String getRouteName() { return finder.getRouteName(); }
 	public RouteFinder getFinder() {return this.finder; }
@@ -181,13 +182,19 @@ public class Shuttle {
 		// writing to a file easier.
 		Point p = null;
 		int count = 0;
+		ArrayList<Integer> timeList = new ArrayList<Integer>();
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
 			double distance = finder.getDistanceToStop(stops.get(name));
 			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000;
+			
+			for(int i = 0; i < 10; i++) {
+				timeList.add(time + (720000 * i));
+			}
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
-			this.stopETA.put(name, time);
+			this.stopETA.put(name, timeList);
+			timeList.clear();
 			count++;
 		}
 		
@@ -198,19 +205,34 @@ public class Shuttle {
 	 * added a 30 second time delay for each stop (except the first one).
 	 */
 	private void addTimeDelayToStops() {
-		ArrayList<Integer> valueList = new ArrayList<Integer>(stopETA.values());
-		Collections.sort(valueList);
-		HashMap<String, Integer> tempList = new HashMap<String, Integer>(stopETA);
+		ArrayList<ArrayList<Integer>> valueList = new ArrayList<ArrayList<Integer>>(stopETA.values());
+		ArrayList<Integer> indexedValueList = null;
+		int index = 0;
+		
+		HashMap<String, ArrayList<Integer>> tempList = new HashMap<String, ArrayList<Integer>>(stopETA);
 		
 		for(String name : tempList.keySet()) {
-			for(int i = 0; i < valueList.size(); i++) {
-				if(tempList.get(name) == valueList.get(i)) {
-					stopETA.put(name, (int) Math.abs(valueList.get(i) + (1000 * (30 * i)) - 
+			indexedValueList = returnValueList(index, valueList);
+			Collections.sort(indexedValueList);
+			for(int i = 0; i < indexedValueList.size(); i++) {
+				if(tempList.get(name).get(index) == indexedValueList.get(i)) {
+					tempList.get(name).set(index, (int) Math.abs(indexedValueList.get(i) + (1000 * (30 * i)) - 
 							(System.currentTimeMillis() - this.lastUpdateTime)));
+					stopETA.put(name, tempList.get(name));
 					break;
 				}
 			}
+			index++;
 		}
+	}
+	
+	private ArrayList<Integer> returnValueList(int index, ArrayList<ArrayList<Integer>> valueList) {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		
+		for(ArrayList<Integer> temp : valueList) {
+			list.add(temp.get(index));
+		}
+		return list;
 	}
 
 	@Override
@@ -369,6 +391,9 @@ public class Shuttle {
 			double[] distanceArray = { 999, 999 }; // TODO: to make the code
 													// more robust, turn it into
 													// an arraylist?
+			HashMap<Integer, Double> distanceMap = new HashMap<Integer, Double>();
+			HashMap<Integer, Point> locationMap = new HashMap<Integer, Point>();
+			HashMap<Integer, Integer> indexMap = new HashMap<Integer, Integer>();
 			Point[] locationArray = { new Point(), new Point() };
 			int[] indexArray = { 0, 0 };
 			int index = 0;
@@ -376,6 +401,7 @@ public class Shuttle {
 
 			for (Route route : routeList) {
 				list = route.getCoordinateList();
+				distanceMap.put(route.getIdNum(), 999.0);
 				for (int i = indexOfClosestCoordinate, count = 0; count < list.size(); i++) {
 					if(i > list.size() - 1)
 						i = 0;
@@ -383,43 +409,72 @@ public class Shuttle {
 					distance = calculateDistance(p1);
 					//if the new distance value is shorter than the old one, then
 					//change it.
-					if (distanceArray[index] > distance) {
+					if (distanceMap.get(route.getIdNum()) > distance) {
 						Double[] array = route.getBearingsForPoint(i);
 						if(((array[0] + 15.0 >= this.currentBearing) &&
 							(array[0] - 15.0 <= this.currentBearing)) ||
 							((array[1] + 15.0 >= this.currentBearing) &&
 									(array[1] - 15.0 <= this.currentBearing))) {
-							distanceArray[index] = distance;
-							locationArray[index] = p1;
-							indexArray[index] = i;
+							distanceMap.put(route.getIdNum(), distance);
+							locationMap.put(route.getIdNum(), p1);
+							indexMap.put(route.getIdNum(), i);
 						}
 					}
 					count++;
 				}
-				index++;
 			}
-			
+			//technically, index is the route id...
+			index = defineLocationValues(distanceMap);
 			if(routeList.size() < 2) {
-				this.closestRouteCoor = locationArray[0];
-				this.indexOfClosestCoordinate = indexArray[0];
-				this.closestDistanceToRoute = distanceArray[0];
+				this.closestRouteCoor = locationMap.get(index);
+				this.indexOfClosestCoordinate = indexMap.get(index);
+				this.closestDistanceToRoute = distanceMap.get(index);
 				return;
 			}
 			
 			//the shuttle's route has only been determined iff the difference
 			//between the closest points on the East and West routes is greater
 			//than ~32 feet...
-			if (Math.abs((distanceArray[0] - distanceArray[1])) >= .01) {
+			if (index > 0) {
 				this.foundRoute = true;
-				this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
+				ArrayList<Route> tempList = new ArrayList<Route>(routeList);
+				for(int i = 0; i < tempList.size(); i++) {
+					if(tempList.get(i).getIdNum() != index)
+						this.routeList.remove(i);
+				}
 			}
+			else
+				index = -index;
 			//Since the overlapped region is still part of both routes,
 			//the shuttle can still give valid ETAs.
-			this.closestRouteCoor = (distanceArray[0] < distanceArray[1]) ?
-									locationArray[0] : locationArray[1];
-			//this.routeList.remove((distanceArray[0] < distanceArray[1]) ? 1 : 0);
-			this.indexOfClosestCoordinate = indexArray[this.getRouteID() - 1];
-			this.closestDistanceToRoute = distanceArray[this.getRouteID() - 1];
+			this.closestRouteCoor = locationMap.get(index);
+			this.indexOfClosestCoordinate = indexMap.get(index);
+			this.closestDistanceToRoute = distanceMap.get(index);
+		}
+		
+		private int defineLocationValues(HashMap<Integer, Double> distanceMap) {
+			ArrayList<Double> distanceList = new ArrayList<Double>(distanceMap.values());
+			int i = 0;
+			Collections.sort(distanceList);
+			//the smallest and second smallest distance values
+			try{
+				double smallestValue = distanceList.get(0), smallValue = distanceList.get(1);
+				double delta = Math.abs(smallestValue - smallValue);
+				for(int index : distanceMap.keySet()) {
+					if((distanceMap.get(index) == smallestValue) && (delta >= .01))
+						i = index;
+					//if the difference between the two smallest distances is no greater than
+					//.01 miles, then the shuttle is probably on an overlapped region.
+					else
+						i = -index;
+				}
+				
+				return i;
+			} catch(Exception ex) {
+				//ArrayOutofBoundsException might be thrown...
+				//return the first id if that is the case.
+				return 1;
+			}
 		}
 
 		/**
@@ -457,7 +512,17 @@ public class Shuttle {
 		//returns -1 if shuttle is before the closest route point
 		//or 1 if is past it.
 		private int isBearingbeforeClosestRoutePoint() {
-			Double[] array = routeList.get(0).getBearingsForPoint(indexOfClosestCoordinate);
+			Double[] array = null;
+			try{
+				array = routeList.get(0).getBearingsForPoint(indexOfClosestCoordinate);
+			} catch(IndexOutOfBoundsException ex) {
+				for(int i = 0; i < routeList.size(); i++) {
+					if(indexOfClosestCoordinate < routeList.get(i).getCoordinateList().size()) {
+						array = routeList.get(i).getBearingsForPoint(indexOfClosestCoordinate);
+						break;
+					}
+				}
+			}
 			Double before = (array[0] <= 0) ? 360 - 15 : (array[0] - 15.0);
 			Double after = (array[0] >= 360) ? 15 : (array[0] + 15.0);
 			//current bearing is equal to the initial bearing

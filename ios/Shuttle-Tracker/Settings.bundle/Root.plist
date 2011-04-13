@@ -48,7 +48,7 @@
 			<key>Key</key>
 			<string>onlyNextEtas</string>
 			<key>Title</key>
-			<string>Only Show Next ETAs</string>
+			<string>Show Later ETAs</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>

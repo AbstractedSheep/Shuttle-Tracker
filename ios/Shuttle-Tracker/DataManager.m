@@ -6,16 +6,18 @@
 //  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
+#import "MapPlacemark.h"
 #import "DataManager.h"
 #import "EtaWrapper.h"
 #import "IASKSettingsReader.h"
+#import "DataUrls.h"
 
 #define kRemoveShuttleThreshold		90.0f
 
 
 @interface DataManager()
-- (void)loadFromKml;
-- (void)routeKmlLoaded;
+- (void)loadFromJson;
+- (void)routeJsonLoaded;
 - (void)updateVehicleData;
 - (void)vehicleJsonRefresh;
 - (void)updateEtaData;
@@ -61,11 +63,14 @@
         
         onlyNextEtas = [[defaults objectForKey:@"onlyNextEtas"] boolValue];
         
+        NSURL *routesJsonUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
+        routesStopsJsonParser = [[JSONParser alloc] initWithUrl:routesJsonUrl];
+        
         //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
-        shuttleJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"];
+        shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
         vehiclesJsonParser = [[JSONParser alloc] initWithUrl:shuttleJsonUrl];
         
-        etasJsonUrl = [NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta"];
+        etasJsonUrl = [NSURL URLWithString:kDMEtasUrl];
         etasJsonParser = [[JSONParser alloc] initWithUrl:etasJsonUrl];
         
         vehicles = [[NSMutableArray alloc] init];
@@ -82,14 +87,6 @@
 }
 
 - (void)dealloc {
-    if (routeKmlParser) {
-        [routeKmlParser release];
-    }
-    
-    if (vehiclesKmlParser) {
-        [vehiclesKmlParser release];
-    }
-    
     if (vehiclesJsonParser) {
         [vehiclesJsonParser release];
     }
@@ -129,36 +126,29 @@
     [super dealloc];
 }
 
-//  Load the routes/stops KML file asynchronously
+//  Load the routes/stops from JSON asynchronously
 - (void)loadRoutesAndStops {
-	[self loadFromKml];
+    [self loadFromJson];
 }
 
-- (void)loadFromKml {
-    //  Use the local copy of the routes/stops KML file
-    NSURL *routeKmlUrl = [[NSBundle mainBundle] URLForResource:@"netlink" withExtension:@"kml"];
-    
-    routeKmlParser = [[KMLParser alloc] initWithContentsOfUrl:routeKmlUrl];
-	
-	dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
+- (void)loadFromJson {
+    dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
 	dispatch_async(loadRoutesQueue, ^{
-        [routeKmlParser parse];
-		[self performSelectorOnMainThread:@selector(routeKmlLoaded) withObject:nil waitUntilDone:NO];
+        [routesStopsJsonParser parseRoutesandStops];
+		[self performSelectorOnMainThread:@selector(routeJsonLoaded) withObject:nil waitUntilDone:NO];
 	});
 	
 	dispatch_release(loadRoutesQueue);
 }
 
-//  TODO: Remove this or adjust it to be appropriate for DataManager. Taken from MapViewController.
-- (void)routeKmlLoaded {
-    routes = [routeKmlParser routes];
+- (void)routeJsonLoaded {
+    routes = routesStopsJsonParser.routes;
     [routes retain];
     
-    stops = [routeKmlParser stops];
+    stops = routesStopsJsonParser.stops;
     [stops retain];
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
 }
 
 
@@ -309,7 +299,7 @@
     }
     
     for (EtaWrapper *eta in soonestEtas) {
-        for (KMLStop *stop in stops) {
+        for (MapStop *stop in stops) {
             if (NULL) {
                 //	None
 				//	Eventually, this should set the next ETA for
@@ -323,14 +313,14 @@
 //	Iterate through the list of routes, and return a list of the route names
 - (NSArray *)routeNames {
 	if (!routes) {
-		return [NSArray arrayWithObject:nil];
+		return [NSArray arrayWithObjects:nil];
 	}
 	
 	NSMutableArray *routeNames = [[[NSMutableArray alloc] init] autorelease];
 	
 	BOOL alreadyCounted;
 	
-	for (KMLRoute *route in routes) {
+	for (MapRoute *route in routes) {
 		alreadyCounted = NO;
 		
 		for (NSString *existingName in routeNames) {
@@ -359,7 +349,7 @@
 	
 	BOOL alreadyCounted;
 	
-	for (KMLRoute *route in routes) {
+	for (MapRoute *route in routes) {
 		alreadyCounted = NO;
 		
 		for (NSString *existingName in routeNames) {
@@ -395,10 +385,10 @@
 		return 0;
 	}
 	
-	KMLRoute *route = [routes objectAtIndex:routeNo];
+	MapRoute *route = [routes objectAtIndex:routeNo];
 	
 	if (route) {
-		NSNumber *noEtas;
+		NSNumber *noEtas = nil;
         
         if (onlyNextEtas) {
             //  Wabbajack
