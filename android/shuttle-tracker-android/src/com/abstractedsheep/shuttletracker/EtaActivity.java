@@ -74,6 +74,13 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 					}		
 			}			
 		});
+		etaListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+			public boolean onChildClick(ExpandableListView parent, View v,
+					int groupPosition, int childPosition, long id) {
+				EtaActivity.this.setContentView(R.layout.eta_details);
+				return true;
+			}
+		});
 		
 		dataService = ShuttleDataService.getInstance();
 		routesUpdated(dataService.getRoutes());
