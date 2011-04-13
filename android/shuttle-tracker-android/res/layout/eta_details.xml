@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="fill_parent" android:id="@+id/relativeLayout1" android:layout_width="fill_parent" android:padding="5dp">
+	    <TextView android:layout_height="wrap_content" android:text="TextView" android:layout_width="wrap_content" android:layout_alignParentLeft="true" android:id="@+id/textView1"></TextView>
+	    <TextView android:layout_below="@+id/textView1" android:layout_height="wrap_content" android:text="TextView" android:layout_width="wrap_content" android:id="@+id/textView2" android:layout_alignLeft="@+id/textView1"></TextView>
+	    <ScrollView android:layout_below="@+id/textView2" android:layout_height="wrap_content" android:id="@+id/scrollView1" android:layout_alignLeft="@+id/textView2" android:layout_width="fill_parent">
+	        <LinearLayout android:orientation="vertical" android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:layout_height="fill_parent">
+	            <TextView android:layout_height="wrap_content" android:text="TextView" android:layout_width="wrap_content" android:id="@+id/textView3"></TextView>
+	            <TextView android:layout_height="wrap_content" android:text="TextView" android:layout_width="wrap_content" android:id="@+id/textView4"></TextView>
+	        </LinearLayout>
+	    </ScrollView>
+	    <Button android:id="@+id/button1" android:text="Button" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_alignParentBottom="true"></Button>
+	</RelativeLayout>

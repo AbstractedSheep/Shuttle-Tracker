@@ -299,10 +299,9 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 			builder.setTitle(R.string.select_routes)
 				.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
 						dataService.reloadFavoriteRoutes();
 						stopsOverlay.removeAllStops();
-						map.invalidate();
+						
 						boolean cont = false;
 					    RoutesJson routes = dataService.getRoutes();   
 				        for (Stop s : routes.getStops()) {
@@ -319,6 +318,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 				        }
 				        
 						map.invalidate();
+						dialog.dismiss();
 					}
 				})
 				.setIcon(R.drawable.map)
