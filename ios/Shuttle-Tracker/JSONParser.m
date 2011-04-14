@@ -402,6 +402,8 @@
 @synthesize heading;
 @synthesize updateTime;
 @synthesize routeNo;
+@synthesize routeImageSet;
+@synthesize viewNeedsUpdate;
 
 
 - (id)init {
@@ -411,6 +413,8 @@
         ETAs = nil;
         annotationView = nil;
 		updateTime = nil;
+		routeImageSet = NO;
+		viewNeedsUpdate = YES;
         
         heading = 0;
 		routeNo = 0;
@@ -432,8 +436,8 @@
 	[super dealloc];
 }
 
-//	Update the attributes of the current vehicle, usually for the same vehicle in a subsequent
-//	data update.
+//	Update the attributes of the current vehicle, usually for the same vehicle 
+//	in a subsequent data update.
 //	Note that this does not get a reference to the new vehicles display formatter.
 - (void)copyAttributesExceptLocation:(JSONVehicle *)newVehicle {
 	self.name = newVehicle.name;
@@ -442,7 +446,11 @@
 	self.updateTime = newVehicle.updateTime;
 	
 	self.heading = newVehicle.heading;
-	self.routeNo = newVehicle.routeNo;
+	
+	if (self.routeNo != newVehicle.routeNo) {
+		self.routeNo = newVehicle.routeNo;
+		self.viewNeedsUpdate = YES;
+	}
 }
 
 

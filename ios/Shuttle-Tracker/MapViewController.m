@@ -201,6 +201,14 @@ typedef enum {
 	for (JSONVehicle *vehicle in dmVehicles) {
 		if ([[_mapView annotations] indexOfObject:vehicle] == NSNotFound) {
 			[self addJsonVehicle:vehicle];
+		} else if (vehicle.viewNeedsUpdate) {
+			//	If the annotation view needs to be updated, for example if the
+			//	shuttle switched routes, then 1. Remove the shuttle from the map
+			//	view, 2. Remove the associated annotation view, and 3. Add the
+			//	shuttle back to the map view.
+			[_mapView removeAnnotation:vehicle];
+			vehicle.annotationView = nil;
+			[self addJsonVehicle:vehicle];
 		}
 	}
 	
@@ -360,9 +368,10 @@ typedef enum {
             //  Check to see if the vehicle's image is the plain shuttle image.
             //  If it is, check for a colored shuttle image for the shuttle's route.
             //  Set the shuttle's image to the colored one, if we have it.
-            if ([[vehicle annotationView] image] == shuttleImage) {
+            if (!vehicle.routeImageSet) {
                 if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
                     [[vehicle annotationView] setImage:[shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]]];
+					vehicle.routeImageSet = YES;
                 }
             }
             
@@ -375,13 +384,16 @@ typedef enum {
         //  If there is, use it.
         if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
             vehicleAnnotationView.image = [shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]];
+			vehicle.routeImageSet = YES;
         } else {
             vehicleAnnotationView.image = shuttleImage;
+			vehicle.routeImageSet = NO;
         }
         
         vehicleAnnotationView.canShowCallout = YES;
         
         [vehicle setAnnotationView:vehicleAnnotationView];
+		vehicle.viewNeedsUpdate = NO;
 		
 		return vehicleAnnotationView;
     }

@@ -170,7 +170,7 @@
         if ([vehiclesJsonParser parseShuttles]) {
             [self performSelectorOnMainThread:@selector(vehicleJsonRefresh) withObject:nil waitUntilDone:YES];
 			[[NSNotificationCenter defaultCenter] postNotificationName:kDMVehiclesUpdated
-																object:vehicles 
+																object:[vehicles copy] 
 															  userInfo:[NSDictionary dictionaryWithObject:vehicles forKey:@"vehicles"]];
         }
     });

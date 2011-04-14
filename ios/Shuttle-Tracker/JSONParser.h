@@ -73,13 +73,17 @@
     int heading;
 	NSDate *updateTime;
     int routeNo;
-	
+	BOOL routeImageSet;
+	BOOL viewNeedsUpdate;
+
 }
 
 @property (nonatomic, retain) NSDictionary *ETAs;
 @property (nonatomic) int heading;
 @property (nonatomic, retain) NSDate *updateTime;
 @property (nonatomic) int routeNo;
+@property (nonatomic) BOOL routeImageSet;
+@property (nonatomic) BOOL viewNeedsUpdate;
 
 - (void)copyAttributesExceptLocation:(JSONVehicle *)newVehicle;
 
