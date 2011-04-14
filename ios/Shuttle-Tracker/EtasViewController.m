@@ -99,10 +99,8 @@
 {
     // Return the number of sections.
     //  One section for each route
-	NSArray *routeNames = dataManager.routeNames;
-	
-	if (routeNames) {
-		return [routeNames count];
+	if (dataManager) {
+		return [dataManager numberRoutes];
 	} else {
 		return 0;
 	}

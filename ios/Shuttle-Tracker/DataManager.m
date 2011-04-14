@@ -22,6 +22,8 @@
 - (void)vehicleJsonRefresh;
 - (void)updateEtaData;
 - (void)etaJsonRefresh;
+- (void)genRouteNames;
+- (void)genRouteShortNames;
 
 @end
 
@@ -30,6 +32,8 @@
 
 @synthesize routes;
 @synthesize stops;
+@synthesize routeNames;
+@synthesize routeShortNames;
 @synthesize vehicles;
 @synthesize etas;
 @synthesize soonestEtas;
@@ -43,6 +47,9 @@
     if ((self = [super init])) {
         routes = nil;
         stops = nil;
+		
+		routeNames = [[NSArray alloc] initWithObjects:nil];
+		routeShortNames = [[NSArray alloc] initWithObjects:nil];
         
         numberStops = [[NSMutableDictionary alloc] init];
         
@@ -86,6 +93,7 @@
     return self;
 }
 
+
 - (void)dealloc {
     if (vehiclesJsonParser) {
         [vehiclesJsonParser release];
@@ -126,10 +134,12 @@
     [super dealloc];
 }
 
+
 //  Load the routes/stops from JSON asynchronously
 - (void)loadRoutesAndStops {
     [self loadFromJson];
 }
+
 
 - (void)loadFromJson {
     dispatch_queue_t loadRoutesQueue = dispatch_queue_create("com.abstractedsheep.routesqueue", NULL);
@@ -140,6 +150,7 @@
 	
 	dispatch_release(loadRoutesQueue);
 }
+
 
 - (void)routeJsonLoaded {
     routes = routesStopsJsonParser.routes;
@@ -152,6 +163,7 @@
 }
 
 
+//	Update vehicle positions, ETAs, and any other data that changes frequently.
 - (void)updateData {
     [self updateVehicleData];
     [self updateEtaData];
@@ -159,7 +171,7 @@
 
 
 //	Pull updated vehicle data and posts a notification that it has done so.
-//	Note that the notification is not on the main thread.
+//	Note that the notification is not expected to be on the main thread.
 - (void)updateVehicleData {
     
 	if (!loadVehicleJsonQueue) {
@@ -177,8 +189,10 @@
     
 }
 
+
 - (void)vehicleJsonRefresh {
     BOOL alreadyAdded = NO;
+	NSMutableArray *vehiclesToRemove;
     
     for (JSONVehicle *newVehicle in vehiclesJsonParser.vehicles) {
 		alreadyAdded = NO;
@@ -205,15 +219,16 @@
         }
     }
 	
-	NSMutableArray *vehiclesToRemove = [[NSMutableArray alloc] init];
+	vehiclesToRemove = [[NSMutableArray alloc] init];
 	
 	for (JSONVehicle *vehicle in vehicles) {
-		//	Remove vehicles which have not been updated for three minutes
+		//	Set vehicles with old data to be removed.
 		if ([vehicle.updateTime timeIntervalSinceNow] < -kRemoveShuttleThreshold) {
 			[vehiclesToRemove addObject:vehicle];
 		}
 	}
 	
+	//	Remove any vehicles set to be removed.
 	for (JSONVehicle *vehicle in vehiclesToRemove) {
 		[vehicles removeObject:vehicle];
 	}
@@ -223,7 +238,6 @@
 
 
 - (void)updateEtaData {
-    
 	if (!loadEtaJsonQueue) {
 		loadEtaJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
 	}
@@ -233,12 +247,15 @@
             [self performSelectorOnMainThread:@selector(etaJsonRefresh) withObject:nil waitUntilDone:YES];
 			[[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
 																object:self 
-															  userInfo:[NSDictionary dictionaryWithObject:etas forKey:@"ETAs"]];
+															  userInfo:[NSDictionary dictionaryWithObject:etas 
+																								   forKey:@"ETAs"]];
         }
     });
     
 }
 
+
+//	Process the ETAs and generate the lists of route names and route short names.
 - (void)etaJsonRefresh {
     [etas release];
     etas = [etasJsonParser.etas copy];
@@ -254,8 +271,7 @@
     
     for (EtaWrapper *eta in etas) {
 		NSString *routeName = nil;
-		
-		NSArray *currentRouteNames = [self routeNames];
+		NSArray *currentRouteNames = self.routeNames;
 		
 		//	Ensure that there are at least as many routes as the route ID number.
 		if (eta.route <= [currentRouteNames count]) {
@@ -307,76 +323,69 @@
             }
         }
     }
+	
+	[self genRouteNames];
+	[self genRouteShortNames];
+}
+
+
+- (int)numberRoutes {
+	return [self.routeNames count];
 }
 
 
 //	Iterate through the list of routes, and return a list of the route names
-- (NSArray *)routeNames {
+- (void)genRouteNames {
 	if (!routes) {
-		return [NSArray arrayWithObjects:nil];
+		return;
 	}
 	
-	NSMutableArray *routeNames = [[[NSMutableArray alloc] init] autorelease];
-	
+	NSMutableArray *newRouteNames = [[NSMutableArray alloc] init];
 	BOOL alreadyCounted;
 	
 	for (MapRoute *route in routes) {
 		alreadyCounted = NO;
 		
-		for (NSString *existingName in routeNames) {
+		for (NSString *existingName in newRouteNames) {
 			if ([route.name isEqualToString:existingName]) {
 				alreadyCounted = YES;
 			}
 		}
 		
 		if (!alreadyCounted) {
-			[routeNames addObject:route.name];
+			[newRouteNames addObject:route.name];
 		}
 	}
 	
-	return routeNames;
+	[routeNames release];
+	routeNames = newRouteNames;
 }
 
 
-//	Iterate as above, but return only the first word from the route names.
-//	This is prettier than the full names.
-- (NSArray *)routeShortNames {
+//	Use the results from genRouteNames, but take only the first word
+//	from each of the route names. This is prettier than the full names.
+- (void)genRouteShortNames {
 	if (!routes) {
-		return [NSArray arrayWithObject:nil];
+		return;
 	}
 	
-	NSMutableArray *routeNames = [[[NSMutableArray alloc] init] autorelease];
-	
-	BOOL alreadyCounted;
-	
-	for (MapRoute *route in routes) {
-		alreadyCounted = NO;
-		
-		for (NSString *existingName in routeNames) {
-			if ([route.name isEqualToString:existingName]) {
-				alreadyCounted = YES;
-			}
-		}
-		
-		if (!alreadyCounted) {
-			[routeNames addObject:route.name];
-		}
-	}
-	
-	NSMutableArray *routeFirstNames = [[[NSMutableArray alloc] init] autorelease];
+	NSMutableArray *newRouteShortNames = [[NSMutableArray alloc] init];
 	
 	for (NSString *name in routeNames) {
-		[routeFirstNames addObject:[[name componentsSeparatedByString:@" "] objectAtIndex:0]];
+		[newRouteShortNames addObject:[[name componentsSeparatedByString:@" "] objectAtIndex:0]];
 	}
 	
-	return routeFirstNames;
+	[routeShortNames release];
+	routeShortNames = newRouteShortNames;
 }
+
 
 - (void)setTimeDisplayFormatter:(NSDateFormatter *)newTimeDisplayFormatter {
 	timeDisplayFormatter = newTimeDisplayFormatter;
 	
 	vehiclesJsonParser.timeDisplayFormatter = timeDisplayFormatter;
 }
+
 
 //	Get the number of etas for the routeNo'th route.
 //	routeNo is expected to be 0-indexed in the method call.
@@ -401,6 +410,7 @@
 	
 	return 0;
 }
+
 
 //	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
 //	Currently only handles the 12/24 hour time toggle.

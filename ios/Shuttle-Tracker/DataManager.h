@@ -25,6 +25,9 @@
     
     NSArray *routes;
     NSArray *stops;
+	
+	NSArray *routeNames;
+	NSArray *routeShortNames;
     NSMutableDictionary *numberStops;
     
     NSMutableArray *vehicles;
@@ -54,12 +57,13 @@
 @property (nonatomic, readonly) NSArray *routeNames;
 @property (nonatomic, readonly) NSArray *routeShortNames;
 @property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
-//	There should be exactly one retain on timeDisplayFormatter, the way that the program
-//	is currently set up.
+//	There should be exactly one retain on timeDisplayFormatter, the way
+//	that the program is currently set up.
 
 
 - (void)loadRoutesAndStops;
 - (void)updateData;
+- (int)numberRoutes;
 - (int)numberEtasForRoute:(int)routeNo;
 - (void)settingChanged:(NSNotification *)notification;
 
