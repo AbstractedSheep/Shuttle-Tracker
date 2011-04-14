@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.Activity;
@@ -77,7 +78,14 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 		etaListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {
-				EtaActivity.this.setContentView(R.layout.eta_details);
+				Stop s = etaAdapter.getChild(groupPosition, childPosition);
+				Intent i = new Intent(EtaActivity.this, EtaDetailsActivity.class);
+				int routeId = s.getFavoriteRoute() == -1 ? etaAdapter.getGroup(groupPosition).getId() : s.getFavoriteRoute();
+				i.putExtra("stop_id", s.getShort_name());
+				i.putExtra("route_id", routeId);
+				i.putExtra("stop_name", s.getName());
+				i.putExtra("route_name", etaAdapter.getRouteName(routeId));
+				startActivity(i);
 				return true;
 			}
 		});

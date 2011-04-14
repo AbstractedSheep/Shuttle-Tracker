@@ -38,4 +38,5 @@
 	<string name="center_map">Center Map</string>
 	<string name="select_routes">Select Routes</string>
 	<string name="button_ok">OK</string>
+	<string name="etas">ETAs:</string>
 </resources>
