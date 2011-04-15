@@ -31,17 +31,15 @@ include("header.php");
         <a href="#" data-role="button" id="refresh">Refresh</a> 
             
     </div>
-<div data-role="content">
-    <div id="favorite" data-role="collapsible">
-        <h3>Favorites</h3>
+<div data-role="content" id="etalist">
+    <div id="before" data-role="collapsible">
+    <h3>Before</h3>   
     </div>
-
+    <div id="favorite" data-role="collapsible">   
+    </div>
     <div id="west" data-role="collapsible">
-        <h3>West Route</h3>
     </div>
-    
     <div id="east" data-role="collapsible">
-        <h3>East Route</h3>
     </div>
 </div>
 <? 

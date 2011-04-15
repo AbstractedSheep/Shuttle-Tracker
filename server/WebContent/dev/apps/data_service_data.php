@@ -75,6 +75,33 @@ class DataServiceData
             return $empty;
         }
     }
+    function getAllExtraEta($route_id='', $shuttle_id='', $stop_id='') {
+        /* get stop ETA time of next shuttle
+            if stop_id not supplied, retrieve ETAs for all stops 
+        */
+        $sql = "SELECT extra_eta.eta, stops.name FROM extra_eta LEFT JOIN stops ON stops.stop_id = extra_eta.stop_id WHERE 1 ";
+        if ($route_id)
+            $sql .= " AND extra_eta.route = '". $route_id . "' ";
+        if ($stop_id)
+            $sql .= " AND extra_eta.stop_id = '". $stop_id . "' ";
+        if ($shuttle_id)
+            $sql .= " AND extra_eta.shuttle_id = '". $shuttle_id . "' ";     
+        $result = db_query_array($sql);
+        print_r($result);
+        if ($result)
+        {
+           return $result; 
+        }  
+        else 
+        {
+            $empty = array();
+            return $empty;
+        }
+    }
+    function getAllWeekendETA($route_id='', $shuttle_id='', $stop_id='')
+    {
+        
+    }
     function getShuttlePositions() {
        /* Get all current shuttle positions from the DB */
        $sql = "SELECT s1.shuttle_id, s1.heading, X(s1.location) AS latitude, Y(s1.location) AS longitude, s1.speed, s1.cardinal_point, s1.update_time, s1.route_id, shuttles.name FROM shuttle_coords AS s1

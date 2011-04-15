@@ -6,12 +6,8 @@
 
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" /> 
 
-<!--<link rel="stylesheet" type="text/css" href="css/my.css">
- <script src="js/jquery.min.js"></script>
-<script type="text/javascript" src="js/jquery.cookie.js"></script>  -->
-
-<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.css" />
-<script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
+<link rel="stylesheet" href="css/jquery.mobile-1.0a4.1.css" />
+<script src="js/jquery.min.js"></script>
 <script type="text/javascript">
 
 //var refreshId;
@@ -96,7 +92,27 @@
 //        refreshId = setInterval(function() {
 //      $("#output").load("loadETA.php"); }, 5000);
 //     }); 
+jQuery.ajax({
+            url:'loadETA.php',
+            dataType: "json", /* can put parameter list here like :  action=abc&id=123   etc*/
+            success:function(obj){
+                if(obj){
+                    if(obj.error){
+                        alert(obj.error);
+                    } else {
+                        // Change to a stop button
+                        $('#favorite')
+                            .html(obj.fav);
+                        $('#west')
+                            .html(obj.west);
+                        $('#east')
+                            .html(obj.east);
+                        $('#etalist').page();
+                    }
+                }
+            }
 
+        });
 $("#refresh").click(function(){
     jQuery.ajax({
             url:'loadETA.php',
@@ -108,11 +124,14 @@ $("#refresh").click(function(){
                     } else {
                         // Change to a stop button
                         $('#favorite')
-                            .html(obj.favorite);
+                            .html(obj.fav);
                         $('#west')
                             .html(obj.west);
                         $('#east')
                             .html(obj.east);
+                        $('#favorite').page();
+                        $('#west').page();
+                        $('#east').page(); 
                     }
                 }
             }
@@ -125,7 +144,7 @@ $("#refresh").click(function(){
 
 
 </script>
-<script src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.min.js"></script>
+<script src="js/jquery.mobile-1.0a4.1.min.js"></script>
 
 
 </head>

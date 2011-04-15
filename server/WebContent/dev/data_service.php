@@ -6,12 +6,14 @@ input: call using URL:  domain/data_service.php?action=action&sh=sh&st=st
     action - get_next_eta || get_all_eta
     sh - shuttle ID 
     rt - route ID
+    st - stop ID
 output: JSON formatted tracking information
 
 sh and st are optional and give you specific eta about that shuttle or stop
     action - get_next_eta || get_all_eta
     sh - shuttle ID 
-    rt - route ID
+    rt - route ID 
+    st - stop ID
 
 examples:
 abstractedsheep.com/~ashulgach/dataservice.php?action=get_next_eta      # gets the next eta for all stops
@@ -28,6 +30,7 @@ $data_service = new DataService();
 $action     = $_REQUEST['action'];
 $shuttle_id = $_REQUEST['sh'];
 $route_id    = $_REQUEST['rt'];
+$stop_id    = $_REQUEST['st'];
 
 switch ($action) {
     case 'get_next_eta' :
@@ -35,16 +38,20 @@ switch ($action) {
         DataServiceData::recordStats("Get Next ETA");
         exit;
     case 'get_all_eta' :
-        echo $data_service->getAllEta($route_id, $shuttle_id);
-         DataServiceData::recordStats("Get All ETA");
+        echo $data_service->getAllEta($route_id, $shuttle_id, $stop_id);
+        DataServiceData::recordStats("Get All ETA");
+        exit;
+    case 'get_all_extra_eta' :
+        echo $data_service->getAllExtraEta($route_id, $shuttle_id, $stop_id);
+        DataServiceData::recordStats("Get Extra ETA");
         exit;
     case 'get_shuttle_positions' :
         echo $data_service->getShuttlePositions();
-         DataServiceData::recordStats("Get Shuttle Positions");
+        DataServiceData::recordStats("Get Shuttle Positions");
         exit;
     case 'get_eta_and_positions' :
         echo $data_service->getNextEta($stop_id) . $data_service->getShuttlePositions();
-         DataServiceData::recordStats("Get Shuttle Positions and ETA");
+        DataServiceData::recordStats("Get Shuttle Positions and ETA");
         exit; 
     default :
         echo "Command not supported.";
