@@ -183,6 +183,7 @@ public class Shuttle {
 		Point p = null;
 		int count = 0;
 		ArrayList<Integer> timeList = new ArrayList<Integer>();
+		double roundTripTime = this.getFinder().getRoundTripDistance() / ((double) this.speed);
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
@@ -339,6 +340,15 @@ public class Shuttle {
 			closestRouteCoor = new Point();
 			indexOfClosestCoordinate = 0;
 			this.isBeforeRoutePoint = false;
+		}
+
+		public double getRoundTripDistance() {
+			for(Route route : routeList) {
+				if(route.getIdNum() == this.getRouteID())
+					return route.getRoundTripDistance();
+			}
+			
+			return 0;
 		}
 
 		public RouteFinder(ArrayList<Route> rt) {

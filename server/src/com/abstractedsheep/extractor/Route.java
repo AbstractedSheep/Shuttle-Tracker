@@ -17,6 +17,7 @@ public class Route {
 	private int idNum;
 	private String routeName;
 	private ArrayList<Point> coordinateList;
+	private double roundTripDistance;
 	/**
 	 * list of initial bearings for each route point.
 	 */
@@ -27,6 +28,7 @@ public class Route {
 		routeName = "West";
 		this.coordinateList = new ArrayList<Point>();
 		calculateBearings();
+		computeRoundTripDistance();
 	}
 
 	public Route(int idNum, String routeName) {
@@ -34,8 +36,33 @@ public class Route {
 		this.routeName = routeName;
 		this.coordinateList = new ArrayList<Point>();
 		calculateBearings();
+		computeRoundTripDistance();
 	}
 	
+	private void computeRoundTripDistance() {
+		Point p1 = null, p2 = null;
+		roundTripDistance = 0;
+		for(int i = 0; i < coordinateList.size(); i++) {
+			p1 = coordinateList.get(i);
+			p2 = (i == 0) ? coordinateList.get(coordinateList.size() - 1) : coordinateList.get(i - 1);
+			
+			this.roundTripDistance += this.calculateDistance(p2, p1);
+		}
+	}
+	
+	private double calculateDistance(Shuttle.Point p, Shuttle.Point curr) {
+		double earthRadius = 3956;
+		
+		double dlong = Math.toRadians((curr.getLon() - p.getLon()));
+	    double dlat = Math.toRadians((curr.getLat() - p.getLat()));
+	    double a = Math.pow(Math.sin(dlat/2.0), 2) +
+	    		   Math.cos(Math.toRadians(p.getLat())) * Math.cos(Math.toRadians(curr.getLon())) * Math.pow(Math.sin(dlong/2.0), 2);
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	    double d = earthRadius * c; 
+
+	    return d;
+	}
+
 	/**
 	 * calculates the initial bearing between a route position and the position
 	 * both before and after it.
@@ -101,6 +128,13 @@ public class Route {
 		array[0] = (bearing1 < 0) ? (bearing1 + 360) : bearing1;
 		array[1] = (bearing2 < 0) ? (bearing2 + 360) : bearing2;
 		return array;
+	}
+	
+	/**
+	 * returns route trip distance around the route.
+	 */
+	public double getRoundTripDistance() {
+		return this.roundTripDistance;
 	}
 
 	/**

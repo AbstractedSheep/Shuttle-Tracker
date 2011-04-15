@@ -68,16 +68,20 @@ public class JSONSender {
 					//to resolve this, insert the values into the DB as opposed to updating them.
 					if (updateCount == 0) {
 						String insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta, route)\n";
-						String time = writeFullList ? parseTimes(shuttle.getStopETA().get(stop)) :
-									  "" + shuttle.getStopETA().get(stop).get(0);
-						String interValues = "VALUES ("
-								+ shuttle.getShuttleId() + ",'"
-								+ shuttle.getStops().get(stop).getShortName()
-								+ "','"
-								+ time
-								+ "', '"
-								+ shuttle.getRouteId() + "')";
-						stmt.executeUpdate(insertHeader + interValues);
+						for(int k = 0; k < shuttle.getStopETA().size(); k++) {
+							String time = "" + shuttle.getStopETA().get(stop).get(k);
+							String interValues = "VALUES ("
+									+ (k + 1) + ",'"
+									+ shuttle.getShuttleId() + "','"
+									+ shuttle.getStops().get(stop).getShortName()
+									+ "','"
+									+ time
+									+ "', '"
+									+ shuttle.getRouteId() + "')";
+							stmt.executeUpdate(insertHeader + interValues);
+							if(writeFullList == false)
+								break;
+						}
 					}
 				}
 			}
@@ -125,7 +129,7 @@ public class JSONSender {
 			for(String name : shuttle.getStopETA().keySet()) {
 				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name).get(0)) + " " + (shuttle.getStopETA().get(name).get(0)) / (1000 * 60));
 				String str = parseTimes(shuttle.getStopETA().get(name));
-				System.out.println(str);
+				//System.out.println(str);
 			}
 		}
 	}
