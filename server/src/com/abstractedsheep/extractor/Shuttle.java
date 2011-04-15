@@ -496,18 +496,22 @@ public class Shuttle {
 				list = rt.getCoordinateList();
 				int index = indexOfClosestCoordinate + 1;
 				int count = 0;
-				distanceToTravel = calculateDistance(list.get(index - 1)) * distanceMultiplier;
-				for (count = 0; count <= list.size(); count++, index++) {
-					if (index >= list.size())
-						index = 1;
-					//calculate distance between the currently viewed point in the list
-					//and the stop's position.
-					distance = calculateDistance(list.get(index - 1), stop.getLocation());
-					
-					if (stop.isClosestRoutePoint(list.get(index - 1), this.getRouteID()))
-						return distanceToTravel + distance;
-					distanceToTravel += calculateDistance(list.get(index),
-							list.get(index - 1));
+				try{
+					distanceToTravel = calculateDistance(list.get(index - 1)) * distanceMultiplier;
+					for (count = 0; count <= list.size(); count++, index++) {
+						if (index >= list.size())
+							index = 1;
+						//calculate distance between the currently viewed point in the list
+						//and the stop's position.
+						distance = calculateDistance(list.get(index - 1), stop.getLocation());
+						
+						if (stop.isClosestRoutePoint(list.get(index - 1), this.getRouteID()))
+							return distanceToTravel + distance;
+						distanceToTravel += calculateDistance(list.get(index),
+								list.get(index - 1));
+					}
+				} catch(Exception ex) {
+					//not the right list
 				}
 			}
 			return distanceToTravel;

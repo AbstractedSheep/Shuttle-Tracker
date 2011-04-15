@@ -99,7 +99,7 @@ public class JSONSender {
 		for(int i : arrayList) {
 			str += i + ";";
 		}
-		return (str.substring(0, str.length() - 2));
+		return (str.substring(0, str.length() - 1));
 	}
 
 	/**
@@ -124,6 +124,8 @@ public class JSONSender {
 			System.out.println(shuttle.getName() + " " + shuttle.getShuttleId() + " " + shuttle.getRouteName() + " " + shuttle.getRouteId());
 			for(String name : shuttle.getStopETA().keySet()) {
 				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name).get(0)) + " " + (shuttle.getStopETA().get(name).get(0)) / (1000 * 60));
+				String str = parseTimes(shuttle.getStopETA().get(name));
+				System.out.println(str);
 			}
 		}
 	}
