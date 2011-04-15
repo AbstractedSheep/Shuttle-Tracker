@@ -193,7 +193,7 @@ public class Shuttle {
 				timeList.add(time + (720000 * i));
 			}
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
-			this.stopETA.put(name, timeList);
+			this.stopETA.put(name, new ArrayList<Integer>(timeList));
 			timeList.clear();
 			count++;
 		}
@@ -427,7 +427,11 @@ public class Shuttle {
 			index = defineLocationValues(distanceMap);
 			if(routeList.size() < 2) {
 				this.closestRouteCoor = locationMap.get(index);
-				this.indexOfClosestCoordinate = indexMap.get(index);
+				try{
+					this.indexOfClosestCoordinate = indexMap.get(index);
+				} catch(NullPointerException ex) {
+					System.err.println(index);
+				}
 				this.closestDistanceToRoute = distanceMap.get(index);
 				return;
 			}
@@ -473,7 +477,7 @@ public class Shuttle {
 			} catch(Exception ex) {
 				//ArrayOutofBoundsException might be thrown...
 				//return the first id if that is the case.
-				return 1;
+				return routeList.get(0).getIdNum();
 			}
 		}
 
