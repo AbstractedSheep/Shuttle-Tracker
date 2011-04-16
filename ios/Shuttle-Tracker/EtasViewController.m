@@ -8,6 +8,7 @@
 
 #import "EtasViewController.h"
 #import "EtaWrapper.h"
+#import "IASKSettingsReader.h"
 
 
 @implementation EtasViewController
@@ -21,7 +22,9 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        // Custom initialization
+        //	Take notice when a setting is changed
+		//	Note that this is not the only object that takes notice.
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
     }
     return self;
 }
@@ -129,15 +132,13 @@
     int counter = 0;
     
     //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
-    for (EtaWrapper *eta in dataManager.etas) {
-        if (eta.route == indexPath.section + 1) {
-            if (counter == indexPath.row) {
-                etaWrapped = eta;
-                break;
-            }
+    for (EtaWrapper *eta in [dataManager etasForRoute:indexPath.section + 1]) {
+		if (counter == indexPath.row) {
+			etaWrapped = eta;
+			break;
+		}
             
-            counter++;
-        }
+		counter++;
     }
     
     //  If the EtaWrapper was found, add the stop info and the ETA
@@ -191,5 +192,15 @@
      [detailViewController release];
      */
 }
+
+
+//	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
+//	Other objects may also do something when a setting is changed.
+- (void)settingChanged:(NSNotification *)notification {
+	if ([[notification object] isEqualToString:@"onlySoonestEtas"]) {
+        [self.tableView reloadData];
+    }
+}
+
 
 @end

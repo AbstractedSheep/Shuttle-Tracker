@@ -38,8 +38,6 @@
 @synthesize etas;
 @synthesize soonestEtas;
 @synthesize numberEtas;
-@synthesize eastEtas;
-@synthesize westEtas;
 @synthesize timeDisplayFormatter;
 
 
@@ -51,11 +49,9 @@
 		routeNames = [[NSArray alloc] initWithObjects:nil];
 		routeShortNames = [[NSArray alloc] initWithObjects:nil];
         
-        numberStops = [[NSMutableDictionary alloc] init];
-        
+		etas = [[NSArray alloc] initWithObjects:nil];
+		soonestEtas = [[NSMutableDictionary alloc] init];
 		numberEtas = [[NSMutableDictionary alloc] init];
-        eastEtas = 0;
-        westEtas = 0;
 		
 		timeDisplayFormatter = [[NSDateFormatter alloc] init];
 		
@@ -68,7 +64,7 @@
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
         
-        onlyNextEtas = [[defaults objectForKey:@"onlyNextEtas"] boolValue];
+        onlySoonestEtas = [[defaults objectForKey:@"onlySoonestEtas"] boolValue];
         
         NSURL *routesJsonUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
         routesStopsJsonParser = [[JSONParser alloc] initWithUrl:routesJsonUrl];
@@ -261,13 +257,10 @@
     etas = [etasJsonParser.etas copy];
     
     [soonestEtas release];
-    soonestEtas = [[NSMutableArray alloc] init];
+    soonestEtas = [[NSMutableDictionary alloc] init];
     
 	[numberEtas release];
 	numberEtas = [[NSMutableDictionary alloc] init];
-	
-    westEtas = 0;
-    eastEtas = 0;
     
     for (EtaWrapper *eta in etas) {
 		NSString *routeName = nil;
@@ -292,28 +285,48 @@
 			}
 		}
 		
+		EtaWrapper *oldSoonEta = nil;
         BOOL addThis = YES;
-        
-        //  Check to see if the current eta is the next one for its associated stop
-        for (EtaWrapper *soonEta in soonestEtas) {
-            if ([eta.stopName isEqualToString:soonEta.stopName] && eta.stopId == soonEta.stopId) {
-                if ([eta.eta timeIntervalSinceDate:soonEta.eta] > 0) {
-                    addThis = NO;
-                }
-            }
-        }
-        
-        if (addThis) {
-            [soonestEtas addObject:eta];
-        }
-        
-		if (eta.route == 1) {
-            westEtas++;
-        } else if (eta.route == 2) {
-            eastEtas++;
-        }
+        BOOL soonEtasChanged = NO;
+		
+		NSMutableArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:eta.route]];
+		
+		if (routeSoonestEtas) {
+			//  Check to see if the current eta is the next one for its associated stop
+			for (EtaWrapper *soonEta in routeSoonestEtas) {
+				if ([eta.stopName isEqualToString:soonEta.stopName] && eta.stopId == soonEta.stopId) {
+					if ([eta.eta timeIntervalSinceDate:soonEta.eta] > 0) {
+						addThis = NO;
+						break;
+					} else {
+						oldSoonEta = soonEta;
+						break;
+					}
+				}
+			}
+			
+			if (addThis) {
+				[routeSoonestEtas addObject:eta];
+				soonEtasChanged = YES;
+			}
+			
+			if (oldSoonEta) {
+				[routeSoonestEtas removeObject:oldSoonEta];
+				soonEtasChanged = YES;
+			}
+		} else {
+			routeSoonestEtas = [NSMutableArray arrayWithObjects:nil];
+			
+			[routeSoonestEtas addObject:eta];
+			soonEtasChanged = YES;
+		}
+		
+		if (soonEtasChanged) {
+			[soonestEtas setObject:routeSoonestEtas forKey:[NSNumber numberWithInt:eta.route]];
+		}
     }
     
+	/*
     for (EtaWrapper *eta in soonestEtas) {
         for (MapStop *stop in stops) {
             if (NULL) {
@@ -323,6 +336,7 @@
             }
         }
     }
+	 */
 	
 	[self genRouteNames];
 	[self genRouteShortNames];
@@ -399,8 +413,12 @@
 	if (route) {
 		NSNumber *noEtas = nil;
         
-        if (onlyNextEtas) {
-            //  Wabbajack
+        if (onlySoonestEtas) {
+            NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo + 1]];
+			
+			if (routeSoonestEtas) {
+				noEtas = [NSNumber numberWithInt:[routeSoonestEtas count]];
+			}
         } else {
             noEtas = [numberEtas objectForKey:route.name];
         }
@@ -412,8 +430,31 @@
 }
 
 
+- (NSArray *)etasForRoute:(int)routeNo {
+	if (onlySoonestEtas) {
+		NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
+		
+		if (routeSoonestEtas) {
+			return routeSoonestEtas;
+		} else {
+			return [NSArray arrayWithObjects:nil];
+		}
+	} else {
+		NSMutableArray *routeEtas = [[NSMutableArray alloc] init];
+		
+		//  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
+		for (EtaWrapper *eta in etas) {
+			if (eta.route == routeNo) {
+				[routeEtas addObject:eta];
+			}
+		}
+		
+		return routeEtas;
+	}
+}
+
 //	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
-//	Currently only handles the 12/24 hour time toggle.
+//	Currently handles the 12/24 hour time toggle and toggling all/only soonest ETAs.
 //	Other objects may also do something when a setting is changed.
 - (void)settingChanged:(NSNotification *)notification {
 	NSDictionary *info = [notification userInfo];
@@ -425,11 +466,11 @@
 		} else {
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
-	} else if ([[notification object] isEqualToString:@"onlyNextETAs"]) {
-        if ([[info objectForKey:@"onlyNextETAs"] boolValue]) {
-            onlyNextEtas = YES;
+	} else if ([[notification object] isEqualToString:@"onlySoonestEtas"]) {
+        if ([[info objectForKey:@"onlySoonestEtas"] boolValue]) {
+            onlySoonestEtas = YES;
         } else {
-            onlyNextEtas = NO;
+            onlySoonestEtas = NO;
         }
     }
 }

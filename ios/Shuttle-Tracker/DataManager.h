@@ -28,17 +28,14 @@
 	
 	NSArray *routeNames;
 	NSArray *routeShortNames;
-    NSMutableDictionary *numberStops;
     
     NSMutableArray *vehicles;
     
     NSArray *etas;
-    NSMutableArray *soonestEtas;
+    NSMutableDictionary *soonestEtas;
 	NSMutableDictionary *numberEtas;
-    NSInteger eastEtas;
-    NSInteger westEtas;
 	
-    BOOL onlyNextEtas;
+    BOOL onlySoonestEtas;
     
 	dispatch_queue_t loadVehicleJsonQueue;
 	dispatch_queue_t loadEtaJsonQueue;
@@ -50,10 +47,8 @@
 @property (nonatomic, retain) NSArray *stops;
 @property (nonatomic, retain) NSMutableArray *vehicles;
 @property (nonatomic, retain) NSArray *etas;
-@property (nonatomic, retain) NSArray *soonestEtas;
+@property (nonatomic, retain) NSDictionary *soonestEtas;
 @property (nonatomic, retain) NSDictionary *numberEtas;
-@property (nonatomic, readonly) NSInteger eastEtas;
-@property (nonatomic, readonly) NSInteger westEtas;
 @property (nonatomic, readonly) NSArray *routeNames;
 @property (nonatomic, readonly) NSArray *routeShortNames;
 @property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
@@ -65,6 +60,7 @@
 - (void)updateData;
 - (int)numberRoutes;
 - (int)numberEtasForRoute:(int)routeNo;
+- (NSArray *)etasForRoute:(int)routeNo;
 - (void)settingChanged:(NSNotification *)notification;
 
 
