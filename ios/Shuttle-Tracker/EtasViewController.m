@@ -24,7 +24,10 @@
     if (self) {
         //	Take notice when a setting is changed
 		//	Note that this is not the only object that takes notice.
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(settingChanged:) 
+													 name:kIASKAppSettingChanged 
+												   object:nil];
     }
     return self;
 }
@@ -54,7 +57,10 @@
 {
     [super viewDidLoad];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self.tableView selector:@selector(reloadData) name:kDMEtasUpdated object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self.tableView 
+											 selector:@selector(reloadData) 
+												 name:kDMEtasUpdated 
+											   object:nil];
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -68,32 +74,6 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark - Table view data source
@@ -122,8 +102,10 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-		//	Init the cell such that it has main text, black and left aligned, and secondary text, blue and right aligned
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier] autorelease];
+		//	Init the cell such that it has main text, black and left aligned, and secondary text,
+		//	blue and right aligned
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
+									   reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Configure the cell...
@@ -166,16 +148,6 @@
 	} else {
 		return @"Unknown";
 	}
-	
-	/*
-    if (section == 0)
-        return @"West Route";
-    else if (section == 1)
-        return @"East Route";
-    else
-        return @"Unknown";
-	*/
-    
 }
 
 

@@ -6,17 +6,17 @@
 	<array>
 		<dict>
 			<key>Title</key>
-			<string>Display</string>
+			<string>Estimated Times of Arrival</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<false/>
+			<true/>
 			<key>Key</key>
-			<string>use24Time</string>
+			<string>onlySoonestEtas</string>
 			<key>Title</key>
-			<string>Use 24 Hour Time</string>
+			<string>Hide Later ETAs</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
@@ -38,7 +38,7 @@
 		</dict>
 		<dict>
 			<key>Title</key>
-			<string>ETAs</string>
+			<string>Display</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
@@ -46,9 +46,9 @@
 			<key>DefaultValue</key>
 			<false/>
 			<key>Key</key>
-			<string>onlyNextEtas</string>
+			<string>use24Time</string>
 			<key>Title</key>
-			<string>Show Later ETAs</string>
+			<string>Use 24 Hour Time</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
