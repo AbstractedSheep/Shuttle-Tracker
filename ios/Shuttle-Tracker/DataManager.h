@@ -33,6 +33,8 @@
     
     NSArray *etas;
     NSMutableDictionary *soonestEtas;
+	NSMutableArray *favoriteStopNames;
+	NSMutableArray *favoriteEtas;
 	NSMutableDictionary *numberEtas;
 	
     BOOL onlySoonestEtas;
@@ -48,6 +50,7 @@
 @property (nonatomic, retain) NSMutableArray *vehicles;
 @property (nonatomic, retain) NSArray *etas;
 @property (nonatomic, retain) NSDictionary *soonestEtas;
+@property (nonatomic, retain) NSArray *favoriteEtas;
 @property (nonatomic, retain) NSDictionary *numberEtas;
 @property (nonatomic, readonly) NSArray *routeNames;
 @property (nonatomic, readonly) NSArray *routeShortNames;
@@ -59,9 +62,9 @@
 - (void)loadRoutesAndStops;
 - (void)updateData;
 - (int)numberRoutes;
-- (int)numberEtasForRoute:(int)routeNo;
-- (NSArray *)etasForRoute:(int)routeNo;
-- (void)settingChanged:(NSNotification *)notification;
+- (int)numberEtasForSection:(int)sectionNo;
+- (NSArray *)etasForSection:(int)sectionNo;
+- (void)selectEtaAtIndexPath:(NSIndexPath *)indexPath;
 
 
 @end

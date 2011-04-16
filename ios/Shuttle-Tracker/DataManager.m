@@ -24,6 +24,7 @@
 - (void)etaJsonRefresh;
 - (void)genRouteNames;
 - (void)genRouteShortNames;
+- (void)settingChanged:(NSNotification *)notification;
 
 @end
 
@@ -37,6 +38,7 @@
 @synthesize vehicles;
 @synthesize etas;
 @synthesize soonestEtas;
+@synthesize favoriteEtas;
 @synthesize numberEtas;
 @synthesize timeDisplayFormatter;
 
@@ -51,6 +53,8 @@
         
 		etas = [[NSArray alloc] initWithObjects:nil];
 		soonestEtas = [[NSMutableDictionary alloc] init];
+		favoriteStopNames = [[NSMutableArray alloc] init];
+		favoriteEtas = [[NSMutableArray alloc] init];
 		numberEtas = [[NSMutableDictionary alloc] init];
 		
 		timeDisplayFormatter = [[NSDateFormatter alloc] init];
@@ -401,9 +405,25 @@
 }
 
 
-//	Get the number of etas for the routeNo'th route.
-//	routeNo is expected to be 0-indexed in the method call.
-- (int)numberEtasForRoute:(int)routeNo {
+//	Get the number of etas for the route corresponding to this section,
+//	or the favorites if it was the favorites section.
+//	sectionNo is expected to be 0-indexed in the method call.
+- (int)numberEtasForSection:(int)sectionNo {
+	int routeNo;
+	
+	//	If there are favorite etas, then adjust the route number.
+	//	If the section is the favorites section, return the number of
+	//	stops favorited.
+	if ([favoriteStopNames count]) {
+		routeNo = sectionNo - 1;
+		
+		if (sectionNo == 0) {
+			return [favoriteStopNames count];
+		}
+	} else {
+		routeNo = sectionNo;
+	}
+	
 	if (!routes || routeNo > [routes count]) {
 		return 0;
 	}
@@ -430,7 +450,33 @@
 }
 
 
-- (NSArray *)etasForRoute:(int)routeNo {
+- (NSArray *)etasForSection:(int)sectionNo {
+	int routeNo;
+	
+	//	If there are favorite etas, then adjust the route number.
+	//	If the section is the favorites section, return the etas for
+	//	the favorite stops
+	if ([favoriteStopNames count]) {
+		routeNo = sectionNo - 1;
+		
+		if (sectionNo == 0) {
+			[favoriteEtas release];
+			favoriteEtas = [[NSMutableArray alloc] init];
+			
+			for (EtaWrapper *etaFavorite in favoriteStopNames) {
+				for (EtaWrapper *eta in soonestEtas) {
+					if ([etaFavorite.stopName isEqualToString:eta.stopName] && etaFavorite.route == eta.route) {
+						[favoriteEtas addObject:eta];
+					}
+				}
+			}
+			
+			return favoriteEtas;
+		}
+	} else {
+		routeNo = sectionNo;
+	}
+	
 	if (onlySoonestEtas) {
 		NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
 		
@@ -452,6 +498,53 @@
 		return routeEtas;
 	}
 }
+
+
+//	The user selected an ETA, so add it to the favorites if it is not there yet,
+//	or remove it from the favorites if it was selected in the favorites section
+- (void)selectEtaAtIndexPath:(NSIndexPath *)indexPath {
+	//	If the user has favorite stops, check if a favorite stop was selected,
+	//	in section 0.  If so, remove the stop as a favorite.  Otherwise, add the stop
+	//	as a favorite.
+	if ([favoriteStopNames count] && !indexPath.section) {
+		EtaWrapper *etaToUnfavorite = [favoriteEtas objectAtIndex:indexPath.row];
+		
+		//	Remove the eta from the list of current displayed etas
+		[favoriteEtas removeObject:etaToUnfavorite];
+		
+		BOOL nameFound = NO;
+		
+		//	Find and remove the eta from the list used to track favorited etas
+		for (EtaWrapper *eta in favoriteStopNames) {
+			if ([eta.stopName isEqualToString:etaToUnfavorite.stopName] && eta.route == etaToUnfavorite.route) {
+				etaToUnfavorite = eta;
+				nameFound = YES;
+				break;
+			}
+		}
+		
+		if (nameFound) {
+			[favoriteStopNames removeObject:etaToUnfavorite];
+		}
+	} else {
+		EtaWrapper *etaToFavorite = [[self etasForSection:indexPath.section] objectAtIndex:indexPath.row];
+		
+		//	Check if the selected eta already has a corresponding entry in the list of
+		//	favorite etas.  If it doesn, nil it out so that it doesn't get added again.
+		for (EtaWrapper *eta in favoriteStopNames) {
+			if ([eta.stopName isEqualToString:etaToFavorite.stopName] && eta.route == etaToFavorite.route) {
+				etaToFavorite = nil;
+				break;
+			}
+		}
+		
+		if (etaToFavorite) {
+			[favoriteEtas addObject:etaToFavorite];
+			[favoriteStopNames addObject:etaToFavorite];
+		}
+	}
+}
+
 
 //	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
 //	Currently handles the 12/24 hour time toggle and toggling all/only soonest ETAs.

@@ -92,7 +92,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-	return [dataManager numberEtasForRoute:section];
+	return [dataManager numberEtasForSection:section];
     
 }
 
@@ -114,7 +114,7 @@
     int counter = 0;
     
     //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
-    for (EtaWrapper *eta in [dataManager etasForRoute:indexPath.section + 1]) {
+    for (EtaWrapper *eta in [dataManager etasForSection:indexPath.section + 1]) {
 		if (counter == indexPath.row) {
 			etaWrapped = eta;
 			break;
@@ -131,9 +131,6 @@
 		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
 		cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
     }
-
-	//	The cell should not change in appearance when selected
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     return cell;
 }
@@ -155,14 +152,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+	[dataManager selectEtaAtIndexPath:indexPath];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
