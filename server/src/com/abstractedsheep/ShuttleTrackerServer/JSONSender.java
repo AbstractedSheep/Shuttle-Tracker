@@ -31,7 +31,7 @@ public class JSONSender {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public static void connectToDatabase() throws InstantiationException, IllegalAccessException,
+	public static void connectToDatabase(String tableName) throws InstantiationException, IllegalAccessException,
 											ClassNotFoundException, IOException, SQLException {
 		String driver = "com.mysql.jdbc.Driver";
 		String[] args = null;
@@ -40,7 +40,7 @@ public class JSONSender {
 		args = getArgumentsFromPropertiesFile("sts.properties");
 		conn = DriverManager.getConnection(args[0], args[1], args[2]);
 		
-		deleteTable("shuttle_eta");
+		deleteTable(tableName);
 	}
 	
 	/**
@@ -50,34 +50,55 @@ public class JSONSender {
 	 */
 	public static void saveToDatabase(HashSet<Shuttle> shuttleList, String tableName, boolean writeFullList) {
 		try {
-			connectToDatabase();
-			System.out.println("Connected to database");
+			connectToDatabase(tableName);
+			System.out.println("Connected to database table:" + tableName);
 			Statement stmt = conn.createStatement();
 			for (Shuttle shuttle : shuttleList) {
 				for (String stop : shuttle.getStopETA().keySet()) {
 					//update shuttle_eta table values in DB
-					String sql = "UPDATE " + tableName + " SET eta = '"
+					String sql = "";
+					if(!writeFullList) {
+						sql = "UPDATE " + tableName + " SET eta = '"
 							+ shuttle.getStopETA().get(stop)
 							+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
 							+ " AND stop_id = '"
 							+ shuttle.getStops().get(stop).getShortName() + "' AND route = '" +
 							shuttle.getRouteId() + "'";
+					} else {
+						for(int k = 0; k < shuttle.getStopETA().get(stop).size(); k++) {
+							sql = "UPDATE " + tableName + " SET eta = '"
+								+ shuttle.getStopETA().get(stop).get(k)
+								+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
+								+ " AND stop_id = '"
+								+ shuttle.getStops().get(stop).getShortName() + "' AND route = '"
+								+ shuttle.getRouteId() + "' AND eta_id = '"
+								+ (k + 1) + "'";
+						}
+					}
 					int updateCount = stmt.executeUpdate(sql);
 					
 					//if updateCount = 0, then the shuttle does not exist in the database.
 					//to resolve this, insert the values into the DB as opposed to updating them.
 					if (updateCount == 0) {
-						String insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta, route)\n";
-						String time = writeFullList ? parseTimes(shuttle.getStopETA().get(stop)) :
-									  "" + shuttle.getStopETA().get(stop).get(0);
-						String interValues = "VALUES ("
-								+ shuttle.getShuttleId() + ",'"
-								+ shuttle.getStops().get(stop).getShortName()
-								+ "','"
-								+ time
-								+ "', '"
-								+ shuttle.getRouteId() + "')";
-						stmt.executeUpdate(insertHeader + interValues);
+						String insertHeader = "";
+						if(!writeFullList)
+							insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta, route)\n";
+						else
+							insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta_id, eta, route)\n";
+						for(int k = 0; k < shuttle.getStopETA().get(stop).size(); k++) {
+							String time = "" + shuttle.getStopETA().get(stop).get(k);
+							String interValues = "VALUES ("
+									+ shuttle.getShuttleId() + ",'"
+									+ shuttle.getStops().get(stop).getShortName()
+									+ "','"
+									+ ((writeFullList) ? (k + 1) + "','" : "") 
+									+ time
+									+ "', '"
+									+ shuttle.getRouteId() + "')";
+							stmt.executeUpdate(insertHeader + interValues);
+							if(writeFullList == false)
+								break;
+						}
 					}
 				}
 			}
@@ -99,7 +120,7 @@ public class JSONSender {
 		for(int i : arrayList) {
 			str += i + ";";
 		}
-		return (str.substring(0, str.length() - 2));
+		return (str.substring(0, str.length() - 1));
 	}
 
 	/**
@@ -124,6 +145,8 @@ public class JSONSender {
 			System.out.println(shuttle.getName() + " " + shuttle.getShuttleId() + " " + shuttle.getRouteName() + " " + shuttle.getRouteId());
 			for(String name : shuttle.getStopETA().keySet()) {
 				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name).get(0)) + " " + (shuttle.getStopETA().get(name).get(0)) / (1000 * 60));
+				String str = parseTimes(shuttle.getStopETA().get(name));
+				//System.out.println(str);
 			}
 		}
 	}

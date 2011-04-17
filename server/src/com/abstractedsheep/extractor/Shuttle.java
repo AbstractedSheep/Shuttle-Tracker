@@ -183,6 +183,7 @@ public class Shuttle {
 		Point p = null;
 		int count = 0;
 		ArrayList<Integer> timeList = new ArrayList<Integer>();
+		double roundTripTime = this.getFinder().getRoundTripDistance() / ((double) this.speed);
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
@@ -193,7 +194,7 @@ public class Shuttle {
 				timeList.add(time + (720000 * i));
 			}
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
-			this.stopETA.put(name, timeList);
+			this.stopETA.put(name, new ArrayList<Integer>(timeList));
 			timeList.clear();
 			count++;
 		}
@@ -341,6 +342,15 @@ public class Shuttle {
 			this.isBeforeRoutePoint = false;
 		}
 
+		public double getRoundTripDistance() {
+			for(Route route : routeList) {
+				if(route.getIdNum() == this.getRouteID())
+					return route.getRoundTripDistance();
+			}
+			
+			return 0;
+		}
+
 		public RouteFinder(ArrayList<Route> rt) {
 			routeList = new ArrayList<Route>(rt);
 			this.locList = new ArrayList<Point>();
@@ -427,7 +437,11 @@ public class Shuttle {
 			index = defineLocationValues(distanceMap);
 			if(routeList.size() < 2) {
 				this.closestRouteCoor = locationMap.get(index);
-				this.indexOfClosestCoordinate = indexMap.get(index);
+				try{
+					this.indexOfClosestCoordinate = indexMap.get(index);
+				} catch(NullPointerException ex) {
+					System.err.println(index);
+				}
 				this.closestDistanceToRoute = distanceMap.get(index);
 				return;
 			}
@@ -473,7 +487,7 @@ public class Shuttle {
 			} catch(Exception ex) {
 				//ArrayOutofBoundsException might be thrown...
 				//return the first id if that is the case.
-				return 1;
+				return routeList.get(0).getIdNum();
 			}
 		}
 
@@ -492,18 +506,22 @@ public class Shuttle {
 				list = rt.getCoordinateList();
 				int index = indexOfClosestCoordinate + 1;
 				int count = 0;
-				distanceToTravel = calculateDistance(list.get(index - 1)) * distanceMultiplier;
-				for (count = 0; count <= list.size(); count++, index++) {
-					if (index >= list.size())
-						index = 1;
-					//calculate distance between the currently viewed point in the list
-					//and the stop's position.
-					distance = calculateDistance(list.get(index - 1), stop.getLocation());
-					
-					if (stop.isClosestRoutePoint(list.get(index - 1), this.getRouteID()))
-						return distanceToTravel + distance;
-					distanceToTravel += calculateDistance(list.get(index),
-							list.get(index - 1));
+				try{
+					distanceToTravel = calculateDistance(list.get(index - 1)) * distanceMultiplier;
+					for (count = 0; count <= list.size(); count++, index++) {
+						if (index >= list.size())
+							index = 1;
+						//calculate distance between the currently viewed point in the list
+						//and the stop's position.
+						distance = calculateDistance(list.get(index - 1), stop.getLocation());
+						
+						if (stop.isClosestRoutePoint(list.get(index - 1), this.getRouteID()))
+							return distanceToTravel + distance;
+						distanceToTravel += calculateDistance(list.get(index),
+								list.get(index - 1));
+					}
+				} catch(Exception ex) {
+					//not the right list
 				}
 			}
 			return distanceToTravel;
