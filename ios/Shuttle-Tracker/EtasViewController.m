@@ -83,7 +83,7 @@
     // Return the number of sections.
     //  One section for each route
 	if (dataManager) {
-		return [dataManager numberRoutes];
+		return [dataManager numberSections];
 	} else {
 		return 0;
 	}
@@ -114,7 +114,7 @@
     int counter = 0;
     
     //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
-    for (EtaWrapper *eta in [dataManager etasForSection:indexPath.section + 1]) {
+    for (EtaWrapper *eta in [dataManager etasForSection:indexPath.section]) {
 		if (counter == indexPath.row) {
 			etaWrapped = eta;
 			break;
@@ -138,10 +138,10 @@
 
 //	Use the short names of the routes, since they display better than the full names
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	NSArray *routeShortNames = dataManager.routeShortNames;
+	NSArray *sectionHeaders = [dataManager sectionHeaders];;
 	
-	if (routeShortNames && [routeShortNames count] > section) {
-		return [routeShortNames objectAtIndex:section];
+	if (sectionHeaders && [sectionHeaders count] > section) {
+		return [sectionHeaders objectAtIndex:section];
 	} else {
 		return @"Unknown";
 	}
@@ -154,6 +154,7 @@
 {
 	[dataManager selectEtaAtIndexPath:indexPath];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+	[self.tableView reloadData];
 }
 
 

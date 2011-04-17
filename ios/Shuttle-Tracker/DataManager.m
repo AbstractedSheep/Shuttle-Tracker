@@ -159,11 +159,43 @@
 
 
 - (void)routeJsonLoaded {
+	EtaWrapper *soonestEtaWrapper = nil;
+	
+	
     routes = routesStopsJsonParser.routes;
     [routes retain];
     
     stops = routesStopsJsonParser.stops;
     [stops retain];
+	
+	
+	//	For each route, create an array to hold its soonest ETAs
+	for (MapRoute *route in routes) {
+		NSMutableArray *routeArray = [[NSMutableArray alloc] init];
+		[soonestEtas setObject:routeArray 
+						forKey:[NSNumber numberWithInt:[route.idTag intValue]]];
+	}
+	
+	//	For each stop, create a dummy ETA for each route it is on.
+	//	Add the dummy ETAs to the soonest ETAs array for the
+	//	corresponding route
+	for (MapStop *stop in stops) {
+		for (NSString *routeId in stop.routeIds) {
+			soonestEtaWrapper = [[EtaWrapper alloc] init];
+			soonestEtaWrapper.stopName = stop.name;
+			soonestEtaWrapper.stopId = stop.idTag;
+			
+			//	Get the array of soonest ETAs for the correct route.
+			NSMutableArray *routeSoonestEtas = [soonestEtas objectForKey:
+												[NSNumber numberWithInt:[routeId intValue]]];
+			
+			if (routeSoonestEtas) {
+				[routeSoonestEtas addObject:soonestEtaWrapper];
+				[soonestEtas setObject:routeSoonestEtas 
+								forKey:[NSNumber numberWithInt:[routeId intValue]]];
+			}
+		}
+	}
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
 }
@@ -266,8 +298,8 @@
     [etas release];
     etas = [etasJsonParser.etas copy];
     
-    [soonestEtas release];
-    soonestEtas = [[NSMutableDictionary alloc] init];
+//    [soonestEtas release];
+//    soonestEtas = [[NSMutableDictionary alloc] init];
     
 	[numberEtas release];
 	numberEtas = [[NSMutableDictionary alloc] init];
@@ -295,8 +327,8 @@
 			}
 		}
 		
-		EtaWrapper *oldSoonEta = nil;
-        BOOL addThis = YES;
+		EtaWrapper *newSoonEta = nil;
+        BOOL setThis = YES;
         BOOL soonEtasChanged = NO;
 		
 		NSMutableArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:eta.route]];
@@ -306,31 +338,34 @@
 			for (EtaWrapper *soonEta in routeSoonestEtas) {
 				if ([eta.stopName isEqualToString:soonEta.stopName] && eta.stopId == soonEta.stopId) {
 					if ([eta.eta timeIntervalSinceDate:soonEta.eta] > 0) {
-						addThis = NO;
-						break;
+						setThis = NO;
 					} else {
-						oldSoonEta = soonEta;
-						break;
+						newSoonEta = soonEta;
 					}
+					
+					break;
 				}
 			}
 			
-			if (addThis) {
-				[routeSoonestEtas addObject:eta];
-				soonEtasChanged = YES;
-			}
-			
-			if (oldSoonEta) {
-				[routeSoonestEtas removeObject:oldSoonEta];
+			if (setThis) {
+				for (EtaWrapper *eta in routeSoonestEtas) {
+					if ([eta.stopId isEqualToString:newSoonEta.stopId] && eta.route == newSoonEta.route) {
+						eta.eta = newSoonEta.eta;
+					}
+				}
+				
 				soonEtasChanged = YES;
 			}
 		} else {
+			NSLog(@"Error: Soonest ETAs array not created for route: %i", eta.route);
+			
 			routeSoonestEtas = [NSMutableArray arrayWithObjects:nil];
 			
 			[routeSoonestEtas addObject:eta];
 			soonEtasChanged = YES;
 		}
 		
+		//	TODO: Fix/remove/???
 		if (soonEtasChanged) {
 			[soonestEtas setObject:routeSoonestEtas forKey:[NSNumber numberWithInt:eta.route]];
 		}
@@ -353,8 +388,12 @@
 }
 
 
-- (int)numberRoutes {
-	return [self.routeNames count];
+- (int)numberSections {
+	if ([favoriteStopNames count]) {
+		return [self.routeNames count] + 1;
+	} else {
+		return [self.routeNames count];
+	}
 }
 
 
@@ -421,26 +460,26 @@
 	//	If the section is the favorites section, return the number of
 	//	stops favorited.
 	if ([favoriteStopNames count]) {
-		routeNo = sectionNo - 1;
+		routeNo = sectionNo;
 		
 		if (sectionNo == 0) {
 			return [favoriteStopNames count];
 		}
 	} else {
-		routeNo = sectionNo;
+		routeNo = sectionNo + 1;
 	}
 	
 	if (!routes || routeNo > [routes count]) {
 		return 0;
 	}
 	
-	MapRoute *route = [routes objectAtIndex:routeNo];
+	MapRoute *route = [routes objectAtIndex:routeNo - 1];
 	
 	if (route) {
 		NSNumber *noEtas = nil;
         
         if (onlySoonestEtas) {
-            NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo + 1]];
+            NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
 			
 			if (routeSoonestEtas) {
 				noEtas = [NSNumber numberWithInt:[routeSoonestEtas count]];
@@ -456,6 +495,16 @@
 }
 
 
+- (NSArray *)sectionHeaders {
+	if ([favoriteStopNames count]) {
+		return [[NSArray arrayWithObject:@"Favorites"] arrayByAddingObjectsFromArray:[self routeShortNames]];
+	} else {
+		return [self routeShortNames];
+	}
+}
+
+
+//	sectionNo is 0-indexed, but route numbers should be 1-indexed
 - (NSArray *)etasForSection:(int)sectionNo {
 	int routeNo;
 	
@@ -463,14 +512,14 @@
 	//	If the section is the favorites section, return the etas for
 	//	the favorite stops
 	if ([favoriteStopNames count]) {
-		routeNo = sectionNo - 1;
+		routeNo = sectionNo;
 		
 		if (sectionNo == 0) {
 			[favoriteEtas release];
 			favoriteEtas = [[NSMutableArray alloc] init];
 			
 			for (EtaWrapper *etaFavorite in favoriteStopNames) {
-				for (EtaWrapper *eta in soonestEtas) {
+				for (EtaWrapper *eta in [soonestEtas objectForKey:[NSNumber numberWithInt:etaFavorite.route]]) {
 					if ([etaFavorite.stopName isEqualToString:eta.stopName] && etaFavorite.route == eta.route) {
 						[favoriteEtas addObject:eta];
 					}
@@ -480,7 +529,7 @@
 			return favoriteEtas;
 		}
 	} else {
-		routeNo = sectionNo;
+		routeNo = sectionNo + 1;
 	}
 	
 	if (onlySoonestEtas) {
@@ -513,11 +562,11 @@
 	//	in section 0.  If so, remove the stop as a favorite.  Otherwise, add the stop
 	//	as a favorite.
 	if ([favoriteStopNames count] && !indexPath.section) {
-		EtaWrapper *etaToUnfavorite = [favoriteEtas objectAtIndex:indexPath.row];
+		EtaWrapper *etaToUnfavorite = [favoriteStopNames objectAtIndex:indexPath.row];
 		
 		//	Remove the eta from the list of current displayed etas
-		[favoriteEtas removeObject:etaToUnfavorite];
-		
+		[favoriteStopNames removeObject:etaToUnfavorite];
+		/*
 		BOOL nameFound = NO;
 		
 		//	Find and remove the eta from the list used to track favorited etas
@@ -532,8 +581,15 @@
 		if (nameFound) {
 			[favoriteStopNames removeObject:etaToUnfavorite];
 		}
+		 */
 	} else {
-		EtaWrapper *etaToFavorite = [[self etasForSection:indexPath.section] objectAtIndex:indexPath.row];
+		NSArray *sectionEtas = [self etasForSection:indexPath.section];
+		
+		if (indexPath.row >= [sectionEtas count]) {
+			return;
+		}
+		
+		EtaWrapper *etaToFavorite = [sectionEtas objectAtIndex:indexPath.row];
 		
 		//	Check if the selected eta already has a corresponding entry in the list of
 		//	favorite etas.  If it doesn, nil it out so that it doesn't get added again.
@@ -545,7 +601,6 @@
 		}
 		
 		if (etaToFavorite) {
-			[favoriteEtas addObject:etaToFavorite];
 			[favoriteStopNames addObject:etaToFavorite];
 		}
 	}
