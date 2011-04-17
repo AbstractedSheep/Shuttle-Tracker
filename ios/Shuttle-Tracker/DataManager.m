@@ -112,6 +112,12 @@
     if (stops) {
         [stops release];
     }
+	if (favoriteStopNames) {
+		[favoriteStopNames release];
+	}
+	if (favoriteEtas) {
+		[favoriteEtas release];
+	}
     
     [vehicles release];
     
