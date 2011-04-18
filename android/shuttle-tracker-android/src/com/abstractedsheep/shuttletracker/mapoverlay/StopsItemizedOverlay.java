@@ -25,8 +25,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -34,6 +36,7 @@ import android.graphics.drawable.Drawable;
 import com.abstractedsheep.shuttletracker.TrackerPreferences;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
+import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
@@ -42,18 +45,19 @@ import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 
 public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
-
 	private ArrayList<Stop> stops = new ArrayList<Stop>();
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
 	private SimpleDateFormat formatter12 = new SimpleDateFormat("hh:mm a");
 	private SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
 	private SharedPreferences prefs;
+	private DatabaseHelper db;
 	
 	
-	public StopsItemizedOverlay(Drawable defaultMarker, MapView mapView, SharedPreferences prefs) {
+	public StopsItemizedOverlay(Context context, Drawable defaultMarker, MapView mapView, SharedPreferences prefs) {
 		super(boundCenter(defaultMarker), mapView);
 		this.prefs = prefs;
 		populate();
+		db = new DatabaseHelper(context);
 	}
 
 	public synchronized void addAllStops(Collection<? extends Stop> stops) {
@@ -101,11 +105,13 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		long now = (new Date()).getTime();
 		
 		for (Stop.Route r : s.getRoutes()) {
-			eta = etas.get(s.getShort_name() + r.getId());
-			if (eta != null) {
-				arrival = new Date(now + eta.getEta());
-				snippet += (!snippet.equals("") ? "\n" : "") + r.getName() + ": " + (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false) ? 
-						formatter24.format(arrival) : formatter12.format(arrival));
+			if (db.isRouteVisible(r.getId())) {
+				eta = etas.get(s.getShort_name() + r.getId());
+				if (eta != null) {
+					arrival = new Date(now + eta.getEta());
+					snippet += (!snippet.equals("") ? "\n" : "") + r.getName() + ": " + (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false) ? 
+							formatter24.format(arrival) : formatter12.format(arrival));
+				}
 			}
 		}
 		

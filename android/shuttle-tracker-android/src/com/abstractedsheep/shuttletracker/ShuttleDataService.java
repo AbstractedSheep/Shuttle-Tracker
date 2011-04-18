@@ -45,6 +45,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	private ObjectMapper mapper = new ObjectMapper();
@@ -88,7 +89,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
      * @param generic The class type of the JSON in the form of a Java Bean.
      * @return The parsed JSON in a new instance of the Java Bean.
      */
-    private <T> T parseJson(String url, Class<T> generic) {		
+    public <T> T parseJson(String url, Class<T> generic) {		
     	T parsedClass = null;
 	
 		try {
@@ -98,8 +99,12 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 			parsedClass = mapper.readValue(jsonConnection.getInputStream(), generic);
 			informedNoConnection = false;
 		} catch (JsonParseException e) {
+			Log.w("Tracker", "Error Parsing URL: " + url);
+			Log.w("Tracker", "Data type: " + generic.getName());
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
+			Log.w("Tracker", "Error Parsing URL: " + url);
+			Log.w("Tracker", "Data type: " + generic.getName());
 			e.printStackTrace();
 		} catch (IOException e) {
 			if (!informedNoConnection) {
@@ -163,6 +168,12 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 			}
 		}
 	};
+	
+	public void reloadFavoriteRoutes() {
+		DatabaseHelper db = new DatabaseHelper(ctx);
+		routes = db.getRoutes();
+		db.close();
+	}
 	
 	private synchronized void notifyShuttlesUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
 		for (IShuttleServiceCallback c : callbacks) {

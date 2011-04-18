@@ -50,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		public static final String colName="name";
 		public static final String colColor="color";
 		public static final String colWidth="width";
+		public static final String colVisible="visible";
 	}
 	
 	public static class RoutePointsTable {
@@ -69,7 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	public DatabaseHelper(Context context) {
-		super(context, dbName, null, 1);
+		super(context, dbName, null, 2);
 	}
 
 	@Override
@@ -85,7 +86,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			" " + RoutesTable.colId + " INTEGER PRIMARY KEY," +
 			" " + RoutesTable.colName + " TEXT," +
 			" " + RoutesTable.colColor + " TEXT," +
-			" " + RoutesTable.colWidth + " INTEGER" +
+			" " + RoutesTable.colWidth + " INTEGER," +
+			" " + RoutesTable.colVisible + " INTEGER" +
 		");");
 
 		db.execSQL("CREATE TABLE " + RoutePointsTable.tableName + "(" +
@@ -105,12 +107,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		db.execSQL("DROP TABLE IF EXISTS "+StopsTable.tableName);
-		db.execSQL("DROP TABLE IF EXISTS "+RoutesTable.tableName);
-		db.execSQL("DROP TABLE IF EXISTS "+RoutePointsTable.tableName);
-		db.execSQL("DROP TABLE IF EXISTS "+StopsOnRoutesTable.tableName);
+		if (oldVersion <= 1) {
+			db.execSQL("ALTER TABLE "+RoutesTable.tableName + " ADD " + RoutesTable.colVisible + " INTEGER");
+			ContentValues cv = new ContentValues();
+			cv.put(RoutesTable.colVisible, 1);
+			db.update(RoutesTable.tableName, cv, null, null);
+			
+			cv = new ContentValues();
+			cv.put(RoutesTable.colName, "East Campus");
+			db.update(RoutesTable.tableName, cv, RoutesTable.colName + "='East Route'", null);
+		}
 		
-		onCreate(db);
+		onUpgrade(db, oldVersion, newVersion);
 	}
 	
 	public void putRoutes(RoutesJson routes) {
@@ -125,6 +133,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			cv.put(RoutesTable.colId, r.getId());
 			cv.put(RoutesTable.colColor, r.getColor());
 			cv.put(RoutesTable.colWidth, r.getWidth());
+			cv.put(RoutesTable.colVisible, r.getVisible() ? 1 : 0);
 			db.insert(RoutesTable.tableName, RoutesTable.colName, cv);
 			
 			for (Coord c : r.getCoords()) {
@@ -153,6 +162,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 		}
 		
+		db.close();
+	}
+	
+	public void setRouteVisibility(int routeId, boolean visible) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(RoutesTable.colVisible, visible ? 1 : 0);
+		db.update(RoutesTable.tableName, cv, RoutesTable.colId + "=" + routeId, null);
 		db.close();
 	}
 	
@@ -186,6 +203,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			r.setName(routes.getString(routes.getColumnIndex(RoutesTable.colName)));
 			r.setId(routes.getInt(routes.getColumnIndex(RoutesTable.colId)));
 			r.setWidth(routes.getInt(routes.getColumnIndex(RoutesTable.colWidth)));
+			r.setVisible(routes.getInt(routes.getColumnIndex(RoutesTable.colVisible)) == 0 ? false : true);
 			
 			ArrayList<Coord> pointsArr = new ArrayList<RoutesJson.Route.Coord>();
 			Cursor points = getRoutePoints(r.getId());
@@ -243,15 +261,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	private Cursor getRoutesByStop(String stopId) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		//Cursor cur = db.rawQuery("SELECT " + RoutesTable.tableName + "." + RoutesTable.colId + ", " + RoutesTable.tableName + "." + RoutesTable.colName +
-		//		" FROM (" + StopsOnRoutesTable.tableName + " JOIN " + RoutesTable.tableName + " ON " +
-		//		StopsOnRoutesTable.tableName + "." + StopsOnRoutesTable.colRouteId + " = " + RoutesTable.tableName + "." + RoutesTable.colId + ")" +
-		//		" WHERE " + StopsOnRoutesTable.tableName + "." + StopsOnRoutesTable.colStopId + " = '" + stopId + "'", null);
-		Cursor cur = db.rawQuery("SELECT id, name FROM (StopsOnRoutes JOIN Routes ON routeId = id) WHERE stopId = '" + stopId + "'", null);
+		Cursor cur = db.rawQuery("SELECT " + RoutesTable.colId + ", " + RoutesTable.colName +
+				" FROM (" + StopsOnRoutesTable.tableName + " JOIN " + RoutesTable.tableName + " ON " +
+				StopsOnRoutesTable.colRouteId + " = " + RoutesTable.colId + ") WHERE " + StopsOnRoutesTable.colStopId + "='" + stopId + "'", null);
 		return cur;
 	}
 	
-	private Cursor getRoutesCursor() {
+	public Cursor getRoutesCursor() {
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cur = db.rawQuery("SELECT * FROM " + RoutesTable.tableName, null);
 		return cur;
@@ -264,7 +280,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return cur;
 	}
 	
-	private Cursor getStops() {
+	public Cursor getStops() {
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cur = db.rawQuery("SELECT * FROM " + StopsTable.tableName, null);
 		return cur;
@@ -308,5 +324,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		cur.close();
 		db.close();
 		return result;
+	}
+	
+	public boolean isRouteVisible(int routeId) {
+		boolean result = false;
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor cur = db.rawQuery("SELECT * FROM " + RoutesTable.tableName +
+				" WHERE " + RoutesTable.colId + "=" + routeId +
+				" AND " + RoutesTable.colVisible + "=1", null);
+		if (cur.getCount() > 0) {
+			result = true;
+		}
+		
+		cur.close();
+		db.close();
+		return result;
+	}
+	
+	public boolean isStopFavorite(String stopId, int routeId) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		Cursor cur = db.rawQuery("SELECT " + StopsOnRoutesTable.colFavorite +
+				" FROM " + StopsOnRoutesTable.tableName +
+				" WHERE stopId='" + stopId + "' AND routeId=" + routeId, null);
+		cur.moveToFirst();
+		boolean result = cur.getInt(0) == 1 ? true : false;
+		cur.close();
+		db.close();
+		return result;
+	}
+	
+	public void setStopFavorite(String stopId, int routeId, boolean favorite) { 
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.execSQL("UPDATE " + StopsOnRoutesTable.tableName + " SET " + 
+				StopsOnRoutesTable.colFavorite + "=" + (favorite ? 1 : 0) +
+				" WHERE " + StopsOnRoutesTable.colRouteId + "=" + routeId + " AND " +
+				StopsOnRoutesTable.colStopId + "='" + stopId + "'");
+		db.close();
 	}
 }
