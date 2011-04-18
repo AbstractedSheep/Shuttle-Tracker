@@ -136,10 +136,16 @@
             stop.coordinate = coordinate;
             
             string = [value objectForKey:@"name"];
+			
+			//	Special handling for Blitman because the name is just too long.
+			if ([string isEqualToString:@"Blitman Residence Commons"]) {
+				string = @"Blitman Commons";
+			}
+			
             stop.name = string;
             
             string = [value objectForKey:@"short_name"];
-            stop.shortName = string;
+            stop.idTag = string;
             
             NSDictionary *routesDict = [value objectForKey:@"routes"];
             NSEnumerator *routesEnum = [routesDict objectEnumerator];
