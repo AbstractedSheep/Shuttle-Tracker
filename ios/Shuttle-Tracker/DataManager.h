@@ -38,6 +38,7 @@
 	NSMutableDictionary *numberEtas;
 	
     BOOL onlySoonestEtas;
+	BOOL allowFavoritesSelection;
     
 	dispatch_queue_t loadVehicleJsonQueue;
 	dispatch_queue_t loadEtaJsonQueue;

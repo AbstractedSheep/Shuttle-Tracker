@@ -68,6 +68,8 @@
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
         
+		allowFavoritesSelection = [[defaults objectForKey:@"allowChangingFavorites"] boolValue];
+		
         onlySoonestEtas = [[defaults objectForKey:@"onlySoonestEtas"] boolValue];
         
         NSURL *routesJsonUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
@@ -555,7 +557,13 @@
 
 //	The user selected an ETA, so add it to the favorites if it is not there yet,
 //	or remove it from the favorites if it was selected in the favorites section
+//	The user may have disabled changing the favorites, so check that first.
 - (void)selectEtaAtIndexPath:(NSIndexPath *)indexPath {
+	//	If the user has disabled changing favorites, then do nothing.
+	if (!allowFavoritesSelection) {
+		return;
+	}
+	
 	//	If the user has favorite stops, check if a favorite stop was selected,
 	//	in section 0.  If so, remove the stop as a favorite.  Otherwise, add the stop
 	//	as a favorite.
@@ -624,7 +632,13 @@
         } else {
             onlySoonestEtas = NO;
         }
-    }
+    } else if ([[notification object] isEqualToString:@"allowChangingFavorites"]) {
+		if ([[info objectForKey:@"allowChangingFavorites"] boolValue]) {
+			allowFavoritesSelection = YES;
+		} else {
+			allowFavoritesSelection = NO;
+		}
+	}
 }
 
 @end
