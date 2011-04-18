@@ -16,7 +16,7 @@
 			<key>Key</key>
 			<string>onlySoonestEtas</string>
 			<key>Title</key>
-			<string>Only Soonest ETAs</string>
+			<string>Soonest ETAs Only</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
@@ -24,9 +24,9 @@
 			<key>DefaultValue</key>
 			<true/>
 			<key>Key</key>
-			<string>allowChangingFavorites</string>
+			<string>lockFavorites</string>
 			<key>Title</key>
-			<string>Allow Changing Favorites</string>
+			<string>Lock Favorites</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
@@ -38,7 +38,7 @@
 		</dict>
 		<dict>
 			<key>DefaultValue</key>
-			<true/>
+			<false/>
 			<key>Key</key>
 			<string>useLocation</string>
 			<key>Title</key>
