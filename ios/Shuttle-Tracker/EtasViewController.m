@@ -8,8 +8,15 @@
 
 #import "EtasViewController.h"
 #import "EtaWrapper.h"
-#import "IASKSettingsReader.h"
+#import "DataManager.h"
 
+
+@interface EtasViewController ()
+
+- (void)delayedTableReload;
+- (void)unsafeDelayedTableReload;
+
+@end
 
 @implementation EtasViewController
 
@@ -22,11 +29,10 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        //	Take notice when a setting is changed
-		//	Note that this is not the only object that takes notice.
-		[[NSNotificationCenter defaultCenter] addObserver:self 
-												 selector:@selector(settingChanged:) 
-													 name:kIASKAppSettingChanged 
+		//	Take notice when the ETAs are updated
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(delayedTableReload)
+													 name:kDMEtasUpdated 
 												   object:nil];
     }
     return self;
@@ -129,7 +135,11 @@
         cell.textLabel.text = etaWrapped.stopName;
 		
 		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
-		cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
+		if (etaWrapped.eta) {
+			cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
+		} else {
+			cell.detailTextLabel.text = @"————";
+		}
     }
     
     return cell;
@@ -158,12 +168,17 @@
 }
 
 
-//	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
-//	Other objects may also do something when a setting is changed.
-- (void)settingChanged:(NSNotification *)notification {
-	if ([[notification object] isEqualToString:@"onlySoonestEtas"]) {
-        [self.tableView reloadData];
-    }
+//	Call unsafeDelayedTableReload on the main thread
+- (void)delayedTableReload {
+	[self performSelectorOnMainThread:@selector(unsafeDelayedTableReload) 
+						   withObject:nil waitUntilDone:NO];
+}
+
+
+//	Reload the table on a short delay, since the ETAs have changed
+- (void)unsafeDelayedTableReload {
+	[NSTimer timerWithTimeInterval:0.5f target:self.tableView 
+						  selector:@selector(reloadData) userInfo:nil repeats:NO];
 }
 
 

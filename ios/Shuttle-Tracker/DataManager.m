@@ -68,7 +68,7 @@
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
         
-		allowFavoritesSelection = [[defaults objectForKey:@"allowChangingFavorites"] boolValue];
+		lockFavorites = [[defaults objectForKey:@"lockFavorites"] boolValue];
 		
         onlySoonestEtas = [[defaults objectForKey:@"onlySoonestEtas"] boolValue];
         
@@ -299,6 +299,8 @@
 
 //	Process the ETAs and generate the lists of route names and route short names.
 - (void)etaJsonRefresh {
+	NSEnumerator *enumerator;
+	NSArray *enumEtaArray;
 	EtaWrapper *newSoonEta = nil;
 	EtaWrapper *toReplaceSoonEta = nil;
 	BOOL setThis = YES;
@@ -307,12 +309,17 @@
     [etas release];
     etas = [etasJsonParser.etas copy];
     
-//    [soonestEtas release];
-//    soonestEtas = [[NSMutableDictionary alloc] init];
-    
 	[numberEtas release];
 	numberEtas = [[NSMutableDictionary alloc] init];
     
+	enumerator = [soonestEtas objectEnumerator];
+	
+	while ((enumEtaArray = [enumerator nextObject])) {
+		for (EtaWrapper *eta in enumEtaArray) {
+			eta.eta = nil;
+		}
+	}
+	
     for (EtaWrapper *eta in etas) {
 		NSString *routeName = nil;
 		NSArray *currentRouteNames = self.routeNames;
@@ -367,7 +374,7 @@
 		
 		//	TODO: Fix/remove/???
 		if (soonEtasChanged) {
-			//[soonestEtas setObject:routeSoonestEtas forKey:[NSNumber numberWithInt:eta.route]];
+			[soonestEtas setObject:routeSoonestEtas forKey:[NSNumber numberWithInt:eta.route]];
 		}
     }
     
@@ -560,7 +567,7 @@
 //	The user may have disabled changing the favorites, so check that first.
 - (void)selectEtaAtIndexPath:(NSIndexPath *)indexPath {
 	//	If the user has disabled changing favorites, then do nothing.
-	if (!allowFavoritesSelection) {
+	if (lockFavorites) {
 		return;
 	}
 	
@@ -632,11 +639,11 @@
         } else {
             onlySoonestEtas = NO;
         }
-    } else if ([[notification object] isEqualToString:@"allowChangingFavorites"]) {
-		if ([[info objectForKey:@"allowChangingFavorites"] boolValue]) {
-			allowFavoritesSelection = YES;
+    } else if ([[notification object] isEqualToString:@"lockFavorites"]) {
+		if ([[info objectForKey:@"lockFavorites"] boolValue]) {
+			lockFavorites = YES;
 		} else {
-			allowFavoritesSelection = NO;
+			lockFavorites = NO;
 		}
 	}
 }
