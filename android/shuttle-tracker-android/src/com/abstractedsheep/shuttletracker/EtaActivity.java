@@ -30,6 +30,7 @@ import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
@@ -38,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
@@ -54,6 +56,8 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().setFormat(PixelFormat.RGBA_8888); 
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DITHER);
 		setContentView(R.layout.eta);
 		
 		etaListView = (ExpandableListView) findViewById(R.id.eta_list);
@@ -99,6 +103,7 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 		super.onResume();
 		
 		dataUpdated(null, dataService.getCurrentEtas());
+		etaAdapter.loadFavorites();
 	}
    
 	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {

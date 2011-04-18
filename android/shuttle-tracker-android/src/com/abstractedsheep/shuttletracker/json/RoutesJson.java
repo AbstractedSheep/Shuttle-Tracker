@@ -98,10 +98,7 @@ public class RoutesJson {
 				this.id = id;
 			}
 			public String getName() {
-				if (name.equals("East Campus"))
-					return "East Route";
-				else
-					return name;
+				return name;
 			}
 			public void setName(String name) {
 				this.name = name;
@@ -172,10 +169,7 @@ public class RoutesJson {
 		}
 
 		public String getName() {
-			if (name.equals("East Campus"))
-				return "East Route";
-			else
-				return name;
+			return name;
 		}
 
 		public void setName(String name) {

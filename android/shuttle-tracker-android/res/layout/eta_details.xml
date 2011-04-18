@@ -3,43 +3,43 @@
 		xmlns:android="http://schemas.android.com/apk/res/android" 
 		android:layout_height="fill_parent" 
 		android:id="@+id/relativeLayout1" 
-		android:layout_width="fill_parent" 
-		android:padding="5dp"
+		android:layout_width="fill_parent"
+		android:background="#EBEBEB"
 	>
-	    <TextView 
-	    	android:ellipsize="end" 
-	    	android:layout_height="wrap_content" 
-	    	android:text="TextView" 
-	    	android:layout_width="wrap_content" 
-	    	android:layout_alignParentLeft="true" 
-	    	android:id="@+id/title"
-	    	android:textSize="25dp"
-	    />
-	    <TextView 
-	    	android:textSize="16dp" 
-	    	android:layout_below="@+id/title" 
-	    	android:layout_height="wrap_content" 
-	    	android:text="TextView" 
-	    	android:layout_width="wrap_content" 
-	    	android:id="@+id/subtitle" 
-	    	android:layout_alignLeft="@+id/title"
-	    />
-	    <TextView 
-	    	android:textSize="20dp" 
-	    	android:layout_marginTop="7dp" 
-	    	android:layout_below="@+id/subtitle" 
-	    	android:layout_alignLeft="@+id/subtitle" 
-	    	android:layout_height="wrap_content" 
-	    	android:text="@string/etas" 
-	    	android:layout_width="wrap_content" 
-	    	android:id="@+id/etastitle"
-	    />
+		<LinearLayout
+			android:padding="5dp"
+			android:id="@+id/title_box"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:background="@drawable/grey_gradient"
+		>
+		    <TextView 
+		    	android:ellipsize="end" 
+		    	android:layout_height="wrap_content" 
+		    	android:text="TextView" 
+		    	android:layout_width="wrap_content" 
+		    	android:id="@+id/title"
+		    	android:textSize="25dp"
+		    	android:textColor="#FFFFFF"
+		    />
+		    <TextView 
+		    	android:textSize="16dp" 
+		    	android:layout_height="wrap_content" 
+		    	android:text="TextView" 
+		    	android:layout_width="wrap_content" 
+		    	android:id="@+id/subtitle" 
+		    	android:textColor="#FFFFFF"
+		    />
+		</LinearLayout>
 	    <ScrollView 
-	    	android:layout_below="@+id/etastitle" 
+	    	android:padding="5dp"
+	    	android:background="#F0F0F0"
+	    	android:layout_below="@+id/title_box" 
 	    	android:layout_above="@+id/favorites_button"
 	    	android:layout_height="wrap_content" 
 	    	android:id="@+id/scrollView1" 
-	    	android:layout_alignLeft="@+id/etastitle" 
+	    	android:layout_alignLeft="@+id/title_box" 
 	    	android:layout_width="fill_parent"
 	    >
 	        <LinearLayout 
@@ -48,6 +48,17 @@
 	        	android:layout_width="fill_parent" 
 	        	android:layout_height="fill_parent"
 	        >
+		        <TextView 
+			    	android:textSize="20dp" 
+			    	android:layout_marginTop="7dp" 
+			    	android:layout_below="@+id/subtitle" 
+			    	android:layout_alignLeft="@+id/subtitle" 
+			    	android:layout_height="wrap_content" 
+			    	android:text="@string/etas" 
+			    	android:layout_width="wrap_content" 
+			    	android:id="@+id/etas_title"
+			    	android:textColor="#000000"
+			    />
 	            <TextView 
 	            	android:paddingLeft="10dp" 
 	            	android:textSize="18dp" 
@@ -55,6 +66,7 @@
 	            	android:text="TextView" 
 	            	android:layout_width="wrap_content" 
 	            	android:id="@+id/eta_list"
+	            	android:textColor="#000000"
 	            />
 	        </LinearLayout>
 	    </ScrollView>

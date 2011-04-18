@@ -89,7 +89,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
      * @param generic The class type of the JSON in the form of a Java Bean.
      * @return The parsed JSON in a new instance of the Java Bean.
      */
-    private <T> T parseJson(String url, Class<T> generic) {		
+    public <T> T parseJson(String url, Class<T> generic) {		
     	T parsedClass = null;
 	
 		try {
