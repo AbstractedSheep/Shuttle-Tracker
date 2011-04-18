@@ -81,12 +81,10 @@
 
 @interface MapStop : MapPoint
 {
-    NSString *shortName;
     NSArray *routeIds;
     NSArray *routeNames;
 }
 
-@property (nonatomic, retain) NSString *shortName;
 @property (nonatomic, retain) NSArray *routeIds;
 @property (nonatomic, retain) NSArray *routeNames;
 

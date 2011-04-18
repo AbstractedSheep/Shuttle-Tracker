@@ -81,7 +81,6 @@
 
 @implementation MapStop
 
-@synthesize shortName;
 @synthesize routeIds;
 @synthesize routeNames;
 

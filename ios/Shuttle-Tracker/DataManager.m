@@ -174,6 +174,7 @@
 		NSMutableArray *routeArray = [[NSMutableArray alloc] init];
 		[soonestEtas setObject:routeArray 
 						forKey:[NSNumber numberWithInt:[route.idTag intValue]]];
+		[routeArray release];
 	}
 	
 	//	For each stop, create a dummy ETA for each route it is on.
@@ -184,6 +185,7 @@
 			soonestEtaWrapper = [[EtaWrapper alloc] init];
 			soonestEtaWrapper.stopName = stop.name;
 			soonestEtaWrapper.stopId = stop.idTag;
+			soonestEtaWrapper.route = [routeId intValue];
 			
 			//	Get the array of soonest ETAs for the correct route.
 			NSMutableArray *routeSoonestEtas = [soonestEtas objectForKey:
@@ -295,6 +297,11 @@
 
 //	Process the ETAs and generate the lists of route names and route short names.
 - (void)etaJsonRefresh {
+	EtaWrapper *newSoonEta = nil;
+	EtaWrapper *toReplaceSoonEta = nil;
+	BOOL setThis = YES;
+	BOOL soonEtasChanged = NO;
+	
     [etas release];
     etas = [etasJsonParser.etas copy];
     
@@ -327,20 +334,21 @@
 			}
 		}
 		
-		EtaWrapper *newSoonEta = nil;
-        BOOL setThis = YES;
-        BOOL soonEtasChanged = NO;
+		newSoonEta = nil;
+        setThis = NO;
+        soonEtasChanged = NO;
 		
 		NSMutableArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:eta.route]];
 		
 		if (routeSoonestEtas) {
 			//  Check to see if the current eta is the next one for its associated stop
 			for (EtaWrapper *soonEta in routeSoonestEtas) {
-				if ([eta.stopName isEqualToString:soonEta.stopName] && eta.stopId == soonEta.stopId) {
-					if ([eta.eta timeIntervalSinceDate:soonEta.eta] > 0) {
+				if ([eta.stopId isEqualToString:soonEta.stopId]) {
+					if (soonEta.eta && [eta.eta timeIntervalSinceDate:soonEta.eta] > 0) {
 						setThis = NO;
 					} else {
-						newSoonEta = soonEta;
+						toReplaceSoonEta = soonEta;
+						setThis = YES;
 					}
 					
 					break;
@@ -348,26 +356,16 @@
 			}
 			
 			if (setThis) {
-				for (EtaWrapper *eta in routeSoonestEtas) {
-					if ([eta.stopId isEqualToString:newSoonEta.stopId] && eta.route == newSoonEta.route) {
-						eta.eta = newSoonEta.eta;
-					}
-				}
-				
+				toReplaceSoonEta.eta = eta.eta;
 				soonEtasChanged = YES;
 			}
 		} else {
 			NSLog(@"Error: Soonest ETAs array not created for route: %i", eta.route);
-			
-			routeSoonestEtas = [NSMutableArray arrayWithObjects:nil];
-			
-			[routeSoonestEtas addObject:eta];
-			soonEtasChanged = YES;
 		}
 		
 		//	TODO: Fix/remove/???
 		if (soonEtasChanged) {
-			[soonestEtas setObject:routeSoonestEtas forKey:[NSNumber numberWithInt:eta.route]];
+			//[soonestEtas setObject:routeSoonestEtas forKey:[NSNumber numberWithInt:eta.route]];
 		}
     }
     
