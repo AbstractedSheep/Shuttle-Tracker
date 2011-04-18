@@ -37,8 +37,9 @@ import com.google.android.maps.Projection;
 
 public class PathOverlay extends Overlay {
 
-	List<GeoPoint> path;
-	Style style;
+	private List<GeoPoint> path;
+	private Style style;
+	private boolean visible = true;
 	
 	public PathOverlay(List<GeoPoint> path, Style style) {
 		this.path = path;
@@ -54,8 +55,19 @@ public class PathOverlay extends Overlay {
 		path = p;
 	}
 	
+	public void setVisiblity(boolean visible) {
+		this.visible = visible;
+	}
+	
+	public boolean getVisibility() {
+		return this.visible;
+	}
+	
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
+		if (!this.visible)
+			return;
+		
 		//long start = System.currentTimeMillis();
 		
 		Projection projection = mapView.getProjection();

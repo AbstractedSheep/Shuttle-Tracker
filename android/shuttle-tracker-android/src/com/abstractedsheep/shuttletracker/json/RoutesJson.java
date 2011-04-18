@@ -21,6 +21,7 @@
 package com.abstractedsheep.shuttletracker.json;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.graphics.Color;
 
@@ -30,6 +31,7 @@ import com.google.android.maps.GeoPoint;
 public class RoutesJson {
 	private ArrayList<Stop> stops;
 	private ArrayList<Route> routes;
+	private HashMap<Integer, Route> routesMap = new HashMap<Integer, RoutesJson.Route>();
 	
 	public static class Stop implements Comparable<Stop> {
 		private int favoriteRoute = -1;
@@ -96,10 +98,7 @@ public class RoutesJson {
 				this.id = id;
 			}
 			public String getName() {
-				if (name.equals("East Campus"))
-					return "East Route";
-				else
-					return name;
+				return name;
 			}
 			public void setName(String name) {
 				this.name = name;
@@ -142,6 +141,7 @@ public class RoutesJson {
 		private String color;
 		private int id;
 		private String name;
+		private boolean visible = true;
 		
 		public String getColor() {
 			return color;
@@ -169,10 +169,7 @@ public class RoutesJson {
 		}
 
 		public String getName() {
-			if (name.equals("East Campus"))
-				return "East Route";
-			else
-				return name;
+			return name;
 		}
 
 		public void setName(String name) {
@@ -193,6 +190,14 @@ public class RoutesJson {
 
 		public void setCoords(ArrayList<Coord> coords) {
 			this.coords = coords;
+		}
+
+		public boolean getVisible() {
+			return visible;
+		}
+
+		public void setVisible(boolean visible) {
+			this.visible = visible;
 		}
 
 		private int width;
@@ -230,5 +235,17 @@ public class RoutesJson {
 
 	public void setRoutes(ArrayList<Route> routes) {
 		this.routes = routes;
+		
+		routesMap.clear();
+		
+		if (routes != null) {
+			for (Route r : routes) {
+				routesMap.put(r.id, r);
+			}
+		}
+	}
+
+	public HashMap<Integer, Route> getRoutesMap() {
+		return routesMap;
 	}
 }

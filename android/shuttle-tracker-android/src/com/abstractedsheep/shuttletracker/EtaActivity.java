@@ -25,10 +25,12 @@ import java.util.ArrayList;
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.ContextMenu;
@@ -37,6 +39,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
 
@@ -53,6 +56,8 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getWindow().setFormat(PixelFormat.RGBA_8888); 
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DITHER);
 		setContentView(R.layout.eta);
 		
 		etaListView = (ExpandableListView) findViewById(R.id.eta_list);
@@ -74,6 +79,20 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 					}		
 			}			
 		});
+		etaListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+			public boolean onChildClick(ExpandableListView parent, View v,
+					int groupPosition, int childPosition, long id) {
+				Stop s = etaAdapter.getChild(groupPosition, childPosition);
+				Intent i = new Intent(EtaActivity.this, EtaDetailsActivity.class);
+				int routeId = s.getFavoriteRoute() == -1 ? etaAdapter.getGroup(groupPosition).getId() : s.getFavoriteRoute();
+				i.putExtra("stop_id", s.getShort_name());
+				i.putExtra("route_id", routeId);
+				i.putExtra("stop_name", s.getName());
+				i.putExtra("route_name", etaAdapter.getRouteName(routeId));
+				startActivity(i);
+				return true;
+			}
+		});
 		
 		dataService = ShuttleDataService.getInstance();
 		routesUpdated(dataService.getRoutes());
@@ -84,6 +103,7 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 		super.onResume();
 		
 		dataUpdated(null, dataService.getCurrentEtas());
+		etaAdapter.loadFavorites();
 	}
    
 	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {

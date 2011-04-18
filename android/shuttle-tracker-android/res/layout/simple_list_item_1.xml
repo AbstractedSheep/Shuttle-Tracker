@@ -24,4 +24,5 @@
     android:paddingTop="2dip"
     android:paddingBottom="2dip"
     android:minHeight="?android:attr/listPreferredItemHeight"
+    android:textColor="#000000"
 />

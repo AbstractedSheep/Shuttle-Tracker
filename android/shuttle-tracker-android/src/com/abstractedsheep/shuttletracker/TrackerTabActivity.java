@@ -29,8 +29,10 @@ import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.TabActivity;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
@@ -64,6 +66,8 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		super.onCreate(savedInstanceState);	
 		
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		getWindow().setFormat(PixelFormat.RGBA_8888); 
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DITHER);
 		setContentView(R.layout.tab);
 		setProgressBarIndeterminateVisibility(true);
 		

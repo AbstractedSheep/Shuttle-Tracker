@@ -36,6 +36,7 @@ import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -266,5 +267,8 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
 		return true;
 	}
-
+	
+	public String getRouteName(int routeId) {
+		return routeNames.get(routeId);
+	}
 }
