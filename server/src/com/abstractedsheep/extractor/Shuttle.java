@@ -185,7 +185,7 @@ public class Shuttle {
 		Point p = null;
 		int count = 0;
 		ArrayList<Integer> timeList = new ArrayList<Integer>();
-		double roundTripTime = this.getFinder().getRoundTripDistance() / ((double) this.speed);
+		double roundTripTime = (this.getFinder().getRoundTripDistance() / ((double) this.speed)) * 3600000;
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
@@ -193,7 +193,7 @@ public class Shuttle {
 			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000;
 			
 			for(int i = 0; i < 10; i++) {
-				timeList.add(time + (720000 * i));
+				timeList.add((int) (time + (roundTripTime * i)));
 			}
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, new ArrayList<Integer>(timeList));
