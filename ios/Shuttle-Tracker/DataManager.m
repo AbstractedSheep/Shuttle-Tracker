@@ -595,6 +595,10 @@
 	//	in section 0.  If so, remove the stop as a favorite.  Otherwise, add the stop
 	//	as a favorite.
 	if ([favoriteStopNames count] && !indexPath.section) {
+		if (indexPath.row >= [favoriteStopNames count]) {
+			return;
+		}
+		
 		EtaWrapper *etaToUnfavorite = [favoriteStopNames objectAtIndex:indexPath.row];
 		
 		//	Remove the eta from the list of current displayed etas
