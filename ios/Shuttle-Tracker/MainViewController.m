@@ -40,14 +40,20 @@
 		[timeFormatter release];
 		[dateArray release];
 		
+		//	Create an empty array to use for the favorite ETAs
+		NSMutableArray *favoriteEtasArray = [[NSMutableArray alloc] init];
+		
 		// Set the application defaults
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		NSDictionary *appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:use24Time ? @"YES" : @"NO",
-                                                                         @"YES", @"YES", [NSNumber numberWithInt:5],
-																		 @"NO", @"NO", nil] 
-																forKeys:[NSArray arrayWithObjects:@"use24Time", 
-																		 @"useLocation", @"findClosestStop", @"dataUpdateInterval",
-                                                                         @"onlySoonestEtas", @"lockFavorites", nil]];
+		NSDictionary *appDefaults;
+		appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:use24Time ? @"YES" : @"NO", 
+														   @"YES", @"YES", [NSNumber numberWithInt:5], @"NO", @"NO", 
+														   [NSKeyedArchiver archivedDataWithRootObject:favoriteEtasArray],
+														   nil]
+												  forKeys:[NSArray arrayWithObjects:@"use24Time", 
+														   @"useLocation", @"findClosestStop", 
+														   @"dataUpdateInterval", @"onlySoonestEtas",
+														   @"lockFavorites", @"favoritesList", nil]];
 		[defaults registerDefaults:appDefaults];
 		[defaults synchronize];
 		
@@ -55,7 +61,8 @@
 		//	a reference to it.
         timeDisplayFormatter = dataManager.timeDisplayFormatter;
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeDataUpdateRate:)
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(changeDataUpdateRate:)
 													 name:@"dataUpdateInterval"
 												   object:nil];
     }

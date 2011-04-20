@@ -28,13 +28,11 @@
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
+	
     if (self) {
-		//	Take notice when the ETAs are updated
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(delayedTableReload)
-													 name:kDMEtasUpdated 
-												   object:nil];
+		
     }
+	
     return self;
 }
 
@@ -63,8 +61,9 @@
 {
     [super viewDidLoad];
 	
-	[[NSNotificationCenter defaultCenter] addObserver:self.tableView 
-											 selector:@selector(reloadData) 
+	//	Take notice when the ETAs are updated
+	[[NSNotificationCenter defaultCenter] addObserver:self 
+											 selector:@selector(delayedTableReload) 
 												 name:kDMEtasUpdated 
 											   object:nil];
 
@@ -119,8 +118,10 @@
     
     int counter = 0;
     
+	NSArray *etas = [dataManager etasForSection:indexPath.section];
+	
     //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
-    for (EtaWrapper *eta in [dataManager etasForSection:indexPath.section]) {
+    for (EtaWrapper *eta in etas) {
 		if (counter == indexPath.row) {
 			etaWrapped = eta;
 			break;
@@ -164,7 +165,7 @@
 {
 	[dataManager selectEtaAtIndexPath:indexPath];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-	[self.tableView reloadData];
+	[self delayedTableReload];
 }
 
 
@@ -175,10 +176,13 @@
 }
 
 
-//	Reload the table on a short delay, since the ETAs have changed
+//	Reload the table on a short delay, usually for a data change
 - (void)unsafeDelayedTableReload {
-	[NSTimer timerWithTimeInterval:0.5f target:self.tableView 
-						  selector:@selector(reloadData) userInfo:nil repeats:NO];
+	[NSTimer scheduledTimerWithTimeInterval:0.125f 
+									 target:self.tableView 
+								   selector:@selector(reloadData) 
+								   userInfo:nil 
+									repeats:NO];
 }
 
 
