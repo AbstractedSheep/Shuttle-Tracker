@@ -41,7 +41,7 @@
 		[dateArray release];
 		
 		//	Create an empty array to use for the favorite ETAs
-		NSMutableArray *favoriteEtasArray = [[NSMutableArray alloc] init];
+		NSMutableArray *favoriteEtasArray = [NSMutableArray array];
 		
 		// Set the application defaults
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
