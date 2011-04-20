@@ -70,7 +70,7 @@
 //}
  $(document).ready(function() {
      
-          
+ loadPage();         
     
   //functions for auto-refreshing every 5 seconds and switching from map to ETA    
 //     
@@ -92,55 +92,35 @@
 //        refreshId = setInterval(function() {
 //      $("#output").load("loadETA.php"); }, 5000);
 //     }); 
-jQuery.ajax({
-            url:'loadETA.php',
-            dataType: "json", /* can put parameter list here like :  action=abc&id=123   etc*/
-            success:function(obj){
-                if(obj){
-                    if(obj.error){
-                        alert(obj.error);
-                    } else {
-                        // Change to a stop button
-                        $('#favorite')
-                            .html(obj.fav);
-                        $('#west')
-                            .html(obj.west);
-                        $('#east')
-                            .html(obj.east);
-                        $('#etalist').page();
-                    }
-                }
+function loadPage()
+{
+   jQuery.ajax({
+    url:'loadETA.php',
+    dataType: "json", /* can put parameter list here like :  action=abc&id=123   etc*/
+    success:function(obj){
+        if(obj){
+            if(obj.error){
+                alert(obj.error);
+            } else {
+                // Change to a stop button
+                $('#favorite')
+                    .html(obj.fav).page();
+                $('#west')
+                    .html(obj.west).page();
+                $('#east')
+                    .html(obj.east).page();
+                jQuery('#eta').page("destroy").page();   
             }
+        }
+    }
 
-        });
+}); 
+}
+
 $("#refresh").click(function(){
-    jQuery.ajax({
-            url:'loadETA.php',
-            dataType: "json", /* can put parameter list here like :  action=abc&id=123   etc*/
-            success:function(obj){
-                if(obj){
-                    if(obj.error){
-                        alert(obj.error);
-                    } else {
-                        // Change to a stop button
-                        $('#favorite')
-                            .html(obj.fav);
-                        $('#west')
-                            .html(obj.west);
-                        $('#east')
-                            .html(obj.east);
-                        $('#favorite').page();
-                        $('#west').page();
-                        $('#east').page(); 
-                    }
-                }
-            }
-
-        });
+    loadPage();
 });
-      
-   
-});
+}); 
 
 
 </script>

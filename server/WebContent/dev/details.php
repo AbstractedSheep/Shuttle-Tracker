@@ -15,8 +15,7 @@ $route=$_GET["route"];
              DataService::drawExtraETA($route,$stop);
             ?>
         </div>
-
-</div>    
-<?
+    <?
     include("footer.php");
-?>
+    ?>
+</div>    

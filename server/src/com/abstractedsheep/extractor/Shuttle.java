@@ -140,9 +140,11 @@ public class Shuttle {
 	 * @param time - most recent update time
 	 */
 	public void setCurrentLocation(Point newLocation, long time) {
+		if(!this.currentLocation.equals(newLocation))
+			this.lastUpdateTime = time;
 		this.currentLocation = newLocation;
 		finder.changeCurrentLocation(currentLocation);
-		this.lastUpdateTime = time;
+		
 	}
 	public long getLastUpdateTime() { return this.lastUpdateTime; }
 	public String getCardinalPoint() { return cardinalPoint; }
@@ -183,7 +185,7 @@ public class Shuttle {
 		Point p = null;
 		int count = 0;
 		ArrayList<Integer> timeList = new ArrayList<Integer>();
-		double roundTripTime = this.getFinder().getRoundTripDistance() / ((double) this.speed);
+		double roundTripTime = (this.getFinder().getRoundTripDistance() / ((double) this.speed)) * 3600000;
 
 		for (String name : stops.keySet()) {
 			p = stops.get(name).getLocation();
@@ -191,7 +193,7 @@ public class Shuttle {
 			int time = (int) ((distance / (double)this.speed) * 3600000) - 1000;
 			
 			for(int i = 0; i < 10; i++) {
-				timeList.add(time + (720000 * i));
+				timeList.add((int) (time + (roundTripTime * i)));
 			}
 //			System.out.println(this.getName() + " " + (double) ((double)time * (1.667 * Math.pow(10, -5))));
 			this.stopETA.put(name, new ArrayList<Integer>(timeList));
@@ -462,7 +464,11 @@ public class Shuttle {
 			//Since the overlapped region is still part of both routes,
 			//the shuttle can still give valid ETAs.
 			this.closestRouteCoor = locationMap.get(index);
-			this.indexOfClosestCoordinate = indexMap.get(index);
+			try {
+				this.indexOfClosestCoordinate = indexMap.get(index);
+			} catch(Exception ex) {
+				System.err.println(index);
+			}
 			this.closestDistanceToRoute = distanceMap.get(index);
 		}
 		
@@ -475,12 +481,14 @@ public class Shuttle {
 				double smallestValue = distanceList.get(0), smallValue = distanceList.get(1);
 				double delta = Math.abs(smallestValue - smallValue);
 				for(int index : distanceMap.keySet()) {
-					if((distanceMap.get(index) == smallestValue) && (delta >= .01))
-						i = index;
-					//if the difference between the two smallest distances is no greater than
-					//.01 miles, then the shuttle is probably on an overlapped region.
-					else
-						i = -index;
+					if((distanceMap.get(index) == smallestValue)) {
+						if((delta >= .01))
+							i = index;
+						//if the difference between the two smallest distances is no greater than
+						//.01 miles, then the shuttle is probably on an overlapped region.
+						else
+							i = -index;
+					}
 				}
 				
 				return i;

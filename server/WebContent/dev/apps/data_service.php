@@ -3,9 +3,9 @@
 include("data_service_data.php");
 class DataService
 {
-    function getNextEta($route_id='')
+    function getNextEta($route_id='',$stop_id='')
     {
-        return json_encode(DataServiceData::getNextEta($stop_id));
+        return json_encode(DataServiceData::getNextEta($route_id,$stop_id));
     }
     function getAllEta($route_id='', $shuttle_id='')
     {
@@ -22,33 +22,27 @@ class DataService
     
     function drawETAs($route,$stop='',$fav)
     {
-        if (false)
-        {
-            return DataServiceData::getAllWeekendETA($route, "", $stop);
-        }
-        else
-        {
-            $etas = DataServiceData::getNextEta($route, $stop);
-        }
+        $etas = DataServiceData::getNextEta($route, $stop);
         
         
         /* display the ETA information */
         ob_start();
-        if ($route)
+        if ($route == "1")
         {
-            $route = "West";
+            $route_name = "West";
         }
-        else
+        else if ($route == "2")  
         {
-            $route = "East";
+            $route_name = "East";
         }
         ?>
-        <h3><? if ($fav) echo "Favorites"; else echo $route; ?></h3><ul data-role="listview" data-theme="c">
+        <div id="<? if ($fav) echo "favorite"; else echo strtolower($route_name);?>>" data-role="collapsible">
+        <h3><? if ($fav) echo "Favorites"; else echo $route_name; ?></h3><ul data-role="listview"  data-inset="true" data-theme="c">
         <?
         if (is_array($etas) && count($etas)) {
             foreach ($etas as $eta) {
                 ?> 
-                <li><a href="details.php?stop=<?=$stop?>&route=<?=$route?>"><?=$eta[stop_name]?></a><span class="ui-li-aside">
+                <li><a href="details.php?stop=<?=$eta[stop_id]?>&route=<?=$route?>"><?=$eta[stop_name]?></a><span style="width: auto; font-size: 12pt;" class="ui-li-count">
                 <?
                 if ($eta[route] == 1 && $fav == true) {
                     echo "West  "; 
@@ -56,7 +50,17 @@ class DataService
                 else if ($fav == true) {
                     echo "East  "; 
                 }
-                echo date("h:ia",time() + ($eta[eta] / 1000));
+                $less = "";
+                if (($time = round(($eta[eta] / 1000) / 60)) == 1)
+                    $min = "minute";
+                else if ($time < 1) {
+                    $less = "<";
+                    $time = " 1";
+                    $min = "minute";  
+                }
+                else
+                    $min = "minutes";            
+                echo $less . $time . " " . $min;
                 ?>
                 </span></li>
                 
@@ -66,7 +70,9 @@ class DataService
         else {
             ?><li>This shuttle data is too old to display.</li><?
         }
-        ?></ul><?
+        ?></ul>
+        </div>
+        <?
         
         $ret = ob_get_contents();
         ob_end_clean();
@@ -84,11 +90,15 @@ class DataService
     function drawExtraETA($route,$stop)
     {
          $etas = DataServiceData::getAllExtraEta($route,"",$stop);
-         ?> <h3><?=$etas[0][stop_name]?></h3><p><? if ($route == 1) echo "West Route"; else echo "East Route"; ?></p><ul data-role="listview" data-theme="c"> <?
+         
+         ?> <ul data-role="listview" data-theme="c">
+         <li><h3><?=$etas["name"]?></h3><p><? if ($route == 1) echo "West Route"; else echo "East Route"; ?></p></li>
+         <?
          if (is_array($etas) && count($etas)) {
-            foreach ($etas as $eta) {
+            foreach ($etas["eta"] as $eta_id => $eta) {
+                echo $eta_id;
          ?>
-            <li><?=$eta[eta]?></li>
+            <li><?=date("h:ia",time() + ($eta[$eta_id] / 1000))?></li>
          <?
             }
          }
@@ -96,8 +106,10 @@ class DataService
          {
              echo "<li>You broke it!</li>";
          }
+         print_r($etas);    
          ?>
          </ul>
+         
          <?
     } 
        

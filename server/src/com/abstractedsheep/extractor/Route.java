@@ -41,9 +41,9 @@ public class Route {
 	
 	private void computeRoundTripDistance() {
 		Point p1 = null, p2 = null;
-		roundTripDistance = 0;
-		for(int i = 0; i < coordinateList.size(); i++) {
-			p1 = coordinateList.get(i);
+		this.roundTripDistance = 0;
+		for(int i = 0; i < this.coordinateList.size(); i++) {
+			p1 = this.coordinateList.get(i);
 			p2 = (i == 0) ? coordinateList.get(coordinateList.size() - 1) : coordinateList.get(i - 1);
 			
 			this.roundTripDistance += this.calculateDistance(p2, p1);
@@ -173,10 +173,12 @@ public class Route {
 	public void putCoordinate(double lon, double lat) {
 		Point p = new Shuttle.Point(lat, lon);
 		this.coordinateList.add(p);
+		this.computeRoundTripDistance();
 	}
 	//place coordinate in list as a Point object
 	public void putCoordinate(Point coordinate) {
 		this.coordinateList.add(coordinate);
+		this.computeRoundTripDistance();
 	}
 
 	public ArrayList<Point> getCoordinateList() {
