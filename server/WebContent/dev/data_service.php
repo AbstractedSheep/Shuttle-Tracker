@@ -34,7 +34,7 @@ $stop_id    = $_REQUEST['st'];
 
 switch ($action) {
     case 'get_next_eta' :
-        echo $data_service->getNextEta($route_id);
+        echo $data_service->getNextEta($route_id, $stop_id);
         DataServiceData::recordStats("Get Next ETA");
         exit;
     case 'get_all_eta' :

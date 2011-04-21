@@ -53,7 +53,6 @@
         
 		etas = [[NSArray alloc] initWithObjects:nil];
 		soonestEtas = [[NSMutableDictionary alloc] init];
-		favoriteStopNames = [[NSMutableArray alloc] init];
 		favoriteEtas = [[NSMutableArray alloc] init];
 		numberEtas = [[NSMutableDictionary alloc] init];
 		
@@ -69,6 +68,22 @@
 		}
         
 		lockFavorites = [[defaults objectForKey:@"lockFavorites"] boolValue];
+		
+		//	Get the favorite stop names array from the app defaults in packed data form
+		NSData *dataForFavoritesArray = [defaults objectForKey:@"favoritesList"];
+		
+		if (dataForFavoritesArray != nil)
+		{
+			//	Create an array from the packed data, and if the array is a valid object,
+			//	set the favorite stops array to that array
+			NSArray *savedFavoritesArray = [NSKeyedUnarchiver unarchiveObjectWithData:dataForFavoritesArray];
+			if (savedFavoritesArray != nil)
+                favoriteStopNames = [[NSMutableArray alloc] initWithArray:savedFavoritesArray];
+			else
+                favoriteStopNames = [[NSMutableArray alloc] init];
+		} else {
+			favoriteStopNames = [[NSMutableArray alloc] init];
+		}
 		
         onlySoonestEtas = [[defaults objectForKey:@"onlySoonestEtas"] boolValue];
         
@@ -89,7 +104,10 @@
 		
 		//	Take notice when a setting is changed
 		//	Note that this is not the only object that takes notice.
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self 
+												 selector:@selector(settingChanged:) 
+													 name:kIASKAppSettingChanged 
+												   object:nil];
     }
     
     return self;
@@ -566,6 +584,8 @@
 //	or remove it from the favorites if it was selected in the favorites section
 //	The user may have disabled changing the favorites, so check that first.
 - (void)selectEtaAtIndexPath:(NSIndexPath *)indexPath {
+	BOOL favoritesChanged = NO;
+	
 	//	If the user has disabled changing favorites, then do nothing.
 	if (lockFavorites) {
 		return;
@@ -575,26 +595,16 @@
 	//	in section 0.  If so, remove the stop as a favorite.  Otherwise, add the stop
 	//	as a favorite.
 	if ([favoriteStopNames count] && !indexPath.section) {
+		if (indexPath.row >= [favoriteStopNames count]) {
+			return;
+		}
+		
 		EtaWrapper *etaToUnfavorite = [favoriteStopNames objectAtIndex:indexPath.row];
 		
 		//	Remove the eta from the list of current displayed etas
 		[favoriteStopNames removeObject:etaToUnfavorite];
-		/*
-		BOOL nameFound = NO;
 		
-		//	Find and remove the eta from the list used to track favorited etas
-		for (EtaWrapper *eta in favoriteStopNames) {
-			if ([eta.stopName isEqualToString:etaToUnfavorite.stopName] && eta.route == etaToUnfavorite.route) {
-				etaToUnfavorite = eta;
-				nameFound = YES;
-				break;
-			}
-		}
-		
-		if (nameFound) {
-			[favoriteStopNames removeObject:etaToUnfavorite];
-		}
-		 */
+		favoritesChanged = YES;
 	} else {
 		NSArray *sectionEtas = [self etasForSection:indexPath.section];
 		
@@ -615,7 +625,15 @@
 		
 		if (etaToFavorite) {
 			[favoriteStopNames addObject:etaToFavorite];
+			favoritesChanged = YES;
 		}
+	}
+	
+	if (favoritesChanged) {
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		[defaults setObject:[NSKeyedArchiver archivedDataWithRootObject:favoriteStopNames] 
+					 forKey:@"favoritesList"];
+		[defaults synchronize];
 	}
 }
 

@@ -18,4 +18,26 @@
 @synthesize stopName;
 
 
+- (void)encodeWithCoder:(NSCoder *)coder;
+{
+	[coder encodeObject:stopName forKey:@"stopName"];
+    [coder encodeObject:stopId forKey:@"stopId"];
+    [coder encodeInteger:route forKey:@"route"];
+}
+
+- (id)initWithCoder:(NSCoder *)coder;
+{
+    if ((self = [[EtaWrapper alloc] init]))
+    {
+		stopName = [coder decodeObjectForKey:@"stopName"];
+		[stopName retain];
+		stopId = [coder decodeObjectForKey:@"stopId"];
+		[stopId retain];
+		route = [coder decodeIntegerForKey:@"route"];
+    }
+	
+    return self;
+}
+
+
 @end

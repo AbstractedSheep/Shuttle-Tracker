@@ -32,19 +32,17 @@ include("header.php");
             
     </div>
 <div data-role="content" id="etalist">
-    <div id="before" data-role="collapsible">
-    <h3>Before</h3>   
+    <div id="favorite">   
     </div>
-    <div id="favorite" data-role="collapsible">   
+    <div id="west">
     </div>
-    <div id="west" data-role="collapsible">
-    </div>
-    <div id="east" data-role="collapsible">
+    <div id="east">
     </div>
 </div>
 <? 
 include("footer.php"); 
 ?>
+</div>
 
 </body>
 </html>
