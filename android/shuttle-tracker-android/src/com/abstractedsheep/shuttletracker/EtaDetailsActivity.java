@@ -2,6 +2,7 @@ package com.abstractedsheep.shuttletracker;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -105,12 +106,15 @@ public class EtaDetailsActivity extends Activity {
 			String time;
 			
 			if (result != null) {
+				Collections.sort(result.getEta());
 				text = "";
-				for (Integer i : result.getEta()) {
+				Integer t;
+				for (int i = 0; i < 12 && i < result.getEta().size(); i++) {
+					t = result.getEta().get(i);
 					if (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false)) {
-						time = formatter24.format(new Date(now.getTime() + i));
+						time = formatter24.format(new Date(now.getTime() + t));
 					} else {
-						time = formatter12.format(new Date(now.getTime() + i));
+						time = formatter12.format(new Date(now.getTime() + t));
 					}
 					text += time + ", ";
 				}

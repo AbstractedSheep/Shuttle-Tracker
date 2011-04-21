@@ -116,9 +116,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			cv = new ContentValues();
 			cv.put(RoutesTable.colName, "East Campus");
 			db.update(RoutesTable.tableName, cv, RoutesTable.colName + "='East Route'", null);
+			
+			cv = new ContentValues();
+			cv.put(RoutesTable.colName, "West Campus");
+			db.update(RoutesTable.tableName, cv, RoutesTable.colName + "='West Route'", null);
 		}
-		
-		onUpgrade(db, oldVersion, newVersion);
 	}
 	
 	public void putRoutes(RoutesJson routes) {
