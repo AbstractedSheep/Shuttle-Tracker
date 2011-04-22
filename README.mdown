@@ -4,7 +4,7 @@ A suite of applications to make community transportation more useful.
 ## About
 The Shuttle Tracker project lets users view a public or semi-public transportation system's routes and stops, and track the locations of its vehicles.  It also provides estimated times of arrival (ETAs) for each of the stops.  
 
-The project's main focus is to build mobile versions of the RPI Shuttle Tracker website at `http://shuttles.rpi.edu/`.  The program provides information on the RPI campus shuttles, including their current locations and when they will arrive at each stop.
+The project's main focus is to build mobile versions of the RPI Shuttle Tracker website at http://shuttles.rpi.edu/.  The program provides information on the RPI campus shuttles, including their current locations and when they will arrive at each stop.
 
 The applications are written generically, so adapting them to a new system is simple.
 
@@ -73,7 +73,7 @@ Open `ios/Shuttle-Tracker.xcodeproj` in XCode and compile normally.
 
 ### Installing
 Note: You must be a registered and paying iOS developer to install this way.
-With the project open in XCode, set up code signing as instructed at the iOS provisioning center, `https://developer.apple.com/ios/manage/overview/index.action`
+With the project open in XCode, set up code signing as instructed at the iOS provisioning center, https://developer.apple.com/ios/manage/overview/index.action
 
 Connect your provisioned device and set XCode's target to your device name.  Compile and run the program, using Run or Build and Go.
 
