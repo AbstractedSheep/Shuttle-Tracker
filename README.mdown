@@ -12,7 +12,7 @@ It consists of several parts:
 
 3. Android and iOS applications, which display recent shuttle positions, the normal shuttle routes and the stops on these routes.  These applications also display ETAs.  The applications poll 2 for shuttle position and ETA information.  Examples of the data expected by these applications are available in the 'example data/' directory.
 
-Part 1 is found in the `server/' directory.  Part 2 is in the `webinterface/' directory, and the Android and iOS programs are found in the `android/` and `ios/` directories, respectively.
+Part 1 is found in the `server/` directory.  Part 2 is in the `webinterface/` directory, and the Android and iOS programs are found in the `android/` and `ios/` directories, respectively.
 
 ## License
 The Android application, in the 'android/' directory, and the server applications, in the 'server/' directory, are available under the GNU GPLv3 license as specified in the COPYING file.  Files under different licenses will say so in their headers.
