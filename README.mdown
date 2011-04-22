@@ -8,9 +8,9 @@ It consists of several parts:
 
 1. A data processing program, fetching data from the Shuttle Tracker website and calculating Estimated Times of Arrival (ETAs) for the shuttles.
 
-2. A web server which serves data to the mobile clients, and displays these ETAs on a mobile-friendly website, meant to run on the same machine as 1.  Examples of the data output by this server are available in the 'example data/' directory.
+2. A web server which serves data to the mobile clients, and displays these ETAs on a mobile-friendly website, meant to run on the same machine as 1.  Examples of the data output by this server are available in the `example data/` directory.
 
-3. Android and iOS applications, which display recent shuttle positions, the normal shuttle routes and the stops on these routes.  These applications also display ETAs.  The applications poll 2 for shuttle position and ETA information.  Examples of the data expected by these applications are available in the 'example data/' directory.
+3. Android and iOS applications, which display recent shuttle positions, the normal shuttle routes and the stops on these routes.  These applications also display ETAs.  The applications poll 2 for shuttle position and ETA information.  Examples of the data expected by these applications are available in the `example data/` directory.
 
 The data processor is found in the `server/` directory.  The web server is in the `webinterface/` directory, and the Android and iOS programs are found in the `android/` and `ios/` directories, respectively.
 
