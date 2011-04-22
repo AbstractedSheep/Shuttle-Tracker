@@ -30,17 +30,18 @@ public final class R {
         public static final int glyphish_location_arrow=0x7f020009;
         public static final int glyphish_map_active=0x7f02000a;
         public static final int glyphish_map_inactive=0x7f02000b;
-        public static final int grey_gradient=0x7f02000c;
-        public static final int icon=0x7f02000d;
-        public static final int icon2=0x7f02000e;
-        public static final int light_grey_gradient=0x7f02000f;
-        public static final int light_grey_gradient_reverse=0x7f020010;
-        public static final int light_grey_selector=0x7f020011;
-        public static final int map=0x7f020012;
-        public static final int shuttle=0x7f020013;
-        public static final int shuttle_color=0x7f020014;
-        public static final int shuttle_marker=0x7f020015;
-        public static final int stop_marker=0x7f020016;
+        public static final int glyphish_signpost=0x7f02000c;
+        public static final int grey_gradient=0x7f02000d;
+        public static final int icon=0x7f02000e;
+        public static final int icon2=0x7f02000f;
+        public static final int light_grey_gradient=0x7f020010;
+        public static final int light_grey_gradient_reverse=0x7f020011;
+        public static final int light_grey_selector=0x7f020012;
+        public static final int map=0x7f020013;
+        public static final int shuttle=0x7f020014;
+        public static final int shuttle_color=0x7f020015;
+        public static final int shuttle_marker=0x7f020016;
+        public static final int stop_marker=0x7f020017;
     }
     public static final class id {
         public static final int balloon_inner_layout=0x7f090001;
