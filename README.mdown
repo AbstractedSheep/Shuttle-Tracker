@@ -1,12 +1,16 @@
 # Shuttle Tracker
-A suite of applications to make college campus transportation more useful.
+A suite of applications to make community transportation more useful.
 
 ## About
-The Shuttle Tracker project is intended to be a mobile equivalent of the RPI Shuttle Tracker website at `http://shuttles.rpi.edu/`.  The purpose is to provide information on the RPI campus shuttles, including their current locations and when they will arrive at each stop.
+The Shuttle Tracker project lets users view a public or semi-public transportation system's routes and stops, and track the locations of its vehicles.  It also provides estimated times of arrival (ETAs) for each of the stops.  
+
+The project's main focus is to build mobile versions of the RPI Shuttle Tracker website at `http://shuttles.rpi.edu/`.  The program provides information on the RPI campus shuttles, including their current locations and when they will arrive at each stop.
+
+The applications are written generically, so adapting them to a new system is simple.
 
 It consists of several parts: 
 
-1. A data processing program, fetching data from the Shuttle Tracker website and calculating Estimated Times of Arrival (ETAs) for the shuttles.
+1. A data processing program, fetching data from the Shuttle Tracker website and calculating ETAs for the shuttles.
 
 2. A web server which serves data to the mobile clients, and displays these ETAs on a mobile-friendly website, meant to run on the same machine as 1.  Examples of the data output by this server are available in the `example data/` directory.
 
@@ -17,7 +21,7 @@ The data processor is found in the `server/` directory.  The web server is in th
 ## License
 The Android application, in the 'android/' directory, and the server applications, in the 'server/' directory, are available under the GNU GPLv3 license as specified in the COPYING file.  Files under different licenses will say so in their headers.
 
-The iOS application, in the 'ios/' directory, is available under the Simplified BSD License.  It also incorporates code under the MIT License.  Licenses are specified in the LICENSE- files in the 'ios/' directory, unless otherwise specified in a file.
+The iOS application, in the `ios/` directory, is available under the Simplified BSD License.  It also incorporates code under the MIT License.  Licenses are specified in the LICENSE\_ files in the `ios/` directory, unless otherwise specified in a file.
 
 ## Data Processor
 Note: Certain values have been hard-coded into certain java files, such as the link to the shuttle data in JSONExtractor.java, while other values are being read in from the sts.properties file, which is designed to hold information to connect to the database.
