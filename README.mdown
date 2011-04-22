@@ -22,6 +22,8 @@ The iOS application, in the 'ios/' directory, is available under the Simplified 
 ## Server
 Note: Certain values have been hard-coded into certain java files, such as the link to the shuttle data in JSONExtractor.java, while other values are being read in from the sts.properties file, which is designed to hold information to connect to the database.
 
+The Java runnable in the "java" folder is meant to be run simultaneously with the web server in the "webinterface" folder.
+
 ###Compiling
 Import the contents of Shuttle-Tracker/server to your preferred Java IDE (e.g. NetBeans or Eclipse). If you choose to use Eclipse, then just use the project file located in Shuttle-Tracker/server. The shuttle data processing code is contained within the src folder and most of the website code is contained under WebContent.
 
