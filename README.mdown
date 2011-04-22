@@ -6,20 +6,20 @@ The Shuttle Tracker project is intended to be a mobile equivalent of the RPI Shu
 
 It consists of several parts: 
 
-1. A program meant to run on a server, fetching data from the Shuttle Tracker website and calculating Estimated Times of Arrival (ETAs) for the shuttles.
+1. A data server program, fetching data from the Shuttle Tracker website and calculating Estimated Times of Arrival (ETAs) for the shuttles.
 
-2. A web server which serves data to the mobile clients, and displays these ETAs on a mobile-friendly website, meant to run on the same server as 1.
+2. A web server which serves data to the mobile clients, and displays these ETAs on a mobile-friendly website, meant to run on the same machine as 1.  Examples of the data output by this server are available in the 'example data/' directory.
 
-3. Android and iOS applications, which display recent shuttle positions, the normal shuttle routes and the stops on these routes.  These applications also display ETAs.  The applications poll 2 for shuttle position and ETA information.
+3. Android and iOS applications, which display recent shuttle positions, the normal shuttle routes and the stops on these routes.  These applications also display ETAs.  The applications poll 2 for shuttle position and ETA information.  Examples of the data expected by these applications are available in the 'example data/' directory.
 
-Both 1 and 2 are found in the `server/` directory.  The Android and iOS programs are found in the `android/` and `ios/` directories, respectively.
+Part 1 is found in the 'server/' directory.  Part 2 is in the 'webinterface/' directory, and the Android and iOS programs are found in the `android/` and `ios/` directories, respectively.
 
 ## License
 The Android application, in the 'android/' directory, and the server applications, in the 'server/' directory, are available under the GNU GPLv3 license as specified in the COPYING file.  Files under different licenses will say so in their headers.
 
 The iOS application, in the 'ios/' directory, is available under the Simplified BSD License.  It also incorporates code under the MIT License.  Licenses are specified in the LICENSE- files in the 'ios/' directory, unless otherwise specified in a file.
 
-## Server
+## Data Server
 Note: Certain values have been hard-coded into certain java files, such as the link to the shuttle data in JSONExtractor.java, while other values are being read in from the sts.properties file, which is designed to hold information to connect to the database.
 
 The Java runnable in the "java" folder is meant to be run simultaneously with the web server in the "webinterface" folder.
