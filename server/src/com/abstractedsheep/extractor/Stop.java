@@ -188,8 +188,11 @@ public class Stop {
 			double[] distanceArray = { 999, 999 }; // TODO: to make the code
 													// more robust, turn it into
 													// an arraylist?
+			ArrayList<Double> distanceList = new ArrayList<Double>();
 			Shuttle.Point[] locationArray = { new Shuttle.Point(), new Shuttle.Point() };
+			ArrayList<Shuttle.Point> locationList = new ArrayList<Shuttle.Point>();
 			int[] indexArray = { 0, 0 };
+			ArrayList<Integer> indexList = new ArrayList<Integer>();
 			int index = 0;
 			double distance = 0.0;
 
@@ -200,11 +203,17 @@ public class Stop {
 						i = 0;
 					p1 = list.get(i);
 					distance = calculateDistance(p1);
-
-					if (distanceArray[index] > distance) {
-						distanceArray[index] = distance;
-						locationArray[index] = p1;
-						indexArray[index] = i;
+					
+					try {
+						if (distanceList.get(index) > distance) {
+							distanceList.set(index, distance);
+							locationList.set(index, p1);
+							indexList.set(index, i);
+						}
+					} catch(IndexOutOfBoundsException ex) {
+						distanceList.add(distance);
+						locationList.add(p1);
+						indexList.add(i);
 					}
 				}
 				index++;
