@@ -34,6 +34,7 @@ import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route.Coord;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.abstractedsheep.shuttletracker.mapoverlay.LocationOverlay;
+import com.abstractedsheep.shuttletracker.mapoverlay.NullItemizedOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.PathOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.StopsItemizedOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.TimestampOverlay;
@@ -94,6 +95,8 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         map.setClickable(true);
         map.setFocusable(true);
         map.setBuiltInZoomControls(true);
+        
+        map.getOverlays().add(new NullItemizedOverlay(getResources().getDrawable(R.drawable.shuttle), map));
         
         myLocationOverlay = new LocationOverlay(this, map, R.drawable.glyphish_location_arrow);
         map.getOverlays().add(myLocationOverlay);

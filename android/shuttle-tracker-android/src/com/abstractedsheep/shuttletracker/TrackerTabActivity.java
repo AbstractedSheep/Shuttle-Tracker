@@ -73,18 +73,18 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		
 		this.tabHost = getTabHost();
 		
-		// Add the map activity as a tab
-		TabSpec tab = this.tabHost.newTabSpec("map");
-		Intent i = new Intent(this, TrackerMapActivity.class);
-		tab.setContent(i);
-		tab.setIndicator("Map", getResources().getDrawable(R.drawable.map));
-		this.tabHost.addTab(tab);
-		
 		// Add the ETA activity as a tab
-		tab = this.tabHost.newTabSpec("eta");
-		i = new Intent(this, EtaActivity.class);
+		TabSpec tab = this.tabHost.newTabSpec("eta");
+		Intent i = new Intent(this, EtaActivity.class);
 		tab.setContent(i);
 		tab.setIndicator("ETA", getResources().getDrawable(R.drawable.clock));
+		this.tabHost.addTab(tab);
+		
+		// Add the map activity as a tab
+		tab = this.tabHost.newTabSpec("map");
+		i = new Intent(this, TrackerMapActivity.class);
+		tab.setContent(i);
+		tab.setIndicator("Map", getResources().getDrawable(R.drawable.map));
 		this.tabHost.addTab(tab);
 		
 		if (savedInstanceState != null)

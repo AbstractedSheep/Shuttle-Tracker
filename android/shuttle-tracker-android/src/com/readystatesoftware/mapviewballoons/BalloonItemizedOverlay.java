@@ -159,7 +159,7 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 	 * 
 	 * @param overlays - list of overlays (including this) on the MapView.
 	 */
-	private void hideOtherBalloons(List<Overlay> overlays) {
+	protected void hideOtherBalloons(List<Overlay> overlays) {
 		
 		for (Overlay overlay : overlays) {
 			if (overlay instanceof BalloonItemizedOverlay<?> && overlay != this) {
