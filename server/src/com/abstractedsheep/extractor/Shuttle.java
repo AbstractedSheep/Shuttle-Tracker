@@ -399,15 +399,10 @@ public class Shuttle {
 			// using the given routes, determine which route the
 			// shuttle is following
 			ArrayList<Shuttle.Point> list = null;
-			Point p1 = null, p2 = null;
-			double[] distanceArray = { 999, 999 }; // TODO: to make the code
-													// more robust, turn it into
-													// an arraylist?
+			Point p1 = null;
 			HashMap<Integer, Double> distanceMap = new HashMap<Integer, Double>();
 			HashMap<Integer, Point> locationMap = new HashMap<Integer, Point>();
 			HashMap<Integer, Integer> indexMap = new HashMap<Integer, Integer>();
-			Point[] locationArray = { new Point(), new Point() };
-			int[] indexArray = { 0, 0 };
 			int index = 0;
 			double distance = 0.0;
 
