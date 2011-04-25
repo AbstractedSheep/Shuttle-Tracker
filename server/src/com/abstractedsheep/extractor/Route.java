@@ -39,6 +39,7 @@ public class Route {
 		computeRoundTripDistance();
 	}
 	
+	//computes the round trip distance for this route
 	private void computeRoundTripDistance() {
 		Point p1 = null, p2 = null;
 		this.roundTripDistance = 0;
@@ -49,9 +50,9 @@ public class Route {
 			this.roundTripDistance += this.calculateDistance(p2, p1);
 		}
 	}
-	
+	//computes the distance between two points (in miles)
 	private double calculateDistance(Shuttle.Point p, Shuttle.Point curr) {
-		double earthRadius = 3956;
+		double earthRadius = 3956; //radius in miles
 		
 		double dlong = Math.toRadians((curr.getLon() - p.getLon()));
 	    double dlat = Math.toRadians((curr.getLat() - p.getLat()));

@@ -311,7 +311,7 @@ public class Shuttle {
 	 * The purpose of this inner class is to calculate the distance and time for
 	 * the shuttle to get to the desired stop.
 	 * 
-	 * @author jonnau
+	 * @author saiumesh
 	 * 
 	 */
 	private class RouteFinder {
@@ -466,7 +466,12 @@ public class Shuttle {
 			}
 			this.closestDistanceToRoute = distanceMap.get(index);
 		}
-		
+		/**
+		 * Determines which route the shuttle is likely on.
+		 * @param distanceMap
+		 * @return 0 if no distinction can be made, route_id if the route has been determined,
+		 * 		   -route_id if the shuttle is on an overlapped region.
+		 */
 		private int defineLocationValues(HashMap<Integer, Double> distanceMap) {
 			ArrayList<Double> distanceList = new ArrayList<Double>(distanceMap.values());
 			int i = 0;

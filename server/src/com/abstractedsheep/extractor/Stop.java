@@ -220,7 +220,7 @@ public class Stop {
 			}
 			
 			for(int i = 0; i < index; i++)
-				this.locList.add(locationArray[i]);
+				this.locList.add(locationList.get(i));
 		}
 		
 		/**
