@@ -200,7 +200,7 @@
         
         return NO;
     } else {
-        if (jsonString) {
+        if (jsonString && ![jsonString isEqualToString:@"null"]) {
             jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
         } else {
             jsonDict = nil;
@@ -271,7 +271,7 @@
         
         return NO;
     } else {
-        if (jsonString) {
+        if (jsonString  && ![jsonString isEqualToString:@"null"]) {
             jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
         } else {
             jsonDict = nil;
