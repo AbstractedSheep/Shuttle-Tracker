@@ -522,9 +522,9 @@
 
 - (NSArray *)sectionHeaders {
 	if ([favoriteStopNames count]) {
-		return [[NSArray arrayWithObject:@"Favorites"] arrayByAddingObjectsFromArray:[self routeShortNames]];
+		return [[NSArray arrayWithObject:@"Favorites"] arrayByAddingObjectsFromArray:[self routeNames]];
 	} else {
-		return [self routeShortNames];
+		return [self routeNames];
 	}
 }
 
