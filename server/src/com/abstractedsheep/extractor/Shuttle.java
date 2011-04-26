@@ -214,18 +214,20 @@ public class Shuttle {
 		
 		HashMap<String, ArrayList<Integer>> tempList = new HashMap<String, ArrayList<Integer>>(stopETA);
 		
-		for(String name : tempList.keySet()) {
+		for(index = 0; index < valueList.size(); index++) {
 			indexedValueList = returnValueList(index, valueList);
 			Collections.sort(indexedValueList);
-			for(int i = 0; i < indexedValueList.size(); i++) {
-				if(tempList.get(name).get(index) == indexedValueList.get(i)) {
-					tempList.get(name).set(index, (int) Math.abs(indexedValueList.get(i) + (1000 * (30 * i)) - 
-							(System.currentTimeMillis() - this.lastUpdateTime)));
-					stopETA.put(name, tempList.get(name));
-					break;
+			
+			for(String name : tempList.keySet()) {
+				for(int i = 0; i < indexedValueList.size(); i++) {
+					if(tempList.get(name).get(index) == indexedValueList.get(i)) {
+						tempList.get(name).set(index, (int) Math.abs(indexedValueList.get(i) + (1000 * (30 * i)) - 
+								(System.currentTimeMillis() - this.lastUpdateTime)));
+						stopETA.put(name, tempList.get(name));
+						break;
+					}
 				}
 			}
-			index++;
 		}
 	}
 	
