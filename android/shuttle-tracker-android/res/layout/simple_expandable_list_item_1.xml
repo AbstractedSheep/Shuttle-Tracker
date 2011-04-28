@@ -23,6 +23,4 @@
     android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
     android:textAppearance="?android:attr/textAppearanceLarge"
     android:gravity="center_vertical"
-    android:textColor="#000000"
-    android:background="@drawable/light_grey_selector"
 />

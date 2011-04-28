@@ -25,12 +25,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
 import com.abstractedsheep.shuttletracker.TrackerPreferences;
@@ -128,21 +126,12 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		return false;
 	}	
 	
-	@Override
-	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-		//long start = System.currentTimeMillis();
-		super.draw(canvas, mapView, shadow);
-		//Log.d("Tracker", "Stops drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
+	public void displayStop(String stopId) {
+		for (int i = 0; i < stops.size(); i++) {
+			if (stops.get(i).getShort_name().equals(stopId)) {
+				super.onTap(i);
+			}
+		}
 	}
 	
-	/*
-	@Override
-	protected boolean hitTest(OverlayItem item, Drawable marker, int hitX,
-			int hitY) {
-		if (hitX > -20 && hitX < 20 && hitY > -20 && hitY < 20)
-			return true;
-		else
-			return false;
-	}
-	*/
 }

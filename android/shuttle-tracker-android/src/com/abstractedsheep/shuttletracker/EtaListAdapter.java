@@ -29,6 +29,7 @@ import java.util.List;
 
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
+import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
@@ -36,15 +37,16 @@ import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 public class EtaListAdapter extends BaseExpandableListAdapter {
-
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
 	private ArrayList<Route> parents = new ArrayList<RoutesJson.Route>();
 	private HashMap<Integer, String> routeNames = new HashMap<Integer, String>();
@@ -56,12 +58,19 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 	private Context ctx;
 	private DatabaseHelper db;
 	private SharedPreferences prefs;
+	private int expandedChild = -1;
+	private int expandedGroup = -1;
+	private String extraEtas;
+	private ExpandableListView parent;
+	private TrackerTabActivity tabActivity;
 	
-	public EtaListAdapter(Context context, LayoutInflater li, SharedPreferences prefs) {
+	public EtaListAdapter(TrackerTabActivity tabActivity, ExpandableListView parent, Context context, LayoutInflater li, SharedPreferences prefs) {
 		this.inflater = li;
 		this.ctx = context;
 		this.prefs = prefs;
 		db = new DatabaseHelper(context);
+		this.parent = parent;
+		this.tabActivity = tabActivity;
 	}
 	
 	public void setRoutes(RoutesJson routes) {
@@ -182,7 +191,21 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 
 	public View getChildView(int groupPosition, int childPosition,
 			boolean isLastChild, View convertView, ViewGroup parent) {
-		View v = inflater.inflate(R.layout.eta_list_item, null);
+		View v;
+		
+		if (groupPosition == expandedGroup && childPosition == expandedChild) {
+			v = inflater.inflate(R.layout.expanded_eta_list_item, null);
+			Button b1 = (Button)v.findViewById(R.id.button1);
+			b1.setOnClickListener(buttonClickListener);
+			b1.setText(ctx.getResources().getString(R.string.map_this));
+			Button b2 = (Button)v.findViewById(R.id.button2);
+			b2.setOnClickListener(buttonClickListener);
+			b2.setText((groupPosition == 0 && favoritesVisible()) ? ctx.getResources().getString(R.string.remove_favorite) : ctx.getResources().getString(R.string.add_favorite));
+				
+		} else {
+			v = inflater.inflate(R.layout.eta_list_item, null);
+		}
+		
 		TextView text = (TextView) v.findViewById(R.id.text1);
 		TextView subText = (TextView) v.findViewById(R.id.text2);
 		TextView timeText = (TextView) v.findViewById(R.id.text3);
@@ -215,6 +238,10 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 			else
 				etaString = formatter12.format(arrival);
 		}
+		 
+		if (groupPosition == expandedGroup && childPosition == expandedChild) {
+			etaString = extraEtas != null ? extraEtas : etaString + "\nLoading...";
+		}
 		
 		text.setText(stop.getName());
 		timeText.setText(etaString);
@@ -239,9 +266,9 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 			favorites.add(fav);
 		}
 		
-
 		saveFavorites();
 		notifyDataSetInvalidated();
+		parent.setSelectedChild(0, 0, true);
 	}
 	
 	public void removeFavorite(int childPosition) {
@@ -271,4 +298,68 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 	public String getRouteName(int routeId) {
 		return routeNames.get(routeId);
 	}
+	
+	public boolean expandChild(int groupPosition, int childPosition) {
+		boolean result;
+		if (expandedGroup == groupPosition && expandedChild == childPosition) {
+			expandedChild = -1;
+			expandedGroup = -1;
+			result = false;
+		} else {
+			expandedGroup = groupPosition;
+			expandedChild = childPosition;
+			result = true;
+		}
+		
+		extraEtas = null;
+		notifyDataSetChanged();
+		return result;
+	}
+	
+	public void setExtraEtas(ExtraEtaJson etas) {
+		String text = "Could not get\narrival times.";
+		Date now = new Date();
+		String time;
+		
+		if (etas != null) {
+			Collections.sort(etas.getEta());
+			text = "";
+			Integer t;
+			for (int i = 0; i < 12; i++) {
+				if (i < etas.getEta().size()) {
+					t = etas.getEta().get(i);
+					if (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false)) {
+						time = formatter24.format(new Date(now.getTime() + t));
+					} else {
+						time = formatter12.format(new Date(now.getTime() + t));
+					}
+					
+				} else {
+					time = "--:--";
+				}
+				text += time + "\n";
+			}
+			if (text.length() > 1) text = text.substring(0, text.length() - 1);
+		}
+		
+		extraEtas = text;
+	}
+	
+	OnClickListener buttonClickListener = new OnClickListener() {
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.button1:
+				tabActivity.showMap(getChild(expandedGroup, expandedChild).getShort_name());
+				break;
+			case R.id.button2:
+				if (expandedGroup == 0 && favoritesVisible()) {
+					removeFavorite(expandedChild);
+				} else {
+					addFavorite(expandedGroup, expandedChild);
+				}
+				expandChild(expandedGroup, expandedChild);
+				break;
+			}
+		}
+	};
 }

@@ -31,9 +31,4 @@
   	android:icon="@android:drawable/ic_menu_mylocation"
   	android:title="@string/center_map"
   />
-  <item
-  	android:id="@+id/select_routes"
-  	android:icon="@drawable/glyphish_signpost"
-  	android:title="@string/select_routes"
-  />
 </menu>

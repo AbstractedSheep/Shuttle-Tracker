@@ -23,6 +23,7 @@ package com.abstractedsheep.shuttletracker;
 import java.util.ArrayList;
 
 import com.abstractedsheep.shuttletracker.json.EtaJson;
+import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
@@ -31,5 +32,6 @@ public interface IShuttleServiceCallback {
 	
 	void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas);
 	void routesUpdated(RoutesJson routes);
+	void extraEtasUpdated(ExtraEtaJson etas);
 	void dataServiceError(int errorCode);
 }

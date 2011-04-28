@@ -27,6 +27,7 @@ import java.util.HashMap;
 import com.abstractedsheep.shuttletracker.MapsApiKey;
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
+import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
 import com.abstractedsheep.shuttletracker.json.Style;
@@ -39,14 +40,11 @@ import com.abstractedsheep.shuttletracker.mapoverlay.PathOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.StopsItemizedOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.TimestampOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.VehicleItemizedOverlay;
-import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MapView.LayoutParams;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -69,8 +67,6 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	private SharedPreferences prefs;
 	private TimestampOverlay timestampOverlay;
 	private HashMap<Integer, PathOverlay> routeOverlays;
-	private DatabaseHelper db;
-	private int[] routeIds;
 	
     /** Called when the activity is first created. */
     @Override
@@ -82,7 +78,6 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
               
         dataService = ShuttleDataService.getInstance();
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        db = new DatabaseHelper(this);
     }
     
     /** Set up the MapView with the default configuration */
@@ -294,73 +289,10 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 				map.getController().animateTo(new GeoPoint(DEFAULT_LAT, DEFAULT_LON));
 			map.getController().setZoom(DEFAULT_ZOOM);
 			return true;
-		case R.id.select_routes:
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			SelectRoutesItems sri = getSelectRoutesItems();
-			routeIds = sri.itemIds;
-			
-			builder.setTitle(R.string.select_routes)
-				.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dataService.reloadFavoriteRoutes();
-						stopsOverlay.removeAllStops();
-						
-						boolean cont = false;
-					    RoutesJson routes = dataService.getRoutes();   
-				        for (Stop s : routes.getStops()) {
-				        	for (Route r : routes.getRoutes()) {
-				        		for (Stop.Route sr : s.getRoutes()) {
-				        			if (r.getVisible() && sr.getId() == r.getId()) {
-				        				stopsOverlay.addStop(s);
-				        				cont = true;
-				        				continue;
-				        			}
-				        		}
-				        		if (cont) { cont = false; continue; }
-				        	}
-				        }
-				        
-						map.invalidate();
-						dialog.dismiss();
-					}
-				})
-				.setIcon(R.drawable.map)
-				.setMultiChoiceItems(sri.items, sri.checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
-					public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-						routeOverlays.get(routeIds[which]).setVisiblity(isChecked);
-						db.setRouteVisibility(routeIds[which], isChecked);
-					}
-				});
-			
-			builder.create().show();
-			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	private SelectRoutesItems getSelectRoutesItems() {
-		SelectRoutesItems result = new SelectRoutesItems();
-		result.items = new String[dataService.getRoutes().getRoutes().size()];
-		result.checkedItems = new boolean[dataService.getRoutes().getRoutes().size()];
-		result.itemIds = new int[dataService.getRoutes().getRoutes().size()];
-		int i = 0;
-		
-		for (Route r : dataService.getRoutes().getRoutes()) {
-			result.items[i] = r.getName();
-			result.checkedItems[i] = r.getVisible();
-			result.itemIds[i] = r.getId();
-			i++;
-		}
-		return result;
-	}
-	
-	private class SelectRoutesItems {
-		public String[] items;
-		public boolean[] checkedItems;
-		public int[] itemIds;
-	}
-	
 	
 	
 	@Override
@@ -376,5 +308,12 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 			if (timestampOverlay != null)
 				timestampOverlay.set24Hour(prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false));
 		}
+	}
+
+	public void extraEtasUpdated(ExtraEtaJson etas) {	
+	}
+	
+	public void displayStop(String stopId) {
+		stopsOverlay.displayStop(stopId);
 	}
 }

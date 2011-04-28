@@ -39,4 +39,5 @@
 	<string name="select_routes">Select Routes</string>
 	<string name="button_ok">OK</string>
 	<string name="etas">ETAs:</string>
+	<string name="map_this">Map This</string>
 </resources>

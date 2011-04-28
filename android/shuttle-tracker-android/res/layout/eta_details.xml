@@ -4,7 +4,6 @@
 		android:layout_height="fill_parent" 
 		android:id="@+id/relativeLayout1" 
 		android:layout_width="fill_parent"
-		android:background="#EBEBEB"
 	>
 		<LinearLayout
 			android:padding="5dp"
@@ -12,7 +11,6 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
-			android:background="@drawable/grey_gradient"
 		>
 		    <TextView 
 		    	android:ellipsize="end" 
@@ -21,20 +19,17 @@
 		    	android:layout_width="wrap_content" 
 		    	android:id="@+id/title"
 		    	android:textSize="25dp"
-		    	android:textColor="#FFFFFF"
 		    />
 		    <TextView 
 		    	android:textSize="16dp" 
 		    	android:layout_height="wrap_content" 
 		    	android:text="TextView" 
 		    	android:layout_width="wrap_content" 
-		    	android:id="@+id/subtitle" 
-		    	android:textColor="#FFFFFF"
+		    	android:id="@+id/subtitle"
 		    />
 		</LinearLayout>
 	    <ScrollView 
 	    	android:padding="5dp"
-	    	android:background="#F0F0F0"
 	    	android:layout_below="@+id/title_box" 
 	    	android:layout_above="@+id/favorites_button"
 	    	android:layout_height="wrap_content" 
@@ -57,7 +52,6 @@
 			    	android:text="@string/etas" 
 			    	android:layout_width="wrap_content" 
 			    	android:id="@+id/etas_title"
-			    	android:textColor="#000000"
 			    />
 	            <TextView 
 	            	android:paddingLeft="10dp" 
@@ -66,7 +60,6 @@
 	            	android:text="TextView" 
 	            	android:layout_width="wrap_content" 
 	            	android:id="@+id/eta_list"
-	            	android:textColor="#000000"
 	            />
 	        </LinearLayout>
 	    </ScrollView>

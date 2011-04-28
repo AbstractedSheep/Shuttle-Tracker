@@ -35,6 +35,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.abstractedsheep.shuttletracker.json.EtaArray;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
+import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleArray;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
@@ -58,6 +59,8 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	private Context ctx;
 	private SharedPreferences prefs;
 	private AtomicInteger updateRate = new AtomicInteger(5000);
+	private String extraEtaStopId = null;
+	private int extraEtaRouteId = -1;
 	
 	// Private constructor prevents instantiation from other classes
 	private ShuttleDataService() {
@@ -162,6 +165,11 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 					if (tempVehicles != null || tempEtas != null) {
 						notifyShuttlesUpdated(vehicles, etas);
 					}
+					
+					if (extraEtaStopId != null && extraEtaRouteId != -1) {
+						ExtraEtaJson exEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_extra_eta&rt=" + extraEtaRouteId + "&st=" + extraEtaStopId, ExtraEtaJson.class);
+						notifyExtraEtasUpdated(exEtas);
+					}
 				}	
 				
 				SystemClock.sleep(updateRate.get());
@@ -169,11 +177,28 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		}
 	};
 	
+	public synchronized void setExtraEtaToGet(String extraEtaStopId, int extraEtaRouteId) {
+		this.extraEtaRouteId = extraEtaRouteId;
+		this.extraEtaStopId = extraEtaStopId;
+		new Thread(new Runnable() {
+			public void run() {
+				notifyExtraEtasUpdated(parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_extra_eta&rt=" +
+						ShuttleDataService.this.extraEtaRouteId + "&st=" + ShuttleDataService.this.extraEtaStopId, ExtraEtaJson.class));
+			}
+		}).start();
+	}
+	
 	public void reloadFavoriteRoutes() {
 		DatabaseHelper db = new DatabaseHelper(ctx);
 		routes = db.getRoutes();
 		db.close();
 	}
+	
+	private synchronized void notifyExtraEtasUpdated(ExtraEtaJson etas) {
+		for (IShuttleServiceCallback c : callbacks) {
+			c.extraEtasUpdated(etas);
+		}
+	}	
 	
 	private synchronized void notifyShuttlesUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
 		for (IShuttleServiceCallback c : callbacks) {

@@ -39,7 +39,6 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
-import com.abstractedsheep.shuttletracker.ShuttleDataService;
 import com.abstractedsheep.shuttletracker.TrackerPreferences;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
@@ -68,7 +67,6 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	private SimpleDateFormat formatter12 = new SimpleDateFormat("MM/dd/yy h:mm:ss a");
 	private SimpleDateFormat formatter24 = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 	private SharedPreferences prefs;
-	private ShuttleDataService service;
 	
 	public VehicleItemizedOverlay(Drawable defaultMarker, MapView map, SharedPreferences prefs) {
 		super(boundCenter(defaultMarker), map);
@@ -82,8 +80,6 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 
 		markerBitmap = ((BitmapDrawable) marker).getBitmap();
 		markerBitmapFlipped = Bitmap.createBitmap(markerBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), flip, true);
-		
-		service = ShuttleDataService.getInstance();
 	}
 	
 	@Override
@@ -179,7 +175,6 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	
 	@Override
 	public synchronized void draw(Canvas canvas, MapView mapView, boolean shadow) {
-		//long start = System.currentTimeMillis();
 		Projection p = mapView.getProjection();
 		Point pt;		
 		Matrix rotate = new Matrix();
@@ -189,10 +184,7 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		Date lastUpdate;
 			
 		for (VehicleJson v : vehicles) {
-			try {				
-				if (service.getRoutes().getRoutesMap().get(v.getRoute_id()).getVisible() == false)
-					continue;
-				
+			try {
 				now = (new Date()).getTime();
 				lastUpdate = formatter.parse(v.getUpdate_time());
 				age = now - lastUpdate.getTime();
@@ -219,8 +211,6 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 				e.printStackTrace();
 			}
 		}	
-		
-		//Log.d("Tracker", "Shuttle drawing complete in " + String.valueOf(System.currentTimeMillis() - start) + "ms");
 	}
 	
 	private Bitmap recolorBitmap(Bitmap bitmap, int color) {

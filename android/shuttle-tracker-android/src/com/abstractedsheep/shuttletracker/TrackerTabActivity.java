@@ -23,7 +23,9 @@ package com.abstractedsheep.shuttletracker;
 import java.util.ArrayList;
 
 import com.abstractedsheep.shuttletracker.R;
+import com.abstractedsheep.shuttletracker.TrackerMapActivity;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
+import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
@@ -137,5 +139,14 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 	public void dataServiceError(int errorCode) {
 		runOnUiThread(new MakeToast(errorCode));
 		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).dataServiceError(errorCode);
+	}
+
+	public void extraEtasUpdated(ExtraEtaJson etas) {
+		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).extraEtasUpdated(etas);
+	}
+	
+	public void showMap(String stopId) {
+		tabHost.setCurrentTab(1);
+		((TrackerMapActivity)getLocalActivityManager().getCurrentActivity()).displayStop(stopId);
 	}
 }

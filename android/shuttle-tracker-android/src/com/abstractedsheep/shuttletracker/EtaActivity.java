@@ -24,8 +24,8 @@ import java.util.ArrayList;
 
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
+import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.RoutesJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.Activity;
@@ -61,7 +61,7 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 		setContentView(R.layout.eta);
 		
 		etaListView = (ExpandableListView) findViewById(R.id.eta_list);
-		etaAdapter = new EtaListAdapter(this, getLayoutInflater(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+		etaAdapter = new EtaListAdapter((TrackerTabActivity)this.getParent(), etaListView, this, getLayoutInflater(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
 		etaListView.setAdapter(etaAdapter);
 		etaListView.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
 			public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -82,14 +82,13 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 		etaListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {
-				Stop s = etaAdapter.getChild(groupPosition, childPosition);
-				Intent i = new Intent(EtaActivity.this, EtaDetailsActivity.class);
-				int routeId = s.getFavoriteRoute() == -1 ? etaAdapter.getGroup(groupPosition).getId() : s.getFavoriteRoute();
-				i.putExtra("stop_id", s.getShort_name());
-				i.putExtra("route_id", routeId);
-				i.putExtra("stop_name", s.getName());
-				i.putExtra("route_name", etaAdapter.getRouteName(routeId));
-				startActivity(i);
+				if (etaAdapter.expandChild(groupPosition, childPosition)) {
+					dataService.setExtraEtaToGet(etaAdapter.getChild(groupPosition, childPosition).getShort_name(),
+							(etaAdapter.favoritesVisible() && groupPosition == 0) ? etaAdapter.getChild(groupPosition, childPosition).getFavoriteRoute() :
+								etaAdapter.getGroup(groupPosition).getId());
+				} else {
+					dataService.setExtraEtaToGet(null, -1);
+				}
 				return true;
 			}
 		});
@@ -178,6 +177,10 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	public void extraEtasUpdated(ExtraEtaJson etas) {
+		etaAdapter.setExtraEtas(etas);
 	}
 
 }
