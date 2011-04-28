@@ -34,8 +34,14 @@ class DataServiceData
         //if ($route_id)
         //   $sql .= " AND shuttle_eta.route = '". $route_id . "' ";
 
-		if ($stop_id)
-            $sql .= " AND " . $table . ".stop_id = '". $stop_id . "' ";
+		if ($stop_id && !is_array($stop_id)) {
+            $sql .= " AND " . $table . ".stop_id = '". $stop_id . "' "; }
+        else if ($stop_id && is_array($stop_id)) {
+            foreach ($stop_id as $stop) {
+                $sql .= " OR " . $table . ".stop_id = '". $stop . "' ";
+            }
+        }
+            
         $sql .= "ORDER BY eta";
         return db_query_array($sql);
     }
@@ -151,8 +157,17 @@ class DataServiceData
        
        WHERE s1.shuttle_id = s2.shuttle_id
        AND s1.update_time = s2.maxdate";
-       
-       return db_query_array($sql); 
+       $result = db_query_array($sql); 
+       if ($result)
+        { 
+            return $result;
+        }  
+        else 
+        {
+            $empty = array();
+            return $empty;
+        }
+        
     }
 }
 ?>

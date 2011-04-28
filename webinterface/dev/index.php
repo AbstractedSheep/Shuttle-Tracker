@@ -1,4 +1,5 @@
 <?php
+setcookie("favs", "union:1;union:2;blitman:1");
 
 //RouteCoordDistances::loadDistanceTable();
 //RouteCoordDistances::calcDistances();
@@ -26,10 +27,10 @@ include("header.php");
 
 
 <div data-role="page" id="eta">
-    <div  data-role="header" class="ui-bar" data-inline="true"> 
+    <div data-role="header" class="ui-bar" data-inline="true"> 
         <h1>RPI Shuttle Tracking</h1>
-        <a href="#" data-role="button" id="refresh">Refresh</a> 
-            
+        <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" id="refresh">Refresh</a> 
+        <a href="map.php" data-role="button" id="map">map</a>    
     </div>
 <div data-role="content" id="etalist">
     <div id="favorite">   
@@ -40,7 +41,7 @@ include("header.php");
     </div>
 </div>
 <? 
-include("footer.php"); 
+//include("footer.php"); 
 ?>
 </div>
 

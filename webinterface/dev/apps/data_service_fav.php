@@ -24,7 +24,7 @@ class DataService
     {
         $etas = DataServiceData::getNextEta($route, $stop);
         
-        
+        print_r($etas);
         /* display the ETA information */
         ob_start();
         if ($route == "1")
@@ -34,11 +34,14 @@ class DataService
         else if ($route == "2")  
         {
             $route_name = "East";
-        } 
+        }
+        if (!$fav){
         ?>
-        <div id="<? if ($fav) echo "favorite"; else echo strtolower($route_name);?>>" data-role="collapsible">
-        <h3><? if ($fav) echo "Favorites"; else echo $route_name; ?></h3><ul data-role="listview" data-theme="c">
+        
+            <div id="<?=strtolower($route_name);?>>" data-role="collapsible">
+            <h3><?=$route_name; ?></h3><ul data-role="listview" data-theme="c">
         <?
+        } 
         if (is_array($etas) && count($etas)) {
             foreach ($etas as $eta) {
                 ?> 
@@ -70,9 +73,11 @@ class DataService
         else {
             ?><li>This shuttle data is too old to display.</li><?
         }
+        if (!$fav){
         ?></ul>
         </div>
-        <? 
+        <?
+        }
         
         $ret = ob_get_contents();
         ob_end_clean();
@@ -81,11 +86,6 @@ class DataService
         
     }
     
-    
-    function weekdayETA($route,$stop='',$fav)
-    {
-        
-    }
     
     function drawExtraETA($route,$stop)
     {
@@ -113,9 +113,33 @@ class DataService
        
     
     function displayETAs()
-    { //$etas = DataServiceData::getNextEta();
+    { 
+        $etas["fav"] = "<div id=\"favorite\" data-role=\"collapsible\">
+            <h3>Favorites</h3><ul data-role=\"listview\" data-theme=\"c\">";
+            
+        $favs = $_COOKIE["favs"];
+        $favArray = explode(";",$favs);
+        foreach ($favArray as $favStopRoutePair)
+        {
+            $separated = explode($favStopRoutePair);
+            $favStop = $separated[0];
+            $favRoute = $separated[1];
+            if ($favRoute == 1) {
+                $westStopArray[] = $favStop;
+                print_r($westStopArray);
+            }
+            else {
+                $eastStopArray[] = $favStop;
+                print_r($eastStopArray);
+            }
+                
+                    
+        }
+
+        $etas["fav"] .= dataService::drawETAs("1",$westStopArray,true);
+        $etas["fav"] .= dataService::drawETAs("2",$eastStopArray,true);
+        $etas["fav"] .= "</ul></div>";
         
-        $etas["fav"] = dataService::drawETAs("2","union",true);
         
         $etas["west"] = dataService::drawETAs("1",'',false);
 
