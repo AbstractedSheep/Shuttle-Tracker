@@ -91,7 +91,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         map.setFocusable(true);
         map.setBuiltInZoomControls(true);
         
-        map.getOverlays().add(new NullItemizedOverlay(getResources().getDrawable(R.drawable.shuttle), map));
+        map.getOverlays().add(new NullOverlay());
         
         myLocationOverlay = new LocationOverlay(this, map, R.drawable.glyphish_location_arrow);
         map.getOverlays().add(myLocationOverlay);
