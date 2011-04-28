@@ -35,7 +35,7 @@ import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
 import com.abstractedsheep.shuttletracker.json.RoutesJson.Route.Coord;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.abstractedsheep.shuttletracker.mapoverlay.LocationOverlay;
-import com.abstractedsheep.shuttletracker.mapoverlay.NullItemizedOverlay;
+import com.abstractedsheep.shuttletracker.mapoverlay.NullOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.PathOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.StopsItemizedOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.TimestampOverlay;
