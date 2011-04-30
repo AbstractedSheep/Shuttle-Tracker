@@ -16,6 +16,8 @@
     
     NSMutableArray *vehicles;
     NSMutableArray *etas;
+	
+	NSMutableArray *extraEtas;
     
     NSURL *jsonUrl;
 	NSDateFormatter *timeDisplayFormatter;
@@ -25,6 +27,7 @@
 @property (nonatomic, retain) NSArray *stops;
 @property (nonatomic, retain) NSMutableArray *vehicles;
 @property (nonatomic, retain) NSMutableArray *etas;
+@property (nonatomic, retain) NSMutableArray *extraEtas;
 @property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
 
 
@@ -32,6 +35,7 @@
 - (BOOL)parseRoutesandStops;
 - (BOOL)parseShuttles;
 - (BOOL)parseEtas;
+- (BOOL)parseExtraEtas;
 
 
 @end

@@ -8,15 +8,24 @@
 
 #import <UIKit/UIKit.h>
 
-@class EtaWrapper;
+@class EtaWrapper, JSONParser;
 
 @interface LaterEtasViewController : UITableViewController {
     EtaWrapper *wrappedEta;
-	NSString *etasUrl;
+	
+	NSURL *etasUrl;
+	JSONParser *extraEtasParser;
+	
+	NSArray *etas;
+	
+	NSTimer *updateTimer;
+	NSDateFormatter *timeDisplayFormatter;
 }
 
 - (id)initWithEta:(EtaWrapper *)eta;
 
 @property (nonatomic, retain) EtaWrapper *wrappedEta;
+@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
+
 
 @end

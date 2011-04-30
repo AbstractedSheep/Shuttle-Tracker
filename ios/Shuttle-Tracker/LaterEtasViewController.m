@@ -9,20 +9,32 @@
 #import "LaterEtasViewController.h"
 #import "DataUrls.h"
 #import "EtaWrapper.h"
+#import "JSONParser.h"
+
+
+@interface LaterEtasViewController ()
+
+- (void)getExtraEtas;
+- (void)delayedTableReload;
+- (void)unsafeDelayedTableReload;
+
+@end
 
 
 @implementation LaterEtasViewController
 
 @synthesize wrappedEta;
+@synthesize timeDisplayFormatter;
 
 - (id)initWithEta:(EtaWrapper *)eta {
 	if ((self = [self init])) {
 		self.wrappedEta = eta;
-		
-		etasUrl = [NSString stringWithFormat:@"%@&rt=%d&st=%@", 
-				   kLEExtraEtasUrl, eta.route, eta.stopId];
-		
 		self.title = eta.stopName;
+		
+		etasUrl = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@&rt=%d&st=%@", 
+				   kLEExtraEtasUrl, eta.route, eta.stopId]];
+		
+		extraEtasParser = [[JSONParser alloc] initWithUrl:etasUrl];
 	}
 	
 	return self;
@@ -39,6 +51,9 @@
 
 - (void)dealloc
 {
+	[wrappedEta release];
+	[etasUrl release];
+	[extraEtasParser release];
     [super dealloc];
 }
 
@@ -48,6 +63,17 @@
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc that aren't in use.
+}
+
+
+- (void)getExtraEtas {
+	dispatch_queue_t extraEtasQueue = dispatch_queue_create("com.abstractedsheep.extraetasqueue", NULL);
+	dispatch_async(extraEtasQueue, ^{
+        [extraEtasParser parseExtraEtas];
+		[self performSelectorOnMainThread:@selector(delayedTableReload) withObject:nil waitUntilDone:NO];
+	});
+	
+	dispatch_release(extraEtasQueue);
 }
 
 #pragma mark - View lifecycle
@@ -73,6 +99,12 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+	
+	updateTimer = [NSTimer timerWithTimeInterval:15.0f target:self 
+										selector:@selector(getExtraEtas) 
+										userInfo:nil 
+										 repeats:YES];
+	[updateTimer retain];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -83,6 +115,9 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+	
+	[updateTimer invalidate];
+	[updateTimer release];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -100,83 +135,95 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
-    // Return the number of sections.
+    //	Return the number of sections.
+	//	Only one section
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    return [etas count];
 }
+
+
+//	Use the name of the stop as the section header
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+	return wrappedEta.stopName;
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    
+	static NSString *CellIdentifier = @"ExtraEtaCell";
+    int row = indexPath.row;
+	
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+		//	Init the cell such that it has main text, black and left aligned, and secondary text,
+		//	blue and right aligned
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
+									   reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Configure the cell...
+    EtaWrapper *etaWrapped = nil;
     
-    return cell;
+	
+	if (row < [etas count]) {
+		etaWrapped = [etas objectAtIndex:row];
+	}
+    
+    //  If the EtaWrapper was found, add the stop info and the ETA
+    if (etaWrapped) {
+		//	The main text label, left aligned and black in UITableViewCellStyleValue1
+        cell.textLabel.text = etaWrapped.stopName;
+		
+		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
+		if (etaWrapped.eta) {
+			cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
+		} else {
+			cell.detailTextLabel.text = @"————";
+		}
+    }
+	
+	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+	
+	return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     [detailViewController release];
-     */
+    //	Navigation logic may go here. Create and push another view controller.
+    //	Do nothing
 }
+
+
+//	Call unsafeDelayedTableReload on the main thread
+- (void)delayedTableReload {
+	[self performSelectorOnMainThread:@selector(unsafeDelayedTableReload) 
+						   withObject:nil waitUntilDone:NO];
+}
+
+
+//	Reload the table on a short delay, usually for a data change
+- (void)unsafeDelayedTableReload {
+	if (etas) {
+		[etas release];
+	}
+	
+	etas = [extraEtasParser extraEtas];
+	[etas retain];
+	
+	[NSTimer scheduledTimerWithTimeInterval:0.125f 
+									 target:self.tableView 
+								   selector:@selector(reloadData) 
+								   userInfo:nil 
+									repeats:NO];
+}
+
 
 @end
