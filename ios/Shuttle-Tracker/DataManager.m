@@ -583,7 +583,7 @@
 //	The user selected an ETA, so add it to the favorites if it is not there yet,
 //	or remove it from the favorites if it was selected in the favorites section
 //	The user may have disabled changing the favorites, so check that first.
-- (void)selectEtaAtIndexPath:(NSIndexPath *)indexPath {
+- (void)toggleFavoriteEtaAtIndexPath:(NSIndexPath *)indexPath {
 	BOOL favoritesChanged = NO;
 	
 	//	If the user has disabled changing favorites, then do nothing.
@@ -637,6 +637,16 @@
 	}
 }
 
+
+//	Return if the section number is a favorites section.  If the favorite stops lists
+//	is not empty and the section number is 0, then it is the favorites section.
+- (BOOL)isFavoritesSection:(NSUInteger)section {
+	if ([favoriteStopNames count] && section == 0) {
+		return YES;
+	} else {
+		return NO;
+	}
+}
 
 //	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
 //	Currently handles the 12/24 hour time toggle and toggling all/only soonest ETAs.

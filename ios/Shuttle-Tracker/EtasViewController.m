@@ -163,9 +163,38 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	[dataManager selectEtaAtIndexPath:indexPath];
+	[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	[self delayedTableReload];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath 
+{
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if ([dataManager isFavoritesSection:indexPath.section]) {
+		return @"Unfavorite";
+	} else {
+		return @"Favorite";
+	}
+}
+
+-(void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	//	If the cell's delete button, which is named "favorite" or "unfavorite",
+	//	is pressed, then tell the data manager
+	if (editingStyle == UITableViewCellEditingStyleDelete)
+	{
+		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+	}
 }
 
 

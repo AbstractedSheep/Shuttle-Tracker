@@ -66,7 +66,8 @@
 - (void)updateData;
 - (int)numberEtasForSection:(int)sectionNo;
 - (NSArray *)etasForSection:(int)sectionNo;
-- (void)selectEtaAtIndexPath:(NSIndexPath *)indexPath;
+- (void)toggleFavoriteEtaAtIndexPath:(NSIndexPath *)indexPath;
+- (BOOL)isFavoritesSection:(NSUInteger)section;
 
 
 @end
