@@ -179,6 +179,7 @@
     }
 	
 	LaterEtasViewController *levc = [[LaterEtasViewController alloc] initWithEta:etaWrapped];
+	levc.dataManager = dataManager;
 	levc.timeDisplayFormatter = timeDisplayFormatter;
 	
 	// Pass the selected object to the new view controller.
@@ -204,12 +205,23 @@
 }
 
 
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+	if ([dataManager isFavoritesSection:indexPath.section]) {
+		return UITableViewCellEditingStyleDelete;
+	} else {
+		return UITableViewCellEditingStyleInsert;
+	}
+}
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	//	If the cell's delete button, which is named "favorite" or "unfavorite",
 	//	is pressed, then tell the data manager
 	if (editingStyle == UITableViewCellEditingStyleDelete)
 	{
+		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+		[self delayedTableReload];
+	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
 		[self delayedTableReload];
 	}

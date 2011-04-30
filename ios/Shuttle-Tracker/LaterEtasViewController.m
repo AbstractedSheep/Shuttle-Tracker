@@ -10,6 +10,7 @@
 #import "DataUrls.h"
 #import "EtaWrapper.h"
 #import "JSONParser.h"
+#import "DataManager.h"
 
 
 @interface LaterEtasViewController ()
@@ -24,6 +25,7 @@
 @implementation LaterEtasViewController
 
 @synthesize wrappedEta;
+@synthesize dataManager;
 @synthesize timeDisplayFormatter;
 
 - (id)initWithEta:(EtaWrapper *)eta {
@@ -132,6 +134,17 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+
+//	Handle the "Favorite" button
+- (void)addFavorite {
+	[dataManager setEta:wrappedEta asFavorite:YES];
+}
+
+//	Handle the "Unfavorite" button
+- (void)removeFavorite {
+	[dataManager setEta:wrappedEta asFavorite:NO];
 }
 
 #pragma mark - Table view data source

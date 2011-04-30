@@ -43,30 +43,30 @@
 				<int key="NSvFlags">274</int>
 				<object class="NSMutableArray" key="NSSubviews">
 					<bool key="EncodedWithXMLCoder">YES</bool>
-					<object class="IBUIView" id="237521487">
+					<object class="IBUIView" id="907058440">
 						<reference key="NSNextResponder" ref="873029372"/>
 						<int key="NSvFlags">292</int>
 						<object class="NSMutableArray" key="NSSubviews">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<object class="IBUIButton" id="268338910">
-								<reference key="NSNextResponder" ref="237521487"/>
+							<object class="IBUIButton" id="997343048">
+								<reference key="NSNextResponder" ref="907058440"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{20, 6}, {120, 37}}</string>
-								<reference key="NSSuperview" ref="237521487"/>
+								<string key="NSFrame">{{25, 6}, {120, 37}}</string>
+								<reference key="NSSuperview" ref="907058440"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView" ref="866080989"/>
+								<reference key="NSNextKeyView" ref="1009220203"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
-								<object class="NSFont" key="IBUIFont" id="635655625">
+								<object class="NSFont" key="IBUIFont" id="523264091">
 									<string key="NSName">Helvetica-Bold</string>
 									<double key="NSSize">15</double>
 									<int key="NSfFlags">16</int>
 								</object>
 								<int key="IBUIButtonType">1</int>
 								<string key="IBUINormalTitle">Unfavorite</string>
-								<object class="NSColor" key="IBUIHighlightedTitleColor" id="704840499">
+								<object class="NSColor" key="IBUIHighlightedTitleColor" id="389331302">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MQA</bytes>
 								</object>
@@ -74,37 +74,37 @@
 									<int key="NSColorSpace">1</int>
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
-								<object class="NSColor" key="IBUINormalTitleShadowColor" id="234008990">
+								<object class="NSColor" key="IBUINormalTitleShadowColor" id="397425017">
 									<int key="NSColorSpace">3</int>
 									<bytes key="NSWhite">MC41AA</bytes>
 								</object>
 							</object>
-							<object class="IBUIButton" id="866080989">
-								<reference key="NSNextResponder" ref="237521487"/>
+							<object class="IBUIButton" id="1009220203">
+								<reference key="NSNextResponder" ref="907058440"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{180, 6}, {120, 37}}</string>
-								<reference key="NSSuperview" ref="237521487"/>
+								<string key="NSFrame">{{174, 6}, {120, 37}}</string>
+								<reference key="NSSuperview" ref="907058440"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>
 								<int key="IBUIContentVerticalAlignment">0</int>
-								<reference key="IBUIFont" ref="635655625"/>
+								<reference key="IBUIFont" ref="523264091"/>
 								<int key="IBUIButtonType">1</int>
 								<string key="IBUINormalTitle">Favorite</string>
-								<reference key="IBUIHighlightedTitleColor" ref="704840499"/>
+								<reference key="IBUIHighlightedTitleColor" ref="389331302"/>
 								<object class="NSColor" key="IBUINormalTitleColor">
 									<int key="NSColorSpace">1</int>
 									<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 								</object>
-								<reference key="IBUINormalTitleShadowColor" ref="234008990"/>
+								<reference key="IBUINormalTitleShadowColor" ref="397425017"/>
 							</object>
 						</object>
 						<string key="NSFrame">{{0, 410}, {320, 50}}</string>
 						<reference key="NSSuperview" ref="873029372"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="268338910"/>
+						<reference key="NSNextKeyView" ref="997343048"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MSAwAA</bytes>
@@ -118,7 +118,7 @@
 				<string key="NSFrame">{{0, 20}, {320, 460}}</string>
 				<reference key="NSSuperview"/>
 				<reference key="NSWindow"/>
-				<reference key="NSNextKeyView" ref="237521487"/>
+				<reference key="NSNextKeyView" ref="907058440"/>
 				<object class="NSColor" key="IBUIBackgroundColor">
 					<int key="NSColorSpace">10</int>
 					<object class="NSImage" key="NSImage">
@@ -164,7 +164,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAACAgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<float key="IBUIRowHeight">44</float>
 				<float key="IBUISectionHeaderHeight">10</float>
 				<float key="IBUISectionFooterHeight">10</float>
-				<reference key="IBUITableFooterView" ref="237521487"/>
+				<reference key="IBUITableFooterView" ref="907058440"/>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -194,6 +194,24 @@ AAMAAAABAAEAAAFTAAMAAAAEAAACAgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 					</object>
 					<int key="connectionID">7</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">addFavorite</string>
+						<reference key="source" ref="1009220203"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">7</int>
+					</object>
+					<int key="connectionID">15</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">removeFavorite</string>
+						<reference key="source" ref="997343048"/>
+						<reference key="destination" ref="372490531"/>
+						<int key="IBEventType">1</int>
+					</object>
+					<int key="connectionID">16</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -220,29 +238,29 @@ AAMAAAABAAEAAAFTAAMAAAAEAAACAgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 						<reference key="object" ref="873029372"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="237521487"/>
+							<reference ref="907058440"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">8</int>
-						<reference key="object" ref="237521487"/>
+						<reference key="object" ref="907058440"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="268338910"/>
-							<reference ref="866080989"/>
+							<reference ref="1009220203"/>
+							<reference ref="997343048"/>
 						</object>
 						<reference key="parent" ref="873029372"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">9</int>
-						<reference key="object" ref="268338910"/>
-						<reference key="parent" ref="237521487"/>
+						<reference key="object" ref="997343048"/>
+						<reference key="parent" ref="907058440"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">10</int>
-						<reference key="object" ref="866080989"/>
-						<reference key="parent" ref="237521487"/>
+						<reference key="object" ref="1009220203"/>
+						<reference key="parent" ref="907058440"/>
 					</object>
 				</object>
 			</object>
@@ -281,7 +299,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAACAgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">10</int>
+			<int key="maxID">16</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -289,6 +307,38 @@ AAMAAAABAAEAAAFTAAMAAAAEAAACAgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				<object class="IBPartialClassDescription">
 					<string key="className">LaterEtasViewController</string>
 					<string key="superclassName">UITableViewController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addFavorite</string>
+							<string>removeFavorite</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+						</object>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<bool key="EncodedWithXMLCoder">YES</bool>
+						<object class="NSArray" key="dict.sortedKeys">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>addFavorite</string>
+							<string>removeFavorite</string>
+						</object>
+						<object class="NSMutableArray" key="dict.values">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">addFavorite</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">removeFavorite</string>
+								<string key="candidateClassName">id</string>
+							</object>
+						</object>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/LaterEtasViewController.h</string>
