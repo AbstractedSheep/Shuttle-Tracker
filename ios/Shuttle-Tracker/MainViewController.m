@@ -47,7 +47,7 @@
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		NSDictionary *appDefaults;
 		appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:use24Time ? @"YES" : @"NO", 
-														   @"YES", @"YES", [NSNumber numberWithInt:5], @"NO", 
+														   @"NO", @"YES", [NSNumber numberWithInt:5], @"NO", 
 														   [NSKeyedArchiver archivedDataWithRootObject:favoriteEtasArray],
 														   [NSNumber numberWithInt:0], nil]
 												  forKeys:[NSArray arrayWithObjects:@"use24Time", 
