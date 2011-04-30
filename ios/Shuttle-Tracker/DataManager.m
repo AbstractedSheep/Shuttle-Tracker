@@ -66,8 +66,6 @@
 		} else {
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
-        
-		lockFavorites = [[defaults objectForKey:@"lockFavorites"] boolValue];
 		
 		//	Get the favorite stop names array from the app defaults in packed data form
 		NSData *dataForFavoritesArray = [defaults objectForKey:@"favoritesList"];
@@ -586,11 +584,6 @@
 - (void)toggleFavoriteEtaAtIndexPath:(NSIndexPath *)indexPath {
 	BOOL favoritesChanged = NO;
 	
-	//	If the user has disabled changing favorites, then do nothing.
-	if (lockFavorites) {
-		return;
-	}
-	
 	//	If the user has favorite stops, check if a favorite stop was selected,
 	//	in section 0.  If so, remove the stop as a favorite.  Otherwise, add the stop
 	//	as a favorite.
@@ -700,12 +693,6 @@
         } else {
             onlySoonestEtas = NO;
         }
-    } else if ([[notification object] isEqualToString:@"lockFavorites"]) {
-		if ([[info objectForKey:@"lockFavorites"] boolValue]) {
-			lockFavorites = YES;
-		} else {
-			lockFavorites = NO;
-		}
 	}
 }
 
