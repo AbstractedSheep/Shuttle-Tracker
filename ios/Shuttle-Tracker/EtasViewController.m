@@ -179,10 +179,13 @@
     }
 	
 	LaterEtasViewController *levc = [[LaterEtasViewController alloc] initWithEta:etaWrapped];
+	levc.timeDisplayFormatter = timeDisplayFormatter;
 	
 	// Pass the selected object to the new view controller.
 	[self.navigationController pushViewController:levc animated:YES];
 	[levc release];
+	
+	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath 
@@ -200,9 +203,6 @@
 	}
 }
 
--(void)tableView:(UITableView*)tableView willBeginEditingRowAtIndexPath:(NSIndexPath *)indexPath
-{
-}
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {

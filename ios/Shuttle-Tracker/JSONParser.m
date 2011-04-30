@@ -371,22 +371,27 @@
 			return NO;
 		}
 		
+		NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
+		
         //  Each dictionary corresponds to one set of curly braces ({ and })
-        for (NSDictionary *dict in jsonDict) {
-            EtaWrapper *eta = [[EtaWrapper alloc] init];
-            
-            //  Set the eta properties to the corresponding JSON values
-            for (NSString *string in dict) {
-                if ([string isEqualToString:@"name"]) {
-					eta.stopName = [dict objectForKey:string];
-				} else if ([string isEqualToString:@"eta"]) {
-                    eta.eta = [NSDate dateWithTimeIntervalSinceNow:[[dict objectForKey:string] 
+        for (NSString *string in jsonDict) {
+			//  Set the eta properties to the corresponding JSON values
+			if ([string isEqualToString:@"eta"]) {
+				for (NSString *etaString in [jsonDict objectForKey:string]) {
+					EtaWrapper *eta = [[EtaWrapper alloc] init];
+					
+					eta.eta = [now dateByAddingTimeInterval:[[jsonDict objectForKey:etaString] 
 																	floatValue]/1000.0f];
+					[extraEtas addObject:eta];
 				}
-            }
-            
-            [extraEtas addObject:eta];
-            [eta release];
+
+			} else if ([string isEqualToString:@"name"]) {
+				NSString *stopName = [jsonDict objectForKey:string];
+				
+				for (EtaWrapper *eta in extraEtas) {
+					eta.stopName = stopName;
+				}
+			}
         }
 		
 		return YES;

@@ -81,6 +81,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	
+	updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
+										selector:@selector(getExtraEtas) 
+										userInfo:nil 
+										 repeats:YES];
+	[updateTimer retain];
+	
+	[self getExtraEtas];
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -99,12 +107,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-	
-	updateTimer = [NSTimer timerWithTimeInterval:15.0f target:self 
-										selector:@selector(getExtraEtas) 
-										userInfo:nil 
-										 repeats:YES];
-	[updateTimer retain];
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -177,7 +180,7 @@
     //  If the EtaWrapper was found, add the stop info and the ETA
     if (etaWrapped) {
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
-        cell.textLabel.text = etaWrapped.stopName;
+        cell.textLabel.text = [NSString stringWithFormat:@"ETA #: %i", indexPath.row];
 		
 		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
 		if (etaWrapped.eta) {
