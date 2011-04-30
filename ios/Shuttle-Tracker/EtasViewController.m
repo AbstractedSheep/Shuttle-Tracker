@@ -194,6 +194,7 @@
 	if (editingStyle == UITableViewCellEditingStyleDelete)
 	{
 		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+		[self delayedTableReload];
 	}
 }
 
