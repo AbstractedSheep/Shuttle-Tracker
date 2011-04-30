@@ -50,7 +50,8 @@
     self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	
     tabBarController = [[UITabBarController alloc] init];
-    
+    tabBarController.delegate = self;
+	
     MapViewController *mapViewController = [[MapViewController alloc] init];
     mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0];
     mapViewController.dataManager = dataManager;
@@ -80,6 +81,13 @@
 	[tableNavController release];
 	[settingsNavController release];
 	
+	
+	//	Grab the last selected tab number, and set the tab bar controller to
+	//	that tab.
+//	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//	int defaultTab = [[defaults objectForKey:@"defaultTab"] intValue];
+//	tabBarController.selectedIndex = defaultTab;
+	
     [self.view addSubview:tabBarController.view];
 }
 
@@ -97,5 +105,24 @@
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
+
+
+#pragma - UITabBarControllerDelegate
+
+
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
+	NSNumber *tabNumber = [NSNumber numberWithInt:viewController.tabBarItem.tag];
+	
+	//	Set the default tab to the currently selected tab, if the current
+	//	one is not the settings tab
+	if ([tabNumber intValue] == 2) {
+		return;
+	} else {
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+		[defaults setValue:tabNumber forKey:@"defaultTab"];
+		[defaults synchronize];
+	}
+}
+
 
 @end
