@@ -56,8 +56,12 @@
     mapViewController.dataManager = dataManager;
     
     etasViewController = [[EtasViewController alloc] init];
-    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Times" image:[UIImage imageNamed:@"glyphish_clock"] tag:1];
+    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1];
     etasViewController.dataManager = dataManager;
+	
+	UINavigationController *tableNavController = [[UINavigationController alloc] init];
+	tableNavController.viewControllers = [NSArray arrayWithObjects:etasViewController, nil];
+	[etasViewController release];
 	
 	//	Note that this class (MainViewController_iPhone) gets a reference to timeDisplayFormatter
 	//	via the init method of its superclass, MainViewController.
@@ -71,9 +75,9 @@
 	[settingsViewController release];
 	settingsNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2];
 	
-    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasViewController, settingsNavController, nil];
+    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, tableNavController, settingsNavController, nil];
 	[mapViewController release];
-	[etasViewController release];
+	[tableNavController release];
 	[settingsNavController release];
 	
     [self.view addSubview:tabBarController.view];

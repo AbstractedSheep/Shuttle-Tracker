@@ -27,7 +27,7 @@
 @synthesize timeDisplayFormatter;
 
 - (id)initWithEta:(EtaWrapper *)eta {
-	if ((self = [self init])) {
+	if ((self = [self initWithNibName:@"LaterEtasViewController" bundle:[NSBundle mainBundle]])) {
 		self.wrappedEta = eta;
 		self.title = eta.stopName;
 		

@@ -9,6 +9,7 @@
 #import "EtasViewController.h"
 #import "EtaWrapper.h"
 #import "DataManager.h"
+#import "LaterEtasViewController.h"
 
 
 @interface EtasViewController ()
@@ -27,10 +28,8 @@
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
-    self = [super initWithStyle:style];
-	
-    if (self) {
-		
+    if ((self = [super initWithStyle:style])) {
+		self.title = @"ETAs";
     }
 	
     return self;
@@ -71,7 +70,7 @@
     // self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewDidUnload
@@ -163,9 +162,27 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-	[self delayedTableReload];
+	EtaWrapper *etaWrapped = nil;
+    
+    int counter = 0;
+    
+	NSArray *etas = [dataManager etasForSection:indexPath.section];
+	
+    //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
+    for (EtaWrapper *eta in etas) {
+		if (counter == indexPath.row) {
+			etaWrapped = eta;
+			break;
+		}
+		
+		counter++;
+    }
+	
+	LaterEtasViewController *levc = [[LaterEtasViewController alloc] initWithEta:etaWrapped];
+	
+	// Pass the selected object to the new view controller.
+	[self.navigationController pushViewController:levc animated:YES];
+	[levc release];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath 
