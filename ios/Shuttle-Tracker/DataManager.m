@@ -580,7 +580,6 @@
 
 //	The user selected an ETA, so add it to the favorites if it is not there yet,
 //	or remove it from the favorites if it was selected in the favorites section
-//	The user may have disabled changing the favorites, so check that first.
 - (void)toggleFavoriteEtaAtIndexPath:(NSIndexPath *)indexPath {
 	BOOL favoritesChanged = NO;
 	
@@ -617,7 +616,6 @@
 
 //	The user wants to add or remove an ETA from the favorites list, so add it
 //	or remove it as appropriate.
-//	The user may have disabled changing the favorites, so check that first.
 - (void)setEta:(id)eta asFavorite:(BOOL)addFavorite {
 	BOOL favoritesChanged = NO;
 	
@@ -658,6 +656,11 @@
 			[defaults setObject:[NSKeyedArchiver archivedDataWithRootObject:favoriteStopNames] 
 						 forKey:@"favoritesList"];
 			[defaults synchronize];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
+																object:self 
+															  userInfo:[NSDictionary dictionaryWithObject:etas 
+																								   forKey:@"ETAs"]];
 		}
 	}
 	
