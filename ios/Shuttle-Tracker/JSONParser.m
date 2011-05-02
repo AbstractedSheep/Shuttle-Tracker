@@ -375,13 +375,12 @@
 		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSString *string in jsonDict) {
-			//  Set the eta properties to the corresponding JSON values
+			//  Set the extra ETAs, one for each entry in the ETA array
 			if ([string isEqualToString:@"eta"]) {
 				for (NSString *etaString in [jsonDict objectForKey:string]) {
 					EtaWrapper *eta = [[EtaWrapper alloc] init];
 					
-					eta.eta = [now dateByAddingTimeInterval:[[jsonDict objectForKey:etaString] 
-																	floatValue]/1000.0f];
+					eta.eta = [now dateByAddingTimeInterval:[etaString floatValue]/1000.0f];
 					[extraEtas addObject:eta];
 				}
 
