@@ -51,7 +51,7 @@
 							<object class="IBUIButton" id="997343048">
 								<reference key="NSNextResponder" ref="907058440"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{25, 6}, {120, 37}}</string>
+								<string key="NSFrame">{{174, 3}, {126, 40}}</string>
 								<reference key="NSSuperview" ref="907058440"/>
 								<reference key="NSWindow"/>
 								<reference key="NSNextKeyView" ref="1009220203"/>
@@ -82,10 +82,9 @@
 							<object class="IBUIButton" id="1009220203">
 								<reference key="NSNextResponder" ref="907058440"/>
 								<int key="NSvFlags">292</int>
-								<string key="NSFrame">{{174, 6}, {120, 37}}</string>
+								<string key="NSFrame">{{20, 3}, {126, 40}}</string>
 								<reference key="NSSuperview" ref="907058440"/>
 								<reference key="NSWindow"/>
-								<reference key="NSNextKeyView"/>
 								<bool key="IBUIOpaque">NO</bool>
 								<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 								<int key="IBUIContentHorizontalAlignment">0</int>

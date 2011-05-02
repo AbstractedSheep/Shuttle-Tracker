@@ -190,7 +190,11 @@
 	
 	if ([etas count] == 0  && indexPath.section == 0 && indexPath.row == 0) {
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
-		cell.textLabel.text = @"Loading...";
+		if (wrappedEta.eta == nil) {
+			cell.textLabel.text = @"————";
+		} else {
+			cell.textLabel.text = @"Loading...";
+		}
 	} else if (row < [etas count]) {
 		etaWrapped = [etas objectAtIndex:row];
 		
