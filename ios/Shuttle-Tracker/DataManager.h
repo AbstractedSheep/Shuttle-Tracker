@@ -36,8 +36,6 @@
 	NSMutableArray *favoriteStopNames;
 	NSMutableArray *favoriteEtas;
 	NSMutableDictionary *numberEtas;
-	
-    BOOL onlySoonestEtas;
     
 	dispatch_queue_t loadVehicleJsonQueue;
 	dispatch_queue_t loadEtaJsonQueue;

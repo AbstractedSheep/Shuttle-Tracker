@@ -82,8 +82,6 @@
 		} else {
 			favoriteStopNames = [[NSMutableArray alloc] init];
 		}
-		
-        onlySoonestEtas = [[defaults objectForKey:@"onlySoonestEtas"] boolValue];
         
         NSURL *routesJsonUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
         routesStopsJsonParser = [[JSONParser alloc] initWithUrl:routesJsonUrl];
@@ -504,15 +502,11 @@
 	if (route) {
 		NSNumber *noEtas = nil;
         
-        if (onlySoonestEtas) {
-            NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
-			
-			if (routeSoonestEtas) {
-				noEtas = [NSNumber numberWithInt:[routeSoonestEtas count]];
-			}
-        } else {
-            noEtas = [numberEtas objectForKey:route.name];
-        }
+		NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
+		
+		if (routeSoonestEtas) {
+			noEtas = [NSNumber numberWithInt:[routeSoonestEtas count]];
+		}
         
 		return noEtas ? [noEtas intValue] : 0;
 	}
@@ -558,25 +552,13 @@
 		routeNo = sectionNo + 1;
 	}
 	
-	if (onlySoonestEtas) {
-		NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
-		
-		if (routeSoonestEtas) {
-			return routeSoonestEtas;
-		} else {
-			return [NSArray arrayWithObjects:nil];
-		}
+	
+	NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
+	
+	if (routeSoonestEtas) {
+		return routeSoonestEtas;
 	} else {
-		NSMutableArray *routeEtas = [[[NSMutableArray alloc] init] autorelease];
-		
-		//  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
-		for (EtaWrapper *eta in etas) {
-			if (eta.route == routeNo) {
-				[routeEtas addObject:eta];
-			}
-		}
-		
-		return routeEtas;
+		return [NSArray arrayWithObjects:nil];
 	}
 }
 
@@ -693,12 +675,6 @@
 		} else {
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
-	} else if ([[notification object] isEqualToString:@"onlySoonestEtas"]) {
-        if ([[info objectForKey:@"onlySoonestEtas"] boolValue]) {
-            onlySoonestEtas = YES;
-        } else {
-            onlySoonestEtas = NO;
-        }
 	}
 }
 

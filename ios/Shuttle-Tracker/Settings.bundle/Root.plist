@@ -6,22 +6,6 @@
 	<array>
 		<dict>
 			<key>Title</key>
-			<string>Estimated Times of Arrival</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<true/>
-			<key>Key</key>
-			<string>onlySoonestEtas</string>
-			<key>Title</key>
-			<string>Soonest ETAs Only</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
-		<dict>
-			<key>Title</key>
 			<string>Location Awareness</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>

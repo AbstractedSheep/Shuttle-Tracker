@@ -47,12 +47,12 @@
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		NSDictionary *appDefaults;
 		appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:use24Time ? @"YES" : @"NO", 
-														   @"NO", @"YES", [NSNumber numberWithInt:5], @"NO", 
+														   @"NO", @"YES", [NSNumber numberWithInt:5],  
 														   [NSKeyedArchiver archivedDataWithRootObject:favoriteEtasArray],
 														   [NSNumber numberWithInt:0], nil]
 												  forKeys:[NSArray arrayWithObjects:@"use24Time", 
 														   @"useLocation", @"findClosestStop", 
-														   @"dataUpdateInterval", @"onlySoonestEtas",
+														   @"dataUpdateInterval",
 														   @"favoritesList", @"defaultTab", nil]];
 		[defaults registerDefaults:appDefaults];
 		[defaults synchronize];
