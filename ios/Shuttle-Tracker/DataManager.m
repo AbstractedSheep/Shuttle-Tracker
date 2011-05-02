@@ -214,6 +214,8 @@
 				[soonestEtas setObject:routeSoonestEtas 
 								forKey:[NSNumber numberWithInt:[routeId intValue]]];
 			}
+			
+			[soonestEtaWrapper release];
 		}
 	}
     
@@ -240,8 +242,9 @@
         if ([vehiclesJsonParser parseShuttles]) {
             [self performSelectorOnMainThread:@selector(vehicleJsonRefresh) withObject:nil waitUntilDone:YES];
 			[[NSNotificationCenter defaultCenter] postNotificationName:kDMVehiclesUpdated
-																object:[vehicles copy] 
-															  userInfo:[NSDictionary dictionaryWithObject:vehicles forKey:@"vehicles"]];
+																object:[[vehicles copy] autorelease] 
+															  userInfo:[NSDictionary dictionaryWithObject:vehicles 
+																								   forKey:@"vehicles"]];
         }
     });
     
@@ -564,7 +567,7 @@
 			return [NSArray arrayWithObjects:nil];
 		}
 	} else {
-		NSMutableArray *routeEtas = [[NSMutableArray alloc] init];
+		NSMutableArray *routeEtas = [[[NSMutableArray alloc] init] autorelease];
 		
 		//  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
 		for (EtaWrapper *eta in etas) {

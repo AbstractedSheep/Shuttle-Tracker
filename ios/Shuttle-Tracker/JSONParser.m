@@ -382,6 +382,8 @@
 					
 					eta.eta = [now dateByAddingTimeInterval:[etaString floatValue]/1000.0f];
 					[extraEtas addObject:eta];
+					
+					[eta release];
 				}
 
 			} else if ([string isEqualToString:@"name"]) {
