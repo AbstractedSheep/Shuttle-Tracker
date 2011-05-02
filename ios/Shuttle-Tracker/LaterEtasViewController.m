@@ -201,7 +201,7 @@
 		//  If the EtaWrapper was found, add the stop info and the ETA
 		if (etaWrapped) {
 			//	The main text label, left aligned and black in UITableViewCellStyleValue1
-			cell.textLabel.text = [NSString stringWithFormat:@"ETA #: %i", indexPath.row];
+			cell.textLabel.text = [NSString stringWithFormat:@"ETA #: %i", indexPath.row + 1];
 			
 			//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
 			if (etaWrapped.eta) {
