@@ -220,9 +220,22 @@
 	if (editingStyle == UITableViewCellEditingStyleDelete)
 	{
 		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+		
+		//	If the last row in a section is going to be removed, just delete the section.
+		//	Otherwise remove the row.
+		if ([self.tableView numberOfRowsInSection:indexPath.section] == 1) {
+			[self.tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+														withRowAnimation:UITableViewRowAnimationFade];
+		} else {
+			[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil] 
+								  withRowAnimation:UITableViewRowAnimationFade];
+		}
+		
+		//	Reload the table
 		[self delayedTableReload];
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+		//	Reload the table
 		[self delayedTableReload];
 	}
 }
