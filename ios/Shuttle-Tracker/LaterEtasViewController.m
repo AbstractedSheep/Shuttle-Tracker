@@ -159,7 +159,8 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [etas count];
+	//	If there are no etas, then return a Loading... cell
+    return [etas count] ? [etas count] : 1;
 }
 
 
@@ -185,23 +186,27 @@
     // Configure the cell...
     EtaWrapper *etaWrapped = nil;
     
+	//	If there are no etas, then return a Loading... cell
 	
-	if (row < [etas count]) {
-		etaWrapped = [etas objectAtIndex:row];
-	}
-    
-    //  If the EtaWrapper was found, add the stop info and the ETA
-    if (etaWrapped) {
+	if ([etas count] == 0  && indexPath.section == 0 && indexPath.row == 0) {
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
-        cell.textLabel.text = [NSString stringWithFormat:@"ETA #: %i", indexPath.row];
+		cell.textLabel.text = @"Loading...";
+	} else if (row < [etas count]) {
+		etaWrapped = [etas objectAtIndex:row];
 		
-		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
-		if (etaWrapped.eta) {
-			cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
-		} else {
-			cell.detailTextLabel.text = @"————";
+		//  If the EtaWrapper was found, add the stop info and the ETA
+		if (etaWrapped) {
+			//	The main text label, left aligned and black in UITableViewCellStyleValue1
+			cell.textLabel.text = [NSString stringWithFormat:@"ETA #: %i", indexPath.row];
+			
+			//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
+			if (etaWrapped.eta) {
+				cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
+			} else {
+				cell.detailTextLabel.text = @"————";
+			}
 		}
-    }
+	}
 	
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	
