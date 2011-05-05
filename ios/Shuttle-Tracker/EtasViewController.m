@@ -216,10 +216,14 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	//	If the cell's delete button, which is named "favorite" or "unfavorite",
-	//	is pressed, then tell the data manager
+	//	If the cell is taken action on, either using the Insert button or the
+	//	delete button, tell the data manager and update the table.
 	if (editingStyle == UITableViewCellEditingStyleDelete)
 	{
+		//	Remove a favorite stop: tell the data manager and delete
+		//	the row from the table.  If it was the last row, delete
+		//	the whole favorites section.
+		
 		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
 		
 		//	If the last row in a section is going to be removed, just delete the section.
@@ -232,21 +236,27 @@
 								  withRowAnimation:UITableViewRowAnimationFade];
 		}
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
+		//	Add a favorite stop: tell the data manager and reload
+		//	the table.
+		
 		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+		
 		//	Reload the table
 		[self unsafeDelayedTableReloadForced];
 	}
 }
 
 
-//	Call unsafeDelayedTableReload on the main thread
+//	Call unsafeDelayedTableReload on the main thread.  A threadsafe
+//	way to call for a table reload.
 - (void)delayedTableReload {
 	[self performSelectorOnMainThread:@selector(unsafeDelayedTableReload) 
 						   withObject:nil waitUntilDone:NO];
 }
 
 
-//	Reload the table on a short delay, usually for a data change
+//	Reload the table on a short delay, usually for a data change.
+//	Do not reload if the table is in editing mode.
 - (void)unsafeDelayedTableReload {
 	if ([self.tableView isEditing]) {
 		return;
@@ -259,7 +269,8 @@
 	}
 }
 
-//	Reload the table on a short delay, usually for a data change
+//	Reload the table on a short delay, usually for a data change.
+//	Reload regardless of the current table mode.
 - (void)unsafeDelayedTableReloadForced {
 	[NSTimer scheduledTimerWithTimeInterval:0.125f 
 									 target:self.tableView 
