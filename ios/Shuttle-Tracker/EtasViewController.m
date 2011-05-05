@@ -16,6 +16,7 @@
 
 - (void)delayedTableReload;
 - (void)unsafeDelayedTableReload;
+- (void)unsafeDelayedTableReloadForced;
 
 @end
 
@@ -230,13 +231,10 @@
 			[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil] 
 								  withRowAnimation:UITableViewRowAnimationFade];
 		}
-		
-		//	Reload the table
-		[self delayedTableReload];
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
 		//	Reload the table
-		[self delayedTableReload];
+		[self unsafeDelayedTableReloadForced];
 	}
 }
 
@@ -250,6 +248,19 @@
 
 //	Reload the table on a short delay, usually for a data change
 - (void)unsafeDelayedTableReload {
+	if ([self.tableView isEditing]) {
+		return;
+	} else {
+		[NSTimer scheduledTimerWithTimeInterval:0.125f 
+										 target:self.tableView 
+									   selector:@selector(reloadData) 
+									   userInfo:nil 
+										repeats:NO];
+	}
+}
+
+//	Reload the table on a short delay, usually for a data change
+- (void)unsafeDelayedTableReloadForced {
 	[NSTimer scheduledTimerWithTimeInterval:0.125f 
 									 target:self.tableView 
 								   selector:@selector(reloadData) 
