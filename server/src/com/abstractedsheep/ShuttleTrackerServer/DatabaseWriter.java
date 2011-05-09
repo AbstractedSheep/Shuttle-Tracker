@@ -74,7 +74,7 @@ public class DatabaseWriter {
 								+ " AND stop_id = '"
 								+ shuttle.getStops().get(stop).getShortName() + "' AND route = '"
 								+ shuttle.getRouteId() + "' AND eta_id = '"
-								+ (k + 1) + "' AND absoluteeta = '"
+								+ (k + 1) + "' AND absolute_eta = '"
 								+ ((System.currentTimeMillis() + shuttle.getStopETA().get(stop).get(k)) / 1000L) 
 								+ "'";
 						}
