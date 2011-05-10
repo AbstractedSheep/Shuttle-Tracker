@@ -66,8 +66,6 @@
 		} else {
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
-        
-		lockFavorites = [[defaults objectForKey:@"lockFavorites"] boolValue];
 		
 		//	Get the favorite stop names array from the app defaults in packed data form
 		NSData *dataForFavoritesArray = [defaults objectForKey:@"favoritesList"];
@@ -84,8 +82,6 @@
 		} else {
 			favoriteStopNames = [[NSMutableArray alloc] init];
 		}
-		
-        onlySoonestEtas = [[defaults objectForKey:@"onlySoonestEtas"] boolValue];
         
         NSURL *routesJsonUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
         routesStopsJsonParser = [[JSONParser alloc] initWithUrl:routesJsonUrl];
@@ -216,6 +212,8 @@
 				[soonestEtas setObject:routeSoonestEtas 
 								forKey:[NSNumber numberWithInt:[routeId intValue]]];
 			}
+			
+			[soonestEtaWrapper release];
 		}
 	}
     
@@ -242,8 +240,9 @@
         if ([vehiclesJsonParser parseShuttles]) {
             [self performSelectorOnMainThread:@selector(vehicleJsonRefresh) withObject:nil waitUntilDone:YES];
 			[[NSNotificationCenter defaultCenter] postNotificationName:kDMVehiclesUpdated
-																object:[vehicles copy] 
-															  userInfo:[NSDictionary dictionaryWithObject:vehicles forKey:@"vehicles"]];
+																object:[[vehicles copy] autorelease] 
+															  userInfo:[NSDictionary dictionaryWithObject:vehicles 
+																								   forKey:@"vehicles"]];
         }
     });
     
@@ -503,15 +502,11 @@
 	if (route) {
 		NSNumber *noEtas = nil;
         
-        if (onlySoonestEtas) {
-            NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
-			
-			if (routeSoonestEtas) {
-				noEtas = [NSNumber numberWithInt:[routeSoonestEtas count]];
-			}
-        } else {
-            noEtas = [numberEtas objectForKey:route.name];
-        }
+		NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
+		
+		if (routeSoonestEtas) {
+			noEtas = [NSNumber numberWithInt:[routeSoonestEtas count]];
+		}
         
 		return noEtas ? [noEtas intValue] : 0;
 	}
@@ -557,39 +552,21 @@
 		routeNo = sectionNo + 1;
 	}
 	
-	if (onlySoonestEtas) {
-		NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
-		
-		if (routeSoonestEtas) {
-			return routeSoonestEtas;
-		} else {
-			return [NSArray arrayWithObjects:nil];
-		}
+	
+	NSArray *routeSoonestEtas = [soonestEtas objectForKey:[NSNumber numberWithInt:routeNo]];
+	
+	if (routeSoonestEtas) {
+		return routeSoonestEtas;
 	} else {
-		NSMutableArray *routeEtas = [[NSMutableArray alloc] init];
-		
-		//  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
-		for (EtaWrapper *eta in etas) {
-			if (eta.route == routeNo) {
-				[routeEtas addObject:eta];
-			}
-		}
-		
-		return routeEtas;
+		return [NSArray arrayWithObjects:nil];
 	}
 }
 
 
 //	The user selected an ETA, so add it to the favorites if it is not there yet,
 //	or remove it from the favorites if it was selected in the favorites section
-//	The user may have disabled changing the favorites, so check that first.
-- (void)selectEtaAtIndexPath:(NSIndexPath *)indexPath {
+- (void)toggleFavoriteEtaAtIndexPath:(NSIndexPath *)indexPath {
 	BOOL favoritesChanged = NO;
-	
-	//	If the user has disabled changing favorites, then do nothing.
-	if (lockFavorites) {
-		return;
-	}
 	
 	//	If the user has favorite stops, check if a favorite stop was selected,
 	//	in section 0.  If so, remove the stop as a favorite.  Otherwise, add the stop
@@ -601,10 +578,7 @@
 		
 		EtaWrapper *etaToUnfavorite = [favoriteStopNames objectAtIndex:indexPath.row];
 		
-		//	Remove the eta from the list of current displayed etas
-		[favoriteStopNames removeObject:etaToUnfavorite];
-		
-		favoritesChanged = YES;
+		[self setEta:etaToUnfavorite asFavorite:NO];
 	} else {
 		NSArray *sectionEtas = [self etasForSection:indexPath.section];
 		
@@ -614,19 +588,7 @@
 		
 		EtaWrapper *etaToFavorite = [sectionEtas objectAtIndex:indexPath.row];
 		
-		//	Check if the selected eta already has a corresponding entry in the list of
-		//	favorite etas.  If it doesn, nil it out so that it doesn't get added again.
-		for (EtaWrapper *eta in favoriteStopNames) {
-			if ([eta.stopName isEqualToString:etaToFavorite.stopName] && eta.route == etaToFavorite.route) {
-				etaToFavorite = nil;
-				break;
-			}
-		}
-		
-		if (etaToFavorite) {
-			[favoriteStopNames addObject:etaToFavorite];
-			favoritesChanged = YES;
-		}
+		[self setEta:etaToFavorite asFavorite:YES];
 	}
 	
 	if (favoritesChanged) {
@@ -637,6 +599,68 @@
 	}
 }
 
+//	The user wants to add or remove an ETA from the favorites list, so add it
+//	or remove it as appropriate.
+- (void)setEta:(id)eta asFavorite:(BOOL)addFavorite {
+	BOOL favoritesChanged = NO;
+	
+	if ([eta class] == [EtaWrapper class]) {
+		EtaWrapper *etaToChange = eta;
+		
+		if (addFavorite) {
+			//	Check if the selected eta already has a corresponding entry in the list of
+			//	favorite etas.  If it doesn, nil it out so that it doesn't get added again.
+			for (EtaWrapper *favoriteEta in favoriteStopNames) {
+				if ([favoriteEta.stopName isEqualToString:etaToChange.stopName] && favoriteEta.route == etaToChange.route) {
+					etaToChange = nil;
+					break;
+				}
+			}
+			
+			if (etaToChange) {
+				[favoriteStopNames addObject:etaToChange];
+				favoritesChanged = YES;
+			}
+		} else {
+			EtaWrapper *etaToUnfavorite = nil;
+			
+			for (EtaWrapper *favoriteEta in favoriteStopNames) {
+				if ([favoriteEta.stopId isEqualToString:etaToChange.stopId] && favoriteEta.route == etaToChange.route) {
+					etaToUnfavorite = favoriteEta;
+				}
+			}
+			
+			if (etaToUnfavorite) {
+				[favoriteStopNames removeObject:etaToUnfavorite];
+				favoritesChanged = YES;
+			}
+		}
+
+		if (favoritesChanged) {
+			NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+			[defaults setObject:[NSKeyedArchiver archivedDataWithRootObject:favoriteStopNames] 
+						 forKey:@"favoritesList"];
+			[defaults synchronize];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
+																object:self 
+															  userInfo:[NSDictionary dictionaryWithObject:etas 
+																								   forKey:@"ETAs"]];
+		}
+	}
+	
+}
+
+
+//	Return if the section number is a favorites section.  If the favorite stops lists
+//	is not empty and the section number is 0, then it is the favorites section.
+- (BOOL)isFavoritesSection:(NSUInteger)section {
+	if ([favoriteStopNames count] && section == 0) {
+		return YES;
+	} else {
+		return NO;
+	}
+}
 
 //	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
 //	Currently handles the 12/24 hour time toggle and toggling all/only soonest ETAs.
@@ -650,18 +674,6 @@
 			[timeDisplayFormatter setDateFormat:@"HH:mm"];
 		} else {
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
-		}
-	} else if ([[notification object] isEqualToString:@"onlySoonestEtas"]) {
-        if ([[info objectForKey:@"onlySoonestEtas"] boolValue]) {
-            onlySoonestEtas = YES;
-        } else {
-            onlySoonestEtas = NO;
-        }
-    } else if ([[notification object] isEqualToString:@"lockFavorites"]) {
-		if ([[info objectForKey:@"lockFavorites"] boolValue]) {
-			lockFavorites = YES;
-		} else {
-			lockFavorites = NO;
 		}
 	}
 }

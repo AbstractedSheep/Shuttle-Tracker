@@ -20,7 +20,7 @@ import com.abstractedsheep.extractor.Shuttle;
  * @author saiumesh
  * 
  */
-public class JSONSender {
+public class DatabaseWriter {
 	private static Connection conn;
 	
 	/**
@@ -63,7 +63,9 @@ public class JSONSender {
 							+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
 							+ " AND stop_id = '"
 							+ shuttle.getStops().get(stop).getShortName() + "' AND route = '" +
-							shuttle.getRouteId() + "'";
+							shuttle.getRouteId() + "' AND absolute_eta = '" +
+							((System.currentTimeMillis() + shuttle.getStopETA().get(stop).get(0)) / 1000L) 
+							+ "'";
 					} else {
 						for(int k = 0; k < shuttle.getStopETA().get(stop).size(); k++) {
 							sql = "UPDATE " + tableName + " SET eta = '"
@@ -72,7 +74,9 @@ public class JSONSender {
 								+ " AND stop_id = '"
 								+ shuttle.getStops().get(stop).getShortName() + "' AND route = '"
 								+ shuttle.getRouteId() + "' AND eta_id = '"
-								+ (k + 1) + "'";
+								+ (k + 1) + "' AND absolute_eta = '"
+								+ ((System.currentTimeMillis() + shuttle.getStopETA().get(stop).get(k)) / 1000L) 
+								+ "'";
 						}
 					}
 					int updateCount = stmt.executeUpdate(sql);
@@ -82,11 +86,12 @@ public class JSONSender {
 					if (updateCount == 0) {
 						String insertHeader = "";
 						if(!writeFullList)
-							insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta, route)\n";
+							insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta, absolute_eta, route)\n";
 						else
-							insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta_id, eta, route)\n";
+							insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
 						for(int k = 0; k < shuttle.getStopETA().get(stop).size(); k++) {
 							String time = "" + shuttle.getStopETA().get(stop).get(k);
+							String absoluteTime = "" + ((System.currentTimeMillis() + shuttle.getStopETA().get(stop).get(k)) / 1000L) + "";
 							String interValues = "VALUES ("
 									+ shuttle.getShuttleId() + ",'"
 									+ shuttle.getStops().get(stop).getShortName()
@@ -94,8 +99,10 @@ public class JSONSender {
 									+ ((writeFullList) ? (k + 1) + "','" : "") 
 									+ time
 									+ "', '"
+									+ absoluteTime + "','"
 									+ shuttle.getRouteId() + "')";
 							stmt.executeUpdate(insertHeader + interValues);
+							//if this flag is false, then break out of this loop after writing the first value.
 							if(writeFullList == false)
 								break;
 						}

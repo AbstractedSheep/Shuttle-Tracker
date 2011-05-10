@@ -60,12 +60,12 @@ public class ShuttleTrackerServer {
 				if(shuttleList.size() > 0){
 					// do ETA calculations and print to the database
 					calculateETA();
-					JSONSender.saveToDatabase(shuttleList, "shuttle_eta", false);
-					JSONSender.saveToDatabase(shuttleList, "extra_eta", true);
-					JSONSender.printToConsole(shuttleList);
+					DatabaseWriter.saveToDatabase(shuttleList, "shuttle_eta", false);
+					DatabaseWriter.saveToDatabase(shuttleList, "extra_eta", true);
+					DatabaseWriter.printToConsole(shuttleList);
 				} else {//clear the database and the shuttle list
-					JSONSender.connectToDatabase("shuttle_eta");
-					JSONSender.connectToDatabase("extra_eta");
+					DatabaseWriter.connectToDatabase("shuttle_eta");
+					DatabaseWriter.connectToDatabase("extra_eta");
 					jsExtractor.clearShuttleList();
 				}
 				// have the thread sleep for 15 seconds (approximate update

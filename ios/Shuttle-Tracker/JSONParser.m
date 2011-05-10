@@ -8,6 +8,7 @@
 
 #import "JSONParser.h"
 #import "NSDictionary_JSONExtensions.h"
+#import "DataUrls.h"
 #import "EtaWrapper.h"
 #import "MapPlacemark.h"
 
@@ -17,12 +18,13 @@
 @synthesize stops;
 @synthesize vehicles;
 @synthesize etas;
+@synthesize extraEtas;
 @synthesize timeDisplayFormatter;
 
 
 //  Assume a call to init is for a shuttle JSON parser
 - (id)init {
-    [self initWithUrl:[NSURL URLWithString:@"http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions"]];
+    [self initWithUrl:[NSURL URLWithString:kDMShuttlesUrl]];
     
     return self;
 }
@@ -44,7 +46,9 @@
 
 - (BOOL)parseRoutesandStops {
     NSError *theError = nil;
-    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
+    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl 
+													encoding:NSUTF8StringEncoding 
+													   error:&theError];
     NSDictionary *jsonDict = nil;
     
     if (theError) {
@@ -105,7 +109,8 @@
                 string = [coordsValues objectForKey:@"longitude"];
                 coordinate.longitude = [string floatValue];
                 
-                [coordsString addObject:[NSString stringWithFormat:@"%f, %f", coordinate.longitude, coordinate.latitude]];
+                [coordsString addObject:[NSString stringWithFormat:@"%f, %f", 
+										 coordinate.longitude, coordinate.latitude]];
             }
             
             route.lineString = coordsString;
@@ -184,11 +189,13 @@
 }
 
 
-//  Parse the shuttle data we will get from http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions
+//  Parse the shuttle data we will get for the shuttle positions
 //  Note: parseShuttles and parseEtas are very similar
 - (BOOL)parseShuttles {
     NSError *theError = nil;
-    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
+    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl 
+													encoding:NSUTF8StringEncoding 
+													   error:&theError];
     NSDictionary *jsonDict = nil;
     
     [vehicles release];
@@ -255,11 +262,13 @@
 }
 
 
-//  Parse the ETAs we will get, as formatted at http://abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta
+//  Parse the upcoming ETAs we will get for the currently running shuttles
 //  Note: parseShuttles and parseEtas are very similar
 - (BOOL)parseEtas {
     NSError *theError = nil;
-    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl encoding:NSUTF8StringEncoding error:&theError];
+    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl 
+													encoding:NSUTF8StringEncoding 
+													   error:&theError];
     NSDictionary *jsonDict = nil;
     
     [etas release];
@@ -304,7 +313,8 @@
                 } else if ([string isEqualToString:@"stop_id"]) {
                     eta.stopId = [dict objectForKey:string];
                 } else if ([string isEqualToString:@"eta"]) {
-                    eta.eta = [NSDate dateWithTimeIntervalSinceNow:[[dict objectForKey:string] floatValue]/1000.0f];
+                    eta.eta = [NSDate dateWithTimeIntervalSinceNow:[[dict objectForKey:string] 
+																	floatValue]/1000.0f];
                 } else if ([string isEqualToString:@"route"]) {
                     eta.route = [[dict objectForKey:string] intValue];
                 } else if ([string isEqualToString:@"name"]) {
@@ -324,6 +334,74 @@
     return NO;
 }
 
+
+- (BOOL)parseExtraEtas {
+	NSError *theError = nil;
+    NSString *jsonString = [NSString stringWithContentsOfURL:jsonUrl 
+													encoding:NSUTF8StringEncoding 
+													   error:&theError];
+    NSDictionary *jsonDict = nil;
+    
+    [extraEtas release];
+    
+    extraEtas = [[NSMutableArray alloc] init];
+    
+    if (theError) {
+        NSLog(@"Error retrieving JSON data");
+        
+        return NO;
+    } else {
+        if (jsonString && ![jsonString isEqualToString:@"null"]) {
+            jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
+        } else {
+            jsonDict = nil;
+			
+			return NO;
+        }
+		
+		if (theError) {
+			NSLog(@"Error creating JSON data dictionary from string: %@", jsonString);
+			
+			return NO;
+		}
+        
+		if (!jsonDict || [jsonDict isKindOfClass:[NSNull class]]) {
+			//			NSLog(@"Error, no jsonDict created.");
+			
+			return NO;
+		}
+		
+		NSDate *now = [NSDate dateWithTimeIntervalSinceNow:0];
+		
+        //  Each dictionary corresponds to one set of curly braces ({ and })
+        for (NSString *string in jsonDict) {
+			//  Set the extra ETAs, one for each entry in the ETA array
+			if ([string isEqualToString:@"eta"]) {
+				for (NSString *etaString in [jsonDict objectForKey:string]) {
+					EtaWrapper *eta = [[EtaWrapper alloc] init];
+					
+					eta.eta = [now dateByAddingTimeInterval:[etaString floatValue]/1000.0f];
+					[extraEtas addObject:eta];
+					
+					[eta release];
+				}
+
+			} else if ([string isEqualToString:@"name"]) {
+				NSString *stopName = [jsonDict objectForKey:string];
+				
+				for (EtaWrapper *eta in extraEtas) {
+					eta.stopName = stopName;
+				}
+			}
+        }
+		
+		return YES;
+	}
+	
+	return NO;
+}
+
+	
 - (void)dealloc {
     [routes release];
     [stops release];
@@ -465,7 +543,8 @@
 	NSString *newSubtitle;
 	
 	if (timeDisplayFormatter) {	//	If the object got a timeDisplayFormatter, use it.
-		newSubtitle = [@"Updated: " stringByAppendingString:[timeDisplayFormatter stringFromDate:updateTime]];
+		newSubtitle = [@"Updated: " stringByAppendingString:[timeDisplayFormatter 
+															 stringFromDate:updateTime]];
 		
 		//	Check to see if the updated subtitle is the same as the existing one.
 		//	If it isn't, then update the subtitle
@@ -479,7 +558,8 @@
 		
 		//	Check to see if the updated subtitle is the same as the existing one.
 		//	If it isn't, then update the subtitle
-		newSubtitle = [@"Updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
+		newSubtitle = [@"Updated: " stringByAppendingString:[dateFormatter 
+															 stringFromDate:updateTime]];
 		
 		if (![newSubtitle isEqualToString:self.subtitle]) {
 			self.subtitle = newSubtitle;

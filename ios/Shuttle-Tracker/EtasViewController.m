@@ -9,12 +9,14 @@
 #import "EtasViewController.h"
 #import "EtaWrapper.h"
 #import "DataManager.h"
+#import "LaterEtasViewController.h"
 
 
 @interface EtasViewController ()
 
 - (void)delayedTableReload;
 - (void)unsafeDelayedTableReload;
+- (void)unsafeDelayedTableReloadForced;
 
 @end
 
@@ -27,10 +29,8 @@
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
-    self = [super initWithStyle:style];
-	
-    if (self) {
-		
+    if ((self = [super initWithStyle:style])) {
+		self.title = @"ETAs";
     }
 	
     return self;
@@ -71,7 +71,7 @@
     // self.clearsSelectionOnViewWillAppear = NO;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewDidUnload
@@ -163,21 +163,115 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	[dataManager selectEtaAtIndexPath:indexPath];
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-	[self delayedTableReload];
+	EtaWrapper *etaWrapped = nil;
+    
+    int counter = 0;
+    
+	NSArray *etas = [dataManager etasForSection:indexPath.section];
+	
+    //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
+    for (EtaWrapper *eta in etas) {
+		if (counter == indexPath.row) {
+			etaWrapped = eta;
+			break;
+		}
+		
+		counter++;
+    }
+	
+	LaterEtasViewController *levc = [[LaterEtasViewController alloc] initWithEta:etaWrapped];
+	levc.dataManager = dataManager;
+	levc.timeDisplayFormatter = timeDisplayFormatter;
+	
+	// Pass the selected object to the new view controller.
+	[self.navigationController pushViewController:levc animated:YES];
+	[levc release];
+	
+	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath 
+{
+    // Return NO if you do not want the specified item to be editable.
+    return YES;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	if ([dataManager isFavoritesSection:indexPath.section]) {
+		return @"Unfavorite";
+	} else {
+		return @"Favorite";
+	}
 }
 
 
-//	Call unsafeDelayedTableReload on the main thread
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
+	if ([dataManager isFavoritesSection:indexPath.section]) {
+		return UITableViewCellEditingStyleDelete;
+	} else {
+		return UITableViewCellEditingStyleInsert;
+	}
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	//	If the cell is taken action on, either using the Insert button or the
+	//	delete button, tell the data manager and update the table.
+	if (editingStyle == UITableViewCellEditingStyleDelete)
+	{
+		//	Remove a favorite stop: tell the data manager and delete
+		//	the row from the table.  If it was the last row, delete
+		//	the whole favorites section.
+		
+		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+		
+		//	If the last row in a section is going to be removed, just delete the section.
+		//	Otherwise remove the row.
+		if ([self.tableView numberOfRowsInSection:indexPath.section] == 1) {
+			[self.tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+														withRowAnimation:UITableViewRowAnimationFade];
+		} else {
+			[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil] 
+								  withRowAnimation:UITableViewRowAnimationFade];
+		}
+	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
+		//	Add a favorite stop: tell the data manager and reload
+		//	the table.
+		
+		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+		
+		//	Reload the table
+		[self unsafeDelayedTableReloadForced];
+	}
+}
+
+
+//	Call unsafeDelayedTableReload on the main thread.  A threadsafe
+//	way to call for a table reload.
 - (void)delayedTableReload {
 	[self performSelectorOnMainThread:@selector(unsafeDelayedTableReload) 
 						   withObject:nil waitUntilDone:NO];
 }
 
 
-//	Reload the table on a short delay, usually for a data change
+//	Reload the table on a short delay, usually for a data change.
+//	Do not reload if the table is in editing mode.
 - (void)unsafeDelayedTableReload {
+	if ([self.tableView isEditing]) {
+		return;
+	} else {
+		[NSTimer scheduledTimerWithTimeInterval:0.125f 
+										 target:self.tableView 
+									   selector:@selector(reloadData) 
+									   userInfo:nil 
+										repeats:NO];
+	}
+}
+
+//	Reload the table on a short delay, usually for a data change.
+//	Reload regardless of the current table mode.
+- (void)unsafeDelayedTableReloadForced {
 	[NSTimer scheduledTimerWithTimeInterval:0.125f 
 									 target:self.tableView 
 								   selector:@selector(reloadData) 

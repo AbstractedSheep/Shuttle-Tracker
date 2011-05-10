@@ -11,7 +11,7 @@
 
 @class EtasViewController;
 
-@interface MainViewController_iPhone : MainViewController {
+@interface MainViewController_iPhone : MainViewController <UITabBarControllerDelegate> {
     
 	UITabBarController *tabBarController;
     EtasViewController *etasViewController;

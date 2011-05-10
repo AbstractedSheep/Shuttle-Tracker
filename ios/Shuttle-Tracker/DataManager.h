@@ -36,9 +36,6 @@
 	NSMutableArray *favoriteStopNames;
 	NSMutableArray *favoriteEtas;
 	NSMutableDictionary *numberEtas;
-	
-    BOOL onlySoonestEtas;
-	BOOL lockFavorites;
     
 	dispatch_queue_t loadVehicleJsonQueue;
 	dispatch_queue_t loadEtaJsonQueue;
@@ -66,7 +63,9 @@
 - (void)updateData;
 - (int)numberEtasForSection:(int)sectionNo;
 - (NSArray *)etasForSection:(int)sectionNo;
-- (void)selectEtaAtIndexPath:(NSIndexPath *)indexPath;
+- (void)toggleFavoriteEtaAtIndexPath:(NSIndexPath *)indexPath;
+- (void)setEta:(id)eta asFavorite:(BOOL)addFavorite;
+- (BOOL)isFavoritesSection:(NSUInteger)section;
 
 
 @end
