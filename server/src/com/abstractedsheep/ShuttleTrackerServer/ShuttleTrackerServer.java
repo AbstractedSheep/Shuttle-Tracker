@@ -92,9 +92,11 @@ public class ShuttleTrackerServer {
 	 * later be used to save the data to a file.
 	 */
 	private void calculateETA() {
+		long time = System.currentTimeMillis();
 		for (Shuttle shuttle : shuttleList) {
 				shuttle.getETAToStop();
 		}
+		System.out.println((System.currentTimeMillis() - time) / 1000.0);
 	}
 
 	/**
