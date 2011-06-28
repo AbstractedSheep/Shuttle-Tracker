@@ -1,0 +1,18 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Shuttle-Tracker-Service\Program.cs">
+    <Files>
+      <File FileName="Shuttle-Tracker-Service\World.cs" Line="36" Column="53" />
+      <File FileName="Shuttle-Tracker-Service\EtaCalculator.cs" Line="84" Column="10" />
+      <File FileName="Shuttle-Tracker-Service\Stop.cs" Line="81" Column="54" />
+      <File FileName="Shuttle-Tracker-Service\Route.cs" Line="12" Column="31" />
+      <File FileName="Shuttle-Tracker-Service\Coordinate.cs" Line="91" Column="10" />
+      <File FileName="Shuttle-Tracker-Service\Shuttle.cs" Line="26" Column="4" />
+      <File FileName="Shuttle-Tracker-Service\Program.cs" Line="29" Column="17" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

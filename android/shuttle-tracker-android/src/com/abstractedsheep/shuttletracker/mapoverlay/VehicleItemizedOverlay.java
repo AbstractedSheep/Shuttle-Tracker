@@ -54,18 +54,18 @@ import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
 	private static final int MAGENTA = Color.rgb(255, 0, 255);
 	
-	private Bitmap markerBitmap;
-	private Bitmap markerBitmapFlipped;
+	private final Bitmap markerBitmap;
+	private final Bitmap markerBitmapFlipped;
 	private HashMap<Integer, Bitmap> coloredMarkers = new HashMap<Integer, Bitmap>();
 	private HashMap<Integer, Bitmap> coloredMarkersFlipped = new HashMap<Integer, Bitmap>();
 	private HashMap<Integer, RoutesJson.Route> routes = new HashMap<Integer, RoutesJson.Route>();
 	private BiMap<Integer, Integer> idToIndex = HashBiMap.create();
 	private ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
-	private Drawable marker;
+	private final Drawable marker;
 	private int visibleBalloon = -1;
-	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	private SimpleDateFormat formatter12 = new SimpleDateFormat("MM/dd/yy h:mm:ss a");
-	private SimpleDateFormat formatter24 = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
+	private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final SimpleDateFormat formatter12 = new SimpleDateFormat("MM/dd/yy h:mm:ss a");
+	private final SimpleDateFormat formatter24 = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
 	private SharedPreferences prefs;
 	
 	public VehicleItemizedOverlay(Drawable defaultMarker, MapView map, SharedPreferences prefs) {
@@ -139,9 +139,8 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	}
 	
 	public synchronized void putRoutes(List<RoutesJson.Route> routeList) {
-		RoutesJson.Route route;
 		for (int i = 0; i < routeList.size(); i++) {
-			route = routeList.get(i);
+			RoutesJson.Route route = routeList.get(i);
 			routes.put(route.getId(), route);
 			
 			coloredMarkers.put(route.getId(), recolorBitmap(markerBitmap, route.getColorInt()));
@@ -175,27 +174,23 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	
 	@Override
 	public synchronized void draw(Canvas canvas, MapView mapView, boolean shadow) {
-		Projection p = mapView.getProjection();
-		Point pt;		
-		Matrix rotate = new Matrix();
-		Bitmap tempBitmap;
-		long now;
-		long age;
-		Date lastUpdate;
+		final Projection p = mapView.getProjection();
+		final Matrix rotate = new Matrix();
+		long now = (new Date()).getTime();
 			
 		for (VehicleJson v : vehicles) {
 			try {
-				now = (new Date()).getTime();
-				lastUpdate = formatter.parse(v.getUpdate_time());
-				age = now - lastUpdate.getTime();
+				Date lastUpdate = formatter.parse(v.getUpdate_time());
+				long age = now - lastUpdate.getTime();
 				if (age > 45000)
 					continue;
 				
 				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
-				pt = p.toPixels(gp, null);
+				Point pt = p.toPixels(gp, null);
 
 				rotate.reset();
 				
+				Bitmap tempBitmap;
 				if (v.getHeading() > 180) {
 					tempBitmap = coloredMarkersFlipped.get(v.getRoute_id());
 					rotate.postRotate(v.getHeading(), tempBitmap.getWidth() / 2, tempBitmap.getHeight() / 2);

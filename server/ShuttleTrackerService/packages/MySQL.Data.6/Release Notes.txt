@@ -1,0 +1,19 @@
+Connector/Net 6.2  Release Notes
+------------------------------------
+
+Welcome to the release notes for Connector/Net 6.2
+
+What's new in 6.2
+--------------------
+
+- Idle connection pool cleanup.  We now use a timer thread to clean up dead connections from
+  the connection pool.
+- Command timeout has been refactored to use network and stream timeouts instead of a timer.  The
+  result of this is that fewer system resources are used and the system should be more reliable.
+- Completely refactored MySqlConnectionStringBuilder
+- Completely refactored logging system.  It now users fewer cycles when logging is not enabled. 
+  It also logs more information such as query time, number of results, and number of rows returned
+  by a query.  It also keeps all the information for a given query together so it is easier to 
+  follow in the log.
+
+

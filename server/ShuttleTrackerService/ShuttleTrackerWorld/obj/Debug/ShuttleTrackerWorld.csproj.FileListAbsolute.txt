@@ -1,0 +1,16 @@
+D:\Programs\Abstracted Sheep\Shuttle-Tracker-Service\ShuttleTrackerWorld\obj\Debug\ResolveAssemblyReference.cache
+D:\Programs\Abstracted Sheep\Shuttle-Tracker-Service\ShuttleTrackerWorld\bin\Debug\ShuttleTrackerWorld.dll
+D:\Programs\Abstracted Sheep\Shuttle-Tracker-Service\ShuttleTrackerWorld\bin\Debug\ShuttleTrackerWorld.pdb
+D:\Programs\Abstracted Sheep\Shuttle-Tracker-Service\ShuttleTrackerWorld\bin\Debug\Newtonsoft.Json.dll
+D:\Programs\Abstracted Sheep\Shuttle-Tracker-Service\ShuttleTrackerWorld\bin\Debug\Newtonsoft.Json.pdb
+D:\Programs\Abstracted Sheep\Shuttle-Tracker-Service\ShuttleTrackerWorld\bin\Debug\Newtonsoft.Json.xml
+D:\Programs\Abstracted Sheep\Shuttle-Tracker-Service\ShuttleTrackerWorld\obj\Debug\ShuttleTrackerWorld.dll
+D:\Programs\Abstracted Sheep\Shuttle-Tracker-Service\ShuttleTrackerWorld\obj\Debug\ShuttleTrackerWorld.pdb
+D:\Programs\Abstracted Sheep\ShuttleTrackerService\ShuttleTrackerWorld\bin\Debug\AbstractedSheep.ShuttleTrackerWorld.dll
+D:\Programs\Abstracted Sheep\ShuttleTrackerService\ShuttleTrackerWorld\bin\Debug\AbstractedSheep.ShuttleTrackerWorld.pdb
+D:\Programs\Abstracted Sheep\ShuttleTrackerService\ShuttleTrackerWorld\bin\Debug\Newtonsoft.Json.dll
+D:\Programs\Abstracted Sheep\ShuttleTrackerService\ShuttleTrackerWorld\bin\Debug\Newtonsoft.Json.pdb
+D:\Programs\Abstracted Sheep\ShuttleTrackerService\ShuttleTrackerWorld\bin\Debug\Newtonsoft.Json.xml
+D:\Programs\Abstracted Sheep\ShuttleTrackerService\ShuttleTrackerWorld\obj\Debug\ResolveAssemblyReference.cache
+D:\Programs\Abstracted Sheep\ShuttleTrackerService\ShuttleTrackerWorld\obj\Debug\AbstractedSheep.ShuttleTrackerWorld.dll
+D:\Programs\Abstracted Sheep\ShuttleTrackerService\ShuttleTrackerWorld\obj\Debug\AbstractedSheep.ShuttleTrackerWorld.pdb

@@ -1,0 +1,97 @@
+Version 6.2.4
+- Fix authorization popup after modifying stored procedure in VS (Bug #44715)
+- Dispose EventLog after use in MySql.Web.dll provider classes, to avoid wasting resources
+  (Bug #55793)
+- Fix calculation of lockAge in SessionProvider (Bug #55701)
+- fix "There is already an open DataReader..." after exceptions in DataReader.Close()
+ (bug#55558)
+- Improve performance of MySqlHelper.EscapeString()
+- Handle cases where server returns unparsable (out-of-range) double values
+  (Bug#55644)
+- Improve performance of write operations (e.g insert) if compression is enabled
+  (Bug #48243)
+- Improve performance of MySqlHelper.EscapeString()
+- Fix membership provider creation failure, when default database character set is different from latin1 (Bug #53174)
+- Fix "Connection must be valid and open" exception When UpdateBatchSize > 1 
+  and MySqlDataAdapter is not using an open connection (Bug #38411)
+- Make sure MySqlDataAdapter.Update() works for custom stored procedure driven update commands 
+  that make use of UpdateRowSource.FirstReturnedRecord (Bug#54895)
+- Ensure exceptions are not silently eaten inside MySqlDataReader.Read()  (Bug#53439)
+- Cancel query in ThreadAbortException handler (Bug#54012)
+- Call DataTable.AcceptChanges() for affected tables at the end of MySqlAdapter.Update, 
+  to match the documented IDataAdater behavior (bug#54863)
+- Fix race condition (concurrent reading/modification of the same DataSet) in StoredProcedure.GetParameters()
+  (bug#49118)
+- Fix problems with MySqlDataAdapter insert command, when batch size is > 1, and 
+  INSERT statement has expression with parentheses (e.g arithmetical expressions) (bug #54386)
+- fix crashes on long queries, when logging is turned on (bug #53865, bug #54152)
+- Try to avoid exception when Connection is closed by garbage collector (bug #53457)
+- Added trace message in exception blog in MySqlConnection.Abort() method (bug #52769)
+- changed mapping of latin1 from latin1 to windows-1252 (bug #51927)
+- flushed out many more entires in error code enum (bug #51988)
+- changed how we respond when the user selects 'functions return string=true'.  Now we no longer force the type to var string but just let the underlying type come through but we strip the binary flag (bug #52187)
+- Replaced check for Settings.Logging when logging information in the 
+  procedure cache.  This is already in 6.1 and 6.0 but got "misplaced" in 6.2
+  (bug #52475)
+- SessionProvider : Avoid SQLNullValueException if lockId returned by select is 
+  NULL (bug#52175)
+- improved our procedure caching so that if you drop and recreate a proc with a different number of parameters
+  it will find the new proc as long as your are actually using the right number of parameters (bug #52562)
+- added public MySqlHelper.ExecuteDataReader method that takes an external connection (bug #54570)
+- applied patch from 5.x series that reset the connection to the base encoding when doing a 
+  connection reset (bug #47153)
+- fixed bug that caused the web site config wizard to not appear when working with web applications
+  as opposed to websites (bug #54571)
+- changed DbCommandBuilder and added a MySqlDataObjectIdentifierConverter so we don't output
+  the databasename in our typed datasets.  This allows users to move the dataset to a new
+  database/server with no trouble (bug #33870)
+- fixed recognition of char(36) columns to be guids when used in views with entity models (bug #52085)
+- fixed visual studio plugin so that stored procedure editing works on older versions of MySQL (bug #55170)
+
+Version 6.2.3
+- fixed InvalidOperationException when accessing Stream.ReadTimeout or Stream.WriteTimeout on CF
+  (bug #50321)
+- fixed entity framework function processing so that it handles stored functions properly
+  (bug #45277)
+- fixed a bug with prepared statements and unsigned bigint.  Patch also provided a nice speedup to reading
+  integer values from the wire (bug #49794)
+- fixed problem where not specifying the data type of the return value of a function caused it to 
+  mistakenly use Decimal as the return type (bug #49642)
+- fixed bug where a scipt that had an empty last line would cause an InvalidOperationException (bug #50344)
+- fixed bug in logging that kept no index and bad index warnings from being sent
+- fixed bug where giving a connection string option like (option=) and then trying to read
+  the option back via the property would fail (bug #51209)
+- fixed bug where a connection could not be reused in the IDE in some circumstances (bug #41629)
+- small performance fix (bug #51149)
+- fixed issue with script execution & multi-char delimiters (bug #46429)
+- fixed bug in table editor where clicking back on the last row added can sometimes
+  cause a ArgumentOutOfRange exception
+- fixed bug where a commands batchable command text was not getting reset when the 
+  command text was reset (bug #50444)
+- fixed bug where using a currently non-batchable command in a batch would throw an exception
+  (bug #50123)
+- fixed bug where binary or blob columns would prevent columns after that from appearing in the
+  query builder (bug #50171)
+- ScriptCompleted event handler now uses EventArgs.Empty instead of null
+- fixed parsing bug that was caused by special characters being jammed up beside a quoted identifier (bug #51610)
+- added feature where sql queries that are longer than 300 chars are normalized and a new
+  query normalized log line is issues right after query opened to give the query normalized text
+- fixed bug in sql generation when using a negated binary fragment in EF (bug #49850)
+- fixed bug in tokenization where a nonterminated string in sql will cause a CLR exception
+  rather than throwing a syntax exception (bug #51788)
+- added two requested features -- MySqlDataReader.GetFieldType(string columnname) &
+  MySqlDataReader.GetOrdinal() includes the name of the column in the exception when not found
+  (bug #47467)
+
+Version 6.2.2
+- Fix race condition during TransactionScope rollback (bug#35330)
+- When sending file to server (LOAD DATA INFILE) open the file for read only, not for read/write
+ (bug #48944)
+- Fixed precision calculation on decimal and newdecimal columns (bug #48171)
+- Fixed problem caused by us not including a 'REFERENCED_TABLE_CATALOG' column in our
+  foreign keys collection (bug #48974)
+
+Version 6.2.1
+- fixed SessionProvider to be compatible with 4.x MySQL, replaced TIMESTAMPDIFF with TIME_TO_SEC
+  (bug#47219)
+- implemented support for client SSL certificates
