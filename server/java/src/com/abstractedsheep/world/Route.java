@@ -1,8 +1,7 @@
 package com.abstractedsheep.world;
 
 import java.util.ArrayList;
-
-import com.abstractedsheep.world.Shuttle.Point;
+import java.util.HashMap;
 
 /**
  * This class is designed to hold information about a shuttle route.
@@ -17,7 +16,10 @@ import com.abstractedsheep.world.Shuttle.Point;
 public class Route {
 	private int idNum;
 	private String routeName;
-	private ArrayList<Point> coordinateList;
+	private ArrayList<Coordinate> coordinateList;
+	private ArrayList<Double> distanceToNextCoordinateList;
+	private HashMap<Integer, Shuttle> shuttleList;
+	private HashMap<Integer, Stop> stopList;
 	private double roundTripDistance;
 	/**
 	 * list of initial bearings for each route point.
@@ -27,116 +29,38 @@ public class Route {
 	public Route() {
 		idNum = 0;
 		routeName = "West";
-		this.coordinateList = new ArrayList<Point>();
-		calculateBearings();
-		computeRoundTripDistance();
+		this.coordinateList = new ArrayList<Coordinate>();
+		this.stopList = new HashMap<Integer, Stop>();
+		this.shuttleList = new HashMap<Integer, Shuttle>();
+		this.distanceToNextCoordinateList = new ArrayList<Double>();
+		this.roundTripDistance = 0.0;
 	}
 
-	public Route(int idNum, String routeName) {
+	public Route(int idNum, String routeName, ArrayList<Coordinate> list) {
 		this.idNum = idNum;
 		this.routeName = routeName;
-		this.coordinateList = new ArrayList<Point>();
-		calculateBearings();
-		computeRoundTripDistance();
+		this.coordinateList = list;
+		this.roundTripDistance = 0.0;
+		this.stopList = new HashMap<Integer, Stop>();
+		this.shuttleList = new HashMap<Integer, Shuttle>();
+		this.distanceToNextCoordinateList = new ArrayList<Double>();
+		this.computeDistances();
 	}
 	
-	//computes the round trip distance for this route
-	private void computeRoundTripDistance() {
-		Point p1 = null, p2 = null;
-		this.roundTripDistance = 0;
-		for(int i = 0; i < this.coordinateList.size(); i++) {
-			p1 = this.coordinateList.get(i);
-			p2 = (i == 0) ? coordinateList.get(coordinateList.size() - 1) : coordinateList.get(i - 1);
-			
-			this.roundTripDistance += this.calculateDistance(p2, p1);
+	private void computeDistances() {
+		int size = coordinateList.size();
+		Coordinate c1 = null, c2 = null;
+		double distance = 0.0;
+		for (int i = 0; i < coordinateList.size(); i++) {
+			if (i == 0)
+				c1 = coordinateList.get(size - 1);
+			else
+				c1 = coordinateList.get(i - 1);
+			c2 = coordinateList.get(i);
+			distance = c1.distanceFromCoordiante(c2);
+			this.distanceToNextCoordinateList.add(distance);
+			this.roundTripDistance += distance;
 		}
-	}
-	//computes the distance between two points (in miles)
-	private double calculateDistance(Shuttle.Point p, Shuttle.Point curr) {
-		double earthRadius = 3956; //radius in miles
-		
-		double dlong = Math.toRadians((curr.getLon() - p.getLon()));
-	    double dlat = Math.toRadians((curr.getLat() - p.getLat()));
-	    double a = Math.pow(Math.sin(dlat/2.0), 2) +
-	    		   Math.cos(Math.toRadians(p.getLat())) * Math.cos(Math.toRadians(curr.getLon())) * Math.pow(Math.sin(dlong/2.0), 2);
-	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-	    double d = earthRadius * c; 
-
-	    return d;
-	}
-
-	/**
-	 * calculates the initial bearing between a route position and the position
-	 * both before and after it.
-	 */
-	public void calculateBearings() {
-		this.bearingList = new ArrayList<Double[]>();
-		Point p1 = null, p2 = null, p3 = null;
-		
-		for(int i = 0; i < coordinateList.size(); i++) {
-			p1 = coordinateList.get(i);
-			
-			//ArrayIndexOutOfBoundsException will be thrown if i = 0
-			try {
-				p2 = coordinateList.get(i - 1);
-			} catch(IndexOutOfBoundsException ex) {
-				int index = coordinateList.size() - 1;
-				p2 = coordinateList.get(index);
-			}
-			//ArrayIndexOutOfBoundsException will be thrown if i >= size() - 1
-			try {
-				p3 = coordinateList.get(i + 1);
-			} catch(IndexOutOfBoundsException ex) {
-				System.err.println(i + " / " + coordinateList.size());
-				p3 = coordinateList.get(0);
-			}
-			
-			this.bearingList.add(getConstantBearing(p1, p2, p3));
-		}
-	}
-	
-	/**
-	 * Method calculates the constant bearing between the current route point and the one
-	 * immediately following it as well as the bearing between the current route point
-	 * and the one immediately before it.
-	 * @param current - route point in the coordinate list at index n
-	 * @param prev - route point in the coordinate list at index n-1 
-	 * @param next - route point in the coordinate list at index n+1
-	 * @return Method returns an array containing the bearing between current and prev
-	 * 		   as well as the bearing between current and next
-	 */
-	private Double[] getConstantBearing(Point current, Point prev, Point next) {
-		Double[] array = new Double[2];
-		double deltaLat1 = (current.getLatInRadians() - prev.getLatInRadians()),
-		   	   deltaLat2 = (next.getLatInRadians() - current.getLatInRadians());
-		double deltaLon1 = (current.getLonInRadians() - prev.getLonInRadians()),
-		       deltaLon2 = (next.getLonInRadians() - current.getLonInRadians());
-		
-		double dPhi1 = Math.log(Math.tan(current.getLatInRadians()/2+Math.PI/4)/
-					  Math.tan(prev.getLatInRadians()/2+Math.PI/4));
-		double dPhi2 = Math.log(Math.tan(next.getLatInRadians()/2+Math.PI/4)/
-				  	  Math.tan(current.getLatInRadians()/2+Math.PI/4));
-		
-		if(deltaLon1 > Math.PI) {
-			deltaLon1 = (deltaLon1 > 0) ? -(2*Math.PI - deltaLon1) : (2*Math.PI + deltaLon1);
-		}
-		
-		if(deltaLon2 > Math.PI) {
-			deltaLon2 = (deltaLon2 > 0) ? -(2*Math.PI - deltaLon2) : (2*Math.PI + deltaLon2);
-		}
-		
-		double bearing1 = Math.toDegrees(Math.atan2(deltaLon1, dPhi1));
-		double bearing2 = Math.toDegrees(Math.atan2(deltaLon2, dPhi2));
-		array[0] = (bearing1 < 0) ? (bearing1 + 360) : bearing1;
-		array[1] = (bearing2 < 0) ? (bearing2 + 360) : bearing2;
-		return array;
-	}
-	
-	/**
-	 * returns route trip distance around the route.
-	 */
-	public double getRoundTripDistance() {
-		return this.roundTripDistance;
 	}
 
 	/**
@@ -160,30 +84,42 @@ public class Route {
 	public String getRouteName() {
 		return routeName;
 	}
-	/**
-	 * returns the constant bearings for the route point
-	 * at the given index
-	 * @param index - idnex of the desired route point
-	 * @return the bearings between the desired route point
-	 * 		   and the one before it as well as the bearing between
-	 * 		   the desired route point and the one after it
-	 */
-	public Double[] getBearingsForPoint(int index) {
-		return this.bearingList.get(index);
+	public ArrayList<Coordinate> getCoordinateList() {
+		return this.coordinateList;
 	}
-	//place coordinate in list as two double values
-	public void putCoordinate(double lon, double lat) {
-		Point p = new Shuttle.Point(lat, lon);
-		this.coordinateList.add(p);
-		this.computeRoundTripDistance();
-	}
-	//place coordinate in list as a Point object
-	public void putCoordinate(Point coordinate) {
-		this.coordinateList.add(coordinate);
-		this.computeRoundTripDistance();
+	
+	public void setCoordinateList(ArrayList<Coordinate> list) {
+		this.distanceToNextCoordinateList.clear();
+		this.roundTripDistance = 0.0;
+		this.coordinateList = list;
+		this.computeDistances();
 	}
 
-	public ArrayList<Point> getCoordinateList() {
-		return this.coordinateList;
+	/**
+	 * @return the shuttleList
+	 */
+	public HashMap<Integer, Shuttle> getShuttleList() {
+		return shuttleList;
+	}
+
+	/**
+	 * @param shuttleList the shuttleList to set
+	 */
+	public void setShuttleList(HashMap<Integer, Shuttle> shuttleList) {
+		this.shuttleList = shuttleList;
+	}
+
+	/**
+	 * @return the stopList
+	 */
+	public HashMap<Integer, Stop> getStopList() {
+		return stopList;
+	}
+
+	/**
+	 * @param stopList the stopList to set
+	 */
+	public void setStopList(HashMap<Integer, Stop> stopList) {
+		this.stopList = stopList;
 	}
 }
