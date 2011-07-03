@@ -10,6 +10,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
 
+import com.abstractedsheep.world.Route;
+import com.abstractedsheep.world.Shuttle;
+import com.abstractedsheep.world.Stop;
+
 /**
  * Parses the data given by JSONExtractor in order to create an object.
  * @author saiumesh

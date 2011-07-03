@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import com.abstractedsheep.extractor.*;
+import com.abstractedsheep.world.Shuttle;
 
 /**
  * This is the main class that will run all of the server code.

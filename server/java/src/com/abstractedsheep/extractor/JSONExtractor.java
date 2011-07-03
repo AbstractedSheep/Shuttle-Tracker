@@ -13,6 +13,10 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 
+import com.abstractedsheep.world.Route;
+import com.abstractedsheep.world.Shuttle;
+import com.abstractedsheep.world.Stop;
+
 /**
  * The purpose of this class is to extract the jsons from the rpi shuttle server
  * and process the data.

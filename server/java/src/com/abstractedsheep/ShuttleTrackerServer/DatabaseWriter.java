@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import com.abstractedsheep.extractor.Shuttle;
+import com.abstractedsheep.world.Shuttle;
 
 /**
  * Connects to the server {@link http://www.abstractedsheep.com/phpMyAdmin/} and writes data to the
