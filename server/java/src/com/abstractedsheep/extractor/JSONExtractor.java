@@ -29,14 +29,7 @@ public class JSONExtractor {
 	private URL shuttleURL;
 	private JsonParser parser;
 	private JsonFactory f; // not required globally
-	private ArrayList<String> extractedValueList, extractedValueList2; // will
-																		// hold
-																		// values
-																		// from
-																		// the
-																		// JSON
-	// these two variables are not used atm, but would store the data from the
-	// json.
+	private ArrayList<String> extractedValueList, extractedValueList2;
 	private ArrayList<Stop> stopList;
 	private ArrayList<Route> routeList;
 	private HashSet<Shuttle> shuttleList;
