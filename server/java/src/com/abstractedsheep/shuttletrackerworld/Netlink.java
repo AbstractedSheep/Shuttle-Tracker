@@ -20,14 +20,9 @@
 
 package com.abstractedsheep.shuttletrackerworld;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import android.graphics.Color;
-
-import com.abstractedsheep.shuttletracker.json.Style;
-import com.abstractedsheep.shuttletracker.mapoverlay.DirectionalOverlayItem;
-import com.google.android.maps.GeoPoint;
 
 public class Netlink {
 	private ArrayList<StopJson> stops;
@@ -106,10 +101,6 @@ public class Netlink {
 			}
 			private String name;
 		}
-		
-		public DirectionalOverlayItem toOverlayItem() {	
-			return new DirectionalOverlayItem(new GeoPoint((int) (this.latitude * 1e6), (int)(this.longitude * 1e6)), this.name, "");
-		}
 
 		public int compareTo(StopJson another) {
 			if (favoriteRoute == -1)
@@ -149,12 +140,12 @@ public class Netlink {
 		}
 		
 		public int getColorInt() {
-			int[] colors = Style.hexStringToByteArray(color.substring(1));
+		    return Color.decode(this.color).getRGB();
 			
-			if (colors.length == 4)
+			/*if (colors.length == 4)
 				return Color.argb(colors[0], (colors[3] - 10 > 0) ? colors[3] - 10 : 0,  (colors[2] - 10 > 0) ? colors[2] - 10 : 0,  (colors[1] - 10 > 0) ? colors[1] - 10 : 0);
 			else
-				return Color.rgb(colors[0],  (colors[1] - 10 > 0) ? colors[1] - 10 : 0,  (colors[2] - 10 > 0) ? colors[2] - 10 : 0);
+				return Color.rgb(colors[0],  (colors[1] - 10 > 0) ? colors[1] - 10 : 0,  (colors[2] - 10 > 0) ? colors[2] - 10 : 0);*/
 		}
 
 		public void setColor(String color) {
