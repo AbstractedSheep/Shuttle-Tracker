@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
-import com.abstractedsheep.shuttletracker.json.Netlink;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -36,10 +36,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.abstractedsheep.shuttletracker.json.EtaArray;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
-import com.abstractedsheep.shuttletracker.json.Netlink;
 import com.abstractedsheep.shuttletracker.json.VehicleArray;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
+import com.abstractedsheep.shuttletrackerworld.Netlink;
 
 import android.content.Context;
 import android.content.SharedPreferences;

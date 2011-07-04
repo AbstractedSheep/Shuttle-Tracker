@@ -30,10 +30,10 @@ import java.util.List;
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
-import com.abstractedsheep.shuttletracker.json.Netlink;
-import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson;
-import com.abstractedsheep.shuttletracker.json.Netlink.StopJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
+import com.abstractedsheep.shuttletrackerworld.Netlink;
+import com.abstractedsheep.shuttletrackerworld.Netlink.RouteJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink.StopJson;
 
 import android.content.Context;
 import android.content.SharedPreferences;

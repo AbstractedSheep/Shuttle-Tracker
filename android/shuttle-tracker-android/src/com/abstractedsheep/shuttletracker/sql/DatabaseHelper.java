@@ -22,10 +22,10 @@ package com.abstractedsheep.shuttletracker.sql;
 
 import java.util.ArrayList;
 
-import com.abstractedsheep.shuttletracker.json.Netlink;
-import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson;
-import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson.RouteCoordinateJson;
-import com.abstractedsheep.shuttletracker.json.Netlink.StopJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink;
+import com.abstractedsheep.shuttletrackerworld.Netlink.RouteJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink.StopJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink.RouteJson.RouteCoordinateJson;
 
 import android.content.ContentValues;
 import android.content.Context;

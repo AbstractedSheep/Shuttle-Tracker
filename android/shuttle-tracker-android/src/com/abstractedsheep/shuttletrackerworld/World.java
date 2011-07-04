@@ -23,11 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.abstractedsheep.shuttletracker.json.Netlink;
-import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson;
-import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson.RouteCoordinateJson;
-import com.abstractedsheep.shuttletracker.json.Netlink.StopJson;
-import com.abstractedsheep.shuttletracker.json.Netlink.StopJson.StopRouteJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink.RouteJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink.StopJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink.RouteJson.RouteCoordinateJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink.StopJson.StopRouteJson;
 
 
 public class World

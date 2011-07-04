@@ -33,8 +33,8 @@ import android.graphics.drawable.Drawable;
 
 import com.abstractedsheep.shuttletracker.TrackerPreferences;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
-import com.abstractedsheep.shuttletracker.json.Netlink.StopJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
+import com.abstractedsheep.shuttletrackerworld.Netlink.StopJson;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;

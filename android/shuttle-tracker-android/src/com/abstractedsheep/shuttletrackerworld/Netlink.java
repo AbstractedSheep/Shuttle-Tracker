@@ -18,13 +18,14 @@
  *  
  */
 
-package com.abstractedsheep.shuttletracker.json;
+package com.abstractedsheep.shuttletrackerworld;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.graphics.Color;
 
+import com.abstractedsheep.shuttletracker.json.Style;
 import com.abstractedsheep.shuttletracker.mapoverlay.DirectionalOverlayItem;
 import com.google.android.maps.GeoPoint;
 

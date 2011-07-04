@@ -24,8 +24,8 @@ import java.util.ArrayList;
 
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
-import com.abstractedsheep.shuttletracker.json.Netlink;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
+import com.abstractedsheep.shuttletrackerworld.Netlink;
 
 public interface IShuttleServiceCallback {
 	public static int NO_CONNECTION_ERROR = 1;
