@@ -56,18 +56,18 @@ public class World
 	/// </summary>
 	/// <param name="n">The Netlink class that represents the Netlink JSON.</param>
 	/// <returns>A world generated from the Netlink.</returns>
-	public static World GenerateWorld(Netlink n)
+	public static World generateWorld(Netlink n)
 	{
 		World w = new World();
 		
 	    for (RouteJson r : n.getRoutes())
 	    {
-	        w.AddRoute(r);
+	        w.addRoute(r);
 	    }
 	
 	    for (StopJson s : n.getStops())
 	    {
-	        w.AddStop(s);
+	        w.addStop(s);
 	    }
 	
 		return w;
@@ -76,7 +76,7 @@ public class World
 	/// <summary>
 	/// Removes all shuttles older than SHUTTLE_EXPIRATION_TIME
 	/// </summary>
-	public void RemoveOldShuttles()
+	public void removeOldShuttles()
 	{
 	    for (Entry<Integer, Shuttle> e : m_shuttles.entrySet())
 	    {
@@ -95,7 +95,7 @@ public class World
 	/// <param name="cardinalPoint">The heading of the shuttle as a cardinal direcation (e.g. Northwest).</param>
 	/// <param name="speed">The speed of the shuttle in miles per hour.</param>
 	/// <param name="route">The id of the shuttle route. -1 indicates that the shuttle is not on a route.</param>
-    public void AddOrUpdateShuttle(int shuttleId, Coordinate location, String name, int bearing, String cardinalPoint, int speed, int route)
+    public void addOrUpdateShuttle(int shuttleId, Coordinate location, String name, int bearing, String cardinalPoint, int speed, int route)
     {
         Shuttle s = this.m_shuttles.get(shuttleId);
         Route r = this.m_routes.get(route);
@@ -119,7 +119,7 @@ public class World
                 r.m_shuttles.put(s.m_id, s);
             }
 			
-			s.SnapToRoute();
+			s.snapToRoute();
         }
         else
         {
@@ -147,37 +147,37 @@ public class World
                 r.m_shuttles.put(s.m_id, s);
             }
 			
-			s.SnapToRoute();
+			s.snapToRoute();
         }	
     }
 
-    private void AddRoute(RouteJson route)
+    private void addRoute(RouteJson route)
     {
         List<Coordinate> coords = new ArrayList<Coordinate>();
         for (RouteCoordinateJson rc : route.getCoords())
         {
             coords.add(new Coordinate((int)(rc.getLatitude() * 1E6), (int)(rc.getLongitude() * 1E6)));
         }
-        AddRoute(route.getId(), route.getName(), coords);
+        addRoute(route.getId(), route.getName(), coords);
     }
 
-    private void AddRoute(int routeId, String name, List<Coordinate> coords)
+    private void addRoute(int routeId, String name, List<Coordinate> coords)
     {
         Route r = new Route(routeId, name, coords);
         this.m_routes.put(r.getId(), r);
     }
 
-    private void AddStop(StopJson stop)
+    private void addStop(StopJson stop)
     {
         List<Integer> routes = new ArrayList<Integer>();
         for (StopRouteJson sj : stop.getRoutes())
         {
             routes.add(sj.getId());
         }
-        AddStop(stop.getShort_name(), new Coordinate((int)(stop.getLatitude() * 1E6), (int)(stop.getLongitude() * 1E6)), stop.getName(), routes);
+        addStop(stop.getShort_name(), new Coordinate((int)(stop.getLatitude() * 1E6), (int)(stop.getLongitude() * 1E6)), stop.getName(), routes);
     }
 
-    private void AddStop(String stopId, Coordinate location, String name, List<Integer> routes)
+    private void addStop(String stopId, Coordinate location, String name, List<Integer> routes)
     {
         Stop s = new Stop(stopId, name, location);
         m_stops.put(s.getId(), s);
@@ -187,7 +187,7 @@ public class World
             Route r = this.m_routes.get(i);
             s.m_routes.put(r.getId(), r);
             r.m_stops.put(s.getId(), s);
-            s.SnapToRoute(r);
+            s.snapToRoute(r);
         }
     }
     

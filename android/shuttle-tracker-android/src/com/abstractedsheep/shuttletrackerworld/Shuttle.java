@@ -50,7 +50,7 @@ public class Shuttle
         this.m_averageSpeed = -1;
     }
 
-    void SnapToRoute()
+    void snapToRoute()
     {
         if (this.m_currentRoute != null && this.m_location != null)
         {
@@ -68,8 +68,8 @@ public class Shuttle
 
                 c2 = this.m_currentRoute.getCoordinates().get(i);
 
-                tempClosestPoint = this.m_location.ClosestPoint(c1, c2);
-                tempShortestDistance = tempClosestPoint.DistanceTo(this.m_location);
+                tempClosestPoint = this.m_location.closestPoint(c1, c2);
+                tempShortestDistance = tempClosestPoint.distanceTo(this.m_location);
 
                 if (tempShortestDistance < shortestDistance)
                 {

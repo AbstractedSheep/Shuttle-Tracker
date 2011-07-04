@@ -103,6 +103,7 @@ package com.abstractedsheep.shuttletrackerworld;
             }
         }
 
+        @Override
         public int hashCode()
         {
             return ((Double)this.x).hashCode() ^ ((Double)this.y).hashCode() ^

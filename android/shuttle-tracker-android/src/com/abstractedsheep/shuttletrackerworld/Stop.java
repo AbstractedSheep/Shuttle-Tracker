@@ -51,7 +51,7 @@ public class Stop
         this.ro_precedingCoordinateDistance = new ReadOnlyMap<Integer, Double>(this.m_precedingCoordinateDistance);
     }
 
-    void SnapToRoute(Route r)
+    void snapToRoute(Route r)
 	{
 		Coordinate c1, c2;
 		Coordinate closestPoint = null, tempClosestPoint = null;
@@ -67,8 +67,8 @@ public class Stop
 			
 			c2 = r.getCoordinates().get(i);
 
-            tempClosestPoint = this.m_location.ClosestPoint(c1, c2);
-            tempShortestDistance = tempClosestPoint.DistanceTo(this.m_location);
+            tempClosestPoint = this.m_location.closestPoint(c1, c2);
+            tempShortestDistance = tempClosestPoint.distanceTo(this.m_location);
 			
 			if (tempShortestDistance < shortestDistance)
 			{
@@ -80,7 +80,7 @@ public class Stop
 
         this.m_snappedCoordinate.put(r.getId(), closestPoint);
         this.m_precedingCoordinate.put(r.getId(), precedingPointId);
-        this.m_precedingCoordinateDistance.put(r.getId(), r.getCoordinates().get(precedingPointId).DistanceTo(m_location));
+        this.m_precedingCoordinateDistance.put(r.getId(), r.getCoordinates().get(precedingPointId).distanceTo(m_location));
 	}
     
     

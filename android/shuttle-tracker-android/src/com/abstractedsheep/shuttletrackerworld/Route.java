@@ -61,7 +61,7 @@ public class Route
 			
 			c2 = this.m_coordinates.get(i);
 			
-			this.m_distanceToNextCoord.add(c1.DistanceTo(c2));
+			this.m_distanceToNextCoord.add(c1.distanceTo(c2));
 		}
     }
     

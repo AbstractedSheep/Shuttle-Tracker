@@ -45,13 +45,13 @@ public class Coordinate
         this.longitude = longitudeE6 / 1E6;
     }
     
-    public double DistanceTo(Coordinate c)
+    public double distanceTo(Coordinate c)
     {
         double earthRadius = 3956; // Miles
-        double dlong = DegToRad(c.longitude - this.longitude);
-        double dlat = DegToRad(c.latitude - this.latitude);
-        double lat1 = DegToRad(this.latitude);
-        double lat2 = DegToRad(c.latitude);
+        double dlong = degToRad(c.longitude - this.longitude);
+        double dlat = degToRad(c.latitude - this.latitude);
+        double lat1 = degToRad(this.latitude);
+        double lat2 = degToRad(c.latitude);
 
         double a = Math.pow(Math.sin(dlat / 2.0), 2) +
                 Math.pow(Math.sin(dlong / 2.0), 2) * Math.cos(lat1) * Math.cos(lat2);
@@ -60,30 +60,30 @@ public class Coordinate
     }
 
    
-    public double BearingTowards(Coordinate c)
+    public double bearingTowards(Coordinate c)
     {
         double dlong = this.longitude - c.longitude;
         double y = Math.sin(dlong) * Math.cos(c.latitude);
         double x = Math.cos(this.latitude) * Math.sin(c.latitude) -
 	        Math.sin(this.latitude) * Math.cos(c.latitude) * Math.cos(dlong);
-        return RadToDeg(Math.atan2(x, y));
+        return radToDeg(Math.atan2(x, y));
     }
 
-    public Coordinate ClosestPoint(Coordinate endpoint1, Coordinate endpoint2)
+    public Coordinate closestPoint(Coordinate endpoint1, Coordinate endpoint2)
     {	
         double R = 3956;
         Point3D ep1cart = new Point3D(
-	        R * Math.cos(DegToRad(endpoint1.latitude)) * Math.cos(DegToRad(endpoint1.longitude)),
-	        R * Math.cos(DegToRad(endpoint1.latitude)) * Math.sin(DegToRad(endpoint1.longitude)),
-	        R * Math.sin(DegToRad(endpoint1.latitude)));
+	        R * Math.cos(degToRad(endpoint1.latitude)) * Math.cos(degToRad(endpoint1.longitude)),
+	        R * Math.cos(degToRad(endpoint1.latitude)) * Math.sin(degToRad(endpoint1.longitude)),
+	        R * Math.sin(degToRad(endpoint1.latitude)));
         Point3D ep2cart = new Point3D(
-	        R * Math.cos(DegToRad(endpoint2.latitude)) * Math.cos(DegToRad(endpoint2.longitude)),
-	        R * Math.cos(DegToRad(endpoint2.latitude)) * Math.sin(DegToRad(endpoint2.longitude)),
-	        R * Math.sin(DegToRad(endpoint2.latitude)));
+	        R * Math.cos(degToRad(endpoint2.latitude)) * Math.cos(degToRad(endpoint2.longitude)),
+	        R * Math.cos(degToRad(endpoint2.latitude)) * Math.sin(degToRad(endpoint2.longitude)),
+	        R * Math.sin(degToRad(endpoint2.latitude)));
         Point3D ptcart = new Point3D(
-	        R * Math.cos(DegToRad(this.latitude)) * Math.cos(DegToRad(this.longitude)),
-	        R * Math.cos(DegToRad(this.latitude)) * Math.sin(DegToRad(this.longitude)),
-	        R * Math.sin(DegToRad(this.latitude)));
+	        R * Math.cos(degToRad(this.latitude)) * Math.cos(degToRad(this.longitude)),
+	        R * Math.cos(degToRad(this.latitude)) * Math.sin(degToRad(this.longitude)),
+	        R * Math.sin(degToRad(this.latitude)));
 
         Point3D origin = new Point3D(0, 0, 0);
 
@@ -96,17 +96,17 @@ public class Coordinate
         Point3D surfacecart = origin.moveTowards(closestcart, R);
 
         return new Coordinate(
-	        (int)(RadToDeg(Math.asin(surfacecart.getZ() / R)) * 1E6), 
-	        (int)(RadToDeg(Math.atan2(surfacecart.getY(), surfacecart.getX())) * 1E6));
+	        (int)(radToDeg(Math.asin(surfacecart.getZ() / R)) * 1E6), 
+	        (int)(radToDeg(Math.atan2(surfacecart.getY(), surfacecart.getX())) * 1E6));
 
     }
 
-    private double DegToRad(double degrees) 
+    private double degToRad(double degrees) 
     {
         return degrees / 180.0 * Math.PI;
     }
 
-    private double RadToDeg(double rad)
+    private double radToDeg(double rad)
     {
         return rad * 180.0 / Math.PI;
     }
@@ -131,7 +131,8 @@ public class Coordinate
         }  
     }
 
-    public int GetHashCode()
+    @Override
+    public int hashCode()
     {
         return this.latitudeE6 ^ this.longitudeE6;
     }
