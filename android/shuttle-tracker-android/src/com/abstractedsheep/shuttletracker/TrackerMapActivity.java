@@ -28,11 +28,11 @@ import com.abstractedsheep.shuttletracker.MapsApiKey;
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
+import com.abstractedsheep.shuttletracker.json.Netlink;
+import com.abstractedsheep.shuttletracker.json.Netlink.StopJson;
 import com.abstractedsheep.shuttletracker.json.Style;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Route.Coord;
+import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson;
+import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson.RouteCoordinateJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.abstractedsheep.shuttletracker.mapoverlay.LocationOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.NullOverlay;
@@ -102,7 +102,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
      * 
      * @param routes The list of routes parsed from the JSON
      */
-    private void addRoutes(RoutesJson routes) {
+    private void addRoutes(Netlink routes) {
     	hasRoutes = true;
         stopsOverlay = new StopsItemizedOverlay(this, getResources().getDrawable(R.drawable.stop_marker), map, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
         routeOverlays = new HashMap<Integer, PathOverlay>();
@@ -111,13 +111,13 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         ArrayList<GeoPoint> points;
         
         
-        for (Route r : routes.getRoutes()) {
+        for (RouteJson r : routes.getRoutes()) {
         	style = new Style();
         	style.setColor(r.getColor());
         	style.setWidth(r.getWidth());
     		routeOverlay = new PathOverlay(style);
     		points = new ArrayList<GeoPoint>();
-    		for (Coord c : r.getCoords()) {
+    		for (RouteCoordinateJson c : r.getCoords()) {
     			points.add(new GeoPoint((int)(c.getLatitude() * 1e6), (int)(c.getLongitude() * 1e6)));
     		}
     		
@@ -133,9 +133,9 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
         
         boolean cont = false;
         
-        for (Stop s : routes.getStops()) {
-        	for (Route r : routes.getRoutes()) {
-        		for (Stop.Route sr : s.getRoutes()) {
+        for (StopJson s : routes.getStops()) {
+        	for (RouteJson r : routes.getRoutes()) {
+        		for (StopJson.StopRouteJson sr : s.getRoutes()) {
         			if (r.getVisible() && sr.getId() == r.getId()) {
         				stopsOverlay.addStop(s);
         				cont = true;
@@ -200,8 +200,8 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	
 	/** Calls addRoutes(). For use with runOnUiThread() */
 	private class AddRoutes implements Runnable {
-		private RoutesJson routes;
-		public AddRoutes(RoutesJson routes) {
+		private Netlink routes;
+		public AddRoutes(Netlink routes) {
 			this.routes = routes;
 		}
 		public void run() {
@@ -248,7 +248,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	 * 
 	 *  @param routes The list of routes parsed from the JSON, null will cause the function to do nothing.
 	 */
-	public void routesUpdated(RoutesJson routes) {
+	public void routesUpdated(Netlink routes) {
 		if (routes != null && !hasRoutes) {
 			runOnUiThread(new AddRoutes(routes));
 			runOnUiThread(invalidateMap);

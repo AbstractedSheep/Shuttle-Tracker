@@ -36,7 +36,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.abstractedsheep.shuttletracker.json.EtaArray;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.Netlink;
 import com.abstractedsheep.shuttletracker.json.VehicleArray;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
@@ -54,7 +54,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	public AtomicBoolean active = new AtomicBoolean(true);
 	private ArrayList<VehicleJson> vehicles;
 	private ArrayList<EtaJson> etas;
-	private RoutesJson routes;
+	private Netlink routes;
 	private boolean informedNoConnection = false;
 	private Context ctx;
 	private SharedPreferences prefs;
@@ -123,7 +123,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
     public Runnable updateRoutes = new Runnable() {
 		public void run() {
 			synchronized (this) {
-				RoutesJson tempRoutes;
+				Netlink tempRoutes;
 				DatabaseHelper db = new DatabaseHelper(ctx);
 				
 				do {
@@ -132,7 +132,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 						routes = tempRoutes;
 						notifyRoutesUpdated(routes);
 					} else {
-						tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", RoutesJson.class);
+						tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", Netlink.class);
 						if (tempRoutes != null) {
 							routes = tempRoutes;
 							db.putRoutes(routes);
@@ -206,7 +206,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		}
 	}
 	
-	private synchronized void notifyRoutesUpdated(RoutesJson routes) {
+	private synchronized void notifyRoutesUpdated(Netlink routes) {
 		for (IShuttleServiceCallback c : callbacks) {
 			c.routesUpdated(routes);
 		}
@@ -236,7 +236,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		return etas;
 	}
 
-	public synchronized RoutesJson getRoutes() {
+	public synchronized Netlink getRoutes() {
 		return routes;
 	}
 

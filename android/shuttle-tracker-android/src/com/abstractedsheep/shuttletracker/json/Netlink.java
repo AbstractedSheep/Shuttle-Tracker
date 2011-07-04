@@ -28,12 +28,12 @@ import android.graphics.Color;
 import com.abstractedsheep.shuttletracker.mapoverlay.DirectionalOverlayItem;
 import com.google.android.maps.GeoPoint;
 
-public class RoutesJson {
-	private ArrayList<Stop> stops;
-	private ArrayList<Route> routes;
-	private HashMap<Integer, Route> routesMap = new HashMap<Integer, RoutesJson.Route>();
+public class Netlink {
+	private ArrayList<StopJson> stops;
+	private ArrayList<RouteJson> routes;
+	private HashMap<Integer, RouteJson> routesMap = new HashMap<Integer, Netlink.RouteJson>();
 	
-	public static class Stop implements Comparable<Stop> {
+	public static class StopJson implements Comparable<StopJson> {
 		private int favoriteRoute = -1;
 		private double latitude;
 		
@@ -76,20 +76,20 @@ public class RoutesJson {
 			this.short_name = short_name;
 		}
 
-		public ArrayList<Route> getRoutes() {
+		public ArrayList<StopRouteJson> getRoutes() {
 			return routes;
 		}
 
-		public void setRoutes(ArrayList<Route> routes) {
+		public void setRoutes(ArrayList<StopRouteJson> routes) {
 			this.routes = routes;
 		}
 
 		private double longitude;
 		private String name;
 		private String short_name;
-		private ArrayList<Route> routes;
+		private ArrayList<StopRouteJson> routes;
 		
-		public static class Route {
+		public static class StopRouteJson {
 			private int id;
 			public int getId() {
 				return id;
@@ -110,7 +110,7 @@ public class RoutesJson {
 			return new DirectionalOverlayItem(new GeoPoint((int) (this.latitude * 1e6), (int)(this.longitude * 1e6)), this.name, "");
 		}
 
-		public int compareTo(Stop another) {
+		public int compareTo(StopJson another) {
 			if (favoriteRoute == -1)
 				return name.compareTo(another.name);
 			else {
@@ -122,8 +122,8 @@ public class RoutesJson {
 		
 		@Override
 		public boolean equals(Object o) {
-			if (o instanceof Stop)
-				return this.short_name.equals(((Stop) o).short_name);
+			if (o instanceof StopJson)
+				return this.short_name.equals(((StopJson) o).short_name);
 			else
 				return super.equals(o);
 		}
@@ -137,7 +137,7 @@ public class RoutesJson {
 		}
 	}
 	
-	public static class Route {
+	public static class RouteJson {
 		private String color;
 		private int id;
 		private String name;
@@ -184,11 +184,11 @@ public class RoutesJson {
 			this.width = width;
 		}
 
-		public ArrayList<Coord> getCoords() {
+		public ArrayList<RouteCoordinateJson> getCoords() {
 			return coords;
 		}
 
-		public void setCoords(ArrayList<Coord> coords) {
+		public void setCoords(ArrayList<RouteCoordinateJson> coords) {
 			this.coords = coords;
 		}
 
@@ -201,9 +201,9 @@ public class RoutesJson {
 		}
 
 		private int width;
-		private ArrayList<Coord> coords;
+		private ArrayList<RouteCoordinateJson> coords;
 		
-		public static class Coord {
+		public static class RouteCoordinateJson {
 			private double latitude;
 			public double getLatitude() {
 				return latitude;
@@ -221,31 +221,31 @@ public class RoutesJson {
 		}
 	}
 
-	public ArrayList<Stop> getStops() {
+	public ArrayList<StopJson> getStops() {
 		return stops;
 	}
 
-	public void setStops(ArrayList<Stop> stops) {
+	public void setStops(ArrayList<StopJson> stops) {
 		this.stops = stops;
 	}
 
-	public ArrayList<Route> getRoutes() {
+	public ArrayList<RouteJson> getRoutes() {
 		return routes;
 	}
 
-	public void setRoutes(ArrayList<Route> routes) {
+	public void setRoutes(ArrayList<RouteJson> routes) {
 		this.routes = routes;
 		
 		routesMap.clear();
 		
 		if (routes != null) {
-			for (Route r : routes) {
+			for (RouteJson r : routes) {
 				routesMap.put(r.id, r);
 			}
 		}
 	}
 
-	public HashMap<Integer, Route> getRoutesMap() {
+	public HashMap<Integer, RouteJson> getRoutesMap() {
 		return routesMap;
 	}
 }

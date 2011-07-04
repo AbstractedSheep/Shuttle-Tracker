@@ -40,7 +40,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
 import com.abstractedsheep.shuttletracker.TrackerPreferences;
-import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.Netlink;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -58,7 +58,7 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	private final Bitmap markerBitmapFlipped;
 	private HashMap<Integer, Bitmap> coloredMarkers = new HashMap<Integer, Bitmap>();
 	private HashMap<Integer, Bitmap> coloredMarkersFlipped = new HashMap<Integer, Bitmap>();
-	private HashMap<Integer, RoutesJson.Route> routes = new HashMap<Integer, RoutesJson.Route>();
+	private HashMap<Integer, Netlink.RouteJson> routes = new HashMap<Integer, Netlink.RouteJson>();
 	private BiMap<Integer, Integer> idToIndex = HashBiMap.create();
 	private ArrayList<VehicleJson> vehicles = new ArrayList<VehicleJson>();
 	private final Drawable marker;
@@ -138,9 +138,9 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		populate();
 	}
 	
-	public synchronized void putRoutes(List<RoutesJson.Route> routeList) {
+	public synchronized void putRoutes(List<Netlink.RouteJson> routeList) {
 		for (int i = 0; i < routeList.size(); i++) {
-			RoutesJson.Route route = routeList.get(i);
+			Netlink.RouteJson route = routeList.get(i);
 			routes.put(route.getId(), route);
 			
 			coloredMarkers.put(route.getId(), recolorBitmap(markerBitmap, route.getColorInt()));

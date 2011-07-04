@@ -26,7 +26,7 @@ import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.TrackerMapActivity;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.Netlink;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.TabActivity;
@@ -115,7 +115,7 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		
 	}
 
-	public void routesUpdated(RoutesJson routes) {
+	public void routesUpdated(Netlink routes) {
 		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).routesUpdated(routes);
 		if (routes != null) {
 			runOnUiThread(hideIndeterminateProgress);

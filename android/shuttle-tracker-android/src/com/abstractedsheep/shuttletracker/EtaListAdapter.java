@@ -30,9 +30,9 @@ import java.util.List;
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
+import com.abstractedsheep.shuttletracker.json.Netlink;
+import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson;
+import com.abstractedsheep.shuttletracker.json.Netlink.StopJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 
 import android.content.Context;
@@ -48,10 +48,10 @@ import android.widget.TextView;
 
 public class EtaListAdapter extends BaseExpandableListAdapter {
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
-	private ArrayList<Route> parents = new ArrayList<RoutesJson.Route>();
+	private ArrayList<RouteJson> parents = new ArrayList<Netlink.RouteJson>();
 	private HashMap<Integer, String> routeNames = new HashMap<Integer, String>();
-	private ArrayList<ArrayList<Stop>> children = new ArrayList<ArrayList<Stop>>();
-	private ArrayList<Stop> favorites = new ArrayList<Stop>();
+	private ArrayList<ArrayList<StopJson>> children = new ArrayList<ArrayList<StopJson>>();
+	private ArrayList<StopJson> favorites = new ArrayList<StopJson>();
 	private SimpleDateFormat formatter12 = new SimpleDateFormat("h:mm a");
 	private SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
 	private LayoutInflater inflater;
@@ -73,19 +73,19 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		this.tabActivity = tabActivity;
 	}
 	
-	public void setRoutes(RoutesJson routes) {
+	public void setRoutes(Netlink routes) {
 		parents.clear();
 		children.clear();
 		
-		for (Route route : routes.getRoutes()) {
+		for (RouteJson route : routes.getRoutes()) {
 			parents.add(route);
 			routeNames.put(route.getId(), route.getName());
-			children.add(new ArrayList<Stop>());
+			children.add(new ArrayList<StopJson>());
 		}
 		
-		Route r;
+		RouteJson r;
 		
-		for (Stop s : routes.getStops()) {
+		for (StopJson s : routes.getStops()) {
 			for (int i = 0; i < parents.size(); i++) {
 				r = parents.get(i);
 				
@@ -95,7 +95,7 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 			}
 		}
 		
-		for (ArrayList<Stop> stops : children) {
+		for (ArrayList<StopJson> stops : children) {
 			Collections.sort(stops);
 		}
 		
@@ -132,24 +132,24 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 			return children.get(groupPosition).size();
 	}
 	
-	private boolean stopOnRoute(Stop stop, int routeId) {
-		for (Stop.Route r : stop.getRoutes()) {
+	private boolean stopOnRoute(StopJson stop, int routeId) {
+		for (StopJson.StopRouteJson r : stop.getRoutes()) {
 			if (r.getId() == routeId)
 				return true;
 		}
 		return false;
 	}
 
-	public Route getGroup(int groupPosition) {
+	public RouteJson getGroup(int groupPosition) {
 		if (favorites.size() > 0 && groupPosition == 0)
-			return new Route();
+			return new RouteJson();
 		else if (favorites.size() > 0) 
 			return parents.get(groupPosition - 1);
 		else
 			return parents.get(groupPosition);
 	}
 
-	public Stop getChild(int groupPosition, int childPosition) {
+	public StopJson getChild(int groupPosition, int childPosition) {
 		if (favorites.size() > 0 && groupPosition == 0)
 			return favorites.get(childPosition);
 		else if (favorites.size() > 0) 
@@ -210,8 +210,8 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		TextView subText = (TextView) v.findViewById(R.id.text2);
 		TextView timeText = (TextView) v.findViewById(R.id.text3);
 		
-		Route route;
-		Stop stop;
+		RouteJson route;
+		StopJson stop;
 		EtaJson eta;
 		
 		if (favorites.size() > 0 && groupPosition == 0) {
@@ -261,7 +261,7 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 			groupPosition--;
 		
 		if (!favorites.contains(children.get(groupPosition).get(childPosition))) {
-			Stop fav = children.get(groupPosition).get(childPosition);
+			StopJson fav = children.get(groupPosition).get(childPosition);
 			fav.setFavoriteRoute(parents.get(groupPosition).getId());
 			favorites.add(fav);
 		}

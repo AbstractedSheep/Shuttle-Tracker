@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson;
+import com.abstractedsheep.shuttletracker.json.Netlink;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 
 import android.app.Activity;
@@ -48,7 +48,7 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 	private final static int MENU_REMOVE_FAV = 1;
 	private final static int MENU_ADD_FAV = 2;
 	private ArrayList<EtaJson> etas;
-	private RoutesJson routes;
+	private Netlink routes;
 	private ShuttleDataService dataService;
 	private ExpandableListView etaListView;
 	private EtaListAdapter etaAdapter;
@@ -129,7 +129,7 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 
 	
 
-	public void routesUpdated(RoutesJson routes) {
+	public void routesUpdated(Netlink routes) {
 		if (routes != null) {
 			this.routes = routes;
 			runOnUiThread(setRoutes);

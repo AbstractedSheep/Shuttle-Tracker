@@ -22,10 +22,10 @@ package com.abstractedsheep.shuttletracker.sql;
 
 import java.util.ArrayList;
 
-import com.abstractedsheep.shuttletracker.json.RoutesJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Route;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Route.Coord;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
+import com.abstractedsheep.shuttletracker.json.Netlink;
+import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson;
+import com.abstractedsheep.shuttletracker.json.Netlink.RouteJson.RouteCoordinateJson;
+import com.abstractedsheep.shuttletracker.json.Netlink.StopJson;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -123,13 +123,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 	}
 	
-	public void putRoutes(RoutesJson routes) {
+	public void putRoutes(Netlink routes) {
 		clearRoutes();
 		
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues cv;
 		
-		for (Route r: routes.getRoutes()) {
+		for (RouteJson r: routes.getRoutes()) {
 			cv = new ContentValues();
 			cv.put(RoutesTable.colName, r.getName());
 			cv.put(RoutesTable.colId, r.getId());
@@ -138,7 +138,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			cv.put(RoutesTable.colVisible, r.getVisible() ? 1 : 0);
 			db.insert(RoutesTable.tableName, RoutesTable.colName, cv);
 			
-			for (Coord c : r.getCoords()) {
+			for (RouteCoordinateJson c : r.getCoords()) {
 				cv = new ContentValues();
 				cv.put(RoutePointsTable.colRouteId, r.getId());
 				cv.put(RoutePointsTable.colLat, c.getLatitude());
@@ -147,7 +147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 		}
 		
-		for (Stop s : routes.getStops()) {
+		for (StopJson s : routes.getStops()) {
 			cv = new ContentValues();
 			cv.put(StopsTable.colName, s.getName());
 			cv.put(StopsTable.colId, s.getShort_name());
@@ -155,7 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			cv.put(StopsTable.colLon, s.getLongitude());
 			db.insert(StopsTable.tableName, StopsTable.colName, cv);
 			
-			for (Stop.Route r : s.getRoutes()) {
+			for (StopJson.StopRouteJson r : s.getRoutes()) {
 				cv = new ContentValues();
 				cv.put(StopsOnRoutesTable.colStopId, s.getShort_name());
 				cv.put(StopsOnRoutesTable.colRouteId, r.getId());
@@ -194,24 +194,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return result;
 	}
 	
-	public RoutesJson getRoutes() {
-		RoutesJson result = new RoutesJson();
-		ArrayList<Route> routesArr = new ArrayList<RoutesJson.Route>();
+	public Netlink getRoutes() {
+		Netlink result = new Netlink();
+		ArrayList<RouteJson> routesArr = new ArrayList<Netlink.RouteJson>();
 		Cursor routes = getRoutesCursor();
 		routes.moveToFirst();
 		while (!routes.isAfterLast()) {
-			Route r = new Route();
+			RouteJson r = new RouteJson();
 			r.setColor(routes.getString(routes.getColumnIndex(RoutesTable.colColor)));
 			r.setName(routes.getString(routes.getColumnIndex(RoutesTable.colName)));
 			r.setId(routes.getInt(routes.getColumnIndex(RoutesTable.colId)));
 			r.setWidth(routes.getInt(routes.getColumnIndex(RoutesTable.colWidth)));
 			r.setVisible(routes.getInt(routes.getColumnIndex(RoutesTable.colVisible)) == 0 ? false : true);
 			
-			ArrayList<Coord> pointsArr = new ArrayList<RoutesJson.Route.Coord>();
+			ArrayList<RouteCoordinateJson> pointsArr = new ArrayList<Netlink.RouteJson.RouteCoordinateJson>();
 			Cursor points = getRoutePoints(r.getId());
 			points.moveToFirst();
 			while (!points.isAfterLast()) {
-				Coord p = new Coord();
+				RouteCoordinateJson p = new RouteCoordinateJson();
 				p.setLatitude(points.getDouble(points.getColumnIndex(RoutePointsTable.colLat)));
 				p.setLongitude(points.getDouble(points.getColumnIndex(RoutePointsTable.colLon)));
 				pointsArr.add(p);
@@ -226,21 +226,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		routes.close();
 		
-		ArrayList<Stop> stopsArr = new ArrayList<RoutesJson.Stop>();
+		ArrayList<StopJson> stopsArr = new ArrayList<Netlink.StopJson>();
 		Cursor stops = getStops();
 		stops.moveToFirst();
 		while (!stops.isAfterLast()) {
-			Stop s = new Stop();
+			StopJson s = new StopJson();
 			s.setName(stops.getString(stops.getColumnIndex(StopsTable.colName)));
 			s.setShort_name(stops.getString(stops.getColumnIndex(StopsTable.colId)));
 			s.setLatitude(stops.getDouble(stops.getColumnIndex(StopsTable.colLat)));
 			s.setLongitude(stops.getDouble(stops.getColumnIndex(StopsTable.colLon)));
 			
-			ArrayList<Stop.Route> routesByStopArr = new ArrayList<RoutesJson.Stop.Route>();
+			ArrayList<StopJson.StopRouteJson> routesByStopArr = new ArrayList<Netlink.StopJson.StopRouteJson>();
 			Cursor routesByStop = getRoutesByStop(s.getShort_name());
 			routesByStop.moveToFirst();
 			while (!routesByStop.isAfterLast()) {
-				Stop.Route r = new Stop.Route();
+				StopJson.StopRouteJson r = new StopJson.StopRouteJson();
 				r.setId(routesByStop.getInt(0));
 				r.setName(routesByStop.getString(1));
 				routesByStopArr.add(r);
@@ -288,13 +288,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return cur;
 	}
 	
-	public void updateFavorites(ArrayList<Stop> favorites) {
+	public void updateFavorites(ArrayList<StopJson> favorites) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		ContentValues cv = new ContentValues();
 		cv.put(StopsOnRoutesTable.colFavorite, 0);
 		db.update(StopsOnRoutesTable.tableName, cv, null, null);
 		
-		for (Stop s : favorites) {
+		for (StopJson s : favorites) {
 			db.execSQL("UPDATE " + StopsOnRoutesTable.tableName + " SET " + StopsOnRoutesTable.colFavorite + 
 					" = 1 WHERE " + StopsOnRoutesTable.colStopId + " = '" + s.getShort_name() + "' AND " +
 					StopsOnRoutesTable.colRouteId + " = " + s.getFavoriteRoute());
@@ -303,8 +303,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.close();
 	}
 	
-	public ArrayList<Stop> getFavorites() {
-		ArrayList<Stop> result = new ArrayList<RoutesJson.Stop>();
+	public ArrayList<StopJson> getFavorites() {
+		ArrayList<StopJson> result = new ArrayList<Netlink.StopJson>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cur = db.rawQuery("SELECT " + StopsTable.colId + ", " + StopsTable.colName + ", " + 
 				StopsTable.colLat + ", " + StopsTable.colLon + ", " + StopsOnRoutesTable.colRouteId + " FROM ( " +
@@ -314,7 +314,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		cur.moveToFirst();
 		while (!cur.isAfterLast()) {
-			Stop s = new Stop();
+			StopJson s = new StopJson();
 			s.setName(cur.getString(1));
 			s.setShort_name(cur.getString(0));
 			s.setLatitude(cur.getDouble(2));

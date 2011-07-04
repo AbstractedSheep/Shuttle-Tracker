@@ -33,7 +33,7 @@ import android.graphics.drawable.Drawable;
 
 import com.abstractedsheep.shuttletracker.TrackerPreferences;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
-import com.abstractedsheep.shuttletracker.json.RoutesJson.Stop;
+import com.abstractedsheep.shuttletracker.json.Netlink.StopJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -43,7 +43,7 @@ import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 
 public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
-	private ArrayList<Stop> stops = new ArrayList<Stop>();
+	private ArrayList<StopJson> stops = new ArrayList<StopJson>();
 	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
 	private SimpleDateFormat formatter12 = new SimpleDateFormat("hh:mm a");
 	private SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
@@ -58,12 +58,12 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		db = new DatabaseHelper(context);
 	}
 
-	public synchronized void addAllStops(Collection<? extends Stop> stops) {
+	public synchronized void addAllStops(Collection<? extends StopJson> stops) {
 		this.stops.addAll(stops);
 		populate();
 	}
 	
-	public synchronized void addStop(Stop stop) { 
+	public synchronized void addStop(StopJson stop) { 
 	    stops.add(stop);
 	    populate();
 	}
@@ -96,13 +96,13 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 
 	@Override
 	protected synchronized OverlayItem createItem(int i) {
-		Stop s = stops.get(i);
+		StopJson s = stops.get(i);
 		EtaJson eta;
 		String snippet = "";
 		Date arrival;
 		long now = (new Date()).getTime();
 		
-		for (Stop.Route r : s.getRoutes()) {
+		for (StopJson.StopRouteJson r : s.getRoutes()) {
 			if (db.isRouteVisible(r.getId())) {
 				eta = etas.get(s.getShort_name() + r.getId());
 				if (eta != null) {
