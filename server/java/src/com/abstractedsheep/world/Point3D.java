@@ -1,3 +1,20 @@
+/* Copyright 2011
+ *     
+ * This file is part of Mobile Shuttle Tracker.
+ *
+ *  Mobile Shuttle Tracker is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Mobile Shuttle Tracker is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Mobile Shuttle Tracker.  If not, see <http://www.gnu.org/licenses/>.  
+ */
 package com.abstractedsheep.world;
 
 /**
@@ -136,16 +153,8 @@ public class Point3D {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(x);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(y);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(z);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
+		return ((Double)this.x).hashCode() ^ ((Double)this.y).hashCode() ^
+		((Double)this.z).hashCode();
 	}
 
 	/* (non-Javadoc)
@@ -153,19 +162,14 @@ public class Point3D {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
 		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Point3D other = (Point3D) obj;
-		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
-			return false;
-		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
-			return false;
-		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
-			return false;
-		return true;
+            return false;
+
+        try {
+        	Point3D p = (Point3D)obj;
+        	return this.x == p.x && this.y == p.y && this.z == p.z;
+        } catch (ClassCastException e) {
+        	return false;
+        }
 	}
 }

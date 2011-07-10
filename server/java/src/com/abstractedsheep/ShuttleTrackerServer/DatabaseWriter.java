@@ -5,11 +5,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import com.abstractedsheep.world.Shuttle;
+import java.text.MessageFormat;
+import com.abstractedsheep.ShuttleTrackerService.ETACalculator;
+import com.abstractedsheep.ShuttleTrackerService.ETACalculator.Eta;
 
 /**
  * Connects to the server {@link http://www.abstractedsheep.com/phpMyAdmin/} and writes data to the
@@ -43,73 +41,49 @@ public class DatabaseWriter {
 		deleteTable(tableName);
 	}
 	
-	/**
-	 * Writes the shuttle ETA data to the database. This is done through the use of
-	 * MySQL commands.
-	 * @param shuttleList - shuttle data to be written to the desired table
-	 */
-	public static void saveToDatabase(HashSet<Shuttle> shuttleList, String tableName, boolean writeFullList) {
+	public static void saveToDatabase(ETACalculator etaList, String tableName) {
 		try {
 			connectToDatabase(tableName);
-			System.out.println("Connected to database table:" + tableName);
 			Statement stmt = conn.createStatement();
-			for (Shuttle shuttle : shuttleList) {
-				for (String stop : shuttle.getStopETA().keySet()) {
-					//update shuttle_eta table values in DB
-					String sql = "";
-					if(!writeFullList) {
-						sql = "UPDATE " + tableName + " SET eta = '"
-							+ shuttle.getStopETA().get(stop)
-							+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
-							+ " AND stop_id = '"
-							+ shuttle.getStops().get(stop).getShortName() + "' AND route = '" +
-							shuttle.getRouteId() + "' AND absolute_eta = '" +
-							((System.currentTimeMillis() + shuttle.getStopETA().get(stop).get(0)) / 1000L) 
-							+ "'";
-					} else {
-						for(int k = 0; k < shuttle.getStopETA().get(stop).size(); k++) {
-							sql = "UPDATE " + tableName + " SET eta = '"
-								+ shuttle.getStopETA().get(stop).get(k)
-								+ "' WHERE shuttle_id = " + shuttle.getShuttleId()
-								+ " AND stop_id = '"
-								+ shuttle.getStops().get(stop).getShortName() + "' AND route = '"
-								+ shuttle.getRouteId() + "' AND eta_id = '"
-								+ (k + 1) + "' AND absolute_eta = '"
-								+ ((System.currentTimeMillis() + shuttle.getStopETA().get(stop).get(k)) / 1000L) 
-								+ "'";
-						}
-					}
-					int updateCount = stmt.executeUpdate(sql);
+			MessageFormat f = null;
+			for(Eta eta : etaList.getETAs()) {
+				String query = "UPDATE {0} SET eta = '{1}'" +
+						"WHERE shuttle_id = {2} AND stop_id = '{3}'" +
+						" AND route = '{4}' AND eta_id = '{5}'" +
+						" AND absolute_eta = '{6}'";
+				
+				f = new MessageFormat(query);
+				f.format(new Object[]{tableName, eta.time, eta.shuttleId, eta.stopName,
+									  eta.routeId, eta.Id, eta.arrivalTime});
+				query = f.toString();
+				
+				int updateCount = stmt.executeUpdate(query);
+				
+				if(updateCount == 0) {
+					String header = "INSERT INTO {0} (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
+					String values = "VALUES ( {1},'{2}','{3}', '{4}', '{5}', '{6}')";
+					query = header + values;
+					f = new MessageFormat(query);
+					f.format(new Object[] {tableName, eta.shuttleId, eta.stopName, eta.Id,
+										   eta.time, eta.arrivalTime, eta.routeId});
+					query = f.toString();
 					
-					//if updateCount = 0, then the shuttle does not exist in the database.
-					//to resolve this, insert the values into the DB as opposed to updating them.
-					if (updateCount == 0) {
-						String insertHeader = "";
-						if(!writeFullList)
-							insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta, absolute_eta, route)\n";
-						else
-							insertHeader = "INSERT INTO " + tableName + " (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
-						for(int k = 0; k < shuttle.getStopETA().get(stop).size(); k++) {
-							String time = "" + shuttle.getStopETA().get(stop).get(k);
-							String absoluteTime = "" + ((System.currentTimeMillis() + shuttle.getStopETA().get(stop).get(k)) / 1000L) + "";
-							String interValues = "VALUES ("
-									+ shuttle.getShuttleId() + ",'"
-									+ shuttle.getStops().get(stop).getShortName()
-									+ "','"
-									+ ((writeFullList) ? (k + 1) + "','" : "") 
-									+ time
-									+ "', '"
-									+ absoluteTime + "','"
-									+ shuttle.getRouteId() + "')";
-							stmt.executeUpdate(insertHeader + interValues);
-							//if this flag is false, then break out of this loop after writing the first value.
-							if(writeFullList == false)
-								break;
-						}
-					}
+					stmt.executeUpdate(query);
 				}
 			}
-		} catch (Exception e) {
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
@@ -122,14 +96,6 @@ public class DatabaseWriter {
 		}
 	}
 	
-	private static String parseTimes(ArrayList<Integer> arrayList) {
-		String str = "";
-		for(int i : arrayList) {
-			str += i + ";";
-		}
-		return (str.substring(0, str.length() - 1));
-	}
-
 	/**
 	 * Delete the values in the database table
 	 * @param tableName this value is currently not used
@@ -147,15 +113,7 @@ public class DatabaseWriter {
 	 * Outputs the shuttle ETA information to the console for quick debugging.
 	 * @param shuttleList - shuttle data
 	 */
-	public static void printToConsole(HashSet<Shuttle> shuttleList) {
-		for(Shuttle shuttle : shuttleList) {
-			System.out.println(shuttle.getName() + " " + shuttle.getShuttleId() + " " + shuttle.getRouteName() + " " + shuttle.getRouteId());
-			for(String name : shuttle.getStopETA().keySet()) {
-				System.out.println("\t" + name + " " + getTimeStamp(shuttle.getStopETA().get(name).get(0)) + " " + (shuttle.getStopETA().get(name).get(0)) / (1000 * 60));
-				String str = parseTimes(shuttle.getStopETA().get(name));
-				//System.out.println(str);
-			}
-		}
+	public static void printToConsole(ETACalculator etaList) {
 	}
 	
 	/**
@@ -177,13 +135,5 @@ public class DatabaseWriter {
 		}
 		buf.close();
 		return values;
-	}
-	
-	//Used by printToConsole method in order to make the arrival times show up
-	//in a more readable format.
-	private static String getTimeStamp(Integer integer) {
-		String str = new Timestamp(System.currentTimeMillis() + integer)
-				.toString();
-		return str.substring(0, str.indexOf('.'));
 	}
 }

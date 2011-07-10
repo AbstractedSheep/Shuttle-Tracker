@@ -1,6 +1,7 @@
 package com.abstractedsheep.world;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -19,18 +20,13 @@ public class Route {
 	private ArrayList<Coordinate> coordinateList;
 	private ArrayList<Double> distanceToNextCoordinateList;
 	private HashMap<Integer, Shuttle> shuttleList;
-	private HashMap<Integer, Stop> stopList;
+	private HashMap<String, Stop> stopList;
 	private double roundTripDistance;
-	/**
-	 * list of initial bearings for each route point.
-	 */
-	private ArrayList<Double[]> bearingList;
-
 	public Route() {
 		idNum = 0;
 		routeName = "West";
 		this.coordinateList = new ArrayList<Coordinate>();
-		this.stopList = new HashMap<Integer, Stop>();
+		this.stopList = new HashMap<String, Stop>();
 		this.shuttleList = new HashMap<Integer, Shuttle>();
 		this.distanceToNextCoordinateList = new ArrayList<Double>();
 		this.roundTripDistance = 0.0;
@@ -41,7 +37,7 @@ public class Route {
 		this.routeName = routeName;
 		this.coordinateList = list;
 		this.roundTripDistance = 0.0;
-		this.stopList = new HashMap<Integer, Stop>();
+		this.stopList = new HashMap<String, Stop>();
 		this.shuttleList = new HashMap<Integer, Shuttle>();
 		this.distanceToNextCoordinateList = new ArrayList<Double>();
 		this.computeDistances();
@@ -99,27 +95,33 @@ public class Route {
 	 * @return the shuttleList
 	 */
 	public HashMap<Integer, Shuttle> getShuttleList() {
-		return shuttleList;
+		return (HashMap<Integer, Shuttle>) Collections.unmodifiableMap(shuttleList);
 	}
 
 	/**
-	 * @param shuttleList the shuttleList to set
+	 * @return the distanceToNextCoordinateList
+	 * NOTE: the distance between the coordinateList[0] and coordinateList[1]
+	 * 		 is distanceToNext[1].
 	 */
-	public void setShuttleList(HashMap<Integer, Shuttle> shuttleList) {
-		this.shuttleList = shuttleList;
+	public ArrayList<Double> getDistanceToNextCoordinateList() {
+		return (ArrayList<Double>) Collections.unmodifiableList(distanceToNextCoordinateList);
+	}
+
+	/**
+	 * @return the roundTripDistance
+	 */
+	public double getRoundTripDistance() {
+		return roundTripDistance;
 	}
 
 	/**
 	 * @return the stopList
 	 */
-	public HashMap<Integer, Stop> getStopList() {
-		return stopList;
+	public HashMap<String, Stop> getStopList() {
+		return (HashMap<String, Stop>) Collections.unmodifiableMap(stopList);
 	}
 
-	/**
-	 * @param stopList the stopList to set
-	 */
-	public void setStopList(HashMap<Integer, Stop> stopList) {
-		this.stopList = stopList;
+	public void addStop(Stop s) {
+		this.stopList.put(s.getShortName(), s);
 	}
 }

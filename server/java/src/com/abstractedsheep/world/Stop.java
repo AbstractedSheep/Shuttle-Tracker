@@ -1,6 +1,6 @@
 package com.abstractedsheep.world;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -20,24 +20,53 @@ public class Stop implements IRouteFinder{
 	 * json and the route contains an integer id number as well as a name (e.g.
 	 * West Route)
 	 */
-	private HashMap<Integer, String> routeMap;
+	private HashMap<Integer, Route> routeMap;
 	private HashMap<Integer, Coordinate> snappedCoordinate;
 	private HashMap<Integer, Double> precedingCoordinateDistance;
 	private HashMap<Integer, Integer> precedingCoordinate;
 
-	public Stop() {
-		this.location = new Coordinate(-73.6765441399, 42.7302712352);
-		this.name = "Union";
-		this.shortName = "union";
-		this.routeMap = new HashMap<Integer, String>();
+	/**
+	 * @return the snappedCoordinate
+	 */
+	public HashMap<Integer, Coordinate> getSnappedCoordinate() {
+		return snappedCoordinate;
+	}
+
+	/**
+	 * @return the precedingCoordinateDistance
+	 */
+	public HashMap<Integer, Double> getPrecedingCoordinateDistance() {
+		return precedingCoordinateDistance;
+	}
+
+	/**
+	 * @return the precedingCoordinate
+	 */
+	public HashMap<Integer, Integer> getPrecedingCoordinate() {
+		return precedingCoordinate;
 	}
 
 	public Stop(double longitude, double latitude, String fullName,
-			String shortN, HashMap<Integer, String> map, ArrayList<Route> routeList) {
+			String shortN, HashMap<Integer, Route> map) {
+		snappedCoordinate = new HashMap<Integer, Coordinate>();
+		precedingCoordinateDistance = new HashMap<Integer, Double>();
+		precedingCoordinate = new HashMap<Integer, Integer>();
 		this.location = new Coordinate(latitude, longitude);
 		this.name = fullName;
 		this.shortName = shortN;
 		this.routeMap = map;
+		for(Route r : map.values()) {
+			this.snapToRoute(r);
+		}
+	}
+	
+	public Stop (Coordinate coordinate, String shortName, String fullName) {
+		snappedCoordinate = new HashMap<Integer, Coordinate>();
+		precedingCoordinateDistance = new HashMap<Integer, Double>();
+		precedingCoordinate = new HashMap<Integer, Integer>();
+		this.location = coordinate;
+		this.name = fullName;
+		this.shortName = shortName;
 	}
 
 	/**
@@ -107,16 +136,12 @@ public class Stop implements IRouteFinder{
 	/**
 	 * @return the routeMap
 	 */
-	public HashMap<Integer, String> getRouteMap() {
-		return routeMap;
+	public HashMap<Integer, Route> getRouteMap() {
+		return (HashMap<Integer, Route>) Collections.unmodifiableMap(routeMap);
 	}
-
-	/**
-	 * @param routeMap
-	 *            the routeMap to set
-	 */
-	public void setRouteMap(HashMap<Integer, String> routeMap) {
-		this.routeMap = routeMap;
+	
+	public void addRoute(Route r) {
+		this.routeMap.put(r.getIdNum(), r);
 	}
 
 	@Override

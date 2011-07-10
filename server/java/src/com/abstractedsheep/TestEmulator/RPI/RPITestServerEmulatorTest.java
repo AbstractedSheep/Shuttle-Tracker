@@ -1,7 +1,6 @@
 package com.abstractedsheep.TestEmulator.RPI;
 
 public class RPITestServerEmulatorTest {
-	private RPIDynamicDataGenerator shuttleList;
 	/**
 	 * @param args
 	 */

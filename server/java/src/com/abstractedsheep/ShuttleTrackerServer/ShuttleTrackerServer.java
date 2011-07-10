@@ -1,13 +1,10 @@
 package com.abstractedsheep.ShuttleTrackerServer;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-
+import java.net.MalformedURLException;
+import java.net.URL;
+import com.abstractedsheep.ShuttleTrackerService.ETACalculator;
 import com.abstractedsheep.extractor.*;
-import com.abstractedsheep.world.Shuttle;
+import com.abstractedsheep.world.World;
 
 /**
  * This is the main class that will run all of the server code.
@@ -20,105 +17,52 @@ import com.abstractedsheep.world.Shuttle;
  * 
  */
 public class ShuttleTrackerServer {
-	private JSONExtractor jsExtractor;
-	private HashSet<Shuttle> shuttleList;
+	
+	private static final int SLEEP_INTERVAL = (1000 * 5);
+	private final URL staticDataURL;
+	private final URL dynamicDataURL;
+	private final World world;
+	private ETACalculator calc;
 
-	public ShuttleTrackerServer() {
-		this.jsExtractor = new JSONExtractor();
-		this.shuttleList = new HashSet<Shuttle>();
-		getStaticData();
-		// read the shuttle data and calculate the ETAs in the background
-		startThread();
+	public ShuttleTrackerServer() throws MalformedURLException {
+		this.staticDataURL = new URL("http://shuttles.rpi.edu/displays/netlink.js");
+		dynamicDataURL = new URL("http://shuttles.rpi.edu/vehicles/current.js");
+		this.world = new World(new StaticJSONExtractor(staticDataURL), new DynamicJSONExtractor(dynamicDataURL));
+		this.calc = new ETACalculator();
+		executeWorld();
 	}
 	
-	/**
-	 * Starts periodically reading the shuttle data from JSONExtractor's shuttleURL
-	 * every five seconds.
-	 */
-	private void startThread() {
-		Thread t = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// read the shuttle data
-				readDynamicData();
-			}
-		});
-
-		t.start();
-	}
-	
-	/**
-	 * Gets the shuttle data {@link JSONExtractor.shuttleURL}, processes the
-	 * information and then writes the data to the database.
-	 */
-	private void readDynamicData() {
-		while (true) {
+	private void executeWorld() {
+		//XXX All updates and modifications to the world are accomplished
+		//    within it.
+		this.world.generateWorld();
+		while(true) {
+			updateWorld();
+			DatabaseWriter.saveToDatabase(calc, "extra_eta");
 			try {
-				System.out.println("Reading Shuttle data and trying to manipulate it.");
-				jsExtractor.readShuttleData();
-				this.shuttleList = new HashSet<Shuttle>(jsExtractor.getShuttleList());
-
-				if(shuttleList.size() > 0){
-					// do ETA calculations and print to the database
-					calculateETA();
-					DatabaseWriter.saveToDatabase(shuttleList, "shuttle_eta", false);
-					DatabaseWriter.saveToDatabase(shuttleList, "extra_eta", true);
-					DatabaseWriter.printToConsole(shuttleList);
-				} else {//clear the database and the shuttle list
-					DatabaseWriter.connectToDatabase("shuttle_eta");
-					DatabaseWriter.connectToDatabase("extra_eta");
-					jsExtractor.clearShuttleList();
-				}
-				// have the thread sleep for 15 seconds (approximate update
-				// time)
-
-			} catch (Exception e) {
+				Thread.sleep(SLEEP_INTERVAL);
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} finally {
-				try {
-					Thread.sleep(1000 * 5);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 		}
 	}
-
-	/**
-	 * Calculates the time for each shuttle to arrive at each stop. If a shuttle
-	 * does not go to that stop (i.e. that stop is not part of the shuttle's
-	 * route), then a -1 is returned. The values are then stored in a list to
-	 * later be used to save the data to a file.
-	 */
-	private void calculateETA() {
-		long time = System.currentTimeMillis();
-		for (Shuttle shuttle : shuttleList) {
-				shuttle.getETAToStop();
-		}
-		System.out.println((System.currentTimeMillis() - time) / 1000.0);
+	
+	private void updateWorld() {
+		this.world.updateWorld();
+		//update calculator's instance of the world before calculating the etas.
+		this.calc.updateWorld(world);
 	}
-
-	/**
-	 * the static data is the route and stop data as they will not change over
-	 * time.
-	 */
-	private void getStaticData() {
-		try {
-			jsExtractor.readRouteData();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new ShuttleTrackerServer();
+		try {
+			new ShuttleTrackerServer();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
 }
