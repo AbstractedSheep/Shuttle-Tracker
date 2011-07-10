@@ -3,6 +3,7 @@ package com.abstractedsheep.ShuttleTrackerServer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import com.abstractedsheep.ShuttleTrackerService.ETACalculator;
+import com.abstractedsheep.db.DatabaseWriter;
 import com.abstractedsheep.extractor.*;
 import com.abstractedsheep.world.World;
 

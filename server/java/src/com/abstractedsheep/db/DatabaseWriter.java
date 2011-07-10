@@ -1,4 +1,4 @@
-package com.abstractedsheep.ShuttleTrackerServer;
+package com.abstractedsheep.db;
 
 import java.io.*;
 import java.sql.Connection;
@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
+import java.util.logging.Logger;
+
 import com.abstractedsheep.ShuttleTrackerService.ETACalculator;
 import com.abstractedsheep.ShuttleTrackerService.ETACalculator.Eta;
 
@@ -18,8 +20,9 @@ import com.abstractedsheep.ShuttleTrackerService.ETACalculator.Eta;
  * @author saiumesh
  * 
  */
-public class DatabaseWriter {
+public class DatabaseWriter extends AbstractQueryRunner{
 	private static Connection conn;
+	//private final Logger log = Logger.getLogger(null);
 	
 	/**
 	 * Method connections to the MySQL server using the arguments in the file sts.properties.
@@ -39,6 +42,24 @@ public class DatabaseWriter {
 		conn = DriverManager.getConnection(args[0], args[1], args[2]);
 		
 		deleteTable(tableName);
+	}
+	
+	public void writeToDatabase(Connection conn, ETACalculator etaList, String tableName) throws SQLException {
+		String header = "INSERT INTO {?} (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
+		String values = "VALUES ( {?},'{?}','{?}', '{?}', '{?}', '{?}')";
+		String insertQuery = header + values + " ON DUPLICATE KEY ";
+		String updateQuery = "eta=VALUES(eta), absolute_eta=VALUES(absolute_eta), route=VALUES(route)";
+		Statement stmt = conn.createStatement();
+		final String query = insertQuery + updateQuery;
+		String sql = "";
+		for(Eta eta : etaList.getETAs()) {
+			sql = String.format(query, new Object[]{tableName, eta.time, eta.shuttleId, eta.stopName,
+									  eta.routeId, eta.Id, eta.arrivalTime});
+			
+			stmt.addBatch(sql);
+		}
+		
+		stmt.executeBatch();
 	}
 	
 	public static void saveToDatabase(ETACalculator etaList, String tableName) {
