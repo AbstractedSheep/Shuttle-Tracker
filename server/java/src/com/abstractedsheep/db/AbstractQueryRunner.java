@@ -27,30 +27,34 @@ import java.sql.Statement;
 
 /**
  * 
- * The purpose of this class is to contain all of the generic sql read and write actions.
- * This class is mean to act as a parent class to other classes who would write objects to mysql
- * tables and vice versa.
+ * The purpose of this class is to contain all of the generic sql read and write
+ * actions. This class is mean to act as a parent class to other classes who
+ * would write objects to mysql tables and vice versa.
+ * 
  * @author saiumesh
- *
+ * 
  */
 public abstract class AbstractQueryRunner {
-	
-	protected ResultSet readDataFromTable(Connection conn, String tableName) throws SQLException {
-		String query = String.format("select * from ?", new Object[] {tableName});
+
+	protected ResultSet readDataFromTable(Connection conn, String tableName)
+			throws SQLException {
+		String query = String.format("select * from ?",
+				new Object[] { tableName });
 		Statement stmt = conn.createStatement();
 		return stmt.executeQuery(query);
 	}
 
-	protected int[] batch(Connection conn, String query, Object[][] values) throws SQLException {
+	protected int[] batch(Connection conn, String query, Object[][] values)
+			throws SQLException {
 		Statement stmt = conn.createStatement();
-		
-		for(Object[] val : values) {
+
+		for (Object[] val : values) {
 			stmt.addBatch(fillQuery(query, val));
 		}
-		
+
 		return stmt.executeBatch();
 	}
-	
+
 	private String fillQuery(String query, Object[] values) {
 		return String.format(query, values);
 	}

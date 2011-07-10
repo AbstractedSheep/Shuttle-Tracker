@@ -5,14 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-
 public class ReadOnlyList<T> implements List<T> {
 	private List<T> source;
-	
+
 	public ReadOnlyList(List<T> source) {
 		this.source = source;
 	}
-	
+
 	public boolean add(T object) {
 		throw new UnsupportedOperationException();
 	}
