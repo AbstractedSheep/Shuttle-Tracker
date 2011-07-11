@@ -69,6 +69,8 @@ public class DatabaseReader extends AbstractQueryRunner {
 		Collection<Object> list = new ArrayList<Object>();
 		ResultSet res = this.readDataFromTable(conn, tableName);
 		// populate list using convertTableToObject
+		while(res.next())
+			list.add(this.convertTableToObject(classType, res));
 		return list;
 	}
 }

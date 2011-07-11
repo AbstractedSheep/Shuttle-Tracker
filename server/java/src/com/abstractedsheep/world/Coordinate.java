@@ -3,6 +3,7 @@ package com.abstractedsheep.world;
 public class Coordinate {
 	private double latitude;
 	private double longitude;
+	private static final double RADIUS_OF_EARTH = 3956;
 
 	public Coordinate() {
 		this.latitude = 0.0;
@@ -55,7 +56,6 @@ public class Coordinate {
 	}
 
 	public double distanceFromCoordiante(Coordinate c) {
-		final double earthRadius = 3956; // radius in miles
 
 		double dLong = Math.toRadians((c.getLongitude() - this.getLongitude()));
 		double dLat = Math.toRadians((c.getLatitude() - this.getLatitude()));
@@ -67,7 +67,26 @@ public class Coordinate {
 				* Math.cos(lat2);
 		double b = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1.0 - a));
 
-		return earthRadius * b;
+		return RADIUS_OF_EARTH * b;
+	}
+	
+	/**
+	 * This class really has no use except for in the DynamicDataGenerator
+	 * class
+	 * @param distance - distance from current point
+	 * @param endPoint - end point of line
+	 * @return the coordinate point some distance away from the current coordinate
+	 */
+	public Coordinate findCoordinateInLine(double distance, Coordinate endPoint) {
+		distance = distance / RADIUS_OF_EARTH;
+		double bearing = this.getBearing(endPoint);
+		double lat2 = Math.asin( Math.sin(this.getLatitude()) * Math.cos(distance)
+					  + Math.cos(this.getLatitude()) * Math.sin(distance) * Math.cos(bearing));
+		double lon2 = this.getLongitude() +
+					Math.atan2( Math.sin(bearing) * Math.sin(distance) * Math.cos(this.getLatitude()),
+								Math.cos(distance) - Math.sin(this.getLatitude()) * Math.sin(lat2));
+		
+		return new Coordinate(Math.toDegrees(lat2), Math.toDegrees(lon2));
 	}
 
 	public double getBearing(Coordinate c) {

@@ -1,7 +1,12 @@
 package com.abstractedsheep.extractor;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import org.codehaus.jackson.JsonParseException;
@@ -26,7 +31,7 @@ public class StaticJSONExtractor extends AbstractJSONExtractor {
 	@Override
 	public void readDataFromURL() {
 		try {
-			Netlink link = mapper.readValue(System.in, Netlink.class);
+			Netlink link = mapper.readValue(new InputStreamReader(url.openStream()), Netlink.class);
 			routeList = link.getRoutes();
 			stopList = link.getStops();
 		} catch (JsonParseException e) {

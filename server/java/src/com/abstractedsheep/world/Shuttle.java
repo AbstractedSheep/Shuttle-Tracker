@@ -50,7 +50,7 @@ public class Shuttle implements IRouteFinder{
 	// This constructor is not required by Jackson, but it makes manually
 	// creating a new point a
 	// one line operation.
-	public Shuttle(int shuttleId, int routeId, ArrayList<Route> rt) {
+	public Shuttle(int shuttleId, ArrayList<Route> rt) {
 		// Here, 'this.' is necessary because we have a local variable named the
 		// same as the global
 		this.shuttleId = shuttleId;
@@ -121,6 +121,10 @@ public class Shuttle implements IRouteFinder{
 			this.lastUpdateTime = time;
 		this.currentLocation = newLocation;
 		
+	}
+	
+	public void setCurrentLocation(Coordinate newLoc) {
+		setCurrentLocation(newLoc, System.currentTimeMillis());
 	}
 	
 	public String getCardinalPoint() { return cardinalPoint; }

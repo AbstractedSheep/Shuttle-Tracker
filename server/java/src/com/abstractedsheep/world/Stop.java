@@ -67,6 +67,7 @@ public class Stop implements IRouteFinder{
 		this.location = coordinate;
 		this.name = fullName;
 		this.shortName = shortName;
+		this.routeMap = new HashMap<Integer, Route>();
 	}
 
 	/**
@@ -158,7 +159,7 @@ public class Stop implements IRouteFinder{
 			else
 				c1 = r.getCoordinateList().get(i - 1);
 	
-			c2 = r.getCoordinateList().get(size);
+			c2 = r.getCoordinateList().get(size - 1);
 			
 			tempClosestPoint = location.closestPoint(c1, c2);
 			tempShortestDistance = tempClosestPoint.distanceFromCoordiante(location);
