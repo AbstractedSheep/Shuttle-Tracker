@@ -61,7 +61,7 @@ public class DynamicDataGenerator {
 		Collection<Route> list = routeList.values();
 		int index = 0;
 		while(index == 0) {
-			index = r.nextInt(list.size() - 0);
+			index = r.nextInt(list.size() + 1);
 		}
 		Route currentRoute = routeList.get(index);
 		Shuttle s = shuttleList.get(shuttle_id);

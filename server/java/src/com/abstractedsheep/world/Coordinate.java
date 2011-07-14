@@ -78,15 +78,17 @@ public class Coordinate {
 	 * @return the coordinate point some distance away from the current coordinate
 	 */
 	public Coordinate findCoordinateInLine(double distance, Coordinate endPoint) {
-		distance = distance / RADIUS_OF_EARTH;
+		//distance = distance / RADIUS_OF_EARTH;
 		double bearing = this.getBearing(endPoint);
-		double lat2 = Math.asin( Math.sin(this.getLatitude()) * Math.cos(distance)
-					  + Math.cos(this.getLatitude()) * Math.sin(distance) * Math.cos(bearing));
-		double lon2 = this.getLongitude() +
-					Math.atan2( Math.sin(bearing) * Math.sin(distance) * Math.cos(this.getLatitude()),
-								Math.cos(distance) - Math.sin(this.getLatitude()) * Math.sin(lat2));
+		double lon1 = Math.toRadians(this.getLongitude());
+		double lat1 = Math.toRadians(this.getLatitude());
+		double lat2 = Math.asin( Math.sin(lat1) * Math.cos(distance)
+					  + Math.cos(lat1) * Math.sin(distance) * Math.cos(bearing));
+		double lon2 = lon1 +
+					Math.atan2( Math.sin(bearing) * Math.sin(distance) * Math.cos(lat1),
+								Math.cos(distance) - Math.sin(lat1) * Math.sin(lat2));
 		
-		return new Coordinate(Math.toDegrees(lat2), Math.toDegrees(lon2));
+		return new Coordinate(Math.toDegrees(Math.abs(lat2)), Math.toDegrees(Math.abs(lon2)));
 	}
 
 	public double getBearing(Coordinate c) {
