@@ -18,17 +18,18 @@
 
 package com.abstractedsheep.world;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
+import com.abstractedsheep.Logger.Logger;
 import com.abstractedsheep.extractor.DynamicJSONExtractor;
 import com.abstractedsheep.extractor.Netlink.RouteJson;
 import com.abstractedsheep.extractor.Netlink.RouteJson.RouteCoordinateJson;
 import com.abstractedsheep.extractor.Netlink.StopJson;
 import com.abstractedsheep.extractor.Netlink.StopJson.StopRouteJson;
 import com.abstractedsheep.extractor.StaticJSONExtractor;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class houses all of the dynamic (Shuttle) and static (Route and Stop) data.
@@ -39,6 +40,7 @@ import com.abstractedsheep.extractor.StaticJSONExtractor;
  *
  */
 public class World {
+    Logger log = Logger.getConfiguredLogger(World.class);
 	//this value is in milliseconds
 	private static final int SHUTTLE_LIFE_SPAN = ( 1000 * 45);
 	
@@ -60,6 +62,7 @@ public class World {
 	
 	//TODO staticExtractor does not need to be global
 	public void generateWorld() {
+        log.info("Getting route and stop information from static source.");
 		staticExtractor.readDataFromURL();
 		
 		for(RouteJson r : staticExtractor.getRouteList()) {
