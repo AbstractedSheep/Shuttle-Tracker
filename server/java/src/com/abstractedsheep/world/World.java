@@ -36,52 +36,51 @@ import java.util.List;
  * Virtually data modification and manipulation occurs within this class, excluding ETA
  * calculations. The dynamic and static data is stored in final HashMaps and only have
  * read-only access.
- * @author saiumesh
  *
+ * @author saiumesh
  */
 public class World {
-	//this value is in milliseconds
-	private static final int SHUTTLE_LIFE_SPAN = ( 1000 * 45);
-	
-	//XXX These collections should ONLY be maintained and ONLY modified by this class
-	private HashMap<Integer, Route> routeList;
-	private HashMap<Integer, Shuttle> shuttleList;
-	private HashMap<String, Stop> stopList;
-	private final StaticJSONExtractor staticExtractor;
-	private final DynamicJSONExtractor dynamicExtractor;
-	
-	
-	public World (StaticJSONExtractor staticData, DynamicJSONExtractor dynamicData) {
-		this.routeList = new HashMap<Integer, Route>();
-		this.shuttleList = new HashMap<Integer, Shuttle>();
-		this.stopList = new HashMap<String, Stop>();
-		this.staticExtractor = staticData;
-		this.dynamicExtractor = dynamicData;
-	}
-	
-	//TODO staticExtractor does not need to be global
-	public void generateWorld() {
-		staticExtractor.readDataFromURL();
-		
-		for(RouteJson r : staticExtractor.getRouteList()) {
-			this.addRoute(r);
-		}
-		
-		for(StopJson stop : staticExtractor.getStopList()) {
-			this.addStop(stop);
-		}
-	}
-	
-	private void addStop(StopJson stop) {
-		List<Integer> routes = new ArrayList<Integer>();
+    //this value is in milliseconds
+    private static final int SHUTTLE_LIFE_SPAN = (1000 * 45);
+
+    //XXX These collections should ONLY be maintained and ONLY modified by this class
+    private HashMap<Integer, Route> routeList;
+    private HashMap<Integer, Shuttle> shuttleList;
+    private HashMap<String, Stop> stopList;
+    private final StaticJSONExtractor staticExtractor;
+    private final DynamicJSONExtractor dynamicExtractor;
+
+
+    public World(StaticJSONExtractor staticData, DynamicJSONExtractor dynamicData) {
+        this.routeList = new HashMap<Integer, Route>();
+        this.shuttleList = new HashMap<Integer, Shuttle>();
+        this.stopList = new HashMap<String, Stop>();
+        this.staticExtractor = staticData;
+        this.dynamicExtractor = dynamicData;
+    }
+
+    //TODO staticExtractor does not need to be global
+    public void generateWorld() {
+        staticExtractor.readDataFromURL();
+
+        for (RouteJson r : staticExtractor.getRouteList()) {
+            this.addRoute(r);
+        }
+
+        for (StopJson stop : staticExtractor.getStopList()) {
+            this.addStop(stop);
+        }
+    }
+
+    private void addStop(StopJson stop) {
+        List<Integer> routes = new ArrayList<Integer>();
         for (StopRouteJson sj : stop.getRoutes()) {
             routes.add(sj.getId());
         }
-        
+
         Stop s = new Stop(new Coordinate(stop.getLatitude(), stop.getLongitude()), stop.getShort_name(), stop.getName());
         HashMap<Integer, Route> tempRouteList = this.routeList;
-        for (Integer i : routes)
-        {
+        for (Integer i : routes) {
             Route r = tempRouteList.get(i);
             s.addRoute(r);
             r.addStop(s);
@@ -89,62 +88,63 @@ public class World {
             routeList.put(i, r);
         }
         stopList.put(s.getShortName(), s);
-	}
+    }
 
-	private void addRoute(RouteJson r) {
-		List<Coordinate> coords = new ArrayList<Coordinate>();
+    private void addRoute(RouteJson r) {
+        List<Coordinate> coords = new ArrayList<Coordinate>();
         for (RouteCoordinateJson rc : r.getCoords()) {
-            coords.add(new Coordinate( rc.getLatitude(), rc.getLongitude()));
+            coords.add(new Coordinate(rc.getLatitude(), rc.getLongitude()));
         }
-        
+
         Route route = new Route(r.getId(), r.getName(), (ArrayList<Coordinate>) coords);
         routeList.put(route.getIdNum(), route);
-	}
+    }
 
-	public void updateWorld() {
-		dynamicExtractor.readDataFromURL();
-		HashMap<Integer, Shuttle> updatedShuttleList = dynamicExtractor.getDynamicData();
-		
-		//update current shuttle list
-		for(Integer shuttleId : updatedShuttleList.keySet()) {
-			if (this.shuttleList.containsKey(shuttleId)) {
-				Shuttle temp = shuttleList.get(shuttleId);
-				temp.updateShuttle(updatedShuttleList.get(shuttleId));
-				this.shuttleList.put(shuttleId, temp);
-			} else {
-				this.shuttleList.put(shuttleId, updatedShuttleList.get(shuttleId));
-			}
-		}
-		
-		//remove all shuttles that have not been update for a while.
-		HashMap<Integer, Shuttle> tempList = shuttleList;
-		for(Integer shuttleId : tempList.keySet()) {
-			long age = tempList.get(shuttleId).getAge();
-			
-			if(age >= SHUTTLE_LIFE_SPAN) {
-				shuttleList.remove(shuttleId);
-			}
-		}
-	}
-	/**
-	 * @return a read-only version of the routeList
-	 */
-	public HashMap<Integer, Route> getRouteList() {
-		return (HashMap<Integer, Route>) Collections.unmodifiableMap(routeList);
-	}
-	
-	/**
-	 * @return a read-only version of the shuttleList
-	 */
-	public HashMap<Integer, Shuttle> getShuttleList() {
-		return (HashMap<Integer, Shuttle>) Collections.unmodifiableMap(shuttleList);
-	}
+    public void updateWorld() {
+        dynamicExtractor.readDataFromURL();
+        HashMap<Integer, Shuttle> updatedShuttleList = dynamicExtractor.getDynamicData();
 
-	/**
-	 * @return a read-only version of the stopList
-	 */
-	public HashMap<String, Stop> getStopList() {
-		return (HashMap<String, Stop>) Collections.unmodifiableMap(stopList);
-	}
+        //update current shuttle list
+        for (Integer shuttleId : updatedShuttleList.keySet()) {
+            if (this.shuttleList.containsKey(shuttleId)) {
+                Shuttle temp = shuttleList.get(shuttleId);
+                temp.updateShuttle(updatedShuttleList.get(shuttleId));
+                this.shuttleList.put(shuttleId, temp);
+            } else {
+                this.shuttleList.put(shuttleId, updatedShuttleList.get(shuttleId));
+            }
+        }
+
+        //remove all shuttles that have not been update for a while.
+        HashMap<Integer, Shuttle> tempList = shuttleList;
+        for (Integer shuttleId : tempList.keySet()) {
+            long age = tempList.get(shuttleId).getAge();
+
+            if (age >= SHUTTLE_LIFE_SPAN) {
+                shuttleList.remove(shuttleId);
+            }
+        }
+    }
+
+    /**
+     * @return a read-only version of the routeList
+     */
+    public HashMap<Integer, Route> getRouteList() {
+        return (HashMap<Integer, Route>) Collections.unmodifiableMap(routeList);
+    }
+
+    /**
+     * @return a read-only version of the shuttleList
+     */
+    public HashMap<Integer, Shuttle> getShuttleList() {
+        return (HashMap<Integer, Shuttle>) Collections.unmodifiableMap(shuttleList);
+    }
+
+    /**
+     * @return a read-only version of the stopList
+     */
+    public HashMap<String, Stop> getStopList() {
+        return (HashMap<String, Stop>) Collections.unmodifiableMap(stopList);
+    }
 
 }

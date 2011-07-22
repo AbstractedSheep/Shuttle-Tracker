@@ -29,118 +29,119 @@ import java.util.HashMap;
  * its name and ID number. Also, the bearing between each route point, the one before it
  * as well as the one after it is done in order to give a sense of traveling direction
  * along the route.
+ *
  * @author saiumesh
- * 
  */
 
 public class Route {
-	private int idNum;
-	private String routeName;
-	private ArrayList<Coordinate> coordinateList;
-	private ArrayList<Double> distanceToNextCoordinateList;
-	private HashMap<Integer, Shuttle> shuttleList;
-	private HashMap<String, Stop> stopList;
-	private double roundTripDistance;
-	public Route() {
-		idNum = 0;
-		routeName = "West";
-		this.coordinateList = new ArrayList<Coordinate>();
-		this.stopList = new HashMap<String, Stop>();
-		this.shuttleList = new HashMap<Integer, Shuttle>();
-		this.distanceToNextCoordinateList = new ArrayList<Double>();
-		this.roundTripDistance = 0.0;
-	}
+    private int idNum;
+    private String routeName;
+    private ArrayList<Coordinate> coordinateList;
+    private ArrayList<Double> distanceToNextCoordinateList;
+    private HashMap<Integer, Shuttle> shuttleList;
+    private HashMap<String, Stop> stopList;
+    private double roundTripDistance;
 
-	public Route(int idNum, String routeName, ArrayList<Coordinate> list) {
-		this.idNum = idNum;
-		this.routeName = routeName;
-		this.coordinateList = list;
-		this.roundTripDistance = 0.0;
-		this.stopList = new HashMap<String, Stop>();
-		this.shuttleList = new HashMap<Integer, Shuttle>();
-		this.distanceToNextCoordinateList = new ArrayList<Double>();
-		this.computeDistances();
-	}
-	
-	private void computeDistances() {
-		int size = coordinateList.size();
-		Coordinate c1 = null, c2 = null;
-		double distance = 0.0;
-		for (int i = 0; i < coordinateList.size(); i++) {
-			if (i == 0)
-				c1 = coordinateList.get(size - 1);
-			else
-				c1 = coordinateList.get(i - 1);
-			c2 = coordinateList.get(i);
-			distance = c1.distanceFromCoordiante(c2);
-			this.distanceToNextCoordinateList.add(distance);
-			this.roundTripDistance += distance;
-		}
-	}
+    public Route() {
+        idNum = 0;
+        routeName = "West";
+        this.coordinateList = new ArrayList<Coordinate>();
+        this.stopList = new HashMap<String, Stop>();
+        this.shuttleList = new HashMap<Integer, Shuttle>();
+        this.distanceToNextCoordinateList = new ArrayList<Double>();
+        this.roundTripDistance = 0.0;
+    }
 
-	/**
-	 * @return the idNum
-	 */
-	public int getIdNum() {
-		return idNum;
-	}
+    public Route(int idNum, String routeName, ArrayList<Coordinate> list) {
+        this.idNum = idNum;
+        this.routeName = routeName;
+        this.coordinateList = list;
+        this.roundTripDistance = 0.0;
+        this.stopList = new HashMap<String, Stop>();
+        this.shuttleList = new HashMap<Integer, Shuttle>();
+        this.distanceToNextCoordinateList = new ArrayList<Double>();
+        this.computeDistances();
+    }
 
-	/**
-	 * @param idNum
-	 *            the idNum to set
-	 */
-	public void setIdNum(int idNum) {
-		this.idNum = idNum;
-	}
+    private void computeDistances() {
+        int size = coordinateList.size();
+        Coordinate c1 = null, c2 = null;
+        double distance = 0.0;
+        for (int i = 0; i < coordinateList.size(); i++) {
+            if (i == 0)
+                c1 = coordinateList.get(size - 1);
+            else
+                c1 = coordinateList.get(i - 1);
+            c2 = coordinateList.get(i);
+            distance = c1.distanceFromCoordiante(c2);
+            this.distanceToNextCoordinateList.add(distance);
+            this.roundTripDistance += distance;
+        }
+    }
 
-	/**
-	 * @return the routeName
-	 */
-	public String getRouteName() {
-		return routeName;
-	}
-	public ArrayList<Coordinate> getCoordinateList() {
-		return this.coordinateList;
-	}
-	
-	public void setCoordinateList(ArrayList<Coordinate> list) {
-		this.distanceToNextCoordinateList.clear();
-		this.roundTripDistance = 0.0;
-		this.coordinateList = list;
-		this.computeDistances();
-	}
+    /**
+     * @return the idNum
+     */
+    public int getIdNum() {
+        return idNum;
+    }
 
-	/**
-	 * @return the shuttleList
-	 */
-	public HashMap<Integer, Shuttle> getShuttleList() {
-		return (HashMap<Integer, Shuttle>) Collections.unmodifiableMap(shuttleList);
-	}
+    /**
+     * @param idNum the idNum to set
+     */
+    public void setIdNum(int idNum) {
+        this.idNum = idNum;
+    }
 
-	/**
-	 * @return the distanceToNextCoordinateList
-	 * NOTE: the distance between the coordinateList[0] and coordinateList[1]
-	 * 		 is distanceToNext[1].
-	 */
-	public ArrayList<Double> getDistanceToNextCoordinateList() {
-		return (ArrayList<Double>) Collections.unmodifiableList(distanceToNextCoordinateList);
-	}
+    /**
+     * @return the routeName
+     */
+    public String getRouteName() {
+        return routeName;
+    }
 
-	/**
-	 * @return the roundTripDistance
-	 */
-	public double getRoundTripDistance() {
-		return roundTripDistance;
-	}
+    public ArrayList<Coordinate> getCoordinateList() {
+        return this.coordinateList;
+    }
 
-	/**
-	 * @return the stopList
-	 */
-	public HashMap<String, Stop> getStopList() {
-		return (HashMap<String, Stop>) Collections.unmodifiableMap(stopList);
-	}
+    public void setCoordinateList(ArrayList<Coordinate> list) {
+        this.distanceToNextCoordinateList.clear();
+        this.roundTripDistance = 0.0;
+        this.coordinateList = list;
+        this.computeDistances();
+    }
 
-	public void addStop(Stop s) {
-		this.stopList.put(s.getShortName(), s);
-	}
+    /**
+     * @return the shuttleList
+     */
+    public HashMap<Integer, Shuttle> getShuttleList() {
+        return (HashMap<Integer, Shuttle>) Collections.unmodifiableMap(shuttleList);
+    }
+
+    /**
+     * @return the distanceToNextCoordinateList
+     *         NOTE: the distance between the coordinateList[0] and coordinateList[1]
+     *         is distanceToNext[1].
+     */
+    public ArrayList<Double> getDistanceToNextCoordinateList() {
+        return (ArrayList<Double>) Collections.unmodifiableList(distanceToNextCoordinateList);
+    }
+
+    /**
+     * @return the roundTripDistance
+     */
+    public double getRoundTripDistance() {
+        return roundTripDistance;
+    }
+
+    /**
+     * @return the stopList
+     */
+    public HashMap<String, Stop> getStopList() {
+        return (HashMap<String, Stop>) Collections.unmodifiableMap(stopList);
+    }
+
+    public void addStop(Stop s) {
+        this.stopList.put(s.getShortName(), s);
+    }
 }

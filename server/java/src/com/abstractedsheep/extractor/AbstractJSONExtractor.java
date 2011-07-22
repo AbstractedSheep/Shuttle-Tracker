@@ -29,43 +29,43 @@ import java.util.ArrayList;
 /**
  * The purpose of this class is to extract the jsons from the rpi shuttle server
  * and process the data.
- * 
+ *
  * @author saiumesh
- * 
  */
 public abstract class AbstractJSONExtractor {
-	protected URL url;
-	protected JsonParser parser;
-	protected JsonFactory f;
-	protected ArrayList<String> extractedValueList1, extractedValueList2;
+    protected URL url;
+    protected JsonParser parser;
+    protected JsonFactory f;
+    protected ArrayList<String> extractedValueList1, extractedValueList2;
 
-	public AbstractJSONExtractor() {
-		f = new JsonFactory();
-		this.extractedValueList1 = new ArrayList<String>();
-		this.extractedValueList2 = new ArrayList<String>();
-		try {
-			// get link to stops and shuttles
-			url = new URL("");
+    public AbstractJSONExtractor() {
+        f = new JsonFactory();
+        this.extractedValueList1 = new ArrayList<String>();
+        this.extractedValueList2 = new ArrayList<String>();
+        try {
+            // get link to stops and shuttles
+            url = new URL("");
 
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public AbstractJSONExtractor(URL u) {
-		this.f = new JsonFactory();
-		// get link to stops and shuttles
-		this.url = u;
-		this.extractedValueList1 = new ArrayList<String>();
-		this.extractedValueList2 = new ArrayList<String>();
-	}
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
-	// TODO: data shows up in one line, need to make a new method/class to parse
-	// json data.
-	/**
-	 * the purpose of this method is to extract the data from the routes json
-	 * and store the values in StopList and RouteList.
-	 */
-	public abstract void readDataFromURL();
+    public AbstractJSONExtractor(URL u) {
+        this.f = new JsonFactory();
+        // get link to stops and shuttles
+        this.url = u;
+        this.extractedValueList1 = new ArrayList<String>();
+        this.extractedValueList2 = new ArrayList<String>();
+    }
+
+    // TODO: data shows up in one line, need to make a new method/class to parse
+    // json data.
+
+    /**
+     * the purpose of this method is to extract the data from the routes json
+     * and store the values in StopList and RouteList.
+     */
+    public abstract void readDataFromURL();
 }

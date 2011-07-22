@@ -20,6 +20,6 @@
 package com.abstractedsheep.world;
 
 public interface IRouteFinder {
-	
-	public abstract void snapToRoute(Route r);
+
+    public abstract void snapToRoute(Route r);
 }

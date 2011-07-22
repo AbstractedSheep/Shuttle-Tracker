@@ -24,219 +24,229 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Netlink {
-	private ArrayList<StopJson> stops;
-	private ArrayList<RouteJson> routes;
-	private HashMap<Integer, RouteJson> routesMap = new HashMap<Integer, Netlink.RouteJson>();
-	
-	public static class StopJson implements Comparable<StopJson> {
-		private int favoriteRoute = -1;
-		private double latitude;
-		
-		public String getUniqueId() {
-			return short_name + favoriteRoute;
-		}
-		
-		public double getLatitude() {
-			return latitude;
-		}
+    private ArrayList<StopJson> stops;
+    private ArrayList<RouteJson> routes;
+    private HashMap<Integer, RouteJson> routesMap = new HashMap<Integer, Netlink.RouteJson>();
 
-		public void setLatitude(double latitude) {
-			this.latitude = latitude;
-		}
+    public static class StopJson implements Comparable<StopJson> {
+        private int favoriteRoute = -1;
+        private double latitude;
 
-		public double getLongitude() {
-			return longitude;
-		}
+        public String getUniqueId() {
+            return short_name + favoriteRoute;
+        }
 
-		public void setLongitude(double longitude) {
-			this.longitude = longitude;
-		}
+        public double getLatitude() {
+            return latitude;
+        }
 
-		public String getName() {
-			if (this.short_name.equals("blitman"))
-				return "Blitman Commons";
-			else
-				return name;
-		}
+        public void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
 
-		public void setName(String name) {
-			this.name = name;
-		}
+        public double getLongitude() {
+            return longitude;
+        }
 
-		public String getShort_name() {
-			return short_name;
-		}
+        public void setLongitude(double longitude) {
+            this.longitude = longitude;
+        }
 
-		public void setShort_name(String short_name) {
-			this.short_name = short_name;
-		}
+        public String getName() {
+            if (this.short_name.equals("blitman"))
+                return "Blitman Commons";
+            else
+                return name;
+        }
 
-		public ArrayList<StopRouteJson> getRoutes() {
-			return routes;
-		}
+        public void setName(String name) {
+            this.name = name;
+        }
 
-		public void setRoutes(ArrayList<StopRouteJson> routes) {
-			this.routes = routes;
-		}
+        public String getShort_name() {
+            return short_name;
+        }
 
-		private double longitude;
-		private String name;
-		private String short_name;
-		private ArrayList<StopRouteJson> routes;
-		
-		public static class StopRouteJson {
-			private int id;
-			public int getId() {
-				return id;
-			}
-			public void setId(int id) {
-				this.id = id;
-			}
-			public String getName() {
-				return name;
-			}
-			public void setName(String name) {
-				this.name = name;
-			}
-			private String name;
-		}
+        public void setShort_name(String short_name) {
+            this.short_name = short_name;
+        }
 
-		public int compareTo(StopJson another) {
-			if (favoriteRoute == -1)
-				return name.compareTo(another.name);
-			else {
-				String s1 = name + favoriteRoute;
-				String s2 = name + another.favoriteRoute;
-				return s1.compareTo(s2);
-			}
-		}
-		
-		@Override
-		public boolean equals(Object o) {
-			if (o instanceof StopJson)
-				return this.short_name.equals(((StopJson) o).short_name);
-			else
-				return super.equals(o);
-		}
+        public ArrayList<StopRouteJson> getRoutes() {
+            return routes;
+        }
 
-		public int getFavoriteRoute() {
-			return favoriteRoute;
-		}
+        public void setRoutes(ArrayList<StopRouteJson> routes) {
+            this.routes = routes;
+        }
 
-		public void setFavoriteRoute(int favoriteRoute) {
-			this.favoriteRoute = favoriteRoute;
-		}
-	}
-	
-	public static class RouteJson {
-		private String color;
-		private int id;
-		private String name;
-		private boolean visible = true;
-		
-		public String getColor() {
-			return color;
-		}
-		
-		public int getColorInt() {
-		    return Color.decode(this.color).getRGB();
-			
-			/*if (colors.length == 4)
-				return Color.argb(colors[0], (colors[3] - 10 > 0) ? colors[3] - 10 : 0,  (colors[2] - 10 > 0) ? colors[2] - 10 : 0,  (colors[1] - 10 > 0) ? colors[1] - 10 : 0);
-			else
-				return Color.rgb(colors[0],  (colors[1] - 10 > 0) ? colors[1] - 10 : 0,  (colors[2] - 10 > 0) ? colors[2] - 10 : 0);*/
-		}
+        private double longitude;
+        private String name;
+        private String short_name;
+        private ArrayList<StopRouteJson> routes;
 
-		public void setColor(String color) {
-			this.color = color;
-		}
+        public static class StopRouteJson {
+            private int id;
 
-		public int getId() {
-			return id;
-		}
+            public int getId() {
+                return id;
+            }
 
-		public void setId(int id) {
-			this.id = id;
-		}
+            public void setId(int id) {
+                this.id = id;
+            }
 
-		public String getName() {
-			return name;
-		}
+            public String getName() {
+                return name;
+            }
 
-		public void setName(String name) {
-			this.name = name;
-		}
+            public void setName(String name) {
+                this.name = name;
+            }
 
-		public int getWidth() {
-			return width;
-		}
+            private String name;
+        }
 
-		public void setWidth(int width) {
-			this.width = width;
-		}
+        public int compareTo(StopJson another) {
+            if (favoriteRoute == -1)
+                return name.compareTo(another.name);
+            else {
+                String s1 = name + favoriteRoute;
+                String s2 = name + another.favoriteRoute;
+                return s1.compareTo(s2);
+            }
+        }
 
-		public ArrayList<RouteCoordinateJson> getCoords() {
-			return coords;
-		}
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof StopJson)
+                return this.short_name.equals(((StopJson) o).short_name);
+            else
+                return super.equals(o);
+        }
 
-		public void setCoords(ArrayList<RouteCoordinateJson> coords) {
-			this.coords = coords;
-		}
+        public int getFavoriteRoute() {
+            return favoriteRoute;
+        }
 
-		public boolean getVisible() {
-			return visible;
-		}
+        public void setFavoriteRoute(int favoriteRoute) {
+            this.favoriteRoute = favoriteRoute;
+        }
+    }
 
-		public void setVisible(boolean visible) {
-			this.visible = visible;
-		}
+    public static class RouteJson {
+        private String color;
+        private int id;
+        private String name;
+        private boolean visible = true;
 
-		private int width;
-		private ArrayList<RouteCoordinateJson> coords;
-		
-		public static class RouteCoordinateJson {
-			private double latitude;
-			public double getLatitude() {
-				return latitude;
-			}
-			public void setLatitude(double latitude) {
-				this.latitude = latitude;
-			}
-			public double getLongitude() {
-				return longitude;
-			}
-			public void setLongitude(double longitude) {
-				this.longitude = longitude;
-			}
-			private double longitude;
-		}
-	}
+        public String getColor() {
+            return color;
+        }
 
-	public ArrayList<StopJson> getStops() {
-		return stops;
-	}
+        public int getColorInt() {
+            return Color.decode(this.color).getRGB();
 
-	public void setStops(ArrayList<StopJson> stops) {
-		this.stops = stops;
-	}
+            /*if (colors.length == 4)
+                   return Color.argb(colors[0], (colors[3] - 10 > 0) ? colors[3] - 10 : 0,  (colors[2] - 10 > 0) ? colors[2] - 10 : 0,  (colors[1] - 10 > 0) ? colors[1] - 10 : 0);
+               else
+                   return Color.rgb(colors[0],  (colors[1] - 10 > 0) ? colors[1] - 10 : 0,  (colors[2] - 10 > 0) ? colors[2] - 10 : 0);*/
+        }
 
-	public ArrayList<RouteJson> getRoutes() {
-		return routes;
-	}
+        public void setColor(String color) {
+            this.color = color;
+        }
 
-	public void setRoutes(ArrayList<RouteJson> routes) {
-		this.routes = routes;
-		
-		routesMap.clear();
-		
-		if (routes != null) {
-			for (RouteJson r : routes) {
-				routesMap.put(r.id, r);
-			}
-		}
-	}
+        public int getId() {
+            return id;
+        }
 
-	public HashMap<Integer, RouteJson> getRoutesMap() {
-		return routesMap;
-	}
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public void setWidth(int width) {
+            this.width = width;
+        }
+
+        public ArrayList<RouteCoordinateJson> getCoords() {
+            return coords;
+        }
+
+        public void setCoords(ArrayList<RouteCoordinateJson> coords) {
+            this.coords = coords;
+        }
+
+        public boolean getVisible() {
+            return visible;
+        }
+
+        public void setVisible(boolean visible) {
+            this.visible = visible;
+        }
+
+        private int width;
+        private ArrayList<RouteCoordinateJson> coords;
+
+        public static class RouteCoordinateJson {
+            private double latitude;
+
+            public double getLatitude() {
+                return latitude;
+            }
+
+            public void setLatitude(double latitude) {
+                this.latitude = latitude;
+            }
+
+            public double getLongitude() {
+                return longitude;
+            }
+
+            public void setLongitude(double longitude) {
+                this.longitude = longitude;
+            }
+
+            private double longitude;
+        }
+    }
+
+    public ArrayList<StopJson> getStops() {
+        return stops;
+    }
+
+    public void setStops(ArrayList<StopJson> stops) {
+        this.stops = stops;
+    }
+
+    public ArrayList<RouteJson> getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(ArrayList<RouteJson> routes) {
+        this.routes = routes;
+
+        routesMap.clear();
+
+        if (routes != null) {
+            for (RouteJson r : routes) {
+                routesMap.put(r.id, r);
+            }
+        }
+    }
+
+    public HashMap<Integer, RouteJson> getRoutesMap() {
+        return routesMap;
+    }
 }

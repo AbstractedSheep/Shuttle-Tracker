@@ -23,6 +23,7 @@ import com.abstractedsheep.config.STSProperties;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
+
 /**
  * Created by IntelliJ IDEA.
  * User: ujonnalagadda
@@ -30,7 +31,7 @@ import java.util.logging.FileHandler;
  * Time: 4:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Logger extends java.util.logging.Logger{
+public class Logger extends java.util.logging.Logger {
     protected Logger(String s, String s1) {
         super(s, s1);
     }

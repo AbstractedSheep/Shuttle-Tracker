@@ -27,170 +27,164 @@ import java.util.HashMap;
  * Each stop object will have a location, a name and an instance of the RouteFinder
  * class. This inner class is similar to the one used in the Shuttle class, and helps
  * the Shuttle class determine the distance to each stop.
- * 
+ *
  * @author saiumesh
- * 
  */
-public class Stop implements IRouteFinder{
-	private Coordinate location;
-	private String name, shortName;
-	/**
-	 * The routes that this stop is on is stored within another array in the
-	 * json and the route contains an integer id number as well as a name (e.g.
-	 * West Route)
-	 */
-	private HashMap<Integer, Route> routeMap;
-	private HashMap<Integer, Coordinate> snappedCoordinate;
-	private HashMap<Integer, Double> precedingCoordinateDistance;
-	private HashMap<Integer, Integer> precedingCoordinate;
+public class Stop implements IRouteFinder {
+    private Coordinate location;
+    private String name, shortName;
+    /**
+     * The routes that this stop is on is stored within another array in the
+     * json and the route contains an integer id number as well as a name (e.g.
+     * West Route)
+     */
+    private HashMap<Integer, Route> routeMap;
+    private HashMap<Integer, Coordinate> snappedCoordinate;
+    private HashMap<Integer, Double> precedingCoordinateDistance;
+    private HashMap<Integer, Integer> precedingCoordinate;
 
-	/**
-	 * @return the snappedCoordinate
-	 */
-	public HashMap<Integer, Coordinate> getSnappedCoordinate() {
-		return snappedCoordinate;
-	}
+    /**
+     * @return the snappedCoordinate
+     */
+    public HashMap<Integer, Coordinate> getSnappedCoordinate() {
+        return snappedCoordinate;
+    }
 
-	/**
-	 * @return the precedingCoordinateDistance
-	 */
-	public HashMap<Integer, Double> getPrecedingCoordinateDistance() {
-		return precedingCoordinateDistance;
-	}
+    /**
+     * @return the precedingCoordinateDistance
+     */
+    public HashMap<Integer, Double> getPrecedingCoordinateDistance() {
+        return precedingCoordinateDistance;
+    }
 
-	/**
-	 * @return the precedingCoordinate
-	 */
-	public HashMap<Integer, Integer> getPrecedingCoordinate() {
-		return precedingCoordinate;
-	}
+    /**
+     * @return the precedingCoordinate
+     */
+    public HashMap<Integer, Integer> getPrecedingCoordinate() {
+        return precedingCoordinate;
+    }
 
-	public Stop(double longitude, double latitude, String fullName,
-			String shortN, HashMap<Integer, Route> map) {
-		snappedCoordinate = new HashMap<Integer, Coordinate>();
-		precedingCoordinateDistance = new HashMap<Integer, Double>();
-		precedingCoordinate = new HashMap<Integer, Integer>();
-		this.location = new Coordinate(latitude, longitude);
-		this.name = fullName;
-		this.shortName = shortN;
-		this.routeMap = map;
-		for(Route r : map.values()) {
-			this.snapToRoute(r);
-		}
-	}
-	
-	public Stop (Coordinate coordinate, String shortName, String fullName) {
-		snappedCoordinate = new HashMap<Integer, Coordinate>();
-		precedingCoordinateDistance = new HashMap<Integer, Double>();
-		precedingCoordinate = new HashMap<Integer, Integer>();
-		this.location = coordinate;
-		this.name = fullName;
-		this.shortName = shortName;
-		this.routeMap = new HashMap<Integer, Route>();
-	}
+    public Stop(double longitude, double latitude, String fullName,
+                String shortN, HashMap<Integer, Route> map) {
+        snappedCoordinate = new HashMap<Integer, Coordinate>();
+        precedingCoordinateDistance = new HashMap<Integer, Double>();
+        precedingCoordinate = new HashMap<Integer, Integer>();
+        this.location = new Coordinate(latitude, longitude);
+        this.name = fullName;
+        this.shortName = shortN;
+        this.routeMap = map;
+        for (Route r : map.values()) {
+            this.snapToRoute(r);
+        }
+    }
 
-	/**
-	 * @return the lon
-	 */
-	public double getLongitude() {
-		return location.getLongitude();
-	}
+    public Stop(Coordinate coordinate, String shortName, String fullName) {
+        snappedCoordinate = new HashMap<Integer, Coordinate>();
+        precedingCoordinateDistance = new HashMap<Integer, Double>();
+        precedingCoordinate = new HashMap<Integer, Integer>();
+        this.location = coordinate;
+        this.name = fullName;
+        this.shortName = shortName;
+        this.routeMap = new HashMap<Integer, Route>();
+    }
 
-	/**
-	 * @param lon
-	 *            the lon to set
-	 */
-	public void setLongitude(double lon) {
-		this.location.setLongitude(lon);
-	}
+    /**
+     * @return the lon
+     */
+    public double getLongitude() {
+        return location.getLongitude();
+    }
 
-	/**
-	 * @return the lat
-	 */
-	public double getLatitude() {
-		return this.location.getLatitude();
-	}
+    /**
+     * @param lon the lon to set
+     */
+    public void setLongitude(double lon) {
+        this.location.setLongitude(lon);
+    }
 
-	public Coordinate getLocation() {
-		return this.location;
-	}
+    /**
+     * @return the lat
+     */
+    public double getLatitude() {
+        return this.location.getLatitude();
+    }
 
-	/**
-	 * @param lat
-	 *            the lat to set
-	 */
-	public void setLatitude(double lat) {
-		this.location.setLatitude(lat);
-	}
+    public Coordinate getLocation() {
+        return this.location;
+    }
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * @param lat the lat to set
+     */
+    public void setLatitude(double lat) {
+        this.location.setLatitude(lat);
+    }
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * @return the shortName
-	 */
-	public String getShortName() {
-		return shortName;
-	}
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * @param shortName
-	 *            the shortName to set
-	 */
-	public void setShortName(String shortName) {
-		this.shortName = shortName;
-	}
+    /**
+     * @return the shortName
+     */
+    public String getShortName() {
+        return shortName;
+    }
 
-	/**
-	 * @return the routeMap
-	 */
-	public HashMap<Integer, Route> getRouteMap() {
-		return (HashMap<Integer, Route>) Collections.unmodifiableMap(routeMap);
-	}
-	
-	public void addRoute(Route r) {
-		this.routeMap.put(r.getIdNum(), r);
-	}
+    /**
+     * @param shortName the shortName to set
+     */
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
 
-	@Override
-	public void snapToRoute(Route r) {
-		Coordinate c1, c2;
-		Coordinate closestPoint = null, tempClosestPoint = null;
-		int precedingPointId = -1;
-		double shortestDistance = 10000, tempShortestDistance = 10000;
-		int size = r.getCoordinateList().size();
-		for (int i = 0; i < r.getCoordinateList().size(); i++)
-		{
-			if (i == 0)
-				c1 = r.getCoordinateList().get(size - 1);
-			else
-				c1 = r.getCoordinateList().get(i - 1);
-	
-			c2 = r.getCoordinateList().get(size - 1);
-			
-			tempClosestPoint = location.closestPoint(c1, c2);
-			tempShortestDistance = tempClosestPoint.distanceFromCoordiante(location);
-	
-			if (tempShortestDistance < shortestDistance) {
-				shortestDistance = tempShortestDistance;
-				closestPoint = tempClosestPoint;
-				precedingPointId = (i == 0) ? (size - 1) : i;
-			}
-		}
-		this.snappedCoordinate.put(r.getIdNum(), closestPoint);
-		this.precedingCoordinate.put(r.getIdNum(), precedingPointId);
-		this.precedingCoordinateDistance.put(r.getIdNum(), r.getCoordinateList().get(precedingPointId).distanceFromCoordiante(location));
-	}
+    /**
+     * @return the routeMap
+     */
+    public HashMap<Integer, Route> getRouteMap() {
+        return (HashMap<Integer, Route>) Collections.unmodifiableMap(routeMap);
+    }
+
+    public void addRoute(Route r) {
+        this.routeMap.put(r.getIdNum(), r);
+    }
+
+    @Override
+    public void snapToRoute(Route r) {
+        Coordinate c1, c2;
+        Coordinate closestPoint = null, tempClosestPoint = null;
+        int precedingPointId = -1;
+        double shortestDistance = 10000, tempShortestDistance = 10000;
+        int size = r.getCoordinateList().size();
+        for (int i = 0; i < r.getCoordinateList().size(); i++) {
+            if (i == 0)
+                c1 = r.getCoordinateList().get(size - 1);
+            else
+                c1 = r.getCoordinateList().get(i - 1);
+
+            c2 = r.getCoordinateList().get(size - 1);
+
+            tempClosestPoint = location.closestPoint(c1, c2);
+            tempShortestDistance = tempClosestPoint.distanceFromCoordiante(location);
+
+            if (tempShortestDistance < shortestDistance) {
+                shortestDistance = tempShortestDistance;
+                closestPoint = tempClosestPoint;
+                precedingPointId = (i == 0) ? (size - 1) : i;
+            }
+        }
+        this.snappedCoordinate.put(r.getIdNum(), closestPoint);
+        this.precedingCoordinate.put(r.getIdNum(), precedingPointId);
+        this.precedingCoordinateDistance.put(r.getIdNum(), r.getCoordinateList().get(precedingPointId).distanceFromCoordiante(location));
+    }
 }

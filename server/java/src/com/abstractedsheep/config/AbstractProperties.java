@@ -44,7 +44,7 @@ public abstract class AbstractProperties {
         private String name;
         private String defaultValue;
 
-        public Property (String name, String val) {
+        public Property(String name, String val) {
             this.name = name;
             this.defaultValue = val;
         }

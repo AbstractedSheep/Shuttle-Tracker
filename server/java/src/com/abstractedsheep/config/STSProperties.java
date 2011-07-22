@@ -26,7 +26,7 @@ package com.abstractedsheep.config;
  * Time: 6:32:08 PM
  * To change this template use File | Settings | File Templates.
  */
-public class STSProperties extends AbstractProperties{
+public class STSProperties extends AbstractProperties {
     public static final Property LOG_PATH = new Property("logPath", "../logs");
 
     public static final Property DB_PATH = new Property("dbPath", "./db.properties");

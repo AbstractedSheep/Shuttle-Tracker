@@ -28,7 +28,7 @@ import java.io.IOException;
  * Time: 5:55:12 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DBProperties extends AbstractProperties{
+public class DBProperties extends AbstractProperties {
     public static final Property USER_NAME = new Property("user", "r00t");
     public static final Property PASSWORD = new Property("password", "*ucsv");
     public static final Property STOP_TABLE_NAME = new Property("stopTable", "stops");
