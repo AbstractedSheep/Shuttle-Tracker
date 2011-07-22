@@ -1,20 +1,35 @@
+/*
+ * Copyright 2011
+ *
+ *   This file is part of Mobile Shuttle Tracker.
+ *
+ *   Mobile Shuttle Tracker is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Mobile Shuttle Tracker is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with Mobile Shuttle Tracker.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.abstractedsheep.extractor;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
+import com.abstractedsheep.extractor.Netlink.RouteJson;
+import com.abstractedsheep.extractor.Netlink.StopJson;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.abstractedsheep.extractor.Netlink.RouteJson;
-import com.abstractedsheep.extractor.Netlink.StopJson;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class StaticJSONExtractor extends AbstractJSONExtractor {
 	public ArrayList<RouteJson> routeList;

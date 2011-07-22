@@ -1,18 +1,39 @@
+/*
+ * Copyright 2011
+ *
+ *   This file is part of Mobile Shuttle Tracker.
+ *
+ *   Mobile Shuttle Tracker is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Mobile Shuttle Tracker is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with Mobile Shuttle Tracker.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.abstractedsheep.db;
 
-import java.io.*;
+import com.abstractedsheep.ShuttleTrackerService.ETACalculator;
+import com.abstractedsheep.ShuttleTrackerService.ETACalculator.Eta;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
-import java.util.logging.Logger;
-
-import com.abstractedsheep.ShuttleTrackerService.ETACalculator;
-import com.abstractedsheep.ShuttleTrackerService.ETACalculator.Eta;
 
 /**
- * Connects to the server {@link http://www.abstractedsheep.com/phpMyAdmin/} and
+ * Connects to the server {@link www.abstractedsheep.com/phpMyAdmin/} and
  * writes data to the DB table TODO: This program writes specifically to one
  * table in the database called shutle_eta, for the sake of making the code more
  * robust, it might be better to include this table in the file sts.properties
@@ -140,15 +161,6 @@ public class DatabaseWriter extends AbstractQueryRunner {
 			stm.executeUpdate(sql);
 		} catch (SQLException e) {
 		}
-	}
-
-	/**
-	 * Outputs the shuttle ETA information to the console for quick debugging.
-	 * 
-	 * @param shuttleList
-	 *            - shuttle data
-	 */
-	public static void printToConsole(ETACalculator etaList) {
 	}
 
 	/**

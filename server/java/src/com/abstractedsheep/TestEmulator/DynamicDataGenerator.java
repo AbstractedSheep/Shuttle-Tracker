@@ -1,18 +1,23 @@
+/*
+ * Copyright 2011
+ *
+ *   This file is part of Mobile Shuttle Tracker.
+ *
+ *   Mobile Shuttle Tracker is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Mobile Shuttle Tracker is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with Mobile Shuttle Tracker.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.abstractedsheep.TestEmulator;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-
-import org.codehaus.jackson.JsonEncoding;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonGenerator;
 
 import com.abstractedsheep.extractor.Netlink.RouteJson;
 import com.abstractedsheep.extractor.Netlink.RouteJson.RouteCoordinateJson;
@@ -23,6 +28,15 @@ import com.abstractedsheep.world.Coordinate;
 import com.abstractedsheep.world.Route;
 import com.abstractedsheep.world.Shuttle;
 import com.abstractedsheep.world.Stop;
+import org.codehaus.jackson.JsonEncoding;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonGenerator;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
 
 public class DynamicDataGenerator {
 	protected HashMap<Integer, Route> routeList;
