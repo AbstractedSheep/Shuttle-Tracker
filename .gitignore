@@ -6,3 +6,5 @@ build/
 *.swp
 
 Thumbs.db
+
+out/production/Mysql-connector-java-5.1.14/com/mysql/jdbc/LocalizedErrorMessages.properties

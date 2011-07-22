@@ -18,17 +18,17 @@
 
 package com.abstractedsheep.world;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
 import com.abstractedsheep.extractor.DynamicJSONExtractor;
 import com.abstractedsheep.extractor.Netlink.RouteJson;
 import com.abstractedsheep.extractor.Netlink.RouteJson.RouteCoordinateJson;
 import com.abstractedsheep.extractor.Netlink.StopJson;
 import com.abstractedsheep.extractor.Netlink.StopJson.StopRouteJson;
 import com.abstractedsheep.extractor.StaticJSONExtractor;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class houses all of the dynamic (Shuttle) and static (Route and Stop) data.

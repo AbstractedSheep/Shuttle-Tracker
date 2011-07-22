@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/android/shuttle-tracker-android/lib/slf4j-android-1.5.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/android/shuttle-tracker-android/lib/guava-r08.jar!/" />
+      <root url="jar://$PROJECT_DIR$/android/shuttle-tracker-android/lib/guava-r08.zip!/" />
+      <root url="jar://$PROJECT_DIR$/android/shuttle-tracker-android/lib/jackson-core-asl-1.7.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/android/shuttle-tracker-android/lib/jackson-mapper-asl-1.7.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
