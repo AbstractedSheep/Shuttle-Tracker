@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="lib1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/server/java/mysql-connector-java-5.1.14/src/lib/c3p0-0.9.1-pre6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/java/mysql-connector-java-5.1.14/src/lib/ant-contrib.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/java/mysql-connector-java-5.1.14/src/lib/slf4j-api-1.6.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/server/java/mysql-connector-java-5.1.14/src/lib/jboss-common-jdbc-wrapper.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

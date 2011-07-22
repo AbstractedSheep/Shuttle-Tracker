@@ -18,7 +18,6 @@
 
 package com.abstractedsheep.world;
 
-import com.abstractedsheep.Logger.Logger;
 import com.abstractedsheep.extractor.DynamicJSONExtractor;
 import com.abstractedsheep.extractor.Netlink.RouteJson;
 import com.abstractedsheep.extractor.Netlink.RouteJson.RouteCoordinateJson;
@@ -40,7 +39,6 @@ import java.util.List;
  *
  */
 public class World {
-    Logger log = Logger.getConfiguredLogger(World.class);
 	//this value is in milliseconds
 	private static final int SHUTTLE_LIFE_SPAN = ( 1000 * 45);
 	
@@ -62,7 +60,6 @@ public class World {
 	
 	//TODO staticExtractor does not need to be global
 	public void generateWorld() {
-        log.info("Getting route and stop information from static source.");
 		staticExtractor.readDataFromURL();
 		
 		for(RouteJson r : staticExtractor.getRouteList()) {
