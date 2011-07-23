@@ -1,11 +1,18 @@
 package com.abstractedsheep.TestEmulator;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
+import org.codehaus.jackson.JsonEncoding;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonGenerator;
 
 import com.abstractedsheep.extractor.Netlink.RouteJson;
 import com.abstractedsheep.extractor.Netlink.RouteJson.RouteCoordinateJson;
@@ -34,14 +41,21 @@ public class DynamicDataGenerator {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (JsonGenerationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
-	private void generateData() throws InterruptedException {
+	private void generateData() throws InterruptedException, JsonGenerationException, IOException {
 		while (true) {
 			for (int i = 1; i <= SHUTTLES_TO_GENERATE; i++)
 				shuttleList.put(i, createShuttle(i));
 			printShuttleData();
+			writeShuttleDataToFile();
 			//write shuttle data to DB
 			Thread.sleep(5000);
 		}
@@ -54,6 +68,31 @@ public class DynamicDataGenerator {
 					str, new Object[] {s.getShuttleId(), s.getCurrentRoute().getIdNum(), s.getSpeed()});
 			System.out.println(printMsg);
 		}
+	}
+	
+	protected void writeShuttleDataToTable () {
+		
+	}
+	
+	protected void writeShuttleDataToFile() throws JsonGenerationException, IOException {
+		JsonFactory f = new JsonFactory();
+		JsonGenerator g = f.createJsonGenerator(new File("current.js"), JsonEncoding.UTF32_LE);
+		g.writeStartObject();
+		g.writeArrayFieldStart("Shuttles");
+		for(Shuttle s : this.shuttleList.values()) {
+			g.writeStartObject();
+			g.writeStringField("shuttle_name", s.getName());
+			g.writeNumberField("shuttle_id", s.getShuttleId());
+			g.writeObjectFieldStart("Location");
+			g.writeNumberField("latitude", s.getCurrentLocation().getLatitude());
+			g.writeNumberField("longitude", s.getCurrentLocation().getLongitude());
+			g.writeEndObject();
+			g.writeNumberField("Speed", s.getSpeed());
+			g.writeEndObject();
+		}
+		g.writeEndArray();
+		g.writeEndObject();
+		g.close();
 	}
 
 	private Shuttle createShuttle(int shuttle_id) {
