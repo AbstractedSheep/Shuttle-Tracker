@@ -18,37 +18,41 @@
 
 package com.abstractedsheep.shuttletrackerworld;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class Stop
 {
-    HashMap<Integer, Route> m_routes;
-    HashMap<Integer, Double> m_precedingCoordinateDistance;
-    HashMap<Integer, Coordinate> m_snappedCoordinate;
-    HashMap<Integer, Integer> m_precedingCoordinate;
+    final Map<Integer, Route> routes;
+    final Map<Integer, Double> precedingCoordinateDistance;
+    final Map<Integer, Coordinate> snappedCoordinate;
+    final Map<Integer, Integer> precedingCoordinate;
+    final List<Route> routeList;
 
 
-    private ReadOnlyMap<Integer, Route> ro_routes;
-    private ReadOnlyMap<Integer, Double> ro_precedingCoordinateDistance;
-    private ReadOnlyMap<Integer, Coordinate> ro_snappedCoordinate;
-    private ReadOnlyMap<Integer, Integer> ro_precedingCoordinate;
-    private String m_name;
-    private String m_id;
-    private Coordinate m_location;
+    private final Map<Integer, Route> ro_routes;
+    private final Map<Integer, Double> ro_precedingCoordinateDistance;
+    private final Map<Integer, Coordinate> ro_snappedCoordinate;
+    private final Map<Integer, Integer> ro_precedingCoordinate;
+    private final List<Route> ro_routeList;
+    private final String name;
+    private final String id;
+    private final Coordinate location;
 
     Stop(String id, String name, Coordinate location)
     {
-        this.m_id = id;
-        this.m_location = location;
-        this.m_name = name;
-        this.m_routes = new HashMap<Integer, Route>();
-        this.m_snappedCoordinate = new HashMap<Integer, Coordinate>();
-        this.m_precedingCoordinate = new HashMap<Integer, Integer>();
-        this.m_precedingCoordinateDistance = new HashMap<Integer, Double>();
-        this.ro_routes = new ReadOnlyMap<Integer, Route>(this.m_routes);
-        this.ro_snappedCoordinate = new ReadOnlyMap<Integer, Coordinate>(this.m_snappedCoordinate);
-        this.ro_precedingCoordinate = new ReadOnlyMap<Integer, Integer>(this.m_precedingCoordinate);
-        this.ro_precedingCoordinateDistance = new ReadOnlyMap<Integer, Double>(this.m_precedingCoordinateDistance);
+        this.id = id;
+        this.location = location;
+        this.name = name;
+        this.routes = Collections.synchronizedMap(new HashMap<Integer, Route>());
+        this.snappedCoordinate = Collections.synchronizedMap(new HashMap<Integer, Coordinate>());
+        this.precedingCoordinate = Collections.synchronizedMap(new HashMap<Integer, Integer>());
+        this.precedingCoordinateDistance = Collections.synchronizedMap(new HashMap<Integer, Double>());
+        this.routeList = Collections.synchronizedList(new ArrayList<Route>());
+        this.ro_routes = Collections.unmodifiableMap(this.routes);
+        this.ro_snappedCoordinate = Collections.unmodifiableMap(this.snappedCoordinate);
+        this.ro_precedingCoordinate = Collections.unmodifiableMap(this.precedingCoordinate);
+        this.ro_precedingCoordinateDistance = Collections.unmodifiableMap(this.precedingCoordinateDistance);
+        this.ro_routeList = Collections.unmodifiableList(this.routeList);
     }
 
     void snapToRoute(Route r)
@@ -67,8 +71,8 @@ public class Stop
 			
 			c2 = r.getCoordinates().get(i);
 
-            tempClosestPoint = this.m_location.closestPoint(c1, c2);
-            tempShortestDistance = tempClosestPoint.distanceTo(this.m_location);
+            tempClosestPoint = this.location.closestPoint(c1, c2);
+            tempShortestDistance = tempClosestPoint.distanceTo(this.location);
 			
 			if (tempShortestDistance < shortestDistance)
 			{
@@ -78,39 +82,43 @@ public class Stop
 			}
 		}
 
-        this.m_snappedCoordinate.put(r.getId(), closestPoint);
-        this.m_precedingCoordinate.put(r.getId(), precedingPointId);
-        this.m_precedingCoordinateDistance.put(r.getId(), r.getCoordinates().get(precedingPointId).distanceTo(m_location));
+        this.snappedCoordinate.put(r.getId(), closestPoint);
+        this.precedingCoordinate.put(r.getId(), precedingPointId);
+        this.precedingCoordinateDistance.put(r.getId(), r.getCoordinates().get(precedingPointId).distanceTo(location));
 	}
     
     
 
-    public ReadOnlyMap<Integer, Route> getRoutes() {
+    public Map<Integer, Route> getRoutes() {
 		return ro_routes;
 	}
 
-	public ReadOnlyMap<Integer, Double> getPrecedingCoordinateDistance() {
+	public Map<Integer, Double> getPrecedingCoordinateDistance() {
 		return ro_precedingCoordinateDistance;
 	}
 
-	public ReadOnlyMap<Integer, Coordinate> getSnappedCoordinate() {
+	public Map<Integer, Coordinate> getSnappedCoordinate() {
 		return ro_snappedCoordinate;
 	}
 
-	public ReadOnlyMap<Integer, Integer> getPrecedingCoordinate() {
+	public Map<Integer, Integer> getPrecedingCoordinate() {
 		return ro_precedingCoordinate;
 	}
 
-	public String getName() {
-		return m_name;
+    public List<Route> getRouteList() {
+        return ro_routeList;
+    }
+
+    public String getName() {
+		return name;
 	}
 
 	public String getId() {
-		return m_id;
+		return id;
 	}
 
 	public Coordinate getLocation() {
-		return m_location;
+		return location;
 	}
 
 	@Override
@@ -121,7 +129,7 @@ public class Stop
 
         try {
         	Stop s = (Stop) obj;
-        	return this.m_id == s.m_id;
+        	return this.id.equals(s.id);
         } catch (ClassCastException e) {
         	return false;
         }   
@@ -130,6 +138,6 @@ public class Stop
     @Override
     public int hashCode()
     {
-        return this.m_id.hashCode();
+        return this.id.hashCode();
     }
 }

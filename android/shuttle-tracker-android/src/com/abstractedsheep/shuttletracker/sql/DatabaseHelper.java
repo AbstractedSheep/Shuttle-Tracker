@@ -21,7 +21,9 @@
 package com.abstractedsheep.shuttletracker.sql;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import com.abstractedsheep.shuttletracker.FavoriteStop;
 import com.abstractedsheep.shuttletrackerworld.Netlink;
 import com.abstractedsheep.shuttletrackerworld.Netlink.RouteJson;
 import com.abstractedsheep.shuttletrackerworld.Netlink.StopJson;
@@ -188,7 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public boolean hasRoutes() {
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cur = db.rawQuery("SELECT * FROM " + RoutesTable.tableName, null);
-		boolean result = cur.getCount() > 0 ? true : false;
+		boolean result = cur.getCount() > 0;
 		cur.close();
 		db.close();
 		return result;
@@ -205,7 +207,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			r.setName(routes.getString(routes.getColumnIndex(RoutesTable.colName)));
 			r.setId(routes.getInt(routes.getColumnIndex(RoutesTable.colId)));
 			r.setWidth(routes.getInt(routes.getColumnIndex(RoutesTable.colWidth)));
-			r.setVisible(routes.getInt(routes.getColumnIndex(RoutesTable.colVisible)) == 0 ? false : true);
+			r.setVisible(routes.getInt(routes.getColumnIndex(RoutesTable.colVisible)) != 0);
 			
 			ArrayList<RouteCoordinateJson> pointsArr = new ArrayList<Netlink.RouteJson.RouteCoordinateJson>();
 			Cursor points = getRoutePoints(r.getId());
@@ -288,23 +290,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		return cur;
 	}
 	
-	public void updateFavorites(ArrayList<StopJson> favorites) {
+	public void updateFavorites(List<FavoriteStop> favorites) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		ContentValues cv = new ContentValues();
 		cv.put(StopsOnRoutesTable.colFavorite, 0);
 		db.update(StopsOnRoutesTable.tableName, cv, null, null);
 		
-		for (StopJson s : favorites) {
+		for (FavoriteStop s : favorites) {
 			db.execSQL("UPDATE " + StopsOnRoutesTable.tableName + " SET " + StopsOnRoutesTable.colFavorite + 
-					" = 1 WHERE " + StopsOnRoutesTable.colStopId + " = '" + s.getShort_name() + "' AND " +
-					StopsOnRoutesTable.colRouteId + " = " + s.getFavoriteRoute());
+					" = 1 WHERE " + StopsOnRoutesTable.colStopId + " = '" + s.stopId + "' AND " +
+					StopsOnRoutesTable.colRouteId + " = " + s.routeId);
 		}
 		
 		db.close();
 	}
 	
-	public ArrayList<StopJson> getFavorites() {
-		ArrayList<StopJson> result = new ArrayList<Netlink.StopJson>();
+	public List<FavoriteStop> getFavorites() {
+		List<FavoriteStop> result = new ArrayList<FavoriteStop>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cur = db.rawQuery("SELECT " + StopsTable.colId + ", " + StopsTable.colName + ", " + 
 				StopsTable.colLat + ", " + StopsTable.colLon + ", " + StopsOnRoutesTable.colRouteId + " FROM ( " +
@@ -314,13 +316,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		cur.moveToFirst();
 		while (!cur.isAfterLast()) {
-			StopJson s = new StopJson();
-			s.setName(cur.getString(1));
-			s.setShort_name(cur.getString(0));
-			s.setLatitude(cur.getDouble(2));
-			s.setLongitude(cur.getDouble(3));	
-			s.setFavoriteRoute(cur.getInt(4));
-			result.add(s);
+			result.add(new FavoriteStop(cur.getInt(4), cur.getString(0)));
 			cur.moveToNext();
 		}
 		cur.close();
@@ -349,7 +345,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				" FROM " + StopsOnRoutesTable.tableName +
 				" WHERE stopId='" + stopId + "' AND routeId=" + routeId, null);
 		cur.moveToFirst();
-		boolean result = cur.getInt(0) == 1 ? true : false;
+		boolean result = cur.getInt(0) == 1;
 		cur.close();
 		db.close();
 		return result;

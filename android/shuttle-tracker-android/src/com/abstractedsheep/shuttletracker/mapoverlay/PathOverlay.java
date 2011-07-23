@@ -38,7 +38,7 @@ import com.google.android.maps.Projection;
 public class PathOverlay extends Overlay {
 
 	private List<GeoPoint> path;
-	private Style style;
+	private final Style style;
 	private boolean visible = true;
 	
 	public PathOverlay(List<GeoPoint> path, Style style) {

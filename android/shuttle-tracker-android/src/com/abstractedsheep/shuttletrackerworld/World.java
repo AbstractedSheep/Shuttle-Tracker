@@ -18,9 +18,7 @@
 
 package com.abstractedsheep.shuttletrackerworld;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 
 import com.abstractedsheep.shuttletrackerworld.Netlink.RouteJson;
@@ -33,22 +31,35 @@ public class World
 {
     private static final long SHUTTLE_EXPIRATION_TIME = 60000;
 
-    private HashMap<Integer, Shuttle> m_shuttles;
-    private HashMap<Integer, Route> m_routes;
-    private HashMap<String, Stop> m_stops;
+    private final Map<Integer, Shuttle> shuttles;
+    private final Map<Integer, Route> routes;
+    private final Map<String, Stop> stops;
+    private final List<Shuttle> shuttleList;
+    private final List<Route> routeList;
+    private final List<Stop> stopList;
     
-    private ReadOnlyMap<Integer, Shuttle> ro_shuttles;
-    private ReadOnlyMap<Integer, Route> ro_routes;
-    private ReadOnlyMap<String, Stop> ro_stops;
+    private final Map<Integer, Shuttle> ro_shuttles;
+    private final Map<Integer, Route> ro_routes;
+    private final Map<String, Stop> ro_stops;
+    private final List<Shuttle> ro_shuttleList;
+    private final List<Route> ro_routeList;
+    private final List<Stop> ro_stopList;
 
     private World()
     {
-        this.m_shuttles = new HashMap<Integer, Shuttle>();
-        this.m_routes = new HashMap<Integer, Route>();
-        this.m_stops = new HashMap<String, Stop>();
-        this.ro_shuttles = new ReadOnlyMap<Integer, Shuttle>(m_shuttles);
-        this.ro_routes = new ReadOnlyMap<Integer, Route>(m_routes);
-        this.ro_stops = new ReadOnlyMap<String, Stop>(m_stops);
+        this.shuttles = Collections.synchronizedMap(new HashMap<Integer, Shuttle>());
+        this.routes = Collections.synchronizedMap(new HashMap<Integer, Route>());
+        this.stops = Collections.synchronizedMap(new HashMap<String, Stop>());
+        this.ro_shuttles = Collections.unmodifiableMap(shuttles);
+        this.ro_routes = Collections.unmodifiableMap(routes);
+        this.ro_stops = Collections.unmodifiableMap(stops);
+        
+        this.shuttleList = Collections.synchronizedList(new ArrayList<Shuttle>());
+        this.routeList = Collections.synchronizedList(new ArrayList<Route>());
+        this.stopList = Collections.synchronizedList(new ArrayList<Stop>());
+        this.ro_shuttleList = Collections.unmodifiableList(shuttleList);
+        this.ro_routeList = Collections.unmodifiableList(routeList);
+        this.ro_stopList = Collections.unmodifiableList(stopList);
     }
 
     /// <summary>
@@ -69,7 +80,7 @@ public class World
 	    {
 	        w.addStop(s);
 	    }
-	
+
 		return w;
 	}
 	
@@ -78,11 +89,15 @@ public class World
 	/// </summary>
 	public void removeOldShuttles()
 	{
-	    for (Entry<Integer, Shuttle> e : m_shuttles.entrySet())
-	    {
-	        if (System.currentTimeMillis() - e.getValue().getLastUpdateTime() > SHUTTLE_EXPIRATION_TIME)
-	            m_shuttles.remove(e.getKey());
-	    }
+        Set<Entry<Integer, Shuttle>> tempEntrySet = shuttles.entrySet();
+
+        synchronized (shuttleList) {
+            for (Entry<Integer, Shuttle> e : tempEntrySet)
+            {
+                if (System.currentTimeMillis() - e.getValue().getLastUpdateTime() > SHUTTLE_EXPIRATION_TIME)
+                    shuttleList.remove(shuttles.remove(e.getKey()));
+            }
+        }
 	}
 	
 	/// <summary>
@@ -97,58 +112,62 @@ public class World
 	/// <param name="route">The id of the shuttle route. -1 indicates that the shuttle is not on a route.</param>
     public void addOrUpdateShuttle(int shuttleId, Coordinate location, String name, int bearing, String cardinalPoint, int speed, int route)
     {
-        Shuttle s = this.m_shuttles.get(shuttleId);
-        Route r = this.m_routes.get(route);
+        Shuttle s = this.shuttles.get(shuttleId);
+        Route r = this.routes.get(route);
 
         if (s == null)
         {     
             s = new Shuttle();
-            s.m_id = shuttleId;
-            s.m_location = location;
-            s.m_name = name;
-            s.m_bearing = bearing;
-            s.m_cardinalPoint = cardinalPoint;
+            s.id = shuttleId;
+            s.location = location;
+            s.name = name;
+            s.bearing = bearing;
+            s.cardinalPoint = cardinalPoint;
             s.setSpeed(speed);
-            s.m_lastUpdateTime = System.currentTimeMillis();
+            s.lastUpdateTime = System.currentTimeMillis();
                            
-            this.m_shuttles.put(s.m_id, s);
+            this.shuttles.put(s.id, s);
+            this.shuttleList.add(s);
 
             if (r != null)
             {
-                s.m_currentRoute = r;
-                r.m_shuttles.put(s.m_id, s);
+                s.currentRoute = r;
+                r.shuttles.put(s.id, s);
+                r.shuttleList.add(s);
             }
 			
 			s.snapToRoute();
         }
         else
         {
-            s.m_lastUpdateTime = System.currentTimeMillis();
-            s.m_location = location;
+            s.lastUpdateTime = System.currentTimeMillis();
+            s.location = location;
             s.setSpeed(speed);
-            s.m_bearing = bearing;
-            s.m_cardinalPoint = cardinalPoint;
-            s.m_name = name;
+            s.bearing = bearing;
+            s.cardinalPoint = cardinalPoint;
+            s.name = name;
 
-            if (r == null && s.m_currentRoute != null)
+            if (r == null && s.currentRoute != null)
             {
-                s.m_currentRoute.m_shuttles.remove(s.m_id);
-                s.m_currentRoute = null;
+                s.currentRoute.shuttleList.remove(s.currentRoute.shuttles.remove(s.id));
+                s.currentRoute = null;
             }
-            else if (r != null && s.m_currentRoute != null && s.m_currentRoute != r)
+            else if (r != null && s.currentRoute != null && s.currentRoute != r)
             {
-                s.m_currentRoute.m_shuttles.remove(s.m_id);
-                s.m_currentRoute = r;
-                r.m_shuttles.put(s.m_id, s);
+                s.currentRoute.shuttleList.remove(s.currentRoute.shuttles.remove(s.id));
+                s.currentRoute = r;
+                r.shuttles.put(s.id, s);
+                r.shuttleList.add(s);
             }
-            else if (r != null && s.m_currentRoute == null)
+            else if (r != null && s.currentRoute == null)
             {
-                s.m_currentRoute = r;
-                r.m_shuttles.put(s.m_id, s);
+                s.currentRoute = r;
+                r.shuttles.put(s.id, s);
+                r.shuttleList.add(s);
             }
 			
 			s.snapToRoute();
-        }	
+        }
     }
 
     private void addRoute(RouteJson route)
@@ -158,13 +177,14 @@ public class World
         {
             coords.add(new Coordinate((int)(rc.getLatitude() * 1E6), (int)(rc.getLongitude() * 1E6)));
         }
-        addRoute(route.getId(), route.getName(), coords);
+        addRoute(route.getId(), route.getName(), route.getColorInt(), coords);
     }
 
-    private void addRoute(int routeId, String name, List<Coordinate> coords)
+    private void addRoute(int routeId, String name, int color, List<Coordinate> coords)
     {
-        Route r = new Route(routeId, name, coords);
-        this.m_routes.put(r.getId(), r);
+        Route r = new Route(routeId, name, color, coords);
+        this.routes.put(r.getId(), r);
+        this.routeList.add(r);
     }
 
     private void addStop(StopJson stop)
@@ -180,28 +200,42 @@ public class World
     private void addStop(String stopId, Coordinate location, String name, List<Integer> routes)
     {
         Stop s = new Stop(stopId, name, location);
-        m_stops.put(s.getId(), s);
+        this.stops.put(s.getId(), s);
+        this.stopList.add(s);
 
         for (Integer i : routes)
         {
-            Route r = this.m_routes.get(i);
-            s.m_routes.put(r.getId(), r);
-            r.m_stops.put(s.getId(), s);
+            Route r = this.routes.get(i);
+            s.routes.put(r.getId(), r);
+            s.routeList.add(r);
+            r.stops.put(s.getId(), s);
+            r.stopList.add(s);
             s.snapToRoute(r);
         }
     }
     
-    
 
-    public ReadOnlyMap<Integer, Shuttle> getShuttles() {
+    public Map<Integer, Shuttle> getShuttles() {
 		return ro_shuttles;
 	}
 
-	public ReadOnlyMap<Integer, Route> getRoutes() {
+	public Map<Integer, Route> getRoutes() {
 		return ro_routes;
 	}
 
-	public ReadOnlyMap<String, Stop> getStops() {
+	public Map<String, Stop> getStops() {
 		return ro_stops;
+	}
+	
+	public List<Shuttle> getShuttleList() {
+		return ro_shuttleList;
+	}
+	
+	public List<Route> getRouteList() {
+		return ro_routeList;
+	}
+	
+	public List<Stop> getStopList() {
+		return ro_stopList;
 	}
 }

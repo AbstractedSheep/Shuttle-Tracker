@@ -46,7 +46,7 @@ import com.google.android.maps.OverlayItem;
  */
 public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<OverlayItem> {
 
-	private MapView mapView;
+	private final MapView mapView;
 	private BalloonOverlayView balloonView;
 	private View clickRegion;
 	private int viewOffset;
@@ -107,7 +107,7 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 		
 		if (balloonView == null) {
 			balloonView = new BalloonOverlayView(mapView.getContext(), viewOffset);
-			clickRegion = (View) balloonView.findViewById(R.id.balloon_inner_layout);
+			clickRegion = balloonView.findViewById(R.id.balloon_inner_layout);
 			isRecycled = false;
 		} else {
 			isRecycled = true;
@@ -210,11 +210,9 @@ public abstract class BalloonItemizedOverlay<Item> extends ItemizedOverlay<Overl
 			
 		} catch (SecurityException e) {
 			Log.e("BalloonItemizedOverlay", "setBalloonTouchListener reflection SecurityException");
-			return;
-		} catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException e) {
 			// method not overridden - do nothing
-			return;
-		}
+        }
 
 	}
 	

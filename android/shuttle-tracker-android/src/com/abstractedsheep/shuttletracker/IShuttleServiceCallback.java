@@ -25,13 +25,13 @@ import java.util.ArrayList;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
-import com.abstractedsheep.shuttletrackerworld.Netlink;
+import com.abstractedsheep.shuttletrackerworld.World;
 
 public interface IShuttleServiceCallback {
 	public static int NO_CONNECTION_ERROR = 1;
 	
-	void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas);
-	void routesUpdated(Netlink routes);
+	void dataUpdated(World world, ArrayList<EtaJson> etas);
+	void routesUpdated(World world);
 	void extraEtasUpdated(ExtraEtaJson etas);
 	void dataServiceError(int errorCode);
 }

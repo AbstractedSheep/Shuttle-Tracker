@@ -48,9 +48,9 @@ import com.google.android.maps.OverlayItem;
  */
 public class BalloonOverlayView extends FrameLayout {
 
-	private LinearLayout layout;
-	private TextView title;
-	private TextView snippet;
+	private final LinearLayout layout;
+	private final TextView title;
+	private final TextView snippet;
 	private boolean visible;
 
 	/**
@@ -117,11 +117,8 @@ public class BalloonOverlayView extends FrameLayout {
 	@Override
 	public void setVisibility(int visibility) {
 		super.setVisibility(visibility);
-		
-		if (visibility == View.VISIBLE)
-			visible = true;
-		else
-			visible = false;
+
+        visible = visibility == View.VISIBLE;
 	}
 	
 	public boolean isVisible() { return visible; }
