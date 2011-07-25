@@ -68,7 +68,7 @@ public class DatabaseWriter extends AbstractQueryRunner {
 
         deleteTable(tableName);
     }
-
+    //TODO: pass this to AbstractQueryRunner.batch
     public void writeToDatabase(Connection conn, ETACalculator etaList,
                                 String tableName) throws SQLException {
         String header = "INSERT INTO {?} (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
@@ -87,6 +87,10 @@ public class DatabaseWriter extends AbstractQueryRunner {
         }
 
         stmt.executeBatch();
+    }
+
+    public void runAsBatch(Connection conn, String query, Object[][] values) throws SQLException {
+        this.batch(conn, query, values);
     }
 
     public static void saveToDatabase(ETACalculator etaList, String tableName) {

@@ -19,6 +19,7 @@
 
 package com.abstractedsheep.TestEmulator;
 
+import com.abstractedsheep.db.DatabaseWriter;
 import com.abstractedsheep.extractor.Netlink.RouteJson;
 import com.abstractedsheep.extractor.Netlink.RouteJson.RouteCoordinateJson;
 import com.abstractedsheep.extractor.Netlink.StopJson;
@@ -85,6 +86,7 @@ public class DynamicDataGenerator {
     }
 
     protected void writeShuttleDataToTable() {
+        DatabaseWriter dbWriter = new DatabaseWriter();
 
     }
 
