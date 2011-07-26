@@ -21,6 +21,7 @@ package com.abstractedsheep.db;
 
 import com.abstractedsheep.ShuttleTrackerService.ETACalculator;
 import com.abstractedsheep.ShuttleTrackerService.ETACalculator.Eta;
+import com.abstractedsheep.config.DBProperties;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,28 +61,38 @@ public class DatabaseWriter extends AbstractQueryRunner {
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException, IOException, SQLException {
         String driver = "com.mysql.jdbc.Driver";
-        String[] args = null;
 
         Class.forName(driver).newInstance();
-        args = getArgumentsFromPropertiesFile("sts.properties");
-        conn = DriverManager.getConnection(args[0], args[1], args[2]);
+        conn = DriverManager.getConnection(DBProperties.TEST_DB_LINK.toString(),
+                            DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
 
         deleteTable(tableName);
     }
+
+    private Connection createConnection(boolean isServer)
+            throws InstantiationException, IllegalAccessException,
+            ClassNotFoundException, IOException, SQLException {
+        String link = (isServer) ? DBProperties.ETA_DB_LINK.toString() : DBProperties.TEST_DB_LINK.toString();
+        String driver = "com.mysql.jdbc.Driver";
+
+        Class.forName(driver).newInstance();
+        return DriverManager.getConnection(link,
+                            DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
+    }
+
     //TODO: pass this to AbstractQueryRunner.batch
     public void writeToDatabase(Connection conn, ETACalculator etaList,
                                 String tableName) throws SQLException {
-        String header = "INSERT INTO {?} (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
-        String values = "VALUES ( {?},'{?}','{?}', '{?}', '{?}', '{?}')";
+        String header = "INSERT INTO %s (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
+        String values = "VALUES ( %d,'%s',%d, %d, %d, '%d)";
         String insertQuery = header + values + " ON DUPLICATE KEY ";
         String updateQuery = "eta=VALUES(eta), absolute_eta=VALUES(absolute_eta), route=VALUES(route)";
         Statement stmt = conn.createStatement();
         final String query = insertQuery + updateQuery;
         String sql = "";
         for (Eta eta : etaList.getETAs()) {
-            sql = String.format(query, new Object[]{tableName, eta.time,
-                    eta.shuttleId, eta.stopName, eta.routeId, eta.Id,
-                    eta.arrivalTime});
+            sql = String.format(query, new Object[]{tableName, eta.shuttleId,
+                    eta.stopId, eta.Id, eta.time, eta.arrivalTime});
 
             stmt.addBatch(sql);
         }
@@ -93,6 +104,14 @@ public class DatabaseWriter extends AbstractQueryRunner {
         this.batch(conn, query, values);
     }
 
+    public void writeTestShutleData(String query, Object[][] values)
+            throws IOException, ClassNotFoundException, SQLException,
+                   IllegalAccessException, InstantiationException {
+        Connection connection = this.createConnection(false);
+        this.runAsBatch(connection, query, values);
+
+    }
+    //XXX now defunct
     public static void saveToDatabase(ETACalculator etaList, String tableName) {
         try {
             connectToDatabase(tableName);

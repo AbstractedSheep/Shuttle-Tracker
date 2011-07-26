@@ -19,6 +19,8 @@
 
 package com.abstractedsheep.TestEmulator;
 
+import com.abstractedsheep.config.DBProperties;
+import com.abstractedsheep.config.STSProperties;
 import com.abstractedsheep.db.DatabaseWriter;
 import com.abstractedsheep.extractor.Netlink.RouteJson;
 import com.abstractedsheep.extractor.Netlink.RouteJson.RouteCoordinateJson;
@@ -37,6 +39,7 @@ import org.codehaus.jackson.JsonGenerator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 
 public class DynamicDataGenerator {
@@ -46,6 +49,12 @@ public class DynamicDataGenerator {
     protected static final int SHUTTLES_TO_GENERATE = 4;
 
     public DynamicDataGenerator(URL url) {
+        try {
+            DBProperties.loadDBProperties(STSProperties.DB_PATH.toString());
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.exit(0);
+        }
         this.routeList = new HashMap<Integer, Route>();
         this.shuttleList = new HashMap<Integer, Shuttle>();
         this.stopList = new HashMap<String, Stop>();
@@ -70,7 +79,8 @@ public class DynamicDataGenerator {
             for (int i = 1; i <= SHUTTLES_TO_GENERATE; i++)
                 shuttleList.put(i, createShuttle(i));
             printShuttleData();
-            writeShuttleDataToFile();
+            //writeShuttleDataToFile();
+            writeShuttleDataToTable();
             //write shuttle data to DB
             Thread.sleep(5000);
         }
@@ -86,7 +96,36 @@ public class DynamicDataGenerator {
     }
 
     protected void writeShuttleDataToTable() {
-        DatabaseWriter dbWriter = new DatabaseWriter();
+        try {
+            writeShuttleData();
+            writeShuttleLocationData();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (InstantiationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    private void writeShuttleData()
+            throws ClassNotFoundException, IOException, SQLException, InstantiationException, IllegalAccessException {
+        String sql = "insert into shuttles (shuttle_id, name) values (%d, \"%s\") on duplicate key update name=\"%s\"";
+        Object[][] val = new Object[SHUTTLES_TO_GENERATE][];
+        int i = 0;
+        for (Shuttle s : shuttleList.values()) {
+            val[i] = new Object[]{s.getShuttleId(), s.getName(), s.getName()};
+            i++;
+        }
+        (new DatabaseWriter()).writeTestShutleData(sql, val);
+
+    }
+
+    private void writeShuttleLocationData() {
 
     }
 
