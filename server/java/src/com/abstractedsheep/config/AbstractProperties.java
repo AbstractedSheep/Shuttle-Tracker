@@ -40,7 +40,7 @@ public abstract class AbstractProperties {
         System.setProperties(p);
     }
 
-    protected static class Property {
+    public static class Property {
         private String name;
         private String defaultValue;
 
@@ -51,7 +51,7 @@ public abstract class AbstractProperties {
 
         public String toString() {
             String str = System.getProperty(name);
-            return (str == null) ? defaultValue : str;
+            return (str == null || str.equals("null")) ? defaultValue : str;
         }
     }
 }

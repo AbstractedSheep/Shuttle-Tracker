@@ -30,16 +30,18 @@ import java.io.IOException;
  */
 public class DBProperties extends AbstractProperties {
     public static final Property USER_NAME = new Property("user", "r00t");
-    public static final Property PASSWORD = new Property("password", "*ucsv");
+    public static final Property PASSWORD = new Property("password", null);
     public static final Property STOP_TABLE_NAME = new Property("stopTable", "stops");
     public static final Property SHUTTLE_TABLE_NAME = new Property("shuttleTable", "shuttles");
     public static final Property ROUTE_TABLE_NAME = new Property("routeTable", "routes");
+    public static final Property TEST_DB_LINK = new Property("testDB", "");
+    public static final Property ETA_DB_LINK = new Property("etaDB", "");
 
     public static void main(String[] args) {
 
         try {
             DBProperties.loadDBProperties("/Users/ujonnalagadda/Shuttle-Tracker/server/java/conf/db.properties");
-            System.out.println(DBProperties.USER_NAME);
+            System.out.println(DBProperties.TEST_DB_LINK);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
