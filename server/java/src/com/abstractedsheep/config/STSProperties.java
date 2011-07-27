@@ -29,5 +29,6 @@ package com.abstractedsheep.config;
 public class STSProperties extends AbstractProperties {
     public static final Property LOG_PATH = new Property("logPath", "../logs");
 
-    public static final Property DB_PATH = new Property("dbPath", "./db.properties");
+    public static final Property DB_PATH = new Property("dbPath",
+            "/Users/ujonnalagadda/Shuttle-Tracker/server/java/conf/db.properties");
 }
