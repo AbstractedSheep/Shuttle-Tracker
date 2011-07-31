@@ -43,6 +43,11 @@ public abstract class AbstractQueryRunner {
         return stmt.executeQuery(query);
     }
 
+    protected ResultSet executeQuery(Connection conn, String query) throws SQLException {
+        Statement stmt = conn.createStatement();
+        return stmt.executeQuery(query);
+    }
+
     protected int[] batch(Connection conn, String query, Object[][] values)
             throws SQLException {
         Statement stmt = conn.createStatement();

@@ -19,10 +19,13 @@
 
 package com.abstractedsheep.db;
 
+import com.abstractedsheep.config.DBProperties;
+import com.abstractedsheep.world.Coordinate;
 import com.abstractedsheep.world.Route;
 import com.abstractedsheep.world.Shuttle;
 import com.abstractedsheep.world.Stop;
 
+import java.awt.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,7 +39,7 @@ public class DatabaseReader extends AbstractQueryRunner {
         this.conn = conn;
     }
 
-    private Object convertTableToObject(Class<?> c, ResultSet res) {
+    private Object convertTableToObject(Class<?> c, ResultSet res) throws SQLException {
         if (c.getSimpleName().equals("Shuttle")) {
             return parseToShuttle(res);
         } else if (c.getSimpleName().equals("Stop")) {
@@ -48,9 +51,23 @@ public class DatabaseReader extends AbstractQueryRunner {
         return null;
     }
 
-    private Route parseToRoute(ResultSet res) {
-        // TODO Auto-generated method stub
-        return null;
+    private Route parseToRoute(ResultSet res) throws SQLException {
+        Point pt = null;
+        ResultSet r = null;
+        ArrayList<Coordinate> list = new ArrayList<Coordinate>();
+
+        int idNum = res.getInt("route_id");
+        String name = res.getString("route_name");
+        String sql = String.format("SELECT * FROM route_coords WHERE route_id= %d ORDER BY seq", new Object[] {
+                idNum });
+        r = this.executeQuery(conn, sql);
+        pt = null;
+        while(r.next()) {
+            pt = (Point) r.getObject("location");
+            list.add(new Coordinate(pt.getX(), pt.getY()));
+        }
+        Route route = new Route(idNum, name, list);
+        return route;
     }
 
     private Stop parseToStop(ResultSet res) {
@@ -76,11 +93,11 @@ public class DatabaseReader extends AbstractQueryRunner {
             throws ClassNotFoundException, SQLException {
         String tableName = "";
         if (classType.getSimpleName().equals("Shuttle")) {
-            tableName = "shuttle";
+            tableName = DBProperties.SHUTTLE_TABLE_NAME.toString();
         } else if (classType.getSimpleName().equals("Stop")) {
-            tableName = "stops";
+            tableName = DBProperties.STOP_TABLE_NAME.toString();
         } else if (classType.getSimpleName().equals("Route")) {
-            tableName = "route";
+            tableName = DBProperties.ROUTE_TABLE_NAME.toString();
         } else {
             throw new ClassNotFoundException();
         }
