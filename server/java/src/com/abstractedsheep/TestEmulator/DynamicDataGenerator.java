@@ -46,7 +46,7 @@ public class DynamicDataGenerator {
     protected HashMap<Integer, Route> routeList;
     protected HashMap<String, Stop> stopList;
     protected HashMap<Integer, Shuttle> shuttleList;
-    protected static final int SHUTTLES_TO_GENERATE = 4;
+    protected static final int SHUTTLES_TO_GENERATE = 1;
 
     public DynamicDataGenerator(URL url) {
         try {
@@ -82,15 +82,16 @@ public class DynamicDataGenerator {
             //writeShuttleDataToFile();
             writeShuttleDataToTable();
             //write shuttle data to DB
-            Thread.sleep(5000);
+            Thread.sleep(1000);
         }
     }
 
     public void printShuttleData() {
-        String str = "ID: {%s}, Current Route: {%s}, Average Speed: {%s}";
+        String str = "ID: {%s}, Current Route: {%s}, Average Speed: {%s}, Location ";
         for (Shuttle s : shuttleList.values()) {
             String printMsg = String.format(
                     str, new Object[]{s.getShuttleId(), s.getCurrentRoute().getIdNum(), s.getSpeed()});
+            printMsg += s.getCurrentLocation().toString();
             System.out.println(printMsg);
         }
     }
@@ -165,6 +166,7 @@ public class DynamicDataGenerator {
             double distanceTraveled = (0.00138888889) * s.getSpeed();
             Coordinate endPoint = s.getCurrentRoute().getCoordinateList().get(s.getNextRouteCoordinate());
             s.setCurrentLocation(s.getCurrentLocation().findCoordinateInLine(distanceTraveled, endPoint));
+            s.snapToRoute(s.getCurrentRoute());
         } else {
             s = new Shuttle(shuttle_id, new ArrayList<Route>(list));
             s.setSpeed(r.nextInt(30));

@@ -94,7 +94,7 @@ public class Coordinate {
      * @return the coordinate point some distance away from the current coordinate
      */
     public Coordinate findCoordinateInLine(double distance, Coordinate endPoint) {
-        //distance = distance / RADIUS_OF_EARTH;
+        distance = distance / RADIUS_OF_EARTH;
         double bearing = this.getBearing(endPoint);
         double lon1 = Math.toRadians(this.getLongitude());
         double lat1 = Math.toRadians(this.getLatitude());
@@ -104,7 +104,7 @@ public class Coordinate {
                 Math.atan2(Math.sin(bearing) * Math.sin(distance) * Math.cos(lat1),
                         Math.cos(distance) - Math.sin(lat1) * Math.sin(lat2));
 
-        return new Coordinate(Math.toDegrees(Math.abs(lat2)), Math.toDegrees(Math.abs(lon2)));
+        return new Coordinate(Math.toDegrees(lat2), Math.toDegrees(lon2));
     }
 
     public double getBearing(Coordinate c) {
@@ -178,6 +178,11 @@ public class Coordinate {
         Coordinate c = (Coordinate) obj;
         return (c.getLatitude() == this.getLatitude())
                 && (c.getLongitude() == this.getLongitude());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%g, %g)", new Object[] {this.getLatitude(), this.getLongitude() });
     }
 
 }
