@@ -245,12 +245,16 @@ public class Shuttle implements IRouteFinder {
                 if (tempShortestDistance < shortestDistance) {
                     shortestDistance = tempShortestDistance;
                     closestPoint = tempClosestPoint;
-                    nextPointId = (size >= (i + 1)) ? 0 : i + 1;
+                    nextPointId = (size >= (i + 1)) ? 1 : i + 1;
                 }
             }
 
             this.SnappedCoordinate = closestPoint;
             this.NextRouteCoordinate = nextPointId;
         }
+    }
+
+    public long getLastUpdateTime() {
+        return this.lastUpdateTime;
     }
 }

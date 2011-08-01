@@ -79,8 +79,8 @@ public class DynamicDataGenerator {
             for (int i = 1; i <= SHUTTLES_TO_GENERATE; i++)
                 shuttleList.put(i, createShuttle(i));
             printShuttleData();
-            //writeShuttleDataToFile();
-            writeShuttleDataToTable();
+            writeShuttleDataToFile();
+            //writeShuttleDataToTable();
             //write shuttle data to DB
             Thread.sleep(1000);
         }
@@ -115,11 +115,16 @@ public class DynamicDataGenerator {
 
     private void writeShuttleData()
             throws ClassNotFoundException, IOException, SQLException, InstantiationException, IllegalAccessException {
-        String sql = "insert into shuttles (shuttle_id, name) values (%d, \"%s\") on duplicate key update name=\"%s\"";
+        String sql = "INSERT INTO shuttles (shuttle_id, name, location, speed, update_time, route_id) " +
+                "values (%d, \'%s\', GeomFromText(\'POINT(%g %g)\'), %d, FROM_UNIXTIME(%d), %d) on duplicate key " +
+                "update location=GeomFromText(\'POINT(%g %g)\') and update_time=from_unixtime(%d) and speed=%d";
         Object[][] val = new Object[SHUTTLES_TO_GENERATE][];
         int i = 0;
         for (Shuttle s : shuttleList.values()) {
-            val[i] = new Object[]{s.getShuttleId(), s.getName(), s.getName()};
+            val[i] = new Object[]{s.getShuttleId(), s.getName(), s.getCurrentLocation().getLatitude(),
+                    s.getCurrentLocation().getLongitude(), s.getSpeed(), s.getLastUpdateTime()/1000, s.getRouteId(),
+                    s.getCurrentLocation().getLatitude(), s.getCurrentLocation().getLongitude(), s.getLastUpdateTime()/1000,
+                    s.getSpeed()};
             i++;
         }
         (new DatabaseWriter()).writeTestShutleData(sql, val);

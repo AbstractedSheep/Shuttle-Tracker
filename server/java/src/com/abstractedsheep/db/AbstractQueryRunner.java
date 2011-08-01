@@ -60,6 +60,8 @@ public abstract class AbstractQueryRunner {
     }
 
     private String fillQuery(String query, Object[] values) {
-        return String.format(query, values);
+        String str = String.format(query, values);
+        System.out.println(str);
+        return str;
     }
 }
