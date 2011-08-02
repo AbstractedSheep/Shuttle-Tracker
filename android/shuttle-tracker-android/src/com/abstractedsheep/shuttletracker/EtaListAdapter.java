@@ -31,9 +31,9 @@ import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
-import com.abstractedsheep.shuttletrackerworld.Netlink;
-import com.abstractedsheep.shuttletrackerworld.Netlink.RouteJson;
-import com.abstractedsheep.shuttletrackerworld.Netlink.StopJson;
+import com.abstractedsheep.shuttletrackerworld.Route;
+import com.abstractedsheep.shuttletrackerworld.Stop;
+import com.abstractedsheep.shuttletrackerworld.World;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -47,22 +47,21 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 public class EtaListAdapter extends BaseExpandableListAdapter {
-	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
-	private ArrayList<RouteJson> parents = new ArrayList<Netlink.RouteJson>();
-	private HashMap<Integer, String> routeNames = new HashMap<Integer, String>();
-	private ArrayList<ArrayList<StopJson>> children = new ArrayList<ArrayList<StopJson>>();
-	private ArrayList<StopJson> favorites = new ArrayList<StopJson>();
-	private SimpleDateFormat formatter12 = new SimpleDateFormat("h:mm a");
-	private SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
-	private LayoutInflater inflater;
-	private Context ctx;
-	private DatabaseHelper db;
-	private SharedPreferences prefs;
+	private final HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
+	private List<Route> parents = new ArrayList<Route>();
+	private List<FavoriteStop> favorites = new ArrayList<FavoriteStop>();
+	private World world;
+	private final SimpleDateFormat formatter12 = new SimpleDateFormat("h:mm a");
+	private final SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
+	private final LayoutInflater inflater;
+	private final Context ctx;
+	private final DatabaseHelper db;
+	private final SharedPreferences prefs;
 	private int expandedChild = -1;
 	private int expandedGroup = -1;
 	private String extraEtas;
-	private ExpandableListView parent;
-	private TrackerTabActivity tabActivity;
+	private final ExpandableListView parent;
+	private final TrackerTabActivity tabActivity;
 	
 	public EtaListAdapter(TrackerTabActivity tabActivity, ExpandableListView parent, Context context, LayoutInflater li, SharedPreferences prefs) {
 		this.inflater = li;
@@ -73,49 +72,23 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		this.tabActivity = tabActivity;
 	}
 	
-	public void setRoutes(Netlink routes) {
-		parents.clear();
-		children.clear();
-		
-		for (RouteJson route : routes.getRoutes()) {
-			parents.add(route);
-			routeNames.put(route.getId(), route.getName());
-			children.add(new ArrayList<StopJson>());
-		}
-		
-		RouteJson r;
-		
-		for (StopJson s : routes.getStops()) {
-			for (int i = 0; i < parents.size(); i++) {
-				r = parents.get(i);
-				
-				if (stopOnRoute(s, r.getId())) {
-					children.get(i).add(s);
-				}
-			}
-		}
-		
-		for (ArrayList<StopJson> stops : children) {
-			Collections.sort(stops);
-		}
-		
+	public void setRoutes(World world) {
+		this.world = world;
+		this.parents = this.world.getRouteList();
 		loadFavorites();
 		
 		notifyDataSetInvalidated();
 	}
 	
 	public void putEtas(List<EtaJson> etaList) {
-		EtaJson eta;
-		EtaJson tempEta;
-		for (int i = 0; i < etaList.size(); i++) {
-			eta = etaList.get(i);
-			tempEta = etas.get(eta.getStop_id() + eta.getRoute());
-			if (tempEta == null || (tempEta != null && eta.getEta() < tempEta.getEta())) {
-				etas.put(eta.getStop_id() + eta.getRoute(), eta);
-			}
-			
-		}
-		
+        for (EtaJson eta : etaList) {
+            EtaJson tempEta = etas.get(eta.getStop_id() + eta.getRoute());
+            if (tempEta == null || eta.getEta() < tempEta.getEta()) {
+                etas.put(eta.getStop_id() + eta.getRoute(), eta);
+            }
+
+        }
+
 		notifyDataSetChanged();
 	}
 	
@@ -127,35 +100,45 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		if (favorites.size() > 0 && groupPosition == 0)
 			return favorites.size();
 		else if (favorites.size() > 0) 
-			return children.get(groupPosition - 1).size();
+			return parents.get(groupPosition - 1).getStopList().size();
 		else
-			return children.get(groupPosition).size();
-	}
-	
-	private boolean stopOnRoute(StopJson stop, int routeId) {
-		for (StopJson.StopRouteJson r : stop.getRoutes()) {
-			if (r.getId() == routeId)
-				return true;
-		}
-		return false;
+			return parents.get(groupPosition).getStopList().size();
 	}
 
-	public RouteJson getGroup(int groupPosition) {
+	public Route getGroup(int groupPosition) {
 		if (favorites.size() > 0 && groupPosition == 0)
-			return new RouteJson();
+			return null;
 		else if (favorites.size() > 0) 
 			return parents.get(groupPosition - 1);
 		else
 			return parents.get(groupPosition);
 	}
 
-	public StopJson getChild(int groupPosition, int childPosition) {
+	public Stop getChild(int groupPosition, int childPosition) {
 		if (favorites.size() > 0 && groupPosition == 0)
-			return favorites.get(childPosition);
-		else if (favorites.size() > 0) 
-			return children.get(groupPosition - 1).get(childPosition);
+			return world.getStops().get(favorites.get(childPosition).stopId);
+		else if (favorites.size() > 0)
+			return parents.get(groupPosition - 1).getStopList().get(childPosition);
 		else
-			return children.get(groupPosition).get(childPosition);
+			return parents.get(groupPosition).getStopList().get(childPosition);
+	}
+	
+	public String getStopId(int groupPosition, int childPosition) {
+		if (favorites.size() > 0 && groupPosition == 0)
+			return favorites.get(childPosition).stopId;
+		else if (favorites.size() > 0)
+			return parents.get(groupPosition - 1).getStopList().get(childPosition).getId();
+		else
+			return parents.get(groupPosition).getStopList().get(childPosition).getId();
+	}
+	
+	public int getRouteId(int groupPosition, int childPosition) {
+		if (favorites.size() > 0 && groupPosition == 0)
+			return favorites.get(childPosition).routeId;
+		else if (favorites.size() > 0) 
+			return parents.get(groupPosition - 1).getId();
+		else
+			return parents.get(groupPosition).getId();
 	}
 
 	public long getGroupId(int groupPosition) {
@@ -210,21 +193,26 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		TextView subText = (TextView) v.findViewById(R.id.text2);
 		TextView timeText = (TextView) v.findViewById(R.id.text3);
 		
-		RouteJson route;
-		StopJson stop;
+		Route route;
+		Stop stop;
 		EtaJson eta;
 		
 		if (favorites.size() > 0 && groupPosition == 0) {
-			stop = favorites.get(childPosition);
-			eta = etas.get(stop.getUniqueId());
+			FavoriteStop fav = favorites.get(childPosition);
+			stop = world.getStops().get(fav.stopId);
+			eta = etas.get(fav.getUniqueId());
+			subText.setVisibility(View.VISIBLE);
+			subText.setText(world.getRoutes().get(fav.routeId).getName());
 		} else if (favorites.size() > 0) {
 			route = parents.get(groupPosition - 1);
-			stop = children.get(groupPosition - 1).get(childPosition);
-			eta = etas.get(stop.getShort_name() + route.getId());
+			stop = route.getStopList().get(childPosition);
+			eta = etas.get(stop.getId() + route.getId());
+			subText.setVisibility(View.GONE);
 		} else {
 			route = parents.get(groupPosition);
-			stop = children.get(groupPosition).get(childPosition);
-			eta = etas.get(stop.getShort_name() + route.getId());
+			stop = route.getStopList().get(childPosition);
+			eta = etas.get(stop.getId() + route.getId());
+			subText.setVisibility(View.GONE);
 		}
 		
 		String etaString = "";
@@ -246,13 +234,6 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		text.setText(stop.getName());
 		timeText.setText(etaString);
 		
-		if (favorites.size() > 0 && groupPosition == 0) {
-			subText.setVisibility(View.VISIBLE);
-			subText.setText(routeNames.get(stop.getFavoriteRoute()));
-		} else {
-			subText.setVisibility(View.GONE);
-		}
-		
 		return v;
 	}
 	
@@ -260,9 +241,11 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		if (favoritesVisible())
 			groupPosition--;
 		
-		if (!favorites.contains(children.get(groupPosition).get(childPosition))) {
-			StopJson fav = children.get(groupPosition).get(childPosition);
-			fav.setFavoriteRoute(parents.get(groupPosition).getId());
+		Route r = world.getRouteList().get(groupPosition);
+		Stop s = r.getStopList().get(childPosition);
+		FavoriteStop fav = new FavoriteStop(r.getId(), s.getId());
+		
+		if (!favorites.contains(fav)) {
 			favorites.add(fav);
 		}
 		
@@ -288,7 +271,7 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 	}
 	
 	public boolean favoritesVisible() {
-		return favorites.size() > 0 ? true : false;
+		return favorites.size() > 0;
 	}
 
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
@@ -296,7 +279,7 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 	}
 	
 	public String getRouteName(int routeId) {
-		return routeNames.get(routeId);
+		return world.getRoutes().get(routeId).getName();
 	}
 	
 	public boolean expandChild(int groupPosition, int childPosition) {
@@ -314,6 +297,10 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		extraEtas = null;
 		notifyDataSetChanged();
 		return result;
+	}
+	
+	public FavoriteStop getFavoriteStop(int childPosition) {
+		return favorites.get(childPosition);
 	}
 	
 	public void setExtraEtas(ExtraEtaJson etas) {
@@ -345,11 +332,11 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		extraEtas = text;
 	}
 	
-	OnClickListener buttonClickListener = new OnClickListener() {
+	final OnClickListener buttonClickListener = new OnClickListener() {
 		public void onClick(View v) {
 			switch (v.getId()) {
 			case R.id.button1:
-				tabActivity.showMap(getChild(expandedGroup, expandedChild).getShort_name());
+				tabActivity.showMap(getChild(expandedGroup, expandedChild).getId());
 				break;
 			case R.id.button2:
 				if (expandedGroup == 0 && favoritesVisible()) {

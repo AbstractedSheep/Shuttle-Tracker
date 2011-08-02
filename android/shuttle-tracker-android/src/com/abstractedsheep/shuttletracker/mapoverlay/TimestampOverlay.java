@@ -32,10 +32,10 @@ import com.google.android.maps.Overlay;
 
 public class TimestampOverlay extends Overlay {
 	private Date lastUpdateTime = new Date();
-	private SimpleDateFormat formatter12 = new SimpleDateFormat("h:mm:ss a");
-	private SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm:ss");
+	private final SimpleDateFormat formatter12 = new SimpleDateFormat("h:mm:ss a");
+	private final SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm:ss");
 	private boolean time24hour = false;
-	private Paint paint = new Paint();
+	private final Paint paint = new Paint();
 	private String statusText = "";
 	
 	public TimestampOverlay() {

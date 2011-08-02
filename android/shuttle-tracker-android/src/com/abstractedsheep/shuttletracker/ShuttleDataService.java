@@ -29,6 +29,8 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.abstractedsheep.shuttletrackerworld.Coordinate;
+import com.abstractedsheep.shuttletrackerworld.Netlink;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -39,7 +41,7 @@ import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.VehicleArray;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
-import com.abstractedsheep.shuttletrackerworld.Netlink;
+import com.abstractedsheep.shuttletrackerworld.World;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -49,16 +51,14 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class ShuttleDataService implements OnSharedPreferenceChangeListener {
-	private ObjectMapper mapper = new ObjectMapper();
-	private Set<IShuttleServiceCallback> callbacks = new HashSet<IShuttleServiceCallback>();
-	public AtomicBoolean active = new AtomicBoolean(true);
-	private ArrayList<VehicleJson> vehicles;
+	private final ObjectMapper mapper = new ObjectMapper();
+	private final Set<IShuttleServiceCallback> callbacks = new HashSet<IShuttleServiceCallback>();
+	public final AtomicBoolean active = new AtomicBoolean(true);
 	private ArrayList<EtaJson> etas;
-	private Netlink routes;
+	private World world;
 	private boolean informedNoConnection = false;
 	private Context ctx;
-	private SharedPreferences prefs;
-	private AtomicInteger updateRate = new AtomicInteger(5000);
+	private final AtomicInteger updateRate = new AtomicInteger(5000);
 	private String extraEtaStopId = null;
 	private int extraEtaRouteId = -1;
 	
@@ -80,7 +80,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	
 	public void setApplicationContext(Context context) {
 		ctx = context;
-		prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
 		prefs.registerOnSharedPreferenceChangeListener(this);
 		updateRate.set(prefs.getInt(TrackerPreferences.UPDATE_RATE, 5000));
 	}
@@ -120,42 +120,42 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
     	return parsedClass;
     }
     
-    public Runnable updateRoutes = new Runnable() {
+    public final Runnable updateRoutes = new Runnable() {
 		public void run() {
 			synchronized (this) {
-				Netlink tempRoutes;
+				Netlink tempRoutes = null;
 				DatabaseHelper db = new DatabaseHelper(ctx);
 				
-				do {
+				while (tempRoutes == null) {
 					if (db.hasRoutes()) {
-						tempRoutes = db.getRoutes();
-						routes = tempRoutes;
-						notifyRoutesUpdated(routes);
+						world = World.generateWorld(db.getRoutes());
+						notifyRoutesUpdated();
 					} else {
 						tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", Netlink.class);
 						if (tempRoutes != null) {
-							routes = tempRoutes;
-							db.putRoutes(routes);
-							notifyRoutesUpdated(routes);
+							world = World.generateWorld(tempRoutes);
+							db.putRoutes(tempRoutes);
+							notifyRoutesUpdated();
 						}
 					}
 					
 					SystemClock.sleep(5000);
-				} while (tempRoutes == null);	
+				}
 				
 				db.close();
 			}	
 		}
 	};
 
-    public Runnable updateShuttles = new Runnable() {
+    public final Runnable updateShuttles = new Runnable() {
 		public void run() {
 			while (active.get()) {
 				synchronized (this) {
 					ArrayList<VehicleJson> tempVehicles = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions", VehicleArray.class);
-					if (tempVehicles != null) {
-						vehicles = tempVehicles;
-					}
+					for (VehicleJson v : tempVehicles) {
+                        world.addOrUpdateShuttle(v.getShuttle_id(), new Coordinate((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6)), v.getName(),
+                                v.getHeading(), v.getCardinal_point(), v.getSpeed(), v.getRoute_id());
+                    }
 					
 					ArrayList<EtaJson> tempEtas = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta", EtaArray.class);
 					if (tempEtas != null) {
@@ -163,7 +163,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 					}
 					
 					if (tempVehicles != null || tempEtas != null) {
-						notifyShuttlesUpdated(vehicles, etas);
+						notifyShuttlesUpdated();
 					}
 					
 					if (extraEtaStopId != null && extraEtaRouteId != -1) {
@@ -176,7 +176,8 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 			}
 		}
 	};
-	
+
+
 	public synchronized void setExtraEtaToGet(String extraEtaStopId, int extraEtaRouteId) {
 		this.extraEtaRouteId = extraEtaRouteId;
 		this.extraEtaStopId = extraEtaStopId;
@@ -188,10 +189,8 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		}).start();
 	}
 	
-	public void reloadFavoriteRoutes() {
-		DatabaseHelper db = new DatabaseHelper(ctx);
-		routes = db.getRoutes();
-		db.close();
+	public World getWorld() {
+		return world;
 	}
 	
 	private synchronized void notifyExtraEtasUpdated(ExtraEtaJson etas) {
@@ -200,15 +199,15 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		}
 	}	
 	
-	private synchronized void notifyShuttlesUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
+	private synchronized void notifyShuttlesUpdated() {
 		for (IShuttleServiceCallback c : callbacks) {
-			c.dataUpdated(vehicles, etas);
+			c.dataUpdated(world, etas);
 		}
 	}
 	
-	private synchronized void notifyRoutesUpdated(Netlink routes) {
+	private synchronized void notifyRoutesUpdated() {
 		for (IShuttleServiceCallback c : callbacks) {
-			c.routesUpdated(routes);
+			c.routesUpdated(world);
 		}
 	}
 	
@@ -220,24 +219,16 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	
 	public synchronized void registerCallback(IShuttleServiceCallback callback) {
 		callbacks.add(callback);		
-		callback.dataUpdated(vehicles, etas);
-		callback.routesUpdated(routes);
+		callback.dataUpdated(world, etas);
+		callback.routesUpdated(world);
 	}
 
 	public synchronized void unregisterCallback(IShuttleServiceCallback callback) {
 		callbacks.remove(callback);		
 	}
 	
-	public synchronized ArrayList<VehicleJson> getCurrentShuttleLocations() {
-		return vehicles;
-	}
-	
 	public synchronized ArrayList<EtaJson> getCurrentEtas() {
 		return etas;
-	}
-
-	public synchronized Netlink getRoutes() {
-		return routes;
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

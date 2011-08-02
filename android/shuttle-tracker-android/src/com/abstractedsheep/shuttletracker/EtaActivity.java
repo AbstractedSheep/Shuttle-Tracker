@@ -26,7 +26,7 @@ import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
-import com.abstractedsheep.shuttletrackerworld.Netlink;
+import com.abstractedsheep.shuttletrackerworld.World;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -48,7 +48,7 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 	private final static int MENU_REMOVE_FAV = 1;
 	private final static int MENU_ADD_FAV = 2;
 	private ArrayList<EtaJson> etas;
-	private Netlink routes;
+	private World world;
 	private ShuttleDataService dataService;
 	private ExpandableListView etaListView;
 	private EtaListAdapter etaAdapter;
@@ -83,18 +83,16 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 			public boolean onChildClick(ExpandableListView parent, View v,
 					int groupPosition, int childPosition, long id) {
 				if (etaAdapter.expandChild(groupPosition, childPosition)) {
-					dataService.setExtraEtaToGet(etaAdapter.getChild(groupPosition, childPosition).getShort_name(),
-							(etaAdapter.favoritesVisible() && groupPosition == 0) ? etaAdapter.getChild(groupPosition, childPosition).getFavoriteRoute() :
-								etaAdapter.getGroup(groupPosition).getId());
+					dataService.setExtraEtaToGet(etaAdapter.getStopId(groupPosition, childPosition), etaAdapter.getRouteId(groupPosition, childPosition));
 				} else {
 					dataService.setExtraEtaToGet(null, -1);
 				}
 				return true;
 			}
 		});
-		
+	
 		dataService = ShuttleDataService.getInstance();
-		routesUpdated(dataService.getRoutes());
+		routesUpdated(dataService.getWorld());
 	}
 	
 	@Override
@@ -105,22 +103,22 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 		etaAdapter.loadFavorites();
 	}
    
-	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
+	public void dataUpdated(World world, ArrayList<EtaJson> etas) {
 		if (etas != null) {
 			this.etas = etas;
 			runOnUiThread(updateList);	
 		}
 	}
 	
-	private Runnable updateList = new Runnable() {
+	private final Runnable updateList = new Runnable() {
 		public void run() {
 			etaAdapter.putEtas(etas);
 		}
 	};
 	
-	private Runnable setRoutes = new Runnable() {
+	private final Runnable setRoutes = new Runnable() {
 		public void run() {
-			etaAdapter.setRoutes(routes);
+			etaAdapter.setRoutes(world);
 			
 			if (etaAdapter.favoritesVisible())
 				etaListView.expandGroup(0);
@@ -129,9 +127,9 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 
 	
 
-	public void routesUpdated(Netlink routes) {
-		if (routes != null) {
-			this.routes = routes;
+	public void routesUpdated(World world) {
+		if (world != null) {
+			this.world = world;
 			runOnUiThread(setRoutes);
 		}
 	}

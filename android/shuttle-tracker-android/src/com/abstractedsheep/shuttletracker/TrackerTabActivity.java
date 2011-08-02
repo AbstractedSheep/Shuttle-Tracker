@@ -38,6 +38,7 @@ import android.view.WindowManager;
 import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
+import com.abstractedsheep.shuttletrackerworld.World;
 
 /*
  * !!! All children of this activity MUST implement IShuttleServiceCallback, but the implementation may be empty !!!
@@ -104,26 +105,26 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		super.onSaveInstanceState(outState);
 	}
 	
-	Runnable hideIndeterminateProgress = new Runnable() {
+	final Runnable hideIndeterminateProgress = new Runnable() {
 		public void run() {
 			setProgressBarIndeterminateVisibility(false);
 		}
 	};
 
-	public void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas) {
-		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).dataUpdated(vehicles, etas);
+	public void dataUpdated(World world, ArrayList<EtaJson> etas) {
+		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).dataUpdated(world, etas);
 		
 	}
 
-	public void routesUpdated(Netlink routes) {
-		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).routesUpdated(routes);
-		if (routes != null) {
+	public void routesUpdated(World world) {
+		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).routesUpdated(world);
+		if (world != null) {
 			runOnUiThread(hideIndeterminateProgress);
 		}
 	}
 	
 	private class MakeToast implements Runnable {
-		private int errorCode;
+		private final int errorCode;
 		public MakeToast(int errorCode) {
 			this.errorCode = errorCode;
 		}

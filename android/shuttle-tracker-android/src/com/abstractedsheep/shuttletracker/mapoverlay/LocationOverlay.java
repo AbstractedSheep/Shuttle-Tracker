@@ -39,10 +39,10 @@ import com.google.android.maps.Projection;
 
 public class LocationOverlay extends MyLocationOverlay {
 
-	private Bitmap marker;
-	private Paint accuracyPaint = new Paint();
-	private Paint strokePaint = new Paint();
-	Matrix rotate = new Matrix();
+	private final Bitmap marker;
+	private final Paint accuracyPaint = new Paint();
+	private final Paint strokePaint = new Paint();
+	final Matrix rotate = new Matrix();
 	
 	public LocationOverlay(Context context, MapView mapView, int markerResource) {
 		super(context, mapView);

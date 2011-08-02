@@ -32,7 +32,7 @@ import com.google.android.maps.GeoPoint;
 public class Netlink {
 	private ArrayList<StopJson> stops;
 	private ArrayList<RouteJson> routes;
-	private HashMap<Integer, RouteJson> routesMap = new HashMap<Integer, Netlink.RouteJson>();
+	private final HashMap<Integer, RouteJson> routesMap = new HashMap<Integer, Netlink.RouteJson>();
 	
 	public static class StopJson implements Comparable<StopJson> {
 		private int favoriteRoute = -1;

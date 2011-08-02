@@ -35,6 +35,9 @@ import com.abstractedsheep.shuttletracker.TrackerPreferences;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
 import com.abstractedsheep.shuttletrackerworld.Netlink.StopJson;
+import com.abstractedsheep.shuttletrackerworld.Route;
+import com.abstractedsheep.shuttletrackerworld.Stop;
+import com.abstractedsheep.shuttletrackerworld.World;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
@@ -43,48 +46,33 @@ import com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay;
 import com.readystatesoftware.mapviewballoons.BalloonOverlayView;
 
 public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOverlayItem> {
-	private ArrayList<StopJson> stops = new ArrayList<StopJson>();
-	private HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
-	private SimpleDateFormat formatter12 = new SimpleDateFormat("hh:mm a");
-	private SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
-	private SharedPreferences prefs;
-	private DatabaseHelper db;
+	private final List<Stop> stops = new ArrayList<Stop>();
+	private final HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
+	private final SimpleDateFormat formatter12 = new SimpleDateFormat("hh:mm a");
+	private final SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
+	private final SharedPreferences prefs;
+	private final DatabaseHelper db;
+    private final World world;
 	
 	
-	public StopsItemizedOverlay(Context context, Drawable defaultMarker, MapView mapView, SharedPreferences prefs) {
+	public StopsItemizedOverlay(Context context, Drawable defaultMarker, MapView mapView, World world, SharedPreferences prefs) {
 		super(boundCenter(defaultMarker), mapView);
 		this.prefs = prefs;
+        this.world = world;
+        this.stops.addAll(world.getStopList());
 		populate();
 		db = new DatabaseHelper(context);
 	}
-
-	public synchronized void addAllStops(Collection<? extends StopJson> stops) {
-		this.stops.addAll(stops);
-		populate();
-	}
-	
-	public synchronized void addStop(StopJson stop) { 
-	    stops.add(stop);
-	    populate();
-	}
-	
-	public synchronized void removeAllStops() {
-		stops.clear();
-		populate();
-	}
 	
 	public void putEtas(List<EtaJson> etaList) {
-		EtaJson eta;
 		EtaJson tempEta;
-		for (int i = 0; i < etaList.size(); i++) {
-			eta = etaList.get(i);
+		for (EtaJson eta : etaList) {
 			tempEta = etas.get(eta.getStop_id() + eta.getRoute());
-			if (tempEta == null || (tempEta != null && eta.getEta() < tempEta.getEta())) {
+			if (tempEta == null || eta.getEta() < tempEta.getEta()) {
 				etas.put(eta.getStop_id() + eta.getRoute(), eta);
 			}	
 		}
 	}
-
 	
 	public void refreshBalloon() {
 		BalloonOverlayView bov = getBalloonView();
@@ -96,15 +84,15 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 
 	@Override
 	protected synchronized OverlayItem createItem(int i) {
-		StopJson s = stops.get(i);
+		Stop s = stops.get(i);
 		EtaJson eta;
 		String snippet = "";
 		Date arrival;
 		long now = (new Date()).getTime();
 		
-		for (StopJson.StopRouteJson r : s.getRoutes()) {
+		for (Route r : s.getRouteList()) {
 			if (db.isRouteVisible(r.getId())) {
-				eta = etas.get(s.getShort_name() + r.getId());
+				eta = etas.get(s.getId() + r.getId());
 				if (eta != null) {
 					arrival = new Date(now + eta.getEta());
 					snippet += (!snippet.equals("") ? "\n" : "") + r.getName() + ": " + (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false) ? 
@@ -113,7 +101,7 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 			}
 		}
 		
-		return new OverlayItem(new GeoPoint((int)(s.getLatitude() * 1e6), (int)(s.getLongitude() * 1e6)), s.getName(), snippet);
+		return new OverlayItem(new GeoPoint(s.getLocation().getLatitudeE6(), s.getLocation().getLongitudeE6()), s.getName(), snippet);
 	}
 
 	@Override
@@ -128,7 +116,7 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 	
 	public void displayStop(String stopId) {
 		for (int i = 0; i < stops.size(); i++) {
-			if (stops.get(i).getShort_name().equals(stopId)) {
+			if (stops.get(i).getId().equals(stopId)) {
 				super.onTap(i);
 			}
 		}

@@ -19,6 +19,7 @@
     android:paddingTop="2dip"
     android:paddingBottom="2dip"
     android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
     android:textAppearance="?android:attr/textAppearanceLarge"

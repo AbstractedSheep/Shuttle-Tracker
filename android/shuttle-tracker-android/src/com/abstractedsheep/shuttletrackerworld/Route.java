@@ -18,80 +18,101 @@
 
 package com.abstractedsheep.shuttletrackerworld;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Route
 {
-    List<Double> m_distanceToNextCoord;
-    List<Coordinate> m_coordinates;
-    HashMap<Integer, Shuttle> m_shuttles;
-    HashMap<String, Stop> m_stops;
-	private String m_name;
-    private double m_length;
-    private int m_id;
+    final List<Double> distanceToNextCoord;
+    final List<Coordinate> coordinates;
+    final Map<Integer, Shuttle> shuttles;
+    final Map<String, Stop> stops;
+    final List<Shuttle> shuttleList;
+    final List<Stop> stopList;
+	private final String name;
+    private double length;
+    private final int id;
+    private final int color;
     
-    private ReadOnlyList<Double> ro_distanceToNextCoord;
-    private ReadOnlyList<Coordinate> ro_coordinates;
-    private ReadOnlyMap<Integer, Shuttle> ro_shuttles;
-    private ReadOnlyMap<String, Stop> ro_stops;
+    private final List<Double> ro_distanceToNextCoord;
+    private final List<Coordinate> ro_coordinates;
+    private final Map<Integer, Shuttle> ro_shuttles;
+    private final Map<String, Stop> ro_stops;
+    private final List<Shuttle> ro_shuttleList;
+    private final List<Stop> ro_stopList;
     
     
-    Route(int id, String name, List<Coordinate> coords)
+    Route(int id, String name, int color, List<Coordinate> coords)
     {
-        this.m_id = id;
-		this.m_name = name;
-        this.m_coordinates = new ArrayList<Coordinate>(coords);
-        this.m_stops = new HashMap<String, Stop>();
-		this.m_distanceToNextCoord = new ArrayList<Double>();
-        this.m_shuttles = new HashMap<Integer, Shuttle>();
-        this.ro_distanceToNextCoord = new ReadOnlyList<Double>(m_distanceToNextCoord);
-        this.ro_coordinates = new ReadOnlyList<Coordinate>(m_coordinates);
-        this.ro_shuttles = new ReadOnlyMap<Integer, Shuttle>(m_shuttles);
-        this.ro_stops = new ReadOnlyMap<String, Stop>(m_stops);
+        this.id = id;
+		this.name = name;
+        this.color = color;
+        this.coordinates = new ArrayList<Coordinate>(coords);
+        this.stops = Collections.synchronizedMap(new HashMap<String, Stop>());
+		this.distanceToNextCoord = new ArrayList<Double>();
+        this.shuttles = Collections.synchronizedMap(new HashMap<Integer, Shuttle>());
+        this.ro_distanceToNextCoord = Collections.unmodifiableList(distanceToNextCoord);
+        this.ro_coordinates = Collections.unmodifiableList(coordinates);
+        this.ro_shuttles = Collections.unmodifiableMap(shuttles);
+        this.ro_stops = Collections.unmodifiableMap(stops);
+        
+        this.shuttleList = Collections.synchronizedList(new ArrayList<Shuttle>());
+        this.stopList = Collections.synchronizedList(new ArrayList<Stop>());
+        this.ro_shuttleList = Collections.unmodifiableList(shuttleList);
+        this.ro_stopList = Collections.unmodifiableList(stopList);
 		
-		for(int i = 0; i < this.m_coordinates.size(); i++)
+		for(int i = 0; i < this.coordinates.size(); i++)
 		{
 			Coordinate c1, c2;
 			if (i == 0)
-				c1 = this.m_coordinates.get(this.m_coordinates.size() - 1);
+				c1 = this.coordinates.get(this.coordinates.size() - 1);
 			else
-				c1 = this.m_coordinates.get(i - 1);
+				c1 = this.coordinates.get(i - 1);
 			
-			c2 = this.m_coordinates.get(i);
+			c2 = this.coordinates.get(i);
 			
-			this.m_distanceToNextCoord.add(c1.distanceTo(c2));
+			this.distanceToNextCoord.add(c1.distanceTo(c2));
 		}
     }
     
     public String getName() {
-		return m_name;
+		return name;
 	}
 
 	public double getLength() {
-		return m_length;
+		return length;
 	}
 
 	public int getId() {
-		return m_id;
+		return id;
 	}
 
-	public ReadOnlyList<Double> getDistanceToNextCoord() {
+	public List<Double> getDistanceToNextCoord() {
 		return ro_distanceToNextCoord;
 	}
 
-	public ReadOnlyList<Coordinate> getCoordinates() {
+	public List<Coordinate> getCoordinates() {
 		return ro_coordinates;
 	}
 
-	public ReadOnlyMap<Integer, Shuttle> getShuttles() {
+	public Map<Integer, Shuttle> getShuttles() {
 		return ro_shuttles;
 	}
 
-	public ReadOnlyMap<String, Stop> getStops() {
+	public Map<String, Stop> getStops() {
 		return ro_stops;
 	}
+	
+	public List<Shuttle> getShuttleList() {
+		return ro_shuttleList;
+	}
+	
+	public List<Stop> getStopList() {
+		return ro_stopList;
+	}
+
+    public int getColor() {
+        return color;
+    }
 
     @Override
     public boolean equals(Object obj)
@@ -101,7 +122,7 @@ public class Route
 
         try {
         	Route r = (Route) obj;
-        	return this.m_id == r.m_id;
+        	return this.id == r.id;
         } catch (ClassCastException e) {
         	return false;
         }        
@@ -110,6 +131,6 @@ public class Route
     @Override
     public int hashCode()
     {
-        return this.m_id;
+        return this.id;
     }
 }

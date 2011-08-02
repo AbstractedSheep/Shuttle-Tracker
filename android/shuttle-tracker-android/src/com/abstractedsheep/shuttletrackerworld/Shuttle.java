@@ -23,157 +23,157 @@ import java.util.List;
 
 public class Shuttle
 {
-    private int m_speed;
-    private List<Integer> m_pastSpeeds;
+    private int speed;
+    private final List<Integer> pastSpeeds;
 
-    public int m_nextRouteCoordinate;
-    public int m_bearing;
-    public String m_cardinalPoint;
-    public int m_id;
-    public Coordinate m_location;
-    public long m_lastUpdateTime;
-    public String m_name;
-    public int m_averageSpeed;
-    public Route m_currentRoute;
-    public Coordinate m_snappedCoordinate;
+    public int nextRouteCoordinate;
+    public int bearing;
+    public String cardinalPoint;
+    public int id;
+    public Coordinate location;
+    public long lastUpdateTime;
+    public String name;
+    public int averageSpeed;
+    public Route currentRoute;
+    public Coordinate snappedCoordinate;
     
     Shuttle()
     {
-        this.m_bearing = 0;
-        this.m_cardinalPoint = "";
-        this.m_id = -1;
-        this.m_location = null;
-        this.m_lastUpdateTime = -1;
-        this.m_name = "";
-        this.m_speed = -1;
-        this.m_pastSpeeds = new ArrayList<Integer>(10);
-        this.m_averageSpeed = -1;
+        this.bearing = 0;
+        this.cardinalPoint = "";
+        this.id = -1;
+        this.location = null;
+        this.lastUpdateTime = -1;
+        this.name = "";
+        this.speed = -1;
+        this.pastSpeeds = new ArrayList<Integer>(10);
+        this.averageSpeed = -1;
     }
 
     void snapToRoute()
     {
-        if (this.m_currentRoute != null && this.m_location != null)
+        if (this.currentRoute != null && this.location != null)
         {
             Coordinate c1, c2;
             Coordinate closestPoint = null, tempClosestPoint;
             int nextPointId = -1;
             double shortestDistance = 10000, tempShortestDistance = 10000;
 
-            for (int i = 0; i < this.m_currentRoute.getCoordinates().size(); i++)
+            for (int i = 0; i < this.currentRoute.getCoordinates().size(); i++)
             {
                 if (i == 0)
-                    c1 = this.m_currentRoute.getCoordinates().get(this.m_currentRoute.getCoordinates().size() - 1);
+                    c1 = this.currentRoute.getCoordinates().get(this.currentRoute.getCoordinates().size() - 1);
                 else
-                    c1 = this.m_currentRoute.getCoordinates().get(i - 1);
+                    c1 = this.currentRoute.getCoordinates().get(i - 1);
 
-                c2 = this.m_currentRoute.getCoordinates().get(i);
+                c2 = this.currentRoute.getCoordinates().get(i);
 
-                tempClosestPoint = this.m_location.closestPoint(c1, c2);
-                tempShortestDistance = tempClosestPoint.distanceTo(this.m_location);
+                tempClosestPoint = this.location.closestPoint(c1, c2);
+                tempShortestDistance = tempClosestPoint.distanceTo(this.location);
 
                 if (tempShortestDistance < shortestDistance)
                 {
                     shortestDistance = tempShortestDistance;
                     closestPoint = tempClosestPoint;
-                    nextPointId = i + 1 == this.m_currentRoute.getCoordinates().size() ? 0 : i + 1;
+                    nextPointId = i + 1 == this.currentRoute.getCoordinates().size() ? 0 : i + 1;
                 }
             }
 
-            this.m_snappedCoordinate = closestPoint;
-            this.m_nextRouteCoordinate = nextPointId;
+            this.snappedCoordinate = closestPoint;
+            this.nextRouteCoordinate = nextPointId;
         }
     }
 
     
     
     public int getSeed() {
-		return m_speed;
+		return speed;
 	}
 
 	void setSpeed(int speed) {
-		this.m_speed = speed;
-        if (this.m_pastSpeeds.size() == 10)
-            this.m_pastSpeeds.remove(0);
+		this.speed = speed;
+        if (this.pastSpeeds.size() == 10)
+            this.pastSpeeds.remove(0);
 
-        this.m_pastSpeeds.add(speed);
+        this.pastSpeeds.add(speed);
 
         int sum = 0;
-        for (int i = 0; i < m_pastSpeeds.size(); i++)
-        	sum += m_pastSpeeds.get(i);
+        for (int i = 0; i < pastSpeeds.size(); i++)
+        	sum += pastSpeeds.get(i);
         
-        this.m_averageSpeed = sum / this.m_pastSpeeds.size();
+        this.averageSpeed = sum / this.pastSpeeds.size();
 	}
 
 	public int getBearing() {
-		return m_bearing;
+		return bearing;
 	}
 
 	void setBearing(int bearing) {
-		this.m_bearing = bearing;
+		this.bearing = bearing;
 	}
 
 	public String geCardinalPoint() {
-		return m_cardinalPoint;
+		return cardinalPoint;
 	}
 
 	void setCardinalPoint(String cardinalPoint) {
-		this.m_cardinalPoint = cardinalPoint;
+		this.cardinalPoint = cardinalPoint;
 	}
 
 	public int getId() {
-		return m_id;
+		return id;
 	}
 
 	void setId(int id) {
-		this.m_id = id;
+		this.id = id;
 	}
 
 	public Coordinate getLocation() {
-		return m_location;
+		return location;
 	}
 
 	void setLocation(Coordinate location) {
-		this.m_location = location;
+		this.location = location;
 	}
 
 	public long getLastUpdateTime() {
-		return m_lastUpdateTime;
+		return lastUpdateTime;
 	}
 
 	void setLastUpdateTime(long lastUpdateTime) {
-		this.m_lastUpdateTime = lastUpdateTime;
+		this.lastUpdateTime = lastUpdateTime;
 	}
 
 	public String getName() {
-		return m_name;
+		return name;
 	}
 
 	void setName(String name) {
-		this.m_name = name;
+		this.name = name;
 	}
 
 	public Route getCurrentRoute() {
-		return m_currentRoute;
+		return currentRoute;
 	}
 
 	void setCurrentRoute(Route currentRoute) {
-		this.m_currentRoute = currentRoute;
+		this.currentRoute = currentRoute;
 	}
 
 	public List<Integer> getPastSpeeds() {
-		return m_pastSpeeds;
+		return pastSpeeds;
 	}
 
 	public int getNextRouteCoordinate() {
-		return m_nextRouteCoordinate;
+		return nextRouteCoordinate;
 	}
 
 	public int getAverageSpeed() {
-		return m_averageSpeed;
+		return averageSpeed;
 	}
 
 	public Coordinate getSnappedCoordinate() {
-		return m_snappedCoordinate;
+		return snappedCoordinate;
 	}
 
 	@Override
@@ -184,7 +184,7 @@ public class Shuttle
 
         try {
         	Shuttle s = (Shuttle)obj;
-        	return this.m_id == s.m_id;
+        	return this.id == s.id;
         } catch (ClassCastException e) {
         	return false;
         }
@@ -193,6 +193,6 @@ public class Shuttle
     @Override
     public int hashCode()
     {
-        return this.m_id;
+        return this.id;
     }
 }
