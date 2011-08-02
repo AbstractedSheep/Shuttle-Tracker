@@ -82,7 +82,7 @@ public class DynamicDataGenerator {
             writeShuttleDataToFile();
             writeShuttleDataToTable();
             //write shuttle data to DB
-            Thread.sleep(1000);
+            Thread.sleep(5000);
         }
     }
 
