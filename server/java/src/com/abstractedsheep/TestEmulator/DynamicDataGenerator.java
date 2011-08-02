@@ -46,7 +46,7 @@ public class DynamicDataGenerator {
     protected HashMap<Integer, Route> routeList;
     protected HashMap<String, Stop> stopList;
     protected HashMap<Integer, Shuttle> shuttleList;
-    protected static final int SHUTTLES_TO_GENERATE = 1;
+    protected static final int SHUTTLES_TO_GENERATE = 4;
 
     public DynamicDataGenerator(URL url) {
         try {
@@ -80,7 +80,7 @@ public class DynamicDataGenerator {
                 shuttleList.put(i, createShuttle(i));
             printShuttleData();
             writeShuttleDataToFile();
-            //writeShuttleDataToTable();
+            writeShuttleDataToTable();
             //write shuttle data to DB
             Thread.sleep(1000);
         }
@@ -115,16 +115,13 @@ public class DynamicDataGenerator {
 
     private void writeShuttleData()
             throws ClassNotFoundException, IOException, SQLException, InstantiationException, IllegalAccessException {
-        String sql = "INSERT INTO shuttles (shuttle_id, name, location, speed, update_time, route_id) " +
-                "values (%d, \'%s\', GeomFromText(\'POINT(%g %g)\'), %d, FROM_UNIXTIME(%d), %d) on duplicate key " +
-                "update location=GeomFromText(\'POINT(%g %g)\') and update_time=from_unixtime(%d) and speed=%d";
+        String sql = "REPLACE INTO shuttles (shuttle_id, name, location, speed, update_time, route_id) " +
+                "values (%d, \'%s\', GeomFromText(\'POINT(%g %g)\'), %d, FROM_UNIXTIME(%d), %d)";
         Object[][] val = new Object[SHUTTLES_TO_GENERATE][];
         int i = 0;
         for (Shuttle s : shuttleList.values()) {
             val[i] = new Object[]{s.getShuttleId(), s.getName(), s.getCurrentLocation().getLatitude(),
-                    s.getCurrentLocation().getLongitude(), s.getSpeed(), s.getLastUpdateTime()/1000, s.getRouteId(),
-                    s.getCurrentLocation().getLatitude(), s.getCurrentLocation().getLongitude(), s.getLastUpdateTime()/1000,
-                    s.getSpeed()};
+                    s.getCurrentLocation().getLongitude(), s.getSpeed(), s.getLastUpdateTime()/1000, s.getRouteId()};
             i++;
         }
         (new DatabaseWriter()).writeTestShutleData(sql, val);
