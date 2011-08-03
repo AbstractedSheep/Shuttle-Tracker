@@ -81,18 +81,21 @@ public class DatabaseWriter extends AbstractQueryRunner {
     }
 
     //TODO: pass this to AbstractQueryRunner.batch
-    public void writeToDatabase(Connection conn, ETACalculator etaList,
-                                String tableName) throws SQLException {
+    public void writeToDatabase(ETACalculator etaList,
+                                String tableName) throws SQLException, IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
+        if (conn == null) {
+            connectToDatabase(tableName);
+        }
         String header = "INSERT INTO %s (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
-        String values = "VALUES ( %d,'%s',%d, %d, %d, '%d)";
-        String insertQuery = header + values + " ON DUPLICATE KEY ";
+        String values = "VALUES ( %d,'%s',%d, %d, %d, '%d')";
+        String insertQuery = header + values + " ON DUPLICATE KEY UPDATE ";
         String updateQuery = "eta=VALUES(eta), absolute_eta=VALUES(absolute_eta), route=VALUES(route)";
         Statement stmt = conn.createStatement();
         final String query = insertQuery + updateQuery;
         String sql = "";
         for (Eta eta : etaList.getETAs()) {
             sql = String.format(query, new Object[]{tableName, eta.shuttleId,
-                    eta.stopId, eta.Id, eta.time, eta.arrivalTime});
+                    eta.stopId, eta.Id, eta.time, eta.arrivalTime, eta.routeId});
 
             stmt.addBatch(sql);
         }

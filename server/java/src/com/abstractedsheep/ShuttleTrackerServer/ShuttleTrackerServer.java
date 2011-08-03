@@ -20,13 +20,17 @@
 package com.abstractedsheep.ShuttleTrackerServer;
 
 import com.abstractedsheep.ShuttleTrackerService.ETACalculator;
+import com.abstractedsheep.config.DBProperties;
+import com.abstractedsheep.config.STSProperties;
 import com.abstractedsheep.db.DatabaseWriter;
 import com.abstractedsheep.extractor.DynamicJSONExtractor;
 import com.abstractedsheep.extractor.StaticJSONExtractor;
 import com.abstractedsheep.world.World;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 
 /**
  * This is the main class that will run all of the server code. This class
@@ -63,7 +67,19 @@ public class ShuttleTrackerServer {
         this.world.generateWorld();
         while (true) {
             updateWorld();
-            DatabaseWriter.saveToDatabase(calc, "extra_eta");
+            try {
+                (new DatabaseWriter()).writeToDatabase(calc, "extra_eta");
+            } catch (SQLException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (InstantiationException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
             try {
                 Thread.sleep(SLEEP_INTERVAL);
             } catch (InterruptedException e) {
@@ -74,7 +90,7 @@ public class ShuttleTrackerServer {
     }
 
     private void updateWorld() {
-        this.world.updateWorld();
+        this.world.update();
         // update calculator's instance of the world before calculating the
         // etas.
         this.calc.updateWorld(world);
@@ -92,10 +108,13 @@ public class ShuttleTrackerServer {
         String loggingPath = "";
         String applicationPropertiesPath = "";
         try {
+            DBProperties.loadDBProperties(STSProperties.DB_PATH.toString());
             new ShuttleTrackerServer();
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 }

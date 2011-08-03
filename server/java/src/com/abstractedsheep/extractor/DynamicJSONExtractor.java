@@ -113,7 +113,7 @@ public class DynamicJSONExtractor extends AbstractJSONExtractor {
         Date date = new Date(dt.parse(list.get(6)).getTime());
         long time = System.currentTimeMillis(), parsedTime = dt.parse(dt.format(date)).getTime();
         System.out.println((time - parsedTime) / (1000 * 60 * 60));
-        Shuttle shuttle = new Shuttle(routeList);
+        Shuttle shuttle = new Shuttle();
         shuttle.setShuttleId(Integer.parseInt(list.get(0)));
         shuttle.setName(list.get(1));
         shuttle.setCurrentLocation(new Coordinate(Double.parseDouble(list

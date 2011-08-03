@@ -22,6 +22,7 @@ package com.abstractedsheep.world;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class is designed to hold information about a shuttle route.
@@ -137,8 +138,8 @@ public class Route {
     /**
      * @return the stopList
      */
-    public HashMap<String, Stop> getStopList() {
-        return (HashMap<String, Stop>) Collections.unmodifiableMap(stopList);
+    public Map<String, Stop> getStopList() {
+        return Collections.unmodifiableMap(stopList);
     }
 
     public void addStop(Stop s) {

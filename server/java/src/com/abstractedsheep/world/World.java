@@ -19,6 +19,8 @@
 
 package com.abstractedsheep.world;
 
+import com.abstractedsheep.config.DBProperties;
+import com.abstractedsheep.db.DatabaseReader;
 import com.abstractedsheep.extractor.DynamicJSONExtractor;
 import com.abstractedsheep.extractor.Netlink.RouteJson;
 import com.abstractedsheep.extractor.Netlink.RouteJson.RouteCoordinateJson;
@@ -26,10 +28,10 @@ import com.abstractedsheep.extractor.Netlink.StopJson;
 import com.abstractedsheep.extractor.Netlink.StopJson.StopRouteJson;
 import com.abstractedsheep.extractor.StaticJSONExtractor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * This class houses all of the dynamic (Shuttle) and static (Route and Stop) data.
@@ -100,6 +102,42 @@ public class World {
         routeList.put(route.getIdNum(), route);
     }
 
+    public void update() {
+
+        try {
+            String driver = "com.mysql.jdbc.Driver";
+
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(DBProperties.TEST_DB_LINK.toString(),
+                DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
+            DatabaseReader shuttleReader = new DatabaseReader(conn);
+            ArrayList<Shuttle> list = (ArrayList<Shuttle>) shuttleReader.readData(Shuttle.class);
+            HashMap<Integer, Shuttle> updatedShuttleList = new HashMap<Integer, Shuttle>();
+
+            for(Shuttle shuttle : list) {
+                int id = shuttle.getRouteId();
+                int shuttleId = shuttle.getShuttleId();
+                shuttle.setCurrentRoute(routeList.get(id));
+
+                if (this.shuttleList.containsKey(shuttleId)) {
+                    Shuttle temp = shuttleList.get(shuttleId);
+                    temp.updateShuttle(shuttle);
+                    this.shuttleList.put(shuttleId, temp);
+                } else {
+                    this.shuttleList.put(shuttleId, shuttle);
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (InstantiationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
     public void updateWorld() {
         dynamicExtractor.readDataFromURL();
         HashMap<Integer, Shuttle> updatedShuttleList = dynamicExtractor.getDynamicData();
@@ -129,22 +167,22 @@ public class World {
     /**
      * @return a read-only version of the routeList
      */
-    public HashMap<Integer, Route> getRouteList() {
-        return (HashMap<Integer, Route>) Collections.unmodifiableMap(routeList);
+    public Map<Integer, Route> getRouteList() {
+        return Collections.unmodifiableMap(routeList);
     }
 
     /**
      * @return a read-only version of the shuttleList
      */
-    public HashMap<Integer, Shuttle> getShuttleList() {
-        return (HashMap<Integer, Shuttle>) Collections.unmodifiableMap(shuttleList);
+    public Map<Integer, Shuttle> getShuttleList() {
+        return Collections.unmodifiableMap(shuttleList);
     }
 
     /**
      * @return a read-only version of the stopList
      */
-    public HashMap<String, Stop> getStopList() {
-        return (HashMap<String, Stop>) Collections.unmodifiableMap(stopList);
+    public Map<String, Stop> getStopList() {
+        return Collections.unmodifiableMap(stopList);
     }
 
 }

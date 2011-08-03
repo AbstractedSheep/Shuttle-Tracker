@@ -75,9 +75,18 @@ public class DatabaseReader extends AbstractQueryRunner {
         return null;
     }
 
-    private Shuttle parseToShuttle(ResultSet res) {
-        // TODO Auto-generated method stub
-        return null;
+    private Shuttle parseToShuttle(ResultSet res) throws SQLException {
+        Shuttle s = new Shuttle();
+        s.setName(res.getString("name"));
+        s.setSpeed(res.getInt("speed"));
+        String[] obj = res.getString("asText(location)").split(" ");
+        Double lat = Double.parseDouble(obj[0].substring(obj[0].indexOf("T") + 2));
+        Double lon = Double.parseDouble(obj[1].substring(0, obj[1].length() - 1));
+        s.setCurrentLocation(new Coordinate(lat, lon), res.getLong("update_time"));
+        s.setShuttleId(res.getInt("shuttle_id"));
+        //remember to set the route later
+        s.setRouteId(res.getInt("route_id"));
+        return s;
     }
 
     /**
@@ -92,18 +101,20 @@ public class DatabaseReader extends AbstractQueryRunner {
     public Collection<?> readData(Class<?> classType)
             throws ClassNotFoundException, SQLException {
         String tableName = "";
+        String sql = "SELECT * FROM ";
         if (classType.getSimpleName().equals("Shuttle")) {
             tableName = DBProperties.SHUTTLE_TABLE_NAME.toString();
+            sql = "SELECT shuttle_id, asText(location), route_id, name, speed, update_time FROM " + tableName;
         } else if (classType.getSimpleName().equals("Stop")) {
-            tableName = DBProperties.STOP_TABLE_NAME.toString();
+            sql += DBProperties.STOP_TABLE_NAME.toString();
         } else if (classType.getSimpleName().equals("Route")) {
-            tableName = DBProperties.ROUTE_TABLE_NAME.toString();
+            sql += DBProperties.ROUTE_TABLE_NAME.toString();
         } else {
             throw new ClassNotFoundException();
         }
 
         Collection<Object> list = new ArrayList<Object>();
-        ResultSet res = this.readDataFromTable(conn, tableName);
+        ResultSet res = this.readDataFromTable(conn, sql);
         // populate list using convertTableToObject
         while (res.next())
             list.add(this.convertTableToObject(classType, res));

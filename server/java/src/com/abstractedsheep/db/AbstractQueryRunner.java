@@ -35,10 +35,8 @@ import java.sql.Statement;
  */
 public abstract class AbstractQueryRunner {
 
-    protected ResultSet readDataFromTable(Connection conn, String tableName)
+    protected ResultSet readDataFromTable(Connection conn, String query)
             throws SQLException {
-        String query = String.format("select * from ?",
-                new Object[]{tableName});
         Statement stmt = conn.createStatement();
         return stmt.executeQuery(query);
     }

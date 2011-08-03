@@ -54,7 +54,7 @@ public class Shuttle implements IRouteFinder {
     // you do not
     // have a local variable by the same name, it is still a good idea to
     // include it
-    public Shuttle(ArrayList<Route> rt) {
+    public Shuttle() {
         this.shuttleId = -1;
         this.stops = new HashMap<String, Stop>();
         new HashMap<String, ArrayList<Integer>>();
@@ -256,5 +256,9 @@ public class Shuttle implements IRouteFinder {
 
     public long getLastUpdateTime() {
         return this.lastUpdateTime;
+    }
+
+    public void setRouteId(int routeId) {
+        this.currentRoute.setIdNum(routeId);
     }
 }
