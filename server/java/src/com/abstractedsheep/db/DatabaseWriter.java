@@ -31,7 +31,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.MessageFormat;
 
 /**
  * Connects to the server {@link www.abstractedsheep.com/phpMyAdmin/} and
@@ -86,21 +85,25 @@ public class DatabaseWriter extends AbstractQueryRunner {
         if (conn == null) {
             connectToDatabase(tableName);
         }
-        String header = "INSERT INTO %s (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
-        String values = "VALUES ( %d,'%s',%d, %d, %d, '%d')";
-        String insertQuery = header + values + " ON DUPLICATE KEY UPDATE ";
-        String updateQuery = "eta=VALUES(eta), absolute_eta=VALUES(absolute_eta), route=VALUES(route)";
-        Statement stmt = conn.createStatement();
-        final String query = insertQuery + updateQuery;
-        String sql = "";
-        for (Eta eta : etaList.getETAs()) {
-            sql = String.format(query, new Object[]{tableName, eta.shuttleId,
-                    eta.stopId, eta.Id, eta.time, eta.arrivalTime, eta.routeId});
+        try {
+            String header = "INSERT INTO %s (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
+            String values = "VALUES ( %d,'%s',%d, %d, %d, '%d')";
+            String insertQuery = header + values + " ON DUPLICATE KEY UPDATE ";
+            String updateQuery = "eta=VALUES(eta), absolute_eta=VALUES(absolute_eta), route=VALUES(route)";
+            Statement stmt = conn.createStatement();
+            final String query = insertQuery + updateQuery;
+            String sql = "";
+            for (Eta eta : etaList.getETAs()) {
+                sql = String.format(query, new Object[]{tableName, eta.shuttleId,
+                        eta.stopId, eta.Id, eta.time, eta.arrivalTime, eta.routeId});
 
-            stmt.addBatch(sql);
+                stmt.addBatch(sql);
+            }
+
+            stmt.executeBatch();
+        } finally {
+            conn.close();
         }
-
-        stmt.executeBatch();
     }
 
     public void runAsBatch(Connection conn, String query, Object[][] values) throws SQLException {
@@ -114,76 +117,21 @@ public class DatabaseWriter extends AbstractQueryRunner {
         this.runAsBatch(connection, query, values);
 
     }
-    //XXX now defunct
-    public static void saveToDatabase(ETACalculator etaList, String tableName) {
-        try {
-            connectToDatabase(tableName);
-            Statement stmt = conn.createStatement();
-            MessageFormat f = null;
-            for (Eta eta : etaList.getETAs()) {
-                String query = "UPDATE {0} SET eta = '{1}'"
-                        + "WHERE shuttle_id = {2} AND stop_id = '{3}'"
-                        + " AND route = '{4}' AND eta_id = '{5}'"
-                        + " AND absolute_eta = '{6}'";
-
-                f = new MessageFormat(query);
-                f.format(new Object[]{tableName, eta.time, eta.shuttleId,
-                        eta.stopName, eta.routeId, eta.Id, eta.arrivalTime});
-                query = f.toString();
-
-                int updateCount = stmt.executeUpdate(query);
-
-                if (updateCount == 0) {
-                    String header = "INSERT INTO {0} (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
-                    String values = "VALUES ( {1},'{2}','{3}', '{4}', '{5}', '{6}')";
-                    query = header + values;
-                    f = new MessageFormat(query);
-                    f.format(new Object[]{tableName, eta.shuttleId,
-                            eta.stopName, eta.Id, eta.time, eta.arrivalTime,
-                            eta.routeId});
-                    query = f.toString();
-
-                    stmt.executeUpdate(query);
-                }
-            }
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            // after writing the values to the DB, close the connection to the
-            // database.
-            try {
-                if (conn != null)
-                    conn.close();
-            } catch (SQLException e) {
-            }
-        }
-    }
 
     /**
      * Delete the values in the database table
      *
      * @param tableName this value is currently not used
      */
-    private static void deleteTable(String tableName) {
+    private static void deleteTable(String tableName) throws SQLException {
         try {
             Statement stm = conn.createStatement();
             String sql = "TRUNCATE TABLE " + tableName;
 
             stm.executeUpdate(sql);
         } catch (SQLException e) {
+        } finally {
+            conn.close();
         }
     }
 
