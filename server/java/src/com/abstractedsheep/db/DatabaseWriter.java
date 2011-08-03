@@ -85,25 +85,23 @@ public class DatabaseWriter extends AbstractQueryRunner {
         if (conn == null) {
             connectToDatabase(tableName);
         }
-        try {
-            String header = "INSERT INTO %s (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
-            String values = "VALUES ( %d,'%s',%d, %d, %d, '%d')";
-            String insertQuery = header + values + " ON DUPLICATE KEY UPDATE ";
-            String updateQuery = "eta=VALUES(eta), absolute_eta=VALUES(absolute_eta), route=VALUES(route)";
-            Statement stmt = conn.createStatement();
-            final String query = insertQuery + updateQuery;
-            String sql = "";
-            for (Eta eta : etaList.getETAs()) {
-                sql = String.format(query, new Object[]{tableName, eta.shuttleId,
-                        eta.stopId, eta.Id, eta.time, eta.arrivalTime, eta.routeId});
 
-                stmt.addBatch(sql);
-            }
+        String header = "INSERT INTO %s (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
+        String values = "VALUES ( %d,'%s',%d, %d, %d, '%d')";
+        String insertQuery = header + values + " ON DUPLICATE KEY UPDATE ";
+        String updateQuery = "eta=VALUES(eta), absolute_eta=VALUES(absolute_eta), route=VALUES(route)";
+        Statement stmt = conn.createStatement();
+        final String query = insertQuery + updateQuery;
+        String sql = "";
+        for (Eta eta : etaList.getETAs()) {
+            sql = String.format(query, new Object[]{tableName, eta.shuttleId,
+                    eta.stopId, eta.Id, eta.time, eta.arrivalTime, eta.routeId});
 
-            stmt.executeBatch();
-        } finally {
-            conn.close();
+            stmt.addBatch(sql);
         }
+
+        stmt.executeBatch();
+
     }
 
     public void runAsBatch(Connection conn, String query, Object[][] values) throws SQLException {
@@ -130,8 +128,6 @@ public class DatabaseWriter extends AbstractQueryRunner {
 
             stm.executeUpdate(sql);
         } catch (SQLException e) {
-        } finally {
-            conn.close();
         }
     }
 

@@ -128,9 +128,9 @@ public class ETACalculator {
                     distance += stop.getPrecedingCoordinateDistance().get(
                             rt.getIdNum());
                 }
-                int time = (int) (distance / shuttle.getSpeed());
+                double time = (distance /  (double) (shuttle.getSpeed() * Math.pow(10, -7) * 2.77));
                 this.etaList.add(new Eta(shuttle.getShuttleId(), shuttle
-                        .getCurrentRoute().getIdNum(), time, stop
+                        .getCurrentRoute().getIdNum(), (int)time, stop
                         .getShortName(), stop.getName(), 0));
             }
         }
