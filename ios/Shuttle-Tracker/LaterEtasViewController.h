@@ -21,6 +21,8 @@
 	DataManager *dataManager;
 	NSTimer *updateTimer;
 	NSDateFormatter *timeDisplayFormatter;
+    
+    BOOL useRelativeTimes;
 }
 
 - (id)initWithEta:(EtaWrapper *)eta;
@@ -30,6 +32,7 @@
 @property (nonatomic, retain) EtaWrapper *wrappedEta;
 @property (nonatomic, assign) DataManager *dataManager;
 @property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
+@property (nonatomic) BOOL useRelativeTimes;
 
 
 @end

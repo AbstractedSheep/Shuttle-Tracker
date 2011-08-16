@@ -13,11 +13,12 @@
 @interface EtasViewController : UITableViewController {
     DataManager *dataManager;
     NSDateFormatter *timeDisplayFormatter;
+    BOOL useRelativeTimes;
 	
 }
 
 @property (nonatomic, assign) DataManager *dataManager;
 @property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
-
+@property (nonatomic) BOOL useRelativeTimes;
 
 @end

@@ -6,10 +6,13 @@
 //  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
+//  Consider consolidating ETA display code from this file and LaterEtasViewController
+
 #import "EtasViewController.h"
 #import "EtaWrapper.h"
 #import "DataManager.h"
 #import "LaterEtasViewController.h"
+#import "IASKSettingsReader.h"
 
 
 @interface EtasViewController ()
@@ -17,6 +20,7 @@
 - (void)delayedTableReload;
 - (void)unsafeDelayedTableReload;
 - (void)unsafeDelayedTableReloadForced;
+- (void)settingChanged:(NSNotification *)notification;
 
 @end
 
@@ -25,12 +29,20 @@
 
 @synthesize dataManager;
 @synthesize timeDisplayFormatter;
+@synthesize useRelativeTimes;
 
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
     if ((self = [super initWithStyle:style])) {
 		self.title = @"ETAs";
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
+        
+        //	Take notice when a setting is changed.
+        //	Note that this is not the only object that takes notice.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
     }
 	
     return self;
@@ -137,7 +149,25 @@
 		
 		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
 		if (etaWrapped.eta) {
-			cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
+            if (self.useRelativeTimes) {
+                int minutesToEta = 0;
+                minutesToEta = (int)([etaWrapped.eta timeIntervalSinceNow] / 60);
+                
+                //  Grammar for one vs. more than one
+                if (minutesToEta > 1) {
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d minutes", minutesToEta];
+                }
+                else if (minutesToEta == 1) {
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d minute", minutesToEta];
+                }
+                else if (minutesToEta < 1) {
+                    //  Cover our ears and show imminent and past times the same way
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"< 1 minute"];
+                }
+            } else {
+                //  Show ETAs as timestamps
+                cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
+            }
 		} else {
 			cell.detailTextLabel.text = @"————";
 		}
@@ -149,7 +179,7 @@
 
 //	Use the short names of the routes, since they display better than the full names
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	NSArray *sectionHeaders = [dataManager sectionHeaders];;
+	NSArray *sectionHeaders = [dataManager sectionHeaders];
 	
 	if (sectionHeaders && [sectionHeaders count] > section) {
 		return [sectionHeaders objectAtIndex:section];
@@ -279,5 +309,20 @@
 									repeats:NO];
 }
 
+//	InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
+//	settingChanged handles switching between absolute and relative times for updates and ETAs.
+//	Other objects may also do something when a setting is changed.
+- (void)settingChanged:(NSNotification *)notification {
+	NSDictionary *info = [notification userInfo];
+	
+	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
+	if ([[notification object] isEqualToString:@"useRelativeTimes"]) {
+		if ([[info objectForKey:@"useRelativeTimes"] boolValue]) {
+            self.useRelativeTimes = YES;
+		} else {
+            self.useRelativeTimes = NO;
+		}
+	}
+}
 
 @end
