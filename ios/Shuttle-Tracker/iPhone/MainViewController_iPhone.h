@@ -17,4 +17,6 @@
     EtasViewController *etasViewController;
 }
 
+@property (nonatomic, retain) UITabBarController *tabBarController;
+
 @end

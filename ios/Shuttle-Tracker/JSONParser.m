@@ -90,6 +90,7 @@
             style.width = [number intValue];
             
             route.style = style;
+            [style release];
             
             string = [value objectForKey:@"name"];
             route.name = string;
@@ -171,6 +172,8 @@
             
             stop.routeIds = tempRouteIds;
             stop.routeNames = tempRouteNames;
+            [tempRouteIds release];
+            [tempRouteNames release];
             
             [mutableStops addObject:stop];
             [stop release];
@@ -221,7 +224,7 @@
         for (NSDictionary *dict in jsonDict) {
             JSONVehicle *vehicle = [[JSONVehicle alloc] init];
             
-            CLLocationCoordinate2D coordinate;
+            CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(0.0f, 0.0f);
             
             //  Set the vehicle properties to the corresponding JSON values
             for (NSString *string in dict) {

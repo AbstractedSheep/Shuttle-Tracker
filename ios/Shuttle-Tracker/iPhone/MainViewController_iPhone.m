@@ -14,6 +14,7 @@
 
 @implementation MainViewController_iPhone
 
+@synthesize tabBarController;
 
 /*
  Use the init method from the MainViewController superclass
@@ -47,17 +48,17 @@
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView
 {
-    self.view = [[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	
-    tabBarController = [[UITabBarController alloc] init];
+    self.tabBarController = [[[UITabBarController alloc] init] autorelease];
     tabBarController.delegate = self;
 	
     MapViewController *mapViewController = [[MapViewController alloc] init];
-    mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0];
+    mapViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0] autorelease];
     mapViewController.dataManager = dataManager;
     
     etasViewController = [[EtasViewController alloc] init];
-    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1];
+    etasViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1] autorelease];
     etasViewController.dataManager = dataManager;
 	
 	UINavigationController *tableNavController = [[UINavigationController alloc] init];
@@ -74,7 +75,7 @@
 	
 	UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
 	[settingsViewController release];
-	settingsNavController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2];
+	settingsNavController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2] autorelease];
 	
     tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, tableNavController, settingsNavController, nil];
 	[mapViewController release];
