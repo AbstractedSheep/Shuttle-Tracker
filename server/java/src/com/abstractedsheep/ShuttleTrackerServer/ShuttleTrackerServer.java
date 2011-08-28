@@ -36,7 +36,7 @@ import java.sql.SQLException;
  * This is the main class that will run all of the server code. This class
  * retrieves the stop and route data upon initialization from {@linkplain
  * JSONExtractor.readRouteData()} and periodically gets the shuttle data from
- * {@linkplain JSONExtractor.readShuttleData()} every five seconds. The shuttle
+ * {@linkplain com.abstractedsheep.extractor.JSONExtractor.readShuttleData()} every five seconds. The shuttle
  * data then undergoes some processing in order to determine the arrival times
  * to each stop on each shuttle's route, after which this arrival time data is
  * written to MySQL database.
