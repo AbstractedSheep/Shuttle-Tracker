@@ -72,6 +72,7 @@ public class World {
         for (StopJson stop : staticExtractor.getStopList()) {
             this.addStop(stop);
         }
+        dynamicExtractor.setRouteList(routeList);
     }
 
     private void addStop(StopJson stop) {
@@ -109,12 +110,12 @@ public class World {
 
             Class.forName(driver).newInstance();
             Connection conn = DriverManager.getConnection(DBProperties.TEST_DB_LINK.toString(),
-                DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
+                    DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
             DatabaseReader shuttleReader = new DatabaseReader(conn);
             ArrayList<Shuttle> list = (ArrayList<Shuttle>) shuttleReader.readData(Shuttle.class);
             HashMap<Integer, Shuttle> updatedShuttleList = new HashMap<Integer, Shuttle>();
 
-            for(Shuttle shuttle : list) {
+            for (Shuttle shuttle : list) {
                 int id = shuttle.getRouteId();
                 int shuttleId = shuttle.getShuttleId();
                 shuttle.setCurrentRoute(routeList.get(id));

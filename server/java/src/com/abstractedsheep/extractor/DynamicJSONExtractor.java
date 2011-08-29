@@ -72,7 +72,7 @@ public class DynamicJSONExtractor extends AbstractJSONExtractor {
 
                     if (parser.getCurrentName().equals("vehicle")
                             && parser.getText().equals("}")) {
-                        Shuttle s = this.parseData(extractedValueList2, (ArrayList<Route>) routeList.values());
+                        Shuttle s = this.parseData(extractedValueList2, routeList.values().toArray());
                         shuttleList.put(s.getShuttleId(), s);
                         this.extractedValueList2.clear();
                     }
@@ -101,13 +101,12 @@ public class DynamicJSONExtractor extends AbstractJSONExtractor {
      * Constructs shuttle object fromt he given list of values.
      *
      * @param list      - values to construct desired object
-     * @param stopList  - list of stops
      * @param routeList
      * @return shuttle object
      * @throws ParseException
      */
     public Shuttle parseData(ArrayList<String> list,
-                             ArrayList<Route> routeList) throws ParseException {
+                             Object[] routeList) throws ParseException {
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         dt.setTimeZone(TimeZone.getTimeZone("GMT"));
         Date date = new Date(dt.parse(list.get(6)).getTime());
@@ -120,14 +119,14 @@ public class DynamicJSONExtractor extends AbstractJSONExtractor {
                 .get(3)), Double.parseDouble(list.get(4))), time);
         shuttle.setSpeed(Integer.parseInt(list.get(5)));
         shuttle.setCardinalPoint(list.get(list.size() - 1));
-        shuttle.setCurrentRoute(routeList.get(0));
+        shuttle.setCurrentRoute((Route) routeList[0]);
         double d = shuttle.getDistanceToClosestPoint();
 
-        for (int i = 1; i < routeList.size(); i++) {
-            shuttle.snapToRoute(routeList.get(i));
+        for (int i = 1; i < routeList.length; i++) {
+            shuttle.snapToRoute((Route) routeList[i]);
 
             if (d > shuttle.getDistanceToClosestPoint()) {
-                shuttle.setCurrentRoute(routeList.get(i));
+                shuttle.setCurrentRoute((Route) routeList[i]);
                 d = shuttle.getDistanceToClosestPoint();
             }
         }

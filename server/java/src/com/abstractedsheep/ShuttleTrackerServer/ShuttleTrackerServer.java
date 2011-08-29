@@ -90,7 +90,8 @@ public class ShuttleTrackerServer {
     }
 
     private void updateWorld() {
-        this.world.update();
+        System.out.println("Placeholder Text");
+        this.world.updateWorld();
         // update calculator's instance of the world before calculating the
         // etas.
         this.calc.updateWorld(world);
