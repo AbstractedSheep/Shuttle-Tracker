@@ -106,9 +106,10 @@ public class ShuttleTrackerServer {
     public static void main(String[] args) {
         String dbPropertiesPath = "";
         String loggingPath = "";
-        String applicationPropertiesPath = "";
+        String applicationPropertiesPath = "C:/Users/jonnau/Documents/Android projects/Shuttle-Tracker/server/java/conf/sts.properties";
         try {
-            DBProperties.loadDBProperties(STSProperties.DB_PATH.toString());
+            STSProperties.loadProperties(applicationPropertiesPath);
+            DBProperties.loadProperties(STSProperties.DB_PATH.toString());
             new ShuttleTrackerServer();
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block
