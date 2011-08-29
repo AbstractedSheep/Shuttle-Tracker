@@ -70,7 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	}
 	
 	public DatabaseHelper(Context context) {
-		super(context, dbName, null, 2);
+		super(context, dbName, null, 3);
 	}
 
 	@Override
@@ -107,20 +107,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		if (oldVersion <= 1) {
-			db.execSQL("ALTER TABLE "+RoutesTable.tableName + " ADD " + RoutesTable.colVisible + " INTEGER");
-			ContentValues cv = new ContentValues();
-			cv.put(RoutesTable.colVisible, 1);
-			db.update(RoutesTable.tableName, cv, null, null);
-			
-			cv = new ContentValues();
-			cv.put(RoutesTable.colName, "East Campus");
-			db.update(RoutesTable.tableName, cv, RoutesTable.colName + "='East Route'", null);
-			
-			cv = new ContentValues();
-			cv.put(RoutesTable.colName, "West Campus");
-			db.update(RoutesTable.tableName, cv, RoutesTable.colName + "='West Route'", null);
-		}
+		db.execSQL("DROP TABLE " + StopsTable.tableName);
+		db.execSQL("DROP TABLE " + RoutesTable.tableName);
+		db.execSQL("DROP TABLE " + RoutePointsTable.tableName);
+		db.execSQL("DROP TABLE " + StopsOnRoutesTable.tableName);
 	}
 	
 	public void putRoutes(RoutesJson routes) {
