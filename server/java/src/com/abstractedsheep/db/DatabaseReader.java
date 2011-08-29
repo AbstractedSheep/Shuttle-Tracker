@@ -58,11 +58,11 @@ public class DatabaseReader extends AbstractQueryRunner {
 
         int idNum = res.getInt("route_id");
         String name = res.getString("route_name");
-        String sql = String.format("SELECT * FROM route_coords WHERE route_id= %d ORDER BY seq", new Object[] {
-                idNum });
+        String sql = String.format("SELECT * FROM route_coords WHERE route_id= %d ORDER BY seq", new Object[]{
+                idNum});
         r = this.executeQuery(conn, sql);
         pt = null;
-        while(r.next()) {
+        while (r.next()) {
             pt = (Point) r.getObject("location");
             list.add(new Coordinate(pt.getX(), pt.getY()));
         }
@@ -79,10 +79,10 @@ public class DatabaseReader extends AbstractQueryRunner {
         Shuttle s = new Shuttle();
         s.setName(res.getString("name"));
         s.setSpeed(res.getInt("speed"));
-        String[] obj = res.getString("asText(location)").split(" ");
+        String[] obj = res.getString("asText(shuttle_coords.location)").split(" ");
         Double lat = Double.parseDouble(obj[0].substring(obj[0].indexOf("T") + 2));
         Double lon = Double.parseDouble(obj[1].substring(0, obj[1].length() - 1));
-        s.setCurrentLocation(new Coordinate(lat, lon), res.getLong("update_time"));
+        s.setCurrentLocation(new Coordinate(lat, lon), res.getTimestamp("update_time").getTime());
         s.setShuttleId(res.getInt("shuttle_id"));
         //remember to set the route later
         s.setRouteId(res.getInt("route_id"));
@@ -104,7 +104,10 @@ public class DatabaseReader extends AbstractQueryRunner {
         String sql = "SELECT * FROM ";
         if (classType.getSimpleName().equals("Shuttle")) {
             tableName = DBProperties.SHUTTLE_TABLE_NAME.toString();
-            sql = "SELECT shuttle_id, asText(location), route_id, name, speed, update_time FROM " + tableName;
+            sql = "SELECT shuttles.shuttle_id, asText(shuttle_coords.location), shuttle_coords.route_id," +
+                    " shuttles.name, shuttle_coords.speed, shuttle_coords.update_time FROM shuttles, shuttle_coords WHERE " +
+                    "shuttles.shuttle_id=shuttle_coords.shuttle_id " +
+                    "AND (now() - shuttle_coords.update_time) < (500 * 1000)";
         } else if (classType.getSimpleName().equals("Stop")) {
             sql += DBProperties.STOP_TABLE_NAME.toString();
         } else if (classType.getSimpleName().equals("Route")) {
