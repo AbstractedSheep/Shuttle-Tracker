@@ -63,7 +63,7 @@ public class DatabaseWriter extends AbstractQueryRunner {
 
         Class.forName(driver).newInstance();
         conn = DriverManager.getConnection(DBProperties.TEST_DB_LINK.toString(),
-                            DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
+                DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
 
         deleteTable(tableName);
     }
@@ -76,7 +76,7 @@ public class DatabaseWriter extends AbstractQueryRunner {
 
         Class.forName(driver).newInstance();
         return DriverManager.getConnection(link,
-                            DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
+                DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
     }
 
     //TODO: pass this to AbstractQueryRunner.batch
@@ -87,7 +87,7 @@ public class DatabaseWriter extends AbstractQueryRunner {
         }
 
         String header = "INSERT INTO %s (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
-        String values = "VALUES ( %d,'%s',%d, %d, %d, '%d')";
+        String values = "VALUES ( %d,\"%s\",%d, %d, %d, '%d')";
         String insertQuery = header + values + " ON DUPLICATE KEY UPDATE ";
         String updateQuery = "eta=VALUES(eta), absolute_eta=VALUES(absolute_eta), route=VALUES(route)";
         Statement stmt = conn.createStatement();
@@ -110,7 +110,7 @@ public class DatabaseWriter extends AbstractQueryRunner {
 
     public void writeTestShutleData(String query, Object[][] values)
             throws IOException, ClassNotFoundException, SQLException,
-                   IllegalAccessException, InstantiationException {
+            IllegalAccessException, InstantiationException {
         Connection connection = this.createConnection(false);
         this.runAsBatch(connection, query, values);
 
