@@ -38,6 +38,7 @@ import org.codehaus.jackson.JsonGenerator;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
@@ -49,6 +50,7 @@ public class DynamicDataGenerator {
     protected static final int SHUTTLES_TO_GENERATE = 4;
 
     public DynamicDataGenerator(URL url) {
+        initProperties();
         try {
             DBProperties.loadProperties(STSProperties.DB_PATH.toString());
         } catch (IOException e) {
@@ -74,12 +76,26 @@ public class DynamicDataGenerator {
         }
     }
 
+    private void initProperties() {
+        String applicationPropertiesPath = "C:/Users/jonnau/Documents/Android projects/Shuttle-Tracker/server/java/conf/sts.properties";
+        try {
+            STSProperties.loadProperties(applicationPropertiesPath);
+            DBProperties.loadProperties(STSProperties.DB_PATH.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.exit(0);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.exit(0);
+        }
+    }
+
     private void generateData() throws InterruptedException, JsonGenerationException, IOException {
         while (true) {
             for (int i = 1; i <= SHUTTLES_TO_GENERATE; i++)
                 shuttleList.put(i, createShuttle(i));
             printShuttleData();
-            writeShuttleDataToFile();
+            //writeShuttleDataToFile();
             writeShuttleDataToTable();
             //write shuttle data to DB
             Thread.sleep(5000);
@@ -115,7 +131,7 @@ public class DynamicDataGenerator {
 
     private void writeShuttleData()
             throws ClassNotFoundException, IOException, SQLException, InstantiationException, IllegalAccessException {
-        String sql = "REPLACE INTO shuttles (shuttle_id, name) " +
+        String sql = "REPLACE INTO test_shuttles (shuttle_id, name) " +
                 "values (%d, \"%s\")";
         Object[][] val = new Object[SHUTTLES_TO_GENERATE][];
         int i = 0;
@@ -129,14 +145,14 @@ public class DynamicDataGenerator {
 
     private void writeShuttleLocationData()
             throws ClassNotFoundException, IOException, SQLException, InstantiationException, IllegalAccessException {
-        String sql = "REPLACE INTO shuttle_coords (shuttle_id, location, speed, update_time, route_id) " +
-                "values (%d, GeomFromText(\'POINT(%g %g)\'), %d, FROM_UNIXTIME(%d), %d)";
+        String sql = "INSERT INTO test_shuttle_coords (shuttle_id, heading, location, speed, update_time, route_id, public_status_msg, cardinal_point) " +
+                "values (%d, %d, GeomFromText(\'POINT(%g %g)\'), %d, FROM_UNIXTIME(%d), %d, \"\", \"%s\")";
 
         Object[][] val = new Object[SHUTTLES_TO_GENERATE][];
         int i = 0;
         for (Shuttle s : shuttleList.values()) {
-            val[i] = new Object[]{s.getShuttleId(), s.getName(), s.getCurrentLocation().getLatitude(),
-                    s.getCurrentLocation().getLongitude(), s.getSpeed(), s.getLastUpdateTime() / 1000, s.getRouteId()};
+            val[i] = new Object[]{s.getShuttleId(), 100, s.getCurrentLocation().getLatitude(),
+                    s.getCurrentLocation().getLongitude(), s.getSpeed(), s.getLastUpdateTime() / 1000, s.getRouteId(), s.getCardinalPoint()};
             i++;
         }
         (new DatabaseWriter()).writeTestShutleData(sql, val);
@@ -182,6 +198,7 @@ public class DynamicDataGenerator {
             s.snapToRoute(s.getCurrentRoute());
         } else {
             s = new Shuttle(shuttle_id, new ArrayList<Route>(list));
+            s.setName("Bus " + s.getShuttleId());
             s.setSpeed(r.nextInt(30));
             int listSize = currentRoute.getCoordinateList().size();
             s.setCurrentLocation(currentRoute.getCoordinateList().get(r.nextInt(listSize - 1)));
