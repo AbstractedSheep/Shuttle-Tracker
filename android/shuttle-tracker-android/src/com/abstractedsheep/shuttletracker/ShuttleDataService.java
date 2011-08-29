@@ -152,12 +152,12 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		public void run() {
 			while (active.get()) {
 				synchronized (this) {
-					ArrayList<VehicleJson> tempVehicles = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions", VehicleArray.class);
+					ArrayList<VehicleJson> tempVehicles = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_shuttle_positions", VehicleArray.class);
 					if (tempVehicles != null) {
 						vehicles = tempVehicles;
 					}
 					
-					ArrayList<EtaJson> tempEtas = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta", EtaArray.class);
+					ArrayList<EtaJson> tempEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_eta", EtaArray.class);
 					if (tempEtas != null) {
 						etas = tempEtas;
 					}
