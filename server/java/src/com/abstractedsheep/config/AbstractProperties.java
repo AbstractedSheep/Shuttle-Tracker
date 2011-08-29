@@ -34,7 +34,7 @@ public abstract class AbstractProperties {
     protected static final String STS_CONFIG_PREFIX = "sts";
     protected static final String DB_CONFIG_PREFIX = "db";
 
-    public static void loadDBProperties(String path) throws IOException {
+    public static void loadProperties(String path) throws IOException {
         Properties p = new Properties(System.getProperties());
         p.load(new FileInputStream(path));
         System.setProperties(p);
@@ -51,7 +51,7 @@ public abstract class AbstractProperties {
 
         public String toString() {
             String str = System.getProperty(name);
-            return (str == null || str.equals("null")) ? defaultValue : str;
+            return (str == null || str.equals("null")) ? null : str;
         }
     }
 }

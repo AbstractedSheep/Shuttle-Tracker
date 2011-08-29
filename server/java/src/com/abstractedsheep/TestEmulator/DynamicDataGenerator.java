@@ -50,7 +50,7 @@ public class DynamicDataGenerator {
 
     public DynamicDataGenerator(URL url) {
         try {
-            DBProperties.loadDBProperties(STSProperties.DB_PATH.toString());
+            DBProperties.loadProperties(STSProperties.DB_PATH.toString());
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             System.exit(0);
@@ -115,20 +115,31 @@ public class DynamicDataGenerator {
 
     private void writeShuttleData()
             throws ClassNotFoundException, IOException, SQLException, InstantiationException, IllegalAccessException {
-        String sql = "REPLACE INTO shuttles (shuttle_id, name, location, speed, update_time, route_id) " +
-                "values (%d, \'%s\', GeomFromText(\'POINT(%g %g)\'), %d, FROM_UNIXTIME(%d), %d)";
+        String sql = "REPLACE INTO shuttles (shuttle_id, name) " +
+                "values (%d, \"%s\")";
         Object[][] val = new Object[SHUTTLES_TO_GENERATE][];
         int i = 0;
         for (Shuttle s : shuttleList.values()) {
-            val[i] = new Object[]{s.getShuttleId(), s.getName(), s.getCurrentLocation().getLatitude(),
-                    s.getCurrentLocation().getLongitude(), s.getSpeed(), s.getLastUpdateTime()/1000, s.getRouteId()};
+            val[i] = new Object[]{s.getShuttleId(), s.getName()};
             i++;
         }
         (new DatabaseWriter()).writeTestShutleData(sql, val);
 
     }
 
-    private void writeShuttleLocationData() {
+    private void writeShuttleLocationData()
+            throws ClassNotFoundException, IOException, SQLException, InstantiationException, IllegalAccessException {
+        String sql = "REPLACE INTO shuttle_coords (shuttle_id, location, speed, update_time, route_id) " +
+                "values (%d, GeomFromText(\'POINT(%g %g)\'), %d, FROM_UNIXTIME(%d), %d)";
+
+        Object[][] val = new Object[SHUTTLES_TO_GENERATE][];
+        int i = 0;
+        for (Shuttle s : shuttleList.values()) {
+            val[i] = new Object[]{s.getShuttleId(), s.getName(), s.getCurrentLocation().getLatitude(),
+                    s.getCurrentLocation().getLongitude(), s.getSpeed(), s.getLastUpdateTime() / 1000, s.getRouteId()};
+            i++;
+        }
+        (new DatabaseWriter()).writeTestShutleData(sql, val);
 
     }
 

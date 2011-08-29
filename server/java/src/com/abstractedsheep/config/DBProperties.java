@@ -40,7 +40,7 @@ public class DBProperties extends AbstractProperties {
     public static void main(String[] args) {
 
         try {
-            DBProperties.loadDBProperties("/Users/ujonnalagadda/Shuttle-Tracker/server/java/conf/db.properties");
+            DBProperties.loadProperties("/Users/ujonnalagadda/Shuttle-Tracker/server/java/conf/db.properties");
             System.out.println(DBProperties.TEST_DB_LINK);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
