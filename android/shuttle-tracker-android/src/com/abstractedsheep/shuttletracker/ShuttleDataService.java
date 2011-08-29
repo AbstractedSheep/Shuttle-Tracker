@@ -151,13 +151,15 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		public void run() {
 			while (active.get()) {
 				synchronized (this) {
-					ArrayList<VehicleJson> tempVehicles = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions", VehicleArray.class);
-					for (VehicleJson v : tempVehicles) {
-                        world.addOrUpdateShuttle(v.getShuttle_id(), new Coordinate((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6)), v.getName(),
-                                v.getHeading(), v.getCardinal_point(), v.getSpeed(), v.getRoute_id());
+					ArrayList<VehicleJson> tempVehicles = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_shuttle_positions", VehicleArray.class);
+                    if (tempVehicles != null) {
+                        for (VehicleJson v : tempVehicles) {
+                            world.addOrUpdateShuttle(v.getShuttle_id(), new Coordinate((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6)), v.getName(),
+                                    v.getHeading(), v.getCardinal_point(), v.getSpeed(), v.getRoute_id());
+                        }
                     }
-					
-					ArrayList<EtaJson> tempEtas = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta", EtaArray.class);
+
+					ArrayList<EtaJson> tempEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_eta", EtaArray.class);
 					if (tempEtas != null) {
 						etas = tempEtas;
 					}

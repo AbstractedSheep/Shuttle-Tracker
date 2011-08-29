@@ -60,8 +60,8 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 		this.prefs = prefs;
         this.world = world;
         this.stops.addAll(world.getStopList());
+        db = new DatabaseHelper(context);
 		populate();
-		db = new DatabaseHelper(context);
 	}
 	
 	public void putEtas(List<EtaJson> etaList) {

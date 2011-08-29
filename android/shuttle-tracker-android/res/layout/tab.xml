@@ -41,7 +41,13 @@
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"
 				android:id="@android:id/tabcontent"
-			>
+		>
+            <ExpandableListView
+                android:id="@+id/eta_list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:dividerHeight="1px" />
 		</FrameLayout>
 	</LinearLayout>
 </TabHost>
