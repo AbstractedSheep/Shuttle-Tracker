@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
+@Deprecated
 public class DBProperties {
     public static final String user = new String((String) loadFromPoperties(
             "user", "usr"));

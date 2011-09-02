@@ -36,6 +36,7 @@ public class DBProperties extends AbstractProperties {
     public static final Property ROUTE_TABLE_NAME = new Property("routeTable", "routes");
     public static final Property TEST_DB_LINK = new Property("testDB", "");
     public static final Property ETA_DB_LINK = new Property("etaDB", "");
+    public static final Property SHUTTLE_TIMEOUT = new Property("timeout", "45000");
 
     public static void main(String[] args) {
 
