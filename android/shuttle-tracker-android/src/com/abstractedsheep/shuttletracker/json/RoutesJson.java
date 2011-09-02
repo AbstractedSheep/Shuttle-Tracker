@@ -60,6 +60,8 @@ public class RoutesJson {
 		public String getName() {
 			if (this.short_name.equals("blitman"))
 				return "Blitman Commons";
+			else if (this.short_name.equals("polytech"))
+				return "Polytechnic Commons";
 			else
 				return name;
 		}
