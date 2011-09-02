@@ -121,13 +121,15 @@ public class DynamicJSONExtractor extends AbstractJSONExtractor {
         shuttle.setCardinalPoint(list.get(list.size() - 1));
         shuttle.setCurrentRoute((Route) routeList[0]);
         double d = shuttle.getDistanceToClosestPoint();
-
+        Route curr = (Route) routeList[0];
         for (int i = 1; i < routeList.length; i++) {
-            shuttle.snapToRoute((Route) routeList[i]);
+            shuttle.setCurrentRoute((Route) routeList[i]);
 
             if (d > shuttle.getDistanceToClosestPoint()) {
-                shuttle.setCurrentRoute((Route) routeList[i]);
+                curr = shuttle.getCurrentRoute();
                 d = shuttle.getDistanceToClosestPoint();
+            } else {
+                shuttle.setCurrentRoute(curr);
             }
         }
         return shuttle;

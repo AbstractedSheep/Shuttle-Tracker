@@ -254,6 +254,10 @@ public class Shuttle implements IRouteFinder {
         }
     }
 
+    public void snapToRoute() {
+        this.snapToRoute(this.currentRoute);
+    }
+
     public long getLastUpdateTime() {
         return this.lastUpdateTime;
     }
