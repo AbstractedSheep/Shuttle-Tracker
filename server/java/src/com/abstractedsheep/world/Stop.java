@@ -19,6 +19,7 @@
 
 package com.abstractedsheep.world;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -42,6 +43,7 @@ public class Stop implements IRouteFinder {
     private HashMap<Integer, Coordinate> snappedCoordinate;
     private HashMap<Integer, Double> precedingCoordinateDistance;
     private HashMap<Integer, Integer> precedingCoordinate;
+    private ArrayList<Integer> routesToAdd = null;
 
     /**
      * @return the snappedCoordinate
@@ -86,6 +88,14 @@ public class Stop implements IRouteFinder {
         this.name = fullName;
         this.shortName = shortName;
         this.routeMap = new HashMap<Integer, Route>();
+    }
+
+    public ArrayList<Integer> getRoutesToAdd() {
+        return routesToAdd;
+    }
+
+    public void setRoutesToAdd(ArrayList<Integer> array) {
+        this.routesToAdd = array;
     }
 
     /**
@@ -156,7 +166,13 @@ public class Stop implements IRouteFinder {
     }
 
     public void addRoute(Route r) {
+        if (r.getIdNum() == 1) {
+            ArrayList list = r.getCoordinateList();
+            Collections.reverse(list);
+            r.setCoordinateList(list);
+        }
         this.routeMap.put(r.getIdNum(), r);
+        snapToRoute(r);
     }
 
     @Override
