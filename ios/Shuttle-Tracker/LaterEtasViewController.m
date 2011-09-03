@@ -44,6 +44,11 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
         
+        //	Set the size of the view when it is in a popover
+        //  600 takes up about the whole vertical space when an iPad is horizontal
+		CGSize size = {320, 600};
+		self.contentSizeForViewInPopover = size;
+        
         //	Take notice when a setting is changed.
         //	Note that this is not the only object that takes notice.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
