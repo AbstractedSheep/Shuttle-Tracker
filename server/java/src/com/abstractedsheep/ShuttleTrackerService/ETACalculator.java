@@ -22,6 +22,7 @@ package com.abstractedsheep.ShuttleTrackerService;
 import com.abstractedsheep.world.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ETACalculator {
     private World world;
@@ -51,6 +52,10 @@ public class ETACalculator {
             this.time = time;
             this.stopId = stopId;
             this.arrivalTime = (System.currentTimeMillis() + time) / 1000L;
+            if (etaId == 0) {
+                System.out.println(
+                        "Shuttle: " + shuttleId + " Stop: " + stopName + " Time: " + new Date(arrivalTime * 1000L));
+            }
         }
 
     }
@@ -128,10 +133,14 @@ public class ETACalculator {
                     distance += stop.getPrecedingCoordinateDistance().get(
                             rt.getIdNum());
                 }
-                double time = (distance /  (double) (shuttle.getSpeed() * Math.pow(10, -7) * 2.77));
-                this.etaList.add(new Eta(shuttle.getShuttleId(), shuttle
-                        .getCurrentRoute().getIdNum(), (int)time, stop
-                        .getShortName(), stop.getName(), 0));
+                //construct multiple ETAs based on several round trips
+                for (int count = 0; count < 10; count++) {
+                    double totalDistance = distance + (shuttle.getCurrentRoute().getRoundTripDistance() * count);
+                    double time = (totalDistance / (double) (shuttle.getSpeed() * Math.pow(10, -7) * 2.77));
+                    this.etaList.add(new Eta(shuttle.getShuttleId(), shuttle
+                            .getCurrentRoute().getIdNum(),
+                            (int) time, stop.getShortName(), stop.getName(), count));
+                }
             }
         }
     }
