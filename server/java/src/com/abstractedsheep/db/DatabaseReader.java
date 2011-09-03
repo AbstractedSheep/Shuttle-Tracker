@@ -63,7 +63,7 @@ public class DatabaseReader extends AbstractQueryRunner {
         int i = 0;
         String name = res.getString("name");
         String sql = String.format("select asText(route_coords.location) from route_coords where route_id = %d" +
-                "order by seq", new Object[]{idNum});
+                " order by seq", new Object[]{idNum});
 
         r = this.executeQuery(conn, sql);
         pt = null;
