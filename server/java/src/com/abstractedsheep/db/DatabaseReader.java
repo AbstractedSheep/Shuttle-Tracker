@@ -20,13 +20,16 @@
 package com.abstractedsheep.db;
 
 import com.abstractedsheep.config.DBProperties;
+import com.abstractedsheep.config.STSProperties;
 import com.abstractedsheep.world.Coordinate;
 import com.abstractedsheep.world.Route;
 import com.abstractedsheep.world.Shuttle;
 import com.abstractedsheep.world.Stop;
 
 import java.awt.*;
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -57,22 +60,43 @@ public class DatabaseReader extends AbstractQueryRunner {
         ArrayList<Coordinate> list = new ArrayList<Coordinate>();
 
         int idNum = res.getInt("route_id");
-        String name = res.getString("route_name");
-        String sql = String.format("SELECT * FROM route_coords WHERE route_id= %d ORDER BY seq", new Object[]{
-                idNum});
+        int i = 0;
+        String name = res.getString("name");
+        String sql = String.format("select asText(route_coords.location) from route_coords where route_id = %d" +
+                "order by seq", new Object[]{idNum});
+
         r = this.executeQuery(conn, sql);
         pt = null;
         while (r.next()) {
-            pt = (Point) r.getObject("location");
-            list.add(new Coordinate(pt.getX(), pt.getY()));
+            String[] obj = r.getString("asText(route_coords.location)").split(" ");
+            Double lat = Double.parseDouble(obj[0].substring(obj[0].indexOf("T") + 2));
+            Double lon = Double.parseDouble(obj[1].substring(0, obj[1].length() - 1));
+            list.add(new Coordinate(lat, lon));
         }
         Route route = new Route(idNum, name, list);
         return route;
     }
 
-    private Stop parseToStop(ResultSet res) {
-        // TODO Auto-generated method stub
-        return null;
+    private Stop parseToStop(ResultSet res) throws SQLException {
+        ResultSet r = null;
+        ArrayList<Integer> list = new ArrayList<Integer>();
+
+        String shortName = res.getString("stop_id");
+        String name = res.getString("name");
+        String[] obj = res.getString("asText(stops.location)").split(" ");
+        Double lat = Double.parseDouble(obj[0].substring(obj[0].indexOf("T") + 2));
+        Double lon = Double.parseDouble(obj[1].substring(0, obj[1].length() - 1));
+        Coordinate pt = new Coordinate(lat, lon);
+        String sql = String.format("select route_id from stop_routes where stop_id = '%s'", new Object[]{
+                shortName});
+        r = this.executeQuery(conn, sql);
+
+        while (r.next()) {
+            list.add(r.getInt("route_id"));
+        }
+        Stop st = new Stop(pt, shortName, name);
+        st.setRoutesToAdd(list);
+        return st;
     }
 
     private Shuttle parseToShuttle(ResultSet res) throws SQLException {
@@ -84,6 +108,7 @@ public class DatabaseReader extends AbstractQueryRunner {
         Double lon = Double.parseDouble(obj[1].substring(0, obj[1].length() - 1));
         s.setCurrentLocation(new Coordinate(lat, lon), res.getTimestamp("update_time").getTime());
         s.setShuttleId(res.getInt("shuttle_id"));
+        s.setHeading(res.getInt("heading"));
         //remember to set the route later
         s.setRouteId(res.getInt("route_id"));
         return s;
@@ -105,13 +130,15 @@ public class DatabaseReader extends AbstractQueryRunner {
         if (classType.getSimpleName().equals("Shuttle")) {
             tableName = DBProperties.SHUTTLE_TABLE_NAME.toString();
             sql = "SELECT shuttles.shuttle_id, asText(shuttle_coords.location), shuttle_coords.route_id," +
-                    " shuttles.name, shuttle_coords.speed, shuttle_coords.update_time FROM shuttles, shuttle_coords WHERE " +
+                    " shuttles.name, shuttle_coords.speed, shuttle_coords.update_time, shuttle_coords.heading" +
+                    " FROM shuttles, shuttle_coords WHERE " +
                     "shuttles.shuttle_id=shuttle_coords.shuttle_id " +
                     "AND (now() - shuttle_coords.update_time) < (500 * 1000)";
         } else if (classType.getSimpleName().equals("Stop")) {
-            sql += DBProperties.STOP_TABLE_NAME.toString();
+            sql = "SELECT stops.stop_id, asText(stops.location), stops.name" +
+                    " FROM stop_routes, stops WHERE stop_routes.stop_id = stops.stop_id";
         } else if (classType.getSimpleName().equals("Route")) {
-            sql += DBProperties.ROUTE_TABLE_NAME.toString();
+            sql = "SELECT routes.route_id, routes.name FROM routes";
         } else {
             throw new ClassNotFoundException();
         }
@@ -122,5 +149,30 @@ public class DatabaseReader extends AbstractQueryRunner {
         while (res.next())
             list.add(this.convertTableToObject(classType, res));
         return list;
+    }
+
+    public static void main(String[] args) {
+        String driver = "com.mysql.jdbc.Driver";
+        try {
+            String applicationPropertiesPath = "C:/Users/jonnau/Documents/Android projects/Shuttle-Tracker/server/java/conf/sts.properties";
+            STSProperties.loadProperties(applicationPropertiesPath);
+            DBProperties.loadProperties(STSProperties.DB_PATH.toString());
+            Class.forName(driver).newInstance();
+            Connection conn = DriverManager.getConnection(DBProperties.TEST_DB_LINK.toString(),
+                    DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
+            DatabaseReader reader = new DatabaseReader(conn);
+            ArrayList<Route> list = new ArrayList<Route>();
+            list.addAll((Collection<? extends Route>) reader.readData(Stop.class));
+        } catch (InstantiationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 }
