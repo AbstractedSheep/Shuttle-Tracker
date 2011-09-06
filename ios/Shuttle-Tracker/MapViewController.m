@@ -119,15 +119,9 @@ typedef enum {
     
 	_mapView = [[MKMapView alloc] initWithFrame:rect];
     _mapView.delegate = self;
-	_mapView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+	_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
 	self.view = _mapView;
-	
-	shuttleImage = [UIImage imageNamed:@"shuttle"];
-	[shuttleImage retain];
-    
-    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color"];
-    [magentaShuttleImage retain];
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -159,6 +153,12 @@ typedef enum {
 		//  Show the user's location on the map
 		_mapView.showsUserLocation = YES;
 	}
+    
+	shuttleImage = [UIImage imageNamed:@"shuttle"];
+	[shuttleImage retain];
+    
+    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color"];
+    [magentaShuttleImage retain];
     
     shuttleImages = [[NSMutableDictionary alloc] init];
 	
