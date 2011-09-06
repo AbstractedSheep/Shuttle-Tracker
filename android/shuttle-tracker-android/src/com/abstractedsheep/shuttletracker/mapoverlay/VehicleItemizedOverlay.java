@@ -80,6 +80,11 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 
 		markerBitmap = ((BitmapDrawable) marker).getBitmap();
 		markerBitmapFlipped = Bitmap.createBitmap(markerBitmap, 0, 0, markerBitmap.getWidth(), markerBitmap.getHeight(), flip, true);
+		
+		routes.put(-1, null);
+		
+		coloredMarkers.put(-1, recolorBitmap(markerBitmap, Color.WHITE));
+		coloredMarkersFlipped.put(-1, recolorBitmap(markerBitmapFlipped, Color.WHITE));
 	}
 	
 	@Override
