@@ -40,6 +40,7 @@ public class Shuttle implements IRouteFinder {
     private ArrayList<Integer> speedList;
     private String cardinalPoint;
     private String shuttleName;
+    private int heading;
     private int speed;
     private Coordinate currentLocation;
     private long lastUpdateTime;
@@ -92,11 +93,20 @@ public class Shuttle implements IRouteFinder {
      */
     public void updateShuttle(Shuttle newShuttle) {
         this.setCurrentLocation(newShuttle.getCurrentLocation(), System.currentTimeMillis());
+        this.setHeading(newShuttle.getHeading());
 
-        if (newShuttle.getDistanceToClosestPoint() < this.getDistanceToClosestPoint()) {
+        if (newShuttle.getClosestPoint().distanceFromCoordiante(this.getClosestPoint()) > .1 &&
+                newShuttle.getRouteId() != this.getRouteId()) {
             this.setCurrentRoute(newShuttle.getCurrentRoute());
-            this.snapToRoute(newShuttle.getCurrentRoute());
         }
+    }
+
+    public int getHeading() {
+        return heading;
+    }
+
+    public void setHeading(int newHeading) {
+        this.heading = newHeading;
     }
 
     // Jackson will not work unless all of the variables have accessors and
@@ -160,6 +170,7 @@ public class Shuttle implements IRouteFinder {
         if (!this.currentLocation.equals(newLocation))
             this.lastUpdateTime = time;
         this.currentLocation = newLocation;
+        snapToRoute();
 
     }
 
@@ -188,7 +199,10 @@ public class Shuttle implements IRouteFinder {
     }
 
     public double getDistanceToClosestPoint() {
-        return this.SnappedCoordinate.distanceFromCoordiante(currentLocation);
+        if (SnappedCoordinate != null)
+            return this.SnappedCoordinate.distanceFromCoordiante(currentLocation);
+        else
+            return Double.MAX_VALUE;
     }
 
     /**
@@ -229,7 +243,8 @@ public class Shuttle implements IRouteFinder {
             Coordinate c1, c2;
             Coordinate closestPoint = null, tempClosestPoint;
             int nextPointId = -1;
-            double shortestDistance = 10000, tempShortestDistance = 10000;
+            Double shortestDistance = 10000.0, tempShortestDistance = 10000.0;
+            double bearingDiff = 0.0;
             int size = this.currentRoute.getCoordinateList().size();
             for (int i = 0; i < size; i++) {
                 if (i == 0)
@@ -241,11 +256,17 @@ public class Shuttle implements IRouteFinder {
 
                 tempClosestPoint = this.currentLocation.closestPoint(c1, c2);
                 tempShortestDistance = tempClosestPoint.distanceFromCoordiante(this.currentLocation);
+                if (tempShortestDistance.equals(Double.NaN)) {
+                    tempClosestPoint = c2;
+                    tempShortestDistance = c2.distanceFromCoordiante(this.currentLocation);
+                }
+                double b = Math.abs(currentLocation.getBearing(tempClosestPoint) - 0);
+                bearingDiff = Math.abs(heading - b);
 
-                if (tempShortestDistance < shortestDistance) {
+                if (tempShortestDistance < shortestDistance && b <= 45) {
                     shortestDistance = tempShortestDistance;
                     closestPoint = tempClosestPoint;
-                    nextPointId = (size >= (i + 1)) ? 1 : i + 1;
+                    nextPointId = (size <= (i + 1)) ? 1 : i + 1;
                 }
             }
 

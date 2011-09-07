@@ -114,6 +114,7 @@ public class DynamicJSONExtractor extends AbstractJSONExtractor {
         System.out.println((time - parsedTime) / (1000 * 60 * 60));
         Shuttle shuttle = new Shuttle();
         shuttle.setShuttleId(Integer.parseInt(list.get(0)));
+        shuttle.setHeading(Integer.parseInt(list.get(2)));
         shuttle.setName(list.get(1));
         shuttle.setCurrentLocation(new Coordinate(Double.parseDouble(list
                 .get(3)), Double.parseDouble(list.get(4))), time);
