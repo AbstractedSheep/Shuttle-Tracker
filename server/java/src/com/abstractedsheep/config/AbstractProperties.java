@@ -58,5 +58,10 @@ public abstract class AbstractProperties {
             String str = System.getProperty(name);
             return (str == null || str.equals("null")) ? null : Long.parseLong(str);
         }
+
+        public boolean asBoolean() {
+            String str = System.getProperty(name);
+            return (str == "false") ? false : true;
+        }
     }
 }
