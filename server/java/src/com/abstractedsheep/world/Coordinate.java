@@ -112,11 +112,17 @@ public class Coordinate {
         double lat1 = Math.toRadians(c.getLatitude());
         double lat2 = Math.toRadians(this.getLatitude());
 
+        double phi = Math.log(Math.tan((lat2 / 2) + (Math.PI / 4)) / Math.tan((lat1 / 2) + (Math.PI / 4)));
+
+        /*if(Math.abs(delta) > Math.PI) {
+            delta = (delta > 0) ? -(2 * Math.PI - delta) : (2 * Math.PI + delta);
+        }
+
         double y = Math.sin(delta) * Math.cos(lat1);
         double x = Math.cos(lat2) * Math.sin(lat1) - Math.sin(lat2)
-                * Math.cos(lat1) * Math.cos(delta);
+                * Math.cos(lat1) * Math.cos(delta);    */
 
-        return Math.toDegrees(Math.atan2(y, x));
+        return Math.toDegrees(Math.atan2(delta, phi));
     }
 
     /**
@@ -182,7 +188,7 @@ public class Coordinate {
 
     @Override
     public String toString() {
-        return String.format("(%g, %g)", new Object[] {this.getLatitude(), this.getLongitude() });
+        return String.format("(%g, %g)", new Object[]{this.getLatitude(), this.getLongitude()});
     }
 
 }
