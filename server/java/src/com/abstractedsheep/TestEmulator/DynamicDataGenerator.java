@@ -131,7 +131,7 @@ public class DynamicDataGenerator {
 
     private void writeShuttleData()
             throws ClassNotFoundException, IOException, SQLException, InstantiationException, IllegalAccessException {
-        String sql = "REPLACE INTO test_shuttles (shuttle_id, name) " +
+        String sql = "REPLACE INTO shuttles (shuttle_id, name) " +
                 "values (%d, \"%s\")";
         Object[][] val = new Object[SHUTTLES_TO_GENERATE][];
         int i = 0;
@@ -145,7 +145,7 @@ public class DynamicDataGenerator {
 
     private void writeShuttleLocationData()
             throws ClassNotFoundException, IOException, SQLException, InstantiationException, IllegalAccessException {
-        String sql = "INSERT INTO test_shuttle_coords (shuttle_id, heading, location, speed, update_time, route_id, public_status_msg, cardinal_point) " +
+        String sql = "INSERT INTO shuttle_coords (shuttle_id, heading, location, speed, update_time, route_id, public_status_msg, cardinal_point) " +
                 "values (%d, %d, GeomFromText(\'POINT(%g %g)\'), %d, FROM_UNIXTIME(%d), %d, \"\", \"%s\")";
 
         Object[][] val = new Object[SHUTTLES_TO_GENERATE][];
