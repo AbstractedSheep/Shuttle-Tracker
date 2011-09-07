@@ -43,7 +43,7 @@ import java.util.*;
  */
 public class World {
     //this value is in milliseconds
-    private static final int SHUTTLE_LIFE_SPAN = (1000 * 45);
+    private static final long SHUTTLE_LIFE_SPAN = DBProperties.SHUTTLE_TIMEOUT.toLong();
 
     //XXX These collections should ONLY be maintained and ONLY modified by this class
     private HashMap<Integer, Route> routeList;
@@ -51,28 +51,61 @@ public class World {
     private HashMap<String, Stop> stopList;
     private final StaticJSONExtractor staticExtractor;
     private final DynamicJSONExtractor dynamicExtractor;
+    private final Connection conn;
+    private final DatabaseReader reader;
 
 
-    public World(StaticJSONExtractor staticData, DynamicJSONExtractor dynamicData) {
+    public World(StaticJSONExtractor staticData, DynamicJSONExtractor dynamicData)
+            throws ClassNotFoundException, SQLException, IllegalAccessException, InstantiationException {
         this.routeList = new HashMap<Integer, Route>();
         this.shuttleList = new HashMap<Integer, Shuttle>();
         this.stopList = new HashMap<String, Stop>();
         this.staticExtractor = staticData;
         this.dynamicExtractor = dynamicData;
+        String driver = "com.mysql.jdbc.Driver";
+        Class.forName(driver).newInstance();
+        conn = DriverManager.getConnection(DBProperties.TEST_DB_LINK.toString(),
+                DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
+        reader = new DatabaseReader(conn);
     }
 
     //TODO staticExtractor does not need to be global
-    public void generateWorld() {
+    public void generateWorld() throws ClassNotFoundException, SQLException {
         staticExtractor.readDataFromURL();
 
-        for (RouteJson r : staticExtractor.getRouteList()) {
+        /*for (RouteJson r : staticExtractor.getRouteList()) {
             this.addRoute(r);
         }
 
         for (StopJson stop : staticExtractor.getStopList()) {
             this.addStop(stop);
-        }
+        }*/
+        constructRouteList();
+        constructStopList();
         dynamicExtractor.setRouteList(routeList);
+    }
+
+    private void constructRouteList() throws ClassNotFoundException, SQLException {
+        ArrayList<Route> list = (ArrayList<Route>) reader.readData(Route.class);
+        for (Route route : list) {
+            routeList.put(route.getIdNum(), route);
+        }
+    }
+
+    private void constructStopList() throws ClassNotFoundException, SQLException {
+        ArrayList<Stop> list = (ArrayList<Stop>) reader.readData(Stop.class);
+        Stop stop = null;
+
+        for (Stop st : list) {
+            stop = st;
+            if (st.getRoutesToAdd() != null) {
+                for (Integer routeID : st.getRoutesToAdd()) {
+                    stop.addRoute(routeList.get(routeID));
+                    routeList.get(routeID).addStop(stop);
+                }
+                stopList.put(stop.getShortName(), stop);
+            }
+        }
     }
 
     private void addStop(StopJson stop) {
@@ -100,6 +133,11 @@ public class World {
         }
 
         Route route = new Route(r.getId(), r.getName(), (ArrayList<Coordinate>) coords);
+        /*if (route.getIdNum() == 1) {
+            ArrayList list = route.getCoordinateList();
+            Collections.reverse(list);
+            route.setCoordinateList(list);
+        } */
         routeList.put(route.getIdNum(), route);
     }
 
@@ -155,7 +193,8 @@ public class World {
         }
 
         //remove all shuttles that have not been update for a while.
-        HashMap<Integer, Shuttle> tempList = shuttleList;
+        HashMap<Integer, Shuttle> tempList = new HashMap<Integer, Shuttle>(this.shuttleList);
+        //HashMap<Integer, Shuttle> removeList = new HashMap<Integer, Shuttle>();
         for (Integer shuttleId : tempList.keySet()) {
             long age = tempList.get(shuttleId).getAge();
 

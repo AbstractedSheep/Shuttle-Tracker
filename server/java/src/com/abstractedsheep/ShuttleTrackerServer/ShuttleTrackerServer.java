@@ -25,6 +25,7 @@ import com.abstractedsheep.config.STSProperties;
 import com.abstractedsheep.db.DatabaseWriter;
 import com.abstractedsheep.extractor.DynamicJSONExtractor;
 import com.abstractedsheep.extractor.StaticJSONExtractor;
+import com.abstractedsheep.world.Shuttle;
 import com.abstractedsheep.world.World;
 
 import java.io.IOException;
@@ -51,7 +52,9 @@ public class ShuttleTrackerServer {
     private final World world;
     private ETACalculator calc;
 
-    public ShuttleTrackerServer() throws MalformedURLException {
+    public ShuttleTrackerServer()
+            throws MalformedURLException, ClassNotFoundException,
+            SQLException, InstantiationException, IllegalAccessException {
         this.staticDataURL = new URL(
                 "http://shuttles.rpi.edu/displays/netlink.js");
         dynamicDataURL = new URL("http://shuttles.rpi.edu/vehicles/current.js");
@@ -61,14 +64,14 @@ public class ShuttleTrackerServer {
         executeWorld();
     }
 
-    private void executeWorld() {
+    private void executeWorld() throws ClassNotFoundException, SQLException {
         // XXX All updates and modifications to the world are accomplished
         // within it.
         this.world.generateWorld();
         while (true) {
             updateWorld();
             try {
-                (new DatabaseWriter()).writeToDatabase(calc, "extra_eta");
+                (new DatabaseWriter()).writeToDatabase(calc, "shuttle_eta");
             } catch (SQLException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             } catch (IOException e) {
@@ -90,11 +93,21 @@ public class ShuttleTrackerServer {
     }
 
     private void updateWorld() {
-        System.out.println("Placeholder Text");
+        printShuttles();
         this.world.updateWorld();
         // update calculator's instance of the world before calculating the
         // etas.
         this.calc.updateWorld(world);
+    }
+
+    private void printShuttles() {
+        System.out.println(world.getShuttleList().size());
+        for (Shuttle s : world.getShuttleList().values()) {
+            System.out.print(s.getName() + " ");
+            System.out.print(s.getRouteId() + " ");
+            System.out.println(s.getAge() / 1000);
+        }
+        System.out.println("\n");
     }
 
     public static void initServer(String[] args) {
@@ -107,7 +120,12 @@ public class ShuttleTrackerServer {
     public static void main(String[] args) {
         String dbPropertiesPath = "";
         String loggingPath = "";
-        String applicationPropertiesPath = "C:/Users/jonnau/Documents/Android projects/Shuttle-Tracker/server/java/conf/sts.properties";
+        String applicationPropertiesPath = "";
+        if (args.length == 0) {
+            applicationPropertiesPath = "C:/Users/jonnau/Documents/Android projects/Shuttle-Tracker/server/java/conf/sts.properties";
+        } else {
+            applicationPropertiesPath = args[0];
+        }
         try {
             STSProperties.loadProperties(applicationPropertiesPath);
             DBProperties.loadProperties(STSProperties.DB_PATH.toString());
@@ -116,6 +134,14 @@ public class ShuttleTrackerServer {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (InstantiationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IllegalAccessException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }

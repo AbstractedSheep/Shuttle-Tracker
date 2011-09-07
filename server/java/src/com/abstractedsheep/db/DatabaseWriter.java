@@ -22,6 +22,7 @@ package com.abstractedsheep.db;
 import com.abstractedsheep.ShuttleTrackerService.ETACalculator;
 import com.abstractedsheep.ShuttleTrackerService.ETACalculator.Eta;
 import com.abstractedsheep.config.DBProperties;
+import com.abstractedsheep.config.STSProperties;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -56,13 +57,13 @@ public class DatabaseWriter extends AbstractQueryRunner {
      * @throws IOException
      * @throws SQLException
      */
+    @Deprecated
     public static void connectToDatabase(String tableName)
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException, IOException, SQLException {
         String driver = "com.mysql.jdbc.Driver";
-
         Class.forName(driver).newInstance();
-        conn = DriverManager.getConnection(DBProperties.TEST_DB_LINK.toString(),
+        conn = DriverManager.getConnection(DBProperties.ETA_DB_LINK.toString(),
                 DBProperties.USER_NAME.toString(), DBProperties.PASSWORD.toString());
 
         deleteTable(tableName);
@@ -83,8 +84,10 @@ public class DatabaseWriter extends AbstractQueryRunner {
     public void writeToDatabase(ETACalculator etaList,
                                 String tableName) throws SQLException, IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         if (conn == null) {
-            connectToDatabase(tableName);
+            conn = createConnection(!STSProperties.ENABLE_TESTING.asBoolean());
         }
+
+        deleteTable(tableName);
 
         String header = "INSERT INTO %s (shuttle_id, stop_id, eta_id, eta, absolute_eta, route)\n";
         String values = "VALUES ( %d,\"%s\",%d, %d, %d, '%d')";
