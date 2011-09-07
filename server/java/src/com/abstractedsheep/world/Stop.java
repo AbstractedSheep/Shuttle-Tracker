@@ -166,11 +166,7 @@ public class Stop implements IRouteFinder {
     }
 
     public void addRoute(Route r) {
-        if (r.getIdNum() == 1) {
-            ArrayList list = r.getCoordinateList();
-            Collections.reverse(list);
-            r.setCoordinateList(list);
-        }
+
         this.routeMap.put(r.getIdNum(), r);
         snapToRoute(r);
     }

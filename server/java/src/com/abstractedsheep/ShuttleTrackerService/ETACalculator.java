@@ -107,7 +107,7 @@ public class ETACalculator {
                     // the stop and sum the distances
                     while (i != stopPrecedingCoordinate) {
 
-                        if (i == size)
+                        if (i >= size - 1)
                             j = 0;
                         else
                             j = i + 1;
