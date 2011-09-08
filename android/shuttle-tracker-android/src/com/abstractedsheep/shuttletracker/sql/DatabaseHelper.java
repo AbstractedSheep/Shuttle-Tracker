@@ -67,12 +67,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		public static final String tableName="StopsOnRoutes";
 		public static final String colStopId="stopId";
 		public static final String colRouteId="routeId";
+		@Deprecated
 		public static final String colFavorite="favorite";
-		public static final String colEta="eta";
+	}
+	
+	public static class FavoritesTable {
+		public static final String tableName="Favorites";
+		public static final String colStopId="stopId";
+		public static final String colRouteId="routeId";
 	}
 	
 	public DatabaseHelper(Context context) {
-		super(context, dbName, null, 2);
+		super(context, dbName, null, 3);
 	}
 
 	@Override
@@ -102,8 +108,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + StopsOnRoutesTable.tableName + "(" +
 				" " + StopsOnRoutesTable.colStopId + " TEXT," +
 				" " + StopsOnRoutesTable.colRouteId + " INTEGER," +
-				" " + StopsOnRoutesTable.colFavorite + " INTEGER," +
 				" PRIMARY KEY(" + StopsOnRoutesTable.colStopId + ", " + StopsOnRoutesTable.colRouteId + ")" +
+			");");
+		
+		db.execSQL("CREATE TABLE " + FavoritesTable.tableName + "(" +
+				" " + FavoritesTable.colStopId + " TEXT," +
+				" " + FavoritesTable.colRouteId + " INTEGER," +
+				" PRIMARY KEY(" + FavoritesTable.colStopId + ", " + FavoritesTable.colRouteId + ")" +
 			");");
 	}
 
@@ -122,6 +133,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			cv = new ContentValues();
 			cv.put(RoutesTable.colName, "West Campus");
 			db.update(RoutesTable.tableName, cv, RoutesTable.colName + "='West Route'", null);
+		}
+		
+		if (oldVersion <= 2) {
+			// Copy favorites into separate table
+			db.execSQL("CREATE TABLE " + FavoritesTable.tableName + "(" +
+					" " + FavoritesTable.colStopId + " TEXT," +
+					" " + FavoritesTable.colRouteId + " INTEGER," +
+					" PRIMARY KEY(" + FavoritesTable.colStopId + ", " + FavoritesTable.colRouteId + ")" +
+				");"); 
+			db.execSQL("INSERT INTO " + FavoritesTable.tableName + " (" + FavoritesTable.colStopId + ", " + FavoritesTable.colRouteId + ")" + 
+					" SELECT " + StopsOnRoutesTable.colStopId + ", " + StopsOnRoutesTable.colRouteId + " FROM " + StopsOnRoutesTable.tableName + 
+					" WHERE " + StopsOnRoutesTable.colFavorite + "=1");
+			
+			// Remove the favorites column
+			db.execSQL("ALTER TABLE " + StopsOnRoutesTable.tableName + " RENAME TO OldStopsOnRoutes");
+			db.execSQL("CREATE TABLE " + StopsOnRoutesTable.tableName + "(" +
+					" " + StopsOnRoutesTable.colStopId + " TEXT," +
+					" " + StopsOnRoutesTable.colRouteId + " INTEGER," +
+					" PRIMARY KEY(" + StopsOnRoutesTable.colStopId + ", " + StopsOnRoutesTable.colRouteId + ")" +
+				");");
+			db.execSQL("INSERT INTO " + StopsOnRoutesTable.tableName + " SELECT " + StopsOnRoutesTable.colStopId + ", " + StopsOnRoutesTable.colRouteId + " FROM OldStopsOnRoutes");
 		}
 	}
 	
@@ -161,8 +193,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				cv = new ContentValues();
 				cv.put(StopsOnRoutesTable.colStopId, s.getShort_name());
 				cv.put(StopsOnRoutesTable.colRouteId, r.getId());
-				cv.put(StopsOnRoutesTable.colFavorite, 0);
-				db.insert(StopsOnRoutesTable.tableName, StopsOnRoutesTable.colFavorite, cv);
+				db.insert(StopsOnRoutesTable.tableName, null, cv);
 			}
 		}
 		
@@ -292,14 +323,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	public void updateFavorites(List<FavoriteStop> favorites) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		ContentValues cv = new ContentValues();
-		cv.put(StopsOnRoutesTable.colFavorite, 0);
-		db.update(StopsOnRoutesTable.tableName, cv, null, null);
 		
-		for (FavoriteStop s : favorites) {
-			db.execSQL("UPDATE " + StopsOnRoutesTable.tableName + " SET " + StopsOnRoutesTable.colFavorite + 
-					" = 1 WHERE " + StopsOnRoutesTable.colStopId + " = '" + s.stopId + "' AND " +
-					StopsOnRoutesTable.colRouteId + " = " + s.routeId);
+		db.execSQL("DELETE FROM " + FavoritesTable.tableName);
+		
+		for (Stop s : favorites) {
+			ContentValues cv = new ContentValues();
+			cv.put(FavoritesTable.colRouteId, s.routeId);
+			cv.put(FavoritesTable.colStopId, s.stopId);
+			db.insert(FavoritesTable.tableName, null, cv);
 		}
 		
 		db.close();
@@ -309,10 +340,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		List<FavoriteStop> result = new ArrayList<FavoriteStop>();
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cur = db.rawQuery("SELECT " + StopsTable.colId + ", " + StopsTable.colName + ", " + 
-				StopsTable.colLat + ", " + StopsTable.colLon + ", " + StopsOnRoutesTable.colRouteId + " FROM ( " +
-				StopsOnRoutesTable.tableName + " JOIN " + StopsTable.tableName + " ON " + 
-				StopsOnRoutesTable.colStopId + " = " + StopsTable.colId + ")" +
-				" WHERE " + StopsOnRoutesTable.colFavorite + " = 1", null);
+				StopsTable.colLat + ", " + StopsTable.colLon + ", " + FavoritesTable.colRouteId + " FROM ( " +
+				FavoritesTable.tableName + " JOIN " + StopsTable.tableName + " ON " + 
+				FavoritesTable.colStopId + " = " + StopsTable.colId + ")", null);
 		
 		cur.moveToFirst();
 		while (!cur.isAfterLast()) {
@@ -341,11 +371,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	public boolean isStopFavorite(String stopId, int routeId) {
 		SQLiteDatabase db = this.getReadableDatabase();
-		Cursor cur = db.rawQuery("SELECT " + StopsOnRoutesTable.colFavorite +
-				" FROM " + StopsOnRoutesTable.tableName +
+		Cursor cur = db.rawQuery("SELECT * " +
+				" FROM " + FavoritesTable.tableName +
 				" WHERE stopId='" + stopId + "' AND routeId=" + routeId, null);
-		cur.moveToFirst();
-		boolean result = cur.getInt(0) == 1;
+		boolean result = cur.getCount() > 0;
 		cur.close();
 		db.close();
 		return result;
@@ -353,10 +382,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	
 	public void setStopFavorite(String stopId, int routeId, boolean favorite) { 
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.execSQL("UPDATE " + StopsOnRoutesTable.tableName + " SET " + 
-				StopsOnRoutesTable.colFavorite + "=" + (favorite ? 1 : 0) +
-				" WHERE " + StopsOnRoutesTable.colRouteId + "=" + routeId + " AND " +
-				StopsOnRoutesTable.colStopId + "='" + stopId + "'");
+		if (favorite) {
+			ContentValues cv = new ContentValues();
+			cv.put(FavoritesTable.colStopId, stopId);
+			cv.put(FavoritesTable.colRouteId, routeId);
+			db.insert(FavoritesTable.tableName, null, cv);
+		} else {
+			db.delete(FavoritesTable.tableName, FavoritesTable.colRouteId + "=" + routeId + " AND " + FavoritesTable.colStopId + "=" + stopId, null);
+		}
 		db.close();
 	}
 }
