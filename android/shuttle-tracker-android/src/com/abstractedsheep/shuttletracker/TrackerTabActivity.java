@@ -177,6 +177,8 @@ public class TrackerTabActivity extends MapActivity implements IShuttleServiceCa
     };
     private TabHost.TabContentFactory initMap() {
         if (map == null) {
+            // API must be generated and added to a new class called MapsApiKey
+            // MAPS_API_KEY must be a string constant in that class
             map = new MapView(this, MapsApiKey.MAPS_API_KEY);
             map.getController().setZoom(DEFAULT_ZOOM);
             map.getController().setCenter(new GeoPoint(DEFAULT_LAT, DEFAULT_LON));

@@ -15,18 +15,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="baa3d99a-f35a-405c-bb34-ee91164e72c1" name="Default" comment="Replaced ReadOnlyX classes with use of Collections.unmodifiableX&#10;All collections in world are synchronized&#10;All classes now make use of World">
-      <change type="DELETED" beforePath="D:\Programs\Abstracted Sheep\Shuttle-Tracker\android\shuttle-tracker-android\res\layout\eta.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Programs\Abstracted Sheep\Shuttle-Tracker\android\shuttle-tracker-android\src\com\abstractedsheep\shuttletracker\EtaActivity.java" afterPath="" />
-      <change type="DELETED" beforePath="D:\Programs\Abstracted Sheep\Shuttle-Tracker\android\shuttle-tracker-android\src\com\abstractedsheep\shuttletracker\TrackerMapActivity.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shuttle-Tracker-Android.iml" afterPath="$PROJECT_DIR$/Shuttle-Tracker-Android.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shuttle-Tracker-Android.ipr" afterPath="$PROJECT_DIR$/Shuttle-Tracker-Android.ipr" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shuttle-Tracker-Android.iws" afterPath="$PROJECT_DIR$/Shuttle-Tracker-Android.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gen/com/abstractedsheep/shuttletracker/R.java" afterPath="$PROJECT_DIR$/gen/com/abstractedsheep/shuttletracker/R.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/tab.xml" afterPath="$PROJECT_DIR$/res/layout/tab.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java" afterPath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerTabActivity.java" afterPath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerTabActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/StopsItemizedOverlay.java" afterPath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/StopsItemizedOverlay.java" />
     </list>
     <ignored path="Shuttle-Tracker-Android.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -108,7 +97,7 @@
       <file leaf-file-name="TrackerTabActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerTabActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="408" column="55" selection-start="14184" selection-end="14184" vertical-scroll-proportion="1.4012738">
+            <state line="180" column="67" selection-start="6936" selection-end="6936" vertical-scroll-proportion="0.3265925">
               <folding />
             </state>
           </provider>
@@ -135,7 +124,7 @@
       <file leaf-file-name="DatabaseHelper.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="212" column="8" selection-start="7820" selection-end="7820" vertical-scroll-proportion="0.0">
+            <state line="212" column="8" selection-start="8159" selection-end="8159" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -162,7 +151,7 @@
       <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="26" selection-start="797" selection-end="797" vertical-scroll-proportion="0.0">
+            <state line="15" column="26" selection-start="799" selection-end="799" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -243,6 +232,26 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+        <subPane subId="My Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Favorites" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -365,39 +374,19 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Favorites" />
-      <pane id="PackagesPane" />
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-        <subPane subId="My Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="277" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="296" />
     <property name="OverrideImplement.combined" value="true" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="296" />
+    <property name="project.structure.proportion" value="0.15" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="recentsLimit" value="5" />
-    <property name="MemberChooser.sorted" value="false" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="292" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="recentsLimit" value="5" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="297" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="972" />
@@ -641,18 +630,18 @@
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.49786097" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16791444" sideWeight="0.67092335" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32907662" sideWeight="0.4893048" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32907662" sideWeight="0.5064171" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32885906" sideWeight="0.4893048" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.5064171" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.49786097" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39980355" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
@@ -799,8 +788,8 @@
           <OriginalElement>com.abstractedsheep.shuttletracker.mapoverlay.ShuttleItemizedOverlay</OriginalElement>
           <nodes>
             <node x="29.5" y="160.0">com.google.android.maps.ItemizedOverlay</node>
-            <node x="70.0" y="0.0">java.lang.Object</node>
             <node x="67.0" y="80.0">com.google.android.maps.Overlay</node>
+            <node x="70.0" y="0.0">java.lang.Object</node>
             <node x="21.5" y="320.0">com.abstractedsheep.shuttletracker.mapoverlay.ShuttleItemizedOverlay</node>
             <node x="0.0" y="240.0">com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay</node>
           </nodes>
@@ -814,11 +803,11 @@
               <point x="0.0" y="-15.0" />
               <point x="0.0" y="15.0" />
             </edge>
-            <edge source="com.google.android.maps.ItemizedOverlay" target="com.google.android.maps.Overlay">
+            <edge source="com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay" target="com.google.android.maps.ItemizedOverlay">
               <point x="0.0" y="-15.0" />
               <point x="0.0" y="15.0" />
             </edge>
-            <edge source="com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay" target="com.google.android.maps.ItemizedOverlay">
+            <edge source="com.google.android.maps.ItemizedOverlay" target="com.google.android.maps.Overlay">
               <point x="0.0" y="-15.0" />
               <point x="0.0" y="15.0" />
             </edge>
@@ -839,8 +828,8 @@
           <ID>JAVA</ID>
           <OriginalElement />
           <nodes>
-            <node x="0.0" y="75.0">assets</node>
             <node x="98.0" y="225.0">res</node>
+            <node x="0.0" y="75.0">assets</node>
             <node x="104.0" y="150.0">com</node>
             <node x="135.0" y="0.0">android</node>
             <node x="224.0" y="75.0">javax</node>
@@ -874,61 +863,51 @@
     </entry>
     <entry file="jar://E:/android-sdk-windows/platforms/android-7/android.jar!/android/widget/TabHost.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="77" column="0" selection-start="3190" selection-end="3190" vertical-scroll-proportion="0.8348624">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/tab.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="51" selection-start="1307" selection-end="1307" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="26" selection-start="797" selection-end="797" vertical-scroll-proportion="0.0" />
+        <state line="77" column="0" selection-start="3190" selection-end="3190" vertical-scroll-proportion="0.8348624" />
       </provider>
     </entry>
     <entry file="jar://E:/android-sdk-windows/platforms/android-8/android.jar!/android/database/sqlite/SQLiteOpenHelper.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="63" selection-start="560" selection-end="560" vertical-scroll-proportion="0.34020618">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="212" column="8" selection-start="7820" selection-end="7820" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/StopsItemizedOverlay.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="37" selection-start="2617" selection-end="2617" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="11" column="63" selection-start="560" selection-end="560" vertical-scroll-proportion="0.34020618" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="148" column="59" selection-start="5170" selection-end="5170" vertical-scroll-proportion="0.0">
+        <state line="148" column="59" selection-start="5170" selection-end="5170" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/StopsItemizedOverlay.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="63" column="37" selection-start="2617" selection-end="2617" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="212" column="8" selection-start="8159" selection-end="8159" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/EtaListAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="83" column="0" selection-start="3040" selection-end="3040" vertical-scroll-proportion="0.0">
+        <state line="83" column="0" selection-start="3040" selection-end="3040" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/tab.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="51" selection-start="1307" selection-end="1307" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="26" selection-start="799" selection-end="799" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerTabActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="408" column="55" selection-start="14184" selection-end="14184" vertical-scroll-proportion="1.4012738">
+        <state line="180" column="67" selection-start="6936" selection-end="6936" vertical-scroll-proportion="0.3265925">
           <folding />
         </state>
       </provider>
