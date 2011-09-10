@@ -71,7 +71,8 @@ public class Coordinate {
     }
 
     public double distanceFromCoordiante(Coordinate c) {
-
+        if (c == null)
+            return Double.MIN_VALUE;
         double dLong = Math.toRadians((c.getLongitude() - this.getLongitude()));
         double dLat = Math.toRadians((c.getLatitude() - this.getLatitude()));
         double lat1 = Math.toRadians(this.getLatitude());
