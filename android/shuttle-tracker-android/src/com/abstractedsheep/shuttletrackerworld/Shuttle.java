@@ -81,6 +81,8 @@ public class Shuttle
 
             this.snappedCoordinate = closestPoint;
             this.nextRouteCoordinate = nextPointId;
+        } else {
+            this.snappedCoordinate = null;
         }
     }
 
@@ -173,7 +175,10 @@ public class Shuttle
 	}
 
 	public Coordinate getSnappedCoordinate() {
-		return snappedCoordinate;
+        if (snappedCoordinate == null)
+            return location;
+        else
+		    return snappedCoordinate;
 	}
 
 	@Override

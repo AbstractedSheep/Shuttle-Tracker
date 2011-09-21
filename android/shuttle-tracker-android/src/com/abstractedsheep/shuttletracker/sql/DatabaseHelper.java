@@ -326,7 +326,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		db.execSQL("DELETE FROM " + FavoritesTable.tableName);
 		
-		for (Stop s : favorites) {
+		for (FavoriteStop s : favorites) {
 			ContentValues cv = new ContentValues();
 			cv.put(FavoritesTable.colRouteId, s.routeId);
 			cv.put(FavoritesTable.colStopId, s.stopId);

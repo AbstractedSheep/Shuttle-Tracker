@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import android.os.Handler;
 import com.abstractedsheep.shuttletrackerworld.Coordinate;
 import com.abstractedsheep.shuttletrackerworld.Netlink;
 import org.codehaus.jackson.JsonParseException;
@@ -53,7 +54,6 @@ import android.util.Log;
 public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final Set<IShuttleServiceCallback> callbacks = new HashSet<IShuttleServiceCallback>();
-	public final AtomicBoolean active = new AtomicBoolean(true);
 	private ArrayList<EtaJson> etas;
 	private World world;
 	private boolean informedNoConnection = false;
@@ -61,6 +61,7 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	private final AtomicInteger updateRate = new AtomicInteger(5000);
 	private String extraEtaStopId = null;
 	private int extraEtaRouteId = -1;
+    private Handler handler;
 	
 	// Private constructor prevents instantiation from other classes
 	private ShuttleDataService() {
@@ -119,39 +120,74 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
   
     	return parsedClass;
     }
+
+    public void stopAllUpdates() {
+        stopRouteUpdate();
+        stopShuttleUpdates();
+    }
+
+    public void startRouteUpdate() {
+        if (handler == null)
+            handler = new Handler();
+        handler.post(updateRoutes);
+    }
+
+    public void stopRouteUpdate() {
+        if (handler != null) {
+            handler.removeCallbacks(updateRoutes);
+            handler.removeCallbacks(updateRoutesFromServer);
+        }
+    }
     
-    public final Runnable updateRoutes = new Runnable() {
+    private final Runnable updateRoutes = new Runnable() {
 		public void run() {
 			synchronized (this) {
 				Netlink tempRoutes = null;
 				DatabaseHelper db = new DatabaseHelper(ctx);
-				
-				while (tempRoutes == null) {
-					if (db.hasRoutes()) {
-						world = World.generateWorld(db.getRoutes());
-						notifyRoutesUpdated();
-					} else {
-						tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", Netlink.class);
-						if (tempRoutes != null) {
-							world = World.generateWorld(tempRoutes);
-							db.putRoutes(tempRoutes);
-							notifyRoutesUpdated();
-						}
-					}
-					
-					SystemClock.sleep(5000);
-				}
+
+                if (db.hasRoutes()) {
+                    world = World.generateWorld(db.getRoutes());
+                    notifyRoutesUpdated();
+                } else {
+                    handler.post(updateRoutesFromServer);
+                }
 				
 				db.close();
 			}	
 		}
 	};
 
-    public final Runnable updateShuttles = new Runnable() {
+    private final Runnable updateRoutesFromServer = new Runnable() {
+        @Override
+        public void run() {
+            Netlink tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", Netlink.class);
+            if (tempRoutes != null) {
+                world = World.generateWorld(tempRoutes);
+                DatabaseHelper db = new DatabaseHelper(ctx);
+                db.putRoutes(tempRoutes);
+                notifyRoutesUpdated();
+            } else {
+                handler.postDelayed(updateRoutesFromServer, 5000);
+            }
+        }
+    };
+
+    public void startShuttleUpdates() {
+        if (handler == null)
+            handler = new Handler();
+        handler.post(updateShuttles);
+    }
+
+    public void stopShuttleUpdates() {
+        if (handler != null)
+            handler.removeCallbacks(updateShuttles);
+    }
+
+    private final Runnable updateShuttles = new Runnable() {
 		public void run() {
-			while (active.get()) {
-				synchronized (this) {
-					ArrayList<VehicleJson> tempVehicles = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_shuttle_positions", VehicleArray.class);
+            if (world != null) {
+                synchronized (this) {
+                    ArrayList<VehicleJson> tempVehicles = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_shuttle_positions", VehicleArray.class);
                     if (tempVehicles != null) {
                         for (VehicleJson v : tempVehicles) {
                             world.addOrUpdateShuttle(v.getShuttle_id(), new Coordinate((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6)), v.getName(),
@@ -159,24 +195,23 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
                         }
                     }
 
-					ArrayList<EtaJson> tempEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_eta", EtaArray.class);
-					if (tempEtas != null) {
-						etas = tempEtas;
-					}
-					
-					if (tempVehicles != null || tempEtas != null) {
-						notifyShuttlesUpdated();
-					}
-					
-					if (extraEtaStopId != null && extraEtaRouteId != -1) {
-						ExtraEtaJson exEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_extra_eta&rt=" + extraEtaRouteId + "&st=" + extraEtaStopId, ExtraEtaJson.class);
-						notifyExtraEtasUpdated(exEtas);
-					}
-				}	
-				
-				SystemClock.sleep(updateRate.get());
-			}
-		}
+                    ArrayList<EtaJson> tempEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_eta", EtaArray.class);
+                    if (tempEtas != null) {
+                        etas = tempEtas;
+                    }
+
+                    if (tempVehicles != null || tempEtas != null) {
+                        notifyShuttlesUpdated();
+                    }
+
+                    if (extraEtaStopId != null && extraEtaRouteId != -1) {
+                        ExtraEtaJson exEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_extra_eta&rt=" + extraEtaRouteId + "&st=" + extraEtaStopId, ExtraEtaJson.class);
+                        notifyExtraEtasUpdated(exEtas);
+                    }
+                }
+            }
+            handler.postDelayed(updateShuttles, updateRate.get());
+        }
 	};
 
 

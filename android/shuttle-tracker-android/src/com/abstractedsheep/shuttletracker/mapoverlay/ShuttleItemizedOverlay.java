@@ -170,11 +170,11 @@ public class ShuttleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 
             Bitmap tempBitmap;
             if (s.getBearing() > 180) {
-                tempBitmap = coloredMarkersFlipped.get(s.getCurrentRoute().getId());
+                tempBitmap = coloredMarkersFlipped.get(s.getCurrentRoute() == null ? -1 : s.getCurrentRoute().getId());
                 rotate.postRotate(s.getBearing(), tempBitmap.getWidth() / 2, tempBitmap.getHeight() / 2);
                 tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, tempBitmap.getWidth(), tempBitmap.getHeight(), rotate, true);
             } else {
-                tempBitmap = coloredMarkers.get(s.getCurrentRoute().getId());
+                tempBitmap = coloredMarkers.get(s.getCurrentRoute() == null ? -1 : s.getCurrentRoute().getId());
                 rotate.postRotate(s.getBearing(), tempBitmap.getWidth() / 2, tempBitmap.getHeight() / 2);
                 tempBitmap = Bitmap.createBitmap(tempBitmap, 0, 0, tempBitmap.getWidth(), tempBitmap.getHeight(), rotate, true);
             }
@@ -184,6 +184,8 @@ public class ShuttleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 	}
 
     private void generateColoredMarkers() {
+        coloredMarkers.put(-1, recolorBitmap(markerBitmap, Color.WHITE));
+        coloredMarkersFlipped.put(-1, recolorBitmap(markerBitmapFlipped, Color.WHITE));
         for (Route r : world.getRouteList()) {
             coloredMarkers.put(r.getId(), recolorBitmap(markerBitmap, r.getColor()));
             coloredMarkersFlipped.put(r.getId(), recolorBitmap(markerBitmapFlipped, r.getColor()));

@@ -15,7 +15,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="baa3d99a-f35a-405c-bb34-ee91164e72c1" name="Default" comment="Replaced ReadOnlyX classes with use of Collections.unmodifiableX&#10;All collections in world are synchronized&#10;All classes now make use of World">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/layout/splash.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shuttle-Tracker-Android.iml" afterPath="$PROJECT_DIR$/Shuttle-Tracker-Android.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shuttle-Tracker-Android.ipr" afterPath="$PROJECT_DIR$/Shuttle-Tracker-Android.ipr" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Shuttle-Tracker-Android.iws" afterPath="$PROJECT_DIR$/Shuttle-Tracker-Android.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gen/com/abstractedsheep/shuttletracker/R.java" afterPath="$PROJECT_DIR$/gen/com/abstractedsheep/shuttletracker/R.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java" afterPath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerTabActivity.java" afterPath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerTabActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/ShuttleItemizedOverlay.java" afterPath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/ShuttleItemizedOverlay.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java" afterPath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletrackerworld/Shuttle.java" afterPath="$PROJECT_DIR$/src/com/abstractedsheep/shuttletrackerworld/Shuttle.java" />
     </list>
     <ignored path="Shuttle-Tracker-Android.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -39,21 +49,6 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/StopsItemizedOverlay.java" line="93" class="com.abstractedsheep.shuttletracker.mapoverlay.StopsItemizedOverlay" package="com.abstractedsheep.shuttletracker.mapoverlay">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-    </line_breakpoints>
     <breakpoint_any>
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -97,52 +92,7 @@
       <file leaf-file-name="TrackerTabActivity.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerTabActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="180" column="67" selection-start="6936" selection-end="6936" vertical-scroll-proportion="0.3265925">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ShuttleDataService.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="148" column="59" selection-start="5170" selection-end="5170" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="StopsItemizedOverlay.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/StopsItemizedOverlay.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="37" selection-start="2617" selection-end="2617" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DatabaseHelper.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="212" column="8" selection-start="8159" selection-end="8159" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EtaListAdapter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/EtaListAdapter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="83" column="0" selection-start="3040" selection-end="3040" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tab.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/res/layout/tab.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="51" selection-start="1307" selection-end="1307" vertical-scroll-proportion="0.0">
+            <state line="104" column="36" selection-start="3615" selection-end="3615" vertical-scroll-proportion="0.018200202">
               <folding />
             </state>
           </provider>
@@ -151,7 +101,25 @@
       <file leaf-file-name="AndroidManifest.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="26" selection-start="799" selection-end="799" vertical-scroll-proportion="0.0">
+            <state line="21" column="32" selection-start="1058" selection-end="1058" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DatabaseHelper.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="221" column="0" selection-start="8411" selection-end="8411" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ShuttleDataService.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="147" column="0" selection-start="5121" selection-end="5121" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -171,21 +139,21 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/com/readystatesoftware/mapviewballoons/BalloonItemizedOverlay.java" />
-        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/json/Style.java" />
-        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/VehicleItemizedOverlay.java" />
-        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletrackerworld/World.java" />
-        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletrackerworld/Route.java" />
-        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/ShuttleItemizedOverlay.java" />
-        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/IShuttleServiceCallback.java" />
         <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerMapActivity.java" />
         <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/EtaActivity.java" />
-        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/res/layout/map.xml" />
         <option value="$PROJECT_DIR$/res/layout/eta.xml" />
         <option value="$PROJECT_DIR$/res/layout/tab.xml" />
         <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/StopsItemizedOverlay.java" />
+        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/MapsApiKey.java" />
+        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java" />
+        <option value="$PROJECT_DIR$/src/com/abstractedsheep/SplashScreen.java" />
+        <option value="$PROJECT_DIR$/res/layout/splash.xml" />
+        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/SplashScreen.java" />
+        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletrackerworld/Shuttle.java" />
+        <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/ShuttleItemizedOverlay.java" />
         <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java" />
+        <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerTabActivity.java" />
       </list>
     </option>
@@ -232,7 +200,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope">
         <subPane subId="Project Files">
           <PATH>
@@ -259,134 +226,23 @@
               <option name="myItemId" value="Shuttle-Tracker-Android" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Shuttle-Tracker-Android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="shuttle-tracker-android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Shuttle-Tracker-Android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="shuttle-tracker-android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Shuttle-Tracker-Android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="shuttle-tracker-android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="abstractedsheep" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Shuttle-Tracker-Android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="shuttle-tracker-android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="abstractedsheep" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="shuttletracker" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Shuttle-Tracker-Android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="shuttle-tracker-android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Shuttle-Tracker-Android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="shuttle-tracker-android" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layout" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="277" />
-    <property name="OverrideImplement.combined" value="true" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="296" />
     <property name="project.structure.proportion" value="0.15" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="296" />
+    <property name="OverrideImplement.combined" value="true" />
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="292" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
-    <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="292" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth2" value="297" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth3" value="972" />
@@ -619,14 +475,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1176" extended-state="6" />
+    <frame x="-25" y="113" width="1932" height="1176" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Phing Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973261" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39980355" sideWeight="0.49572194" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.27996072" sideWeight="0.4893048" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -635,9 +491,9 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16791444" sideWeight="0.67092335" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32885906" sideWeight="0.4893048" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.5064171" order="11" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15702036" sideWeight="0.6719057" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3280943" sideWeight="0.47379678" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Logcat" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3280943" sideWeight="0.52192515" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32907662" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -728,188 +584,84 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/res/drawable-hdpi/shuttle_marker.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/drawable-hdpi/shuttle_color.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/drawable-hdpi/shuttle.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/drawable-hdpi/icon.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/drawable-hdpi/icon2.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/drawable-hdpi/icon_large.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/splash.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="7" selection-start="44" selection-end="44" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/IShuttleServiceCallback.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="20" selection-start="1203" selection-end="1203" vertical-scroll-proportion="0.15470172" />
+        <state line="32" column="4" selection-start="1187" selection-end="1358" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="uml://JAVA/com.abstractedsheep.shuttletracker.FavoriteStop">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>JAVA</ID>
-          <OriginalElement>com.abstractedsheep.shuttletracker.FavoriteStop</OriginalElement>
-          <nodes>
-            <node x="17.5" y="0.0">java.lang.Object</node>
-            <node x="0.0" y="80.0">com.abstractedsheep.shuttletracker.FavoriteStop</node>
-          </nodes>
-          <notes />
-          <edges>
-            <edge source="com.abstractedsheep.shuttletracker.FavoriteStop" target="java.lang.Object">
-              <point x="0.0" y="-15.0" />
-              <point x="0.0" y="15.0" />
-            </edge>
-          </edges>
-          <settings layout="Hierarchic Group" zoom="1.0" x="53.0" y="55.0" />
-          <SelectedNodes />
-          <Categories />
-          <SCOPE>All</SCOPE>
-          <VISIBILITY>private</VISIBILITY>
-        </state>
-      </provider>
-    </entry>
-    <entry file="uml://JAVA/com.abstractedsheep.shuttletrackerworld.World">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>JAVA</ID>
-          <OriginalElement>com.abstractedsheep.shuttletrackerworld.World</OriginalElement>
-          <nodes>
-            <node x="0.0" y="0.0">java.lang.Object</node>
-            <node x="1.5" y="80.0">com.abstractedsheep.shuttletrackerworld.World</node>
-          </nodes>
-          <notes />
-          <edges>
-            <edge source="com.abstractedsheep.shuttletrackerworld.World" target="java.lang.Object">
-              <point x="0.0" y="-15.0" />
-              <point x="0.0" y="15.0" />
-            </edge>
-          </edges>
-          <settings layout="Hierarchic Group" zoom="1.0" x="36.0" y="55.0" />
-          <SelectedNodes />
-          <Categories />
-          <SCOPE>All</SCOPE>
-          <VISIBILITY>private</VISIBILITY>
-        </state>
-      </provider>
-    </entry>
-    <entry file="uml://JAVA/com.abstractedsheep.shuttletracker.mapoverlay.ShuttleItemizedOverlay">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>JAVA</ID>
-          <OriginalElement>com.abstractedsheep.shuttletracker.mapoverlay.ShuttleItemizedOverlay</OriginalElement>
-          <nodes>
-            <node x="29.5" y="160.0">com.google.android.maps.ItemizedOverlay</node>
-            <node x="67.0" y="80.0">com.google.android.maps.Overlay</node>
-            <node x="70.0" y="0.0">java.lang.Object</node>
-            <node x="21.5" y="320.0">com.abstractedsheep.shuttletracker.mapoverlay.ShuttleItemizedOverlay</node>
-            <node x="0.0" y="240.0">com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay</node>
-          </nodes>
-          <notes />
-          <edges>
-            <edge source="com.abstractedsheep.shuttletracker.mapoverlay.ShuttleItemizedOverlay" target="com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay">
-              <point x="0.0" y="-15.0" />
-              <point x="0.0" y="15.0" />
-            </edge>
-            <edge source="com.google.android.maps.Overlay" target="java.lang.Object">
-              <point x="0.0" y="-15.0" />
-              <point x="0.0" y="15.0" />
-            </edge>
-            <edge source="com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay" target="com.google.android.maps.ItemizedOverlay">
-              <point x="0.0" y="-15.0" />
-              <point x="0.0" y="15.0" />
-            </edge>
-            <edge source="com.google.android.maps.ItemizedOverlay" target="com.google.android.maps.Overlay">
-              <point x="0.0" y="-15.0" />
-              <point x="0.0" y="15.0" />
-            </edge>
-          </edges>
-          <settings layout="Hierarchic Group" zoom="1.0" x="106.0" y="175.0" />
-          <SelectedNodes>
-            <node>com.readystatesoftware.mapviewballoons.BalloonItemizedOverlay</node>
-          </SelectedNodes>
-          <Categories />
-          <SCOPE>All</SCOPE>
-          <VISIBILITY>private</VISIBILITY>
-        </state>
-      </provider>
-    </entry>
-    <entry file="uml://JAVA/">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>JAVA</ID>
-          <OriginalElement />
-          <nodes>
-            <node x="98.0" y="225.0">res</node>
-            <node x="0.0" y="75.0">assets</node>
-            <node x="104.0" y="150.0">com</node>
-            <node x="135.0" y="0.0">android</node>
-            <node x="224.0" y="75.0">javax</node>
-            <node x="207.0" y="150.0">java</node>
-            <node x="0.0" y="150.0">junit</node>
-            <node x="0.0" y="225.0">org</node>
-            <node x="0.0" y="0.0">META-INF</node>
-            <node x="112.0" y="75.0">dalvik</node>
-          </nodes>
-          <notes />
-          <edges />
-          <settings layout="Hierarchic Group" zoom="1.0" x="144.0" y="116.0" />
-          <SelectedNodes>
-            <node>java</node>
-          </SelectedNodes>
-          <Categories />
-          <SCOPE>All</SCOPE>
-          <VISIBILITY>private</VISIBILITY>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.classpath">
+    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletrackerworld/Shuttle.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+        <state line="76" column="41" selection-start="2625" selection-end="2625" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.project">
+    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletrackerworld/World.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+        <state line="29" column="13" selection-start="1194" selection-end="1194" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="jar://E:/android-sdk-windows/platforms/android-7/android.jar!/android/widget/TabHost.class">
+    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/ShuttleItemizedOverlay.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="77" column="0" selection-start="3190" selection-end="3190" vertical-scroll-proportion="0.8348624" />
-      </provider>
-    </entry>
-    <entry file="jar://E:/android-sdk-windows/platforms/android-8/android.jar!/android/database/sqlite/SQLiteOpenHelper.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="63" selection-start="560" selection-end="560" vertical-scroll-proportion="0.34020618" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="148" column="59" selection-start="5170" selection-end="5170" vertical-scroll-proportion="0.0" />
+        <state line="134" column="0" selection-start="4865" selection-end="4865" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/mapoverlay/StopsItemizedOverlay.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="37" selection-start="2617" selection-end="2617" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="212" column="8" selection-start="8159" selection-end="8159" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/EtaListAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="83" column="0" selection-start="3040" selection-end="3040" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/tab.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="51" selection-start="1307" selection-end="1307" vertical-scroll-proportion="0.0" />
+        <state line="101" column="27" selection-start="3702" selection-end="3702" vertical-scroll-proportion="0.45399395" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="26" selection-start="799" selection-end="799" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="21" column="32" selection-start="1058" selection-end="1058" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/sql/DatabaseHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="221" column="0" selection-start="8411" selection-end="8411" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/ShuttleDataService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="147" column="0" selection-start="5121" selection-end="5121" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/abstractedsheep/shuttletracker/TrackerTabActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="180" column="67" selection-start="6936" selection-end="6936" vertical-scroll-proportion="0.3265925">
-          <folding />
-        </state>
+        <state line="104" column="36" selection-start="3615" selection-end="3615" vertical-scroll-proportion="0.018200202" />
       </provider>
     </entry>
   </component>
@@ -941,7 +693,7 @@
       </state>
       <state key="FacetStructureConfigurable.UI">
         <settings>
-          <last-edited>Android</last-edited>
+          <last-edited>Android (Shuttle-Tracker-Android)|Android</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -953,6 +705,7 @@
       </state>
       <state key="GlobalLibrariesConfigurable.UI">
         <settings>
+          <last-edited>actionmailer (v3.1.0, ruby-1.9.2-p290) [gem]</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -964,7 +717,7 @@
       </state>
       <state key="JdkListConfigurable.UI">
         <settings>
-          <last-edited>Android 2.2 Google APIs</last-edited>
+          <last-edited>Android 2.1-update1 Google APIs</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -976,7 +729,7 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>Android|Shuttle-Tracker-Android</last-edited>
+          <last-edited>Shuttle-Tracker-Android</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -1000,6 +753,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
+          <last-edited>Unnamed</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

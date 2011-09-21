@@ -28,11 +28,12 @@ public final class R {
         public static final int glyphish_signpost=0x7f02000a;
         public static final int icon=0x7f02000b;
         public static final int icon2=0x7f02000c;
-        public static final int map=0x7f02000d;
-        public static final int shuttle=0x7f02000e;
-        public static final int shuttle_color=0x7f02000f;
-        public static final int shuttle_marker=0x7f020010;
-        public static final int stop_marker=0x7f020011;
+        public static final int icon_large=0x7f02000d;
+        public static final int map=0x7f02000e;
+        public static final int shuttle=0x7f02000f;
+        public static final int shuttle_color=0x7f020010;
+        public static final int shuttle_marker=0x7f020011;
+        public static final int stop_marker=0x7f020012;
     }
     public static final class id {
         public static final int balloon_inner_layout=0x7f080001;
@@ -65,7 +66,8 @@ public final class R {
         public static final int expanded_eta_list_item=0x7f030003;
         public static final int simple_expandable_list_item_1=0x7f030004;
         public static final int simple_list_item_1=0x7f030005;
-        public static final int tab=0x7f030006;
+        public static final int splash=0x7f030006;
+        public static final int tab=0x7f030007;
     }
     public static final class menu {
         public static final int map_options=0x7f070000;

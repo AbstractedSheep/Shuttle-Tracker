@@ -23,6 +23,7 @@ package com.abstractedsheep.shuttletracker;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.*;
@@ -37,18 +38,17 @@ import com.abstractedsheep.shuttletrackerworld.Coordinate;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.TabHost;
 import android.widget.Toast;
 import android.widget.TabHost.TabSpec;
 import com.abstractedsheep.shuttletrackerworld.Route;
+import com.abstractedsheep.shuttletrackerworld.Shuttle;
 import com.abstractedsheep.shuttletrackerworld.World;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 
-/*
- * !!! All children of this activity MUST implement IShuttleServiceCallback, but the implementation may be empty !!!
- */
 public class TrackerTabActivity extends MapActivity implements IShuttleServiceCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int DEFAULT_LAT = 42729640;
 	private static final int DEFAULT_LON = -73681280;
@@ -70,35 +70,26 @@ public class TrackerTabActivity extends MapActivity implements IShuttleServiceCa
 	private TimestampOverlay timestampOverlay;
 	private ExpandableListView etaListView;
 	private EtaListAdapter etaAdapter;
+    private Dialog splashDialog;
+    private Handler handler;
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
 
         myLocationOverlay.disableMyLocation();
-		dataService.active.set(false);
+        dataService.stopAllUpdates();
 		dataService.unregisterCallback(this);
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		dataService.active.set(true);
+
 		dataService.registerCallback(this);
-		new Thread(dataService.updateShuttles).start();
+		dataService.startShuttleUpdates();
 
-        if (prefs.getBoolean(TrackerPreferences.MY_LOCATION, true))
-    		myLocationOverlay.enableMyLocation();
-
-    	if (shuttlesOverlay != null)
-    		shuttlesOverlay.hide();
-    	map.invalidate();
-
-        routesUpdated(dataService.getWorld());
-    	dataUpdated(dataService.getWorld(), dataService.getCurrentEtas());
-
-        etaAdapter.loadFavorites();
+        handler.post(onResumeTasks);
 	}
 	
 	@Override
@@ -108,8 +99,8 @@ public class TrackerTabActivity extends MapActivity implements IShuttleServiceCa
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		getWindow().setFormat(PixelFormat.RGBA_8888); 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DITHER);
+
 		setContentView(R.layout.tab);
-		setProgressBarIndeterminateVisibility(true);
 
         // Initialize the tab host
 		this.tabHost = (TabHost) findViewById(android.R.id.tabhost);
@@ -160,13 +151,43 @@ public class TrackerTabActivity extends MapActivity implements IShuttleServiceCa
 				return true;
 			}
 		});
-		dataService = ShuttleDataService.getInstance();
-		dataService.setApplicationContext(getApplicationContext());
-		new Thread(dataService.updateRoutes).start();
+
+        dataService = ShuttleDataService.getInstance();
+        dataService.setApplicationContext(this.getApplicationContext());
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         prefs.registerOnSharedPreferenceChangeListener(this);
+
+        handler = new Handler();
+
+        MyStateSaver data = (MyStateSaver) getLastNonConfigurationInstance();
+        if (data != null) {
+            // Show splash screen if still loading
+            if (data.showSplashScreen) {
+                showSplashScreen();
+            }
+        } else {
+            showSplashScreen();
+            dataService.startRouteUpdate();
+        }
 	}
+
+    private final Runnable onResumeTasks = new Runnable() {
+        @Override
+        public void run() {
+            if (prefs.getBoolean(TrackerPreferences.MY_LOCATION, true))
+                myLocationOverlay.enableMyLocation();
+
+            if (shuttlesOverlay != null)
+                shuttlesOverlay.hide();
+            map.invalidate();
+
+            routesUpdated(dataService.getWorld());
+            dataUpdated(dataService.getWorld(), dataService.getCurrentEtas());
+
+            etaAdapter.loadFavorites();
+        }
+    };
 
     private TabHost.TabContentFactory mapTabFactory = new TabHost.TabContentFactory() {
         @Override
@@ -330,12 +351,13 @@ public class TrackerTabActivity extends MapActivity implements IShuttleServiceCa
 	};
 
 	public void routesUpdated(World world) {
-        if (world != null)
+        if (world != null) {
 			runOnUiThread(hideIndeterminateProgress);
+            removeSplashScreen();
+        }
 
 		if (world != null && !hasRoutes) {
-
-			runOnUiThread(new SetWorld(world));
+            runOnUiThread(new SetWorld(world));
 			map.postInvalidate();
 		}
 	}
@@ -429,4 +451,44 @@ public class TrackerTabActivity extends MapActivity implements IShuttleServiceCa
 			    etaAdapter.putEtas(etas);
 		}
 	};
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        MyStateSaver data = new MyStateSaver();
+        // Save your important data here
+
+        if (splashDialog != null) {
+            data.showSplashScreen = true;
+            removeSplashScreen();
+        }
+        return data;
+    }
+
+    /**
+     * Removes the Dialog that displays the splash screen
+     */
+    protected void removeSplashScreen() {
+        if (splashDialog != null) {
+            splashDialog.dismiss();
+            splashDialog = null;
+        }
+    }
+
+    /**
+     * Shows the splash screen over the full Activity
+     */
+    protected void showSplashScreen() {
+        splashDialog = new Dialog(this);
+        splashDialog.setContentView(R.layout.splash);
+        splashDialog.setCancelable(false);
+        splashDialog.show();
+    }
+
+    /**
+     * Simple class for storing important data across config changes
+     */
+    private class MyStateSaver {
+        public boolean showSplashScreen = false;
+        // Your other important fields here
+    }
 }
