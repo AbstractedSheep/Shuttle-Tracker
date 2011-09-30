@@ -143,10 +143,16 @@
             
             string = [value objectForKey:@"name"];
 			
-			//	Special handling for Blitman because the name is just too long.
+			//	Special handling for long stop names.
 			if ([string isEqualToString:@"Blitman Residence Commons"]) {
 				string = @"Blitman Commons";
-			}
+			} else if ([string isEqualToString:@"Polytechnic Residence Commons"]) {
+                string = @"Polytech Commons";
+            } else if ([string isEqualToString:@"Troy Building Crosswalk"]) {
+                string = @"Troy Bldg. Crossing";
+            } else if ([string isEqualToString:@"6th Ave. and City Station"]) {
+                string = @"6th Ave. & City Stn";
+            }
 			
             stop.name = string;
             
@@ -188,7 +194,6 @@
     }
     
     return NO;
-
 }
 
 

@@ -128,6 +128,7 @@
 		//	blue and right aligned
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
 									   reuseIdentifier:CellIdentifier] autorelease];
+        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
     // Configure the cell...

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@class EtaWrapper, JSONParser, DataManager;
+@class EtaWrapper, JSONParser, DataManager, UINavigationButton;
 
 @interface LaterEtasViewController : UITableViewController {
     EtaWrapper *wrappedEta;
@@ -22,12 +22,13 @@
 	NSTimer *updateTimer;
 	NSDateFormatter *timeDisplayFormatter;
     
+    UIBarButtonItem *favoriteButton;
+    
     BOOL useRelativeTimes;
 }
 
 - (id)initWithEta:(EtaWrapper *)eta;
-- (IBAction)addFavorite;
-- (IBAction)removeFavorite;
+- (void)toggleFavorite:(id)sender;
 
 @property (nonatomic, retain) EtaWrapper *wrappedEta;
 @property (nonatomic, assign) DataManager *dataManager;

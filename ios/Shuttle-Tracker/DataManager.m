@@ -578,7 +578,7 @@
 		
 		EtaWrapper *etaToUnfavorite = [favoriteStopNames objectAtIndex:indexPath.row];
 		
-		[self setEta:etaToUnfavorite asFavorite:NO];
+		[self toggleFavoriteStopWithEta:etaToUnfavorite];
 	} else {
 		NSArray *sectionEtas = [self etasForSection:indexPath.section];
 		
@@ -588,7 +588,7 @@
 		
 		EtaWrapper *etaToFavorite = [sectionEtas objectAtIndex:indexPath.row];
 		
-		[self setEta:etaToFavorite asFavorite:YES];
+		[self toggleFavoriteStopWithEta:etaToFavorite];
 	}
 	
 	if (favoritesChanged) {
@@ -599,58 +599,68 @@
 	}
 }
 
-//	The user wants to add or remove an ETA from the favorites list, so add it
-//	or remove it as appropriate.
-- (void)setEta:(id)eta asFavorite:(BOOL)addFavorite {
-	BOOL favoritesChanged = NO;
+//  The user toggled a stop as a favorite, using an eta.
+- (BOOL)toggleFavoriteStopWithEta:(EtaWrapper *)wrappedEta {
+    BOOL favoritesChanged = NO;
+    BOOL alreadyFavorite = NO;
 	
-	if ([eta class] == [EtaWrapper class]) {
-		EtaWrapper *etaToChange = eta;
-		
-		if (addFavorite) {
-			//	Check if the selected eta already has a corresponding entry in the list of
-			//	favorite etas.  If it doesn, nil it out so that it doesn't get added again.
-			for (EtaWrapper *favoriteEta in favoriteStopNames) {
-				if ([favoriteEta.stopName isEqualToString:etaToChange.stopName] && favoriteEta.route == etaToChange.route) {
-					etaToChange = nil;
-					break;
-				}
-			}
-			
-			if (etaToChange) {
-				[favoriteStopNames addObject:etaToChange];
-				favoritesChanged = YES;
-			}
-		} else {
-			EtaWrapper *etaToUnfavorite = nil;
-			
-			for (EtaWrapper *favoriteEta in favoriteStopNames) {
-				if ([favoriteEta.stopId isEqualToString:etaToChange.stopId] && favoriteEta.route == etaToChange.route) {
-					etaToUnfavorite = favoriteEta;
-				}
-			}
-			
-			if (etaToUnfavorite) {
-				[favoriteStopNames removeObject:etaToUnfavorite];
-				favoritesChanged = YES;
-			}
-		}
-
-		if (favoritesChanged) {
-			NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-			[defaults setObject:[NSKeyedArchiver archivedDataWithRootObject:favoriteStopNames] 
-						 forKey:@"favoritesList"];
-			[defaults synchronize];
-			
-			[[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
-																object:self 
-															  userInfo:[NSDictionary dictionaryWithObject:etas 
-																								   forKey:@"ETAs"]];
-		}
-	}
-	
+    for (EtaWrapper *favoriteEta in favoriteStopNames) {
+        if ([favoriteEta.stopName isEqualToString:wrappedEta.stopName] && favoriteEta.route == wrappedEta.route) {
+            alreadyFavorite = YES;
+            break;
+        }
+    }
+    
+    if (alreadyFavorite) {
+        EtaWrapper *etaToUnfavorite = nil;
+        
+        for (EtaWrapper *favoriteEta in favoriteStopNames) {
+            if ([favoriteEta.stopId isEqualToString:wrappedEta.stopId] && favoriteEta.route == wrappedEta.route) {
+                etaToUnfavorite = favoriteEta;
+            }
+        }
+        
+        if (etaToUnfavorite) {
+            [favoriteStopNames removeObject:etaToUnfavorite];
+            favoritesChanged = YES;
+        }
+    } else {
+        [favoriteStopNames addObject:wrappedEta];
+        favoritesChanged = YES;
+    }
+    
+    if (favoritesChanged) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setObject:[NSKeyedArchiver archivedDataWithRootObject:favoriteStopNames] 
+                     forKey:@"favoritesList"];
+        [defaults synchronize];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
+                                                            object:self 
+                                                          userInfo:[NSDictionary dictionaryWithObject:etas 
+                                                                                               forKey:@"ETAs"]];
+    }
+    
+    //  If the stop was a favorite before, it is no longer a favorite.
+    if (alreadyFavorite) {
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
+- (BOOL)isFavorite:(EtaWrapper *)wrappedEta {
+    BOOL alreadyFavorite = NO;
+    
+    for (EtaWrapper *favoriteEta in favoriteStopNames) {
+        if ([favoriteEta.stopName isEqualToString:wrappedEta.stopName] && favoriteEta.route == wrappedEta.route) {
+            alreadyFavorite = YES;
+            break;
+        }
+    }
+    
+    return alreadyFavorite;
+}
 
 //	Return if the section number is a favorites section.  If the favorite stops lists
 //	is not empty and the section number is 0, then it is the favorites section.

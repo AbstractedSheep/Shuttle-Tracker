@@ -49,6 +49,10 @@
 		CGSize size = {320, 600};
 		self.contentSizeForViewInPopover = size;
         
+        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(toggleFavorite:)];
+        self.navigationItem.rightBarButtonItem = favoriteButton;
+        [favoriteButton release];
+        
         //	Take notice when a setting is changed.
         //	Note that this is not the only object that takes notice.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
@@ -98,7 +102,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	
+    
+    // TODO: doesn't work
+    if ([dataManager isFavorite:wrappedEta]) {
+        favoriteButton.style = UIBarButtonItemStyleDone;
+    }
+    
 	updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
 										selector:@selector(getExtraEtas) 
 										userInfo:nil 
@@ -124,7 +133,6 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -151,15 +159,13 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-
 //	Handle the "Favorite" button
-- (void)addFavorite {
-	[dataManager setEta:wrappedEta asFavorite:YES];
-}
-
-//	Handle the "Unfavorite" button
-- (void)removeFavorite {
-	[dataManager setEta:wrappedEta asFavorite:NO];
+- (void)toggleFavorite:(id)sender {
+    if ([dataManager toggleFavoriteStopWithEta:wrappedEta]) {
+        favoriteButton.style = UIBarButtonItemStyleDone;
+    } else {
+        favoriteButton.style = UIBarButtonItemStylePlain;
+    }
 }
 
 #pragma mark - Table view data source
@@ -175,7 +181,7 @@
 {
     // Return the number of rows in the section.
 	//	If there are no etas, then return a Loading... cell
-    return [etas count] ? [etas count] : 1;
+    return [etas count] ? ([etas count] > 6 ? 6 : [etas count]) : 1;
 }
 
 

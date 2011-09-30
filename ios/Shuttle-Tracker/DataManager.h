@@ -13,6 +13,7 @@
 #define kDMVehiclesUpdated					@"kDMVehiclesUpdated"
 #define kDMEtasUpdated						@"kDMEtasUpdated"
 
+@class EtaWrapper;
 
 //	Manages all of the routes/stops/shuttles data, as well as application settings.
 @interface DataManager : NSObject {
@@ -64,7 +65,8 @@
 - (int)numberEtasForSection:(int)sectionNo;
 - (NSArray *)etasForSection:(int)sectionNo;
 - (void)toggleFavoriteEtaAtIndexPath:(NSIndexPath *)indexPath;
-- (void)setEta:(id)eta asFavorite:(BOOL)addFavorite;
+- (BOOL)toggleFavoriteStopWithEta:(EtaWrapper *)wrappedEta;
+- (BOOL)isFavorite:(EtaWrapper *)wrappedEta;
 - (BOOL)isFavoritesSection:(NSUInteger)section;
 
 
