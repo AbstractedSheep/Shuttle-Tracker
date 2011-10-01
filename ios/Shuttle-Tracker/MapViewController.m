@@ -368,12 +368,12 @@ typedef enum {
             //  Check to see if the vehicle's image is the plain shuttle image.
             //  If it is, check for a colored shuttle image for the shuttle's route.
             //  Set the shuttle's image to the colored one, if we have it.
-            if (!vehicle.routeImageSet) {
-                if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
-                    [[vehicle annotationView] setImage:[shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]]];
-					vehicle.routeImageSet = YES;
-                }
-            }
+//            if (!vehicle.routeImageSet) {
+//                if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
+//                    [[vehicle annotationView] setImage:[shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]]];
+//					vehicle.routeImageSet = YES;
+//                }
+//            }
             
             return [vehicle annotationView];
         }
@@ -382,13 +382,16 @@ typedef enum {
         
         //  Check if there is a colored shuttle image for the shuttle's current route.
         //  If there is, use it.
-        if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
-            vehicleAnnotationView.image = [shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]];
-			vehicle.routeImageSet = YES;
-        } else {
-            vehicleAnnotationView.image = shuttleImage;
-			vehicle.routeImageSet = NO;
-        }
+//        if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
+//            vehicleAnnotationView.image = [shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]];
+//			vehicle.routeImageSet = YES;
+//        } else {
+//            vehicleAnnotationView.image = shuttleImage;
+//			vehicle.routeImageSet = NO;
+//        }
+        
+        vehicleAnnotationView.image = shuttleImage;
+        vehicle.routeImageSet = NO;
         
         vehicleAnnotationView.canShowCallout = YES;
         
