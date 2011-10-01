@@ -49,7 +49,9 @@
 		CGSize size = {320, 600};
 		self.contentSizeForViewInPopover = size;
         
-        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(toggleFavorite:)];
+        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                           target:self 
+                                                                           action:@selector(toggleFavorite:)];
         self.navigationItem.rightBarButtonItem = favoriteButton;
         [favoriteButton release];
         
@@ -103,10 +105,20 @@
 {
     [super viewDidLoad];
     
-    // TODO: doesn't work
+    //  Set the favorite/unfavorite button appearance
+    //  based on the status of the view's associated stop.
     if ([dataManager isFavorite:wrappedEta]) {
-        favoriteButton.style = UIBarButtonItemStyleDone;
+        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
+                                                                       target:self 
+                                                                       action:@selector(toggleFavorite:)];
+    } else {
+        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                       target:self 
+                                                                       action:@selector(toggleFavorite:)];
     }
+    
+    self.navigationItem.rightBarButtonItem = favoriteButton;
+    [favoriteButton release];
     
 	updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
 										selector:@selector(getExtraEtas) 
@@ -159,13 +171,20 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-//	Handle the "Favorite" button
+//	Handle the "Favorite/Unfavorite" button
 - (void)toggleFavorite:(id)sender {
     if ([dataManager toggleFavoriteStopWithEta:wrappedEta]) {
-        favoriteButton.style = UIBarButtonItemStyleDone;
+        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
+                                                                       target:self 
+                                                                       action:@selector(toggleFavorite:)];
     } else {
-        favoriteButton.style = UIBarButtonItemStylePlain;
+        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                       target:self 
+                                                                       action:@selector(toggleFavorite:)];
     }
+    
+    self.navigationItem.rightBarButtonItem = favoriteButton;
+    [favoriteButton release];
 }
 
 #pragma mark - Table view data source

@@ -226,6 +226,10 @@
 	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    [self tableView:tableView didSelectRowAtIndexPath:indexPath];
+}
+
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath 
 {
     // Return NO if you do not want the specified item to be editable.
