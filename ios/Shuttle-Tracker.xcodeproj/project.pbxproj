@@ -495,6 +495,7 @@
 		DAD406EC1341635100F05D88 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Naga Softworks, LLC";
 			};
 			buildConfigurationList = DAD406EF1341635100F05D88 /* Build configuration list for PBXProject "Shuttle-Tracker" */;

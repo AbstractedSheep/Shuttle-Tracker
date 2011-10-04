@@ -54,9 +54,9 @@
 }
 
 @property (nonatomic, retain) NSString *name;
-@property (nonatomic, retain) NSString *title;
+@property (nonatomic, copy) NSString *title;
 @property (nonatomic, retain) NSString *description;
-@property (nonatomic, retain) NSString *subtitle;
+@property (nonatomic, copy) NSString *subtitle;
 @property (nonatomic) CLLocationCoordinate2D coordinate;
 @property (nonatomic, retain) MKAnnotationView *annotationView;
 @property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
