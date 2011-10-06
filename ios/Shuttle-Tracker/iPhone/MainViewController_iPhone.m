@@ -19,6 +19,7 @@
 
 - (void)dealloc
 {
+	[tabBarController release];
     [super dealloc];
 }
 
@@ -37,7 +38,6 @@
 - (void)loadView
 {
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-    tabBarController.delegate = self;
 	
     MapViewController *mapViewController = [[MapViewController alloc] init];
     mapViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0] autorelease];
@@ -47,8 +47,7 @@
     etasViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1] autorelease];
     etasViewController.dataManager = dataManager;
 	
-	UINavigationController *tableNavController = [[UINavigationController alloc] init];
-	tableNavController.viewControllers = [NSArray arrayWithObjects:etasViewController, nil];
+	UINavigationController *etasTableNavController = [[UINavigationController alloc] initWithRootViewController:etasViewController];
 	[etasViewController release];
 	
 	//	Note that this class (MainViewController_iPhone) gets a reference to timeDisplayFormatter
@@ -63,9 +62,9 @@
 	[settingsViewController release];
 	settingsNavController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2] autorelease];
 	
-    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, tableNavController, settingsNavController, nil];
+    tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasTableNavController, settingsNavController, nil];
 	[mapViewController release];
-	[tableNavController release];
+	[etasTableNavController release];
 	[settingsNavController release];
 	
     self.view = tabBarController.view;
@@ -77,31 +76,12 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
-	[tabBarController release];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-
-#pragma - UITabBarControllerDelegate
-
-
-- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {
-	NSNumber *tabNumber = [NSNumber numberWithInt:viewController.tabBarItem.tag];
-	
-	//	Set the default tab to the currently selected tab, if the current
-	//	one is not the settings tab
-	if ([tabNumber intValue] == 2) {
-		return;
-	} else {
-		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		[defaults setValue:tabNumber forKey:@"defaultTab"];
-		[defaults synchronize];
-	}
 }
 
 

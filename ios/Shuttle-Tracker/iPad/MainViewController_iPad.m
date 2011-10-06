@@ -54,11 +54,12 @@
     mapViewController.title = @"Map";
     
     UINavigationController *mapViewNavController = [[UINavigationController alloc] initWithRootViewController:mapViewController];
+    [mapViewController release];
     
     splitViewController = [[UISplitViewController alloc] init];
     splitViewController.viewControllers = [NSArray arrayWithObjects:etasTableNavController, mapViewNavController, nil];
     [etasTableNavController release];
-    [mapViewController release];
+    [mapViewNavController release];
     
     self.view = splitViewController.view;
 }
