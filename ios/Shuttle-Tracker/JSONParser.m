@@ -24,7 +24,7 @@
 
 //  Assume a call to init is for a shuttle JSON parser
 - (id)init {
-    [self initWithUrl:[NSURL URLWithString:kDMShuttlesUrl]];
+    self = [self initWithUrl:[NSURL URLWithString:kDMShuttlesUrl]];
     
     return self;
 }

@@ -58,7 +58,7 @@
 @synthesize annotationView;
 
 - (id)initWithLocation:(CLLocationCoordinate2D)coord {
-    [self init];
+    self = [self init];
     
     if (self) {
         coordinate = coord;
