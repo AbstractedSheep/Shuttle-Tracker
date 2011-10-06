@@ -24,7 +24,6 @@
 - (void)etaJsonRefresh;
 - (void)genRouteNames;
 - (void)genRouteShortNames;
-- (void)settingChanged:(NSNotification *)notification;
 
 @end
 
@@ -97,13 +96,6 @@
 		
 		loadVehicleJsonQueue = NULL;
 		loadEtaJsonQueue = NULL;
-		
-		//	Take notice when a setting is changed
-		//	Note that this is not the only object that takes notice.
-		[[NSNotificationCenter defaultCenter] addObserver:self 
-												 selector:@selector(settingChanged:) 
-													 name:kIASKAppSettingChanged 
-												   object:nil];
     }
     
     return self;
@@ -669,22 +661,6 @@
 		return YES;
 	} else {
 		return NO;
-	}
-}
-
-//	Called by InAppSettingsKit whenever a setting is changed in the settings view inside the app.
-//	Currently handles the 12/24 hour time toggle and toggling all/only soonest ETAs.
-//	Other objects may also do something when a setting is changed.
-- (void)settingChanged:(NSNotification *)notification {
-	NSDictionary *info = [notification userInfo];
-	
-	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
-	if ([[notification object] isEqualToString:@"use24Time"]) {
-		if ([[info objectForKey:@"use24Time"] boolValue]) {
-			[timeDisplayFormatter setDateFormat:@"HH:mm"];
-		} else {
-			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
-		}
 	}
 }
 
