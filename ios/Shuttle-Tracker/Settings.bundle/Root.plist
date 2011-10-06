@@ -26,23 +26,13 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 		</dict>
-        <dict>
+		<dict>
 			<key>DefaultValue</key>
 			<false/>
 			<key>Key</key>
 			<string>useRelativeTimes</string>
 			<key>Title</key>
 			<string>Use Relative Times</string>
-			<key>Type</key>
-			<string>PSToggleSwitchSpecifier</string>
-		</dict>
-		<dict>
-			<key>DefaultValue</key>
-			<false/>
-			<key>Key</key>
-			<string>use24Time</string>
-			<key>Title</key>
-			<string>Use 24 Hour Time</string>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 		</dict>
