@@ -236,7 +236,20 @@
 		//  If the EtaWrapper was found, add the stop info and the ETA
 		if (etaWrapped) {
 			//	The main text label, left aligned and black in UITableViewCellStyleValue1
-			cell.textLabel.text = [NSString stringWithFormat:@"ETA #: %i", indexPath.row + 1];
+            unsigned int nthShuttle = indexPath.row + 1;
+            NSString *shuttleNoString;
+            
+            if (nthShuttle == 1) {
+                shuttleNoString = @"1st ";
+            } else if (nthShuttle == 2) {
+                shuttleNoString = @"2nd ";
+            } else if (nthShuttle == 3) {
+                shuttleNoString = @"3rd ";
+            } else {
+                shuttleNoString = [NSString stringWithFormat:@"%uth", nthShuttle];
+            }
+            
+			cell.textLabel.text = [shuttleNoString stringByAppendingString:@" Shuttle:"];
 			
 			//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
 			if (etaWrapped.eta) {

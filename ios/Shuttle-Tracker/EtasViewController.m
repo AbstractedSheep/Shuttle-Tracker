@@ -108,18 +108,21 @@
 {
     // Return the number of sections.
     //  One section for each route
-	if (dataManager) {
+	if (dataManager && [dataManager numberSections]) {
 		return [dataManager numberSections];
 	} else {
-		return 0;
+		return 1;
 	}
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-	return [dataManager numberEtasForSection:section];
-    
+    if (!dataManager || ([dataManager numberEtasForSection:section] == 0 && section == 0)) {
+        return 1;
+    } else {
+        return [dataManager numberEtasForSection:section];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -142,6 +145,14 @@
     
 	NSArray *etas = [dataManager etasForSection:indexPath.section];
 	
+    //  If there are no ETAs, assume we are still loading
+    if ([etas count] == 0) {
+		//	The main text label, left aligned and black in UITableViewCellStyleValue1
+        cell.textLabel.text = @"Loading...";
+        
+        return cell;
+    }
+    
     //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
     for (EtaWrapper *eta in etas) {
 		if (counter == indexPath.row) {
