@@ -37,6 +37,8 @@
 #pragma mark - View lifecycle
 
 - (void)loadView {
+    self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    
     etasViewController = [[EtasViewController alloc] init];
     //  dataManager is set in [MainViewController init...] aka [super init...]
     etasViewController.dataManager = dataManager;
@@ -61,7 +63,7 @@
     [etasTableNavController release];
     [mapViewNavController release];
     
-    self.view = splitViewController.view;
+    [self.view addSubview:splitViewController.view];
 }
 
 - (void)viewDidUnload

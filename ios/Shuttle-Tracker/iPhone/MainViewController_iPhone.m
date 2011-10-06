@@ -37,6 +37,8 @@
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView
 {
+    self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
 	
     MapViewController *mapViewController = [[MapViewController alloc] init];
@@ -67,7 +69,7 @@
 	[etasTableNavController release];
 	[settingsNavController release];
 	
-    self.view = tabBarController.view;
+    [self.view addSubview:tabBarController.view];
 }
 
 
