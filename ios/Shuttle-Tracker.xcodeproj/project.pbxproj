@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C06F387143E40C10087FBCC /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4080C13417B6900F05D88 /* Default-Portrait~ipad.png */; };
 		5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F626134FC14100A38505 /* MapPlacemark.m */; };
 		DA4E1676136C9E3900001A3B /* LaterEtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */; };
 		DA4E1677136C9E3900001A3B /* LaterEtasViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */; };
@@ -79,7 +80,6 @@
 		DAD407F01341709A00F05D88 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD407EF1341709A00F05D88 /* Foundation.framework */; };
 		DAD4080413417A1E00F05D88 /* MainViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4080313417A1E00F05D88 /* MainViewController_iPhone.m */; };
 		DAD4080713417A3B00F05D88 /* MainViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4080613417A3B00F05D88 /* MainViewController_iPad.m */; };
-		DAD4080D13417B6900F05D88 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4080C13417B6900F05D88 /* Default-Portrait~ipad.png */; };
 		DAD4080F13417B6D00F05D88 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4080E13417B6D00F05D88 /* Default-Landscape~ipad.png */; };
 /* End PBXBuildFile section */
 
@@ -545,11 +545,11 @@
 				DAD407DA13416B2300F05D88 /* Icon.png in Resources */,
 				DAD407DC13416B2800F05D88 /* Icon@2x.png in Resources */,
 				DAD407DE13416B3000F05D88 /* Icon-72.png in Resources */,
-				DAD4080D13417B6900F05D88 /* Default-Portrait~ipad.png in Resources */,
 				DAD4080F13417B6D00F05D88 /* Default-Landscape~ipad.png in Resources */,
 				DA4E1677136C9E3900001A3B /* LaterEtasViewController.xib in Resources */,
 				DA4E1679136CBFEA00001A3B /* Default.png in Resources */,
 				DA4E167B136CBFEF00001A3B /* Default@2x.png in Resources */,
+				5C06F387143E40C10087FBCC /* Default-Portrait~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

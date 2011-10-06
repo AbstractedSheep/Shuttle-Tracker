@@ -9,19 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "MainViewController.h"
 
-@class MapViewController;
+@class EtasViewController, MapViewController;
 
 @interface MainViewController_iPad : MainViewController {
     UIToolbar *toolbar;
+    UISplitViewController *splitViewController;
 	MapViewController *mapViewController;
-    
-    UIPopoverController *etaPopover;
+    EtasViewController *etasViewController;
 }
 
 @property (nonatomic, retain) UIToolbar *toolbar;
+@property (nonatomic, retain) UISplitViewController *splitViewController;
 @property (nonatomic, retain) MapViewController *mapViewController;
-@property (nonatomic, retain) UIPopoverController *etaPopover;
-
-- (void)showEtas:(id)sender;
+@property (nonatomic, retain) EtasViewController *etasViewController;
 
 @end
