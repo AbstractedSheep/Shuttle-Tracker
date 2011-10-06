@@ -67,6 +67,15 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+//  Only support landscape on the iPad, and only support portrait on the iPhone
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        return UIInterfaceOrientationIsLandscape(toInterfaceOrientation);
+    } else {
+        return (toInterfaceOrientation == UIInterfaceOrientationPortrait);
+    }
+}
+
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad

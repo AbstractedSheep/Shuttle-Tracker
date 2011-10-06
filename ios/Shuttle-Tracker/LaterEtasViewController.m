@@ -44,11 +44,6 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
         
-        //	Set the size of the view when it is in a popover
-        //  600 takes up about the whole vertical space when an iPad is horizontal
-		CGSize size = {320, 600};
-		self.contentSizeForViewInPopover = size;
-        
         favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                            target:self 
                                                                            action:@selector(toggleFavorite:)];

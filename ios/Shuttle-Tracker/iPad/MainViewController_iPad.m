@@ -18,35 +18,6 @@
 @synthesize mapViewController;
 @synthesize etasViewController;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        etasViewController = [[EtasViewController alloc] init];
-        etasViewController.dataManager = dataManager;
-        
-        //	Note that this class (MainViewController_iPad) gets a reference to timeDisplayFormatter
-        //	via the init method of its superclass, MainViewController.
-        etasViewController.timeDisplayFormatter = timeDisplayFormatter;
-        etasViewController.title = @"ETAs";
-        
-        UINavigationController *etasTableNavController = [[UINavigationController alloc] init];
-        etasTableNavController.viewControllers = [NSArray arrayWithObjects:etasViewController, nil];
-        [etasViewController release];
-        
-        mapViewController = [[MapViewController alloc] init];
-        mapViewController.dataManager = dataManager;
-        
-        splitViewController = [[UISplitViewController alloc] init];
-        splitViewController.viewControllers = [NSArray arrayWithObjects:etasTableNavController, mapViewController, nil];
-        [etasTableNavController release];
-        [mapViewController release];
-        
-        self.view = splitViewController.view;
-//        [self.view addSubview:splitViewController.view];
-    }
-    return self;
-}
 
 - (void)dealloc
 {
@@ -65,6 +36,33 @@
 
 #pragma mark - View lifecycle
 
+- (void)loadView {
+    etasViewController = [[EtasViewController alloc] init];
+    //  dataManager is set in [MainViewController init...] aka [super init...]
+    etasViewController.dataManager = dataManager;
+    
+    //	Note that this class (MainViewController_iPad) gets a reference to timeDisplayFormatter
+    //	via the init method of its superclass, MainViewController.
+    etasViewController.timeDisplayFormatter = timeDisplayFormatter;
+    etasViewController.title = @"ETAs";
+    
+    UINavigationController *etasTableNavController = [[UINavigationController alloc] initWithRootViewController:etasViewController];
+    [etasViewController release];
+    
+    mapViewController = [[MapViewController alloc] init];
+    mapViewController.dataManager = dataManager;
+    mapViewController.title = @"Map";
+    
+    UINavigationController *mapViewNavController = [[UINavigationController alloc] initWithRootViewController:mapViewController];
+    
+    splitViewController = [[UISplitViewController alloc] init];
+    splitViewController.viewControllers = [NSArray arrayWithObjects:etasTableNavController, mapViewNavController, nil];
+    [etasTableNavController release];
+    [mapViewController release];
+    
+    self.view = splitViewController.view;
+}
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -77,8 +75,7 @@
     [super shouldAutorotateToInterfaceOrientation:interfaceOrientation];
     
     // Return YES for supported orientations
-//	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
-    return YES;
+	return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 }
 
 @end

@@ -16,18 +16,6 @@
 
 @synthesize tabBarController;
 
-/*
- Use the init method from the MainViewController superclass
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-*/
-
 
 - (void)dealloc
 {
@@ -48,8 +36,6 @@
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView
 {
-    self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-	
     self.tabBarController = [[[UITabBarController alloc] init] autorelease];
     tabBarController.delegate = self;
 	
@@ -82,14 +68,7 @@
 	[tableNavController release];
 	[settingsNavController release];
 	
-	
-	//	Grab the last selected tab number, and set the tab bar controller to
-	//	that tab.
-//	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//	int defaultTab = [[defaults objectForKey:@"defaultTab"] intValue];
-//	tabBarController.selectedIndex = defaultTab;
-	
-    [self.view addSubview:tabBarController.view];
+    self.view = tabBarController.view;
 }
 
 
