@@ -109,10 +109,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 				" PRIMARY KEY(" + StopsOnRoutesTable.colStopId + ", " + StopsOnRoutesTable.colRouteId + ")" +
 			");");
 		
-		db.execSQL("CREATE TABLE " + StopsOnRoutesTable.tableName + "(" +
-				" " + StopsOnRoutesTable.colStopId + " TEXT," +
-				" " + StopsOnRoutesTable.colRouteId + " INTEGER," +
-				" PRIMARY KEY(" + StopsOnRoutesTable.colStopId + ", " + StopsOnRoutesTable.colRouteId + ")" +
+		db.execSQL("CREATE TABLE " + FavoritesTable.tableName + "(" +
+				" " + FavoritesTable.colStopId + " TEXT," +
+				" " + FavoritesTable.colRouteId + " INTEGER," +
+				" PRIMARY KEY(" + FavoritesTable.colStopId + ", " + FavoritesTable.colRouteId + ")" +
 			");");
 	}
 
@@ -135,7 +135,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		
 		if (oldVersion <= 2) {
 			// Copy favorites into separate table
-			db.execSQL("INSERT INTO " + FavoritesTable.tableName + " VALUES(" + FavoritesTable.colStopId + ", " + FavoritesTable.colRouteId + ")" + 
+			db.execSQL("CREATE TABLE " + FavoritesTable.tableName + "(" +
+					" " + FavoritesTable.colStopId + " TEXT," +
+					" " + FavoritesTable.colRouteId + " INTEGER," +
+					" PRIMARY KEY(" + FavoritesTable.colStopId + ", " + FavoritesTable.colRouteId + ")" +
+				");"); 
+			db.execSQL("INSERT INTO " + FavoritesTable.tableName + " (" + FavoritesTable.colStopId + ", " + FavoritesTable.colRouteId + ")" + 
 					" SELECT " + StopsOnRoutesTable.colStopId + ", " + StopsOnRoutesTable.colRouteId + " FROM " + StopsOnRoutesTable.tableName + 
 					" WHERE " + StopsOnRoutesTable.colFavorite + "=1");
 			
@@ -146,7 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					" " + StopsOnRoutesTable.colRouteId + " INTEGER," +
 					" PRIMARY KEY(" + StopsOnRoutesTable.colStopId + ", " + StopsOnRoutesTable.colRouteId + ")" +
 				");");
-			db.execSQL("SELECT * INTO " + StopsOnRoutesTable.tableName + " FROM OldStopsOnRoutes");
+			db.execSQL("INSERT INTO " + StopsOnRoutesTable.tableName + " SELECT " + StopsOnRoutesTable.colStopId + ", " + StopsOnRoutesTable.colRouteId + " FROM OldStopsOnRoutes");
 		}
 	}
 	
