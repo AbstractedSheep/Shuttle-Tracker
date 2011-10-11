@@ -26,6 +26,7 @@ public class EtaJson {
 	private int shuttle_id;
 	private int eta;
 	private int route;
+    private long retrievalTime;
 	
 	public String getStop_id() {
 		return stop_id;
@@ -57,5 +58,11 @@ public class EtaJson {
 	public void setEta(int eta) {
 		this.eta = eta;
 	}
+    public void setRetrievalTime(long retrievalTime) {
+        this.retrievalTime = retrievalTime;
+    }
+    public long getRetrievalTime() {
+        return retrievalTime;
+    }
 }
 	

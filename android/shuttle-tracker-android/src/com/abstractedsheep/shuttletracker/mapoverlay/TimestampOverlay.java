@@ -23,10 +23,12 @@ package com.abstractedsheep.shuttletracker.mapoverlay;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import android.text.format.DateFormat;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
@@ -34,27 +36,15 @@ public class TimestampOverlay extends Overlay {
 	private Date lastUpdateTime = new Date();
 	private final SimpleDateFormat formatter12 = new SimpleDateFormat("h:mm:ss a");
 	private final SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm:ss");
-	private boolean time24hour = false;
 	private final Paint paint = new Paint();
 	private String statusText = "";
+    private Context context;
 	
-	public TimestampOverlay() {
+	public TimestampOverlay(Context ctx) {
 		paint.setColor(Color.BLACK);
 		paint.setAntiAlias(true);
 		paint.setTextSize(20);
-	}
-	
-	public TimestampOverlay(boolean time24hour) {
-		this();
-		this.time24hour = time24hour;
-	}
-	
-	public void set24Hour(boolean time24hour) {
-		this.time24hour = time24hour;
-	}
-	
-	public boolean get24Hour() {
-		return this.time24hour;
+        context = ctx;
 	}
 	
 	public void setStatusText(String statusText) {
@@ -71,7 +61,7 @@ public class TimestampOverlay extends Overlay {
 	
 	@Override
 	public void draw(Canvas canvas, MapView mapView, boolean shadow) {
-		String text = time24hour ? formatter24.format(lastUpdateTime) : formatter12.format(lastUpdateTime);
+		String text = DateFormat.is24HourFormat(context) ? formatter24.format(lastUpdateTime) : formatter12.format(lastUpdateTime);
 		if (statusText != null && !statusText.equals(""))
 			text += " - " + statusText;
 		canvas.drawText(text, 10, 20, paint);

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.LauncherActivity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -35,6 +36,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
@@ -65,12 +67,12 @@ public class ShuttleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
     private final List<Shuttle> shuttles = new ArrayList<Shuttle>();
 	private final SimpleDateFormat formatter12 = new SimpleDateFormat("MM/dd/yy h:mm:ss a");
 	private final SimpleDateFormat formatter24 = new SimpleDateFormat("MM/dd/yy HH:mm:ss");
-    private final SharedPreferences prefs;
+    private final Context context;
 	
-	public ShuttleItemizedOverlay(Drawable defaultMarker, MapView map, World world, SharedPreferences prefs) {
+	public ShuttleItemizedOverlay(Context context, Drawable defaultMarker, MapView map, World world) {
 		super(boundCenter(defaultMarker), map);
 		this.world = world;
-        this.prefs = prefs;
+        this.context = context;
 		shuttlesUpdated();
 		
 		Matrix flip = new Matrix();
@@ -135,7 +137,7 @@ public class ShuttleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		GeoPoint gp = new GeoPoint(s.getSnappedCoordinate().getLatitudeE6(), s.getSnappedCoordinate().getLongitudeE6());
 		String updateTime;
 
-        if (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false)) {
+        if (DateFormat.is24HourFormat(context)) {
             updateTime = "Last Updated at\n" + formatter24.format(new Date(s.getLastUpdateTime()));
         } else {
             updateTime = "Last Updated at\n" + formatter12.format(new Date(s.getLastUpdateTime()));

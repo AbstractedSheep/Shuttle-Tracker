@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -195,9 +196,13 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
                         }
                     }
 
-                    ArrayList<EtaJson> tempEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_eta", EtaArray.class);
+                    ArrayList<EtaJson> tempEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_next_eta", EtaArray.class);
                     if (tempEtas != null) {
                         etas = tempEtas;
+                        long now = (new Date()).getTime();
+                        for (EtaJson e : etas) {
+                            e.setRetrievalTime(now);
+                        }
                     }
 
                     if (tempVehicles != null || tempEtas != null) {
@@ -206,6 +211,8 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 
                     if (extraEtaStopId != null && extraEtaRouteId != -1) {
                         ExtraEtaJson exEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_extra_eta&rt=" + extraEtaRouteId + "&st=" + extraEtaStopId, ExtraEtaJson.class);
+                        long now = (new Date()).getTime();
+                        if (exEtas != null) exEtas.setRetrievalTime(now);
                         notifyExtraEtasUpdated(exEtas);
                     }
                 }

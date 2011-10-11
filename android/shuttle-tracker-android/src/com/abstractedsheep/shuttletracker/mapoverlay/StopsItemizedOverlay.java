@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 
+import android.text.format.DateFormat;
 import com.abstractedsheep.shuttletracker.TrackerPreferences;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
@@ -50,17 +51,17 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 	private final HashMap<String, EtaJson> etas = new HashMap<String, EtaJson>();
 	private final SimpleDateFormat formatter12 = new SimpleDateFormat("hh:mm a");
 	private final SimpleDateFormat formatter24 = new SimpleDateFormat("HH:mm");
-	private final SharedPreferences prefs;
 	private final DatabaseHelper db;
     private final World world;
+    private final Context context;
 	
 	
-	public StopsItemizedOverlay(Context context, Drawable defaultMarker, MapView mapView, World world, SharedPreferences prefs) {
+	public StopsItemizedOverlay(Context context, Drawable defaultMarker, MapView mapView, World world) {
 		super(boundCenter(defaultMarker), mapView);
-		this.prefs = prefs;
         this.world = world;
         this.stops.addAll(world.getStopList());
         db = new DatabaseHelper(context);
+        this.context = context;
 		populate();
 	}
 	
@@ -95,7 +96,7 @@ public class StopsItemizedOverlay extends BalloonItemizedOverlay<DirectionalOver
 				eta = etas.get(s.getId() + r.getId());
 				if (eta != null) {
 					arrival = new Date(now + eta.getEta());
-					snippet += (!snippet.equals("") ? "\n" : "") + r.getName() + ": " + (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false) ? 
+					snippet += (!snippet.equals("") ? "\n" : "") + r.getName() + ": " + (DateFormat.is24HourFormat(context) ?
 							formatter24.format(arrival) : formatter12.format(arrival));
 				}
 			}

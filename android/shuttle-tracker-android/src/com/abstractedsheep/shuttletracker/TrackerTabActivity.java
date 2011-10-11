@@ -173,7 +173,6 @@ public class TrackerTabActivity extends MapActivity implements IShuttleServiceCa
 	}
 
     private final Runnable onResumeTasks = new Runnable() {
-        @Override
         public void run() {
             if (prefs.getBoolean(TrackerPreferences.MY_LOCATION, true))
                 myLocationOverlay.enableMyLocation();
@@ -268,13 +267,13 @@ public class TrackerTabActivity extends MapActivity implements IShuttleServiceCa
         }
 
 
-        shuttlesOverlay = new ShuttleItemizedOverlay(getResources().getDrawable(R.drawable.shuttle_color), map, world, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+        shuttlesOverlay = new ShuttleItemizedOverlay(this, getResources().getDrawable(R.drawable.shuttle_color), map, world);
         map.getOverlays().add(shuttlesOverlay);
 
-        stopsOverlay = new StopsItemizedOverlay(this, getResources().getDrawable(R.drawable.stop_marker), map, world, PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
+        stopsOverlay = new StopsItemizedOverlay(this, getResources().getDrawable(R.drawable.stop_marker), map, world);
         map.getOverlays().add(stopsOverlay);
 
-        timestampOverlay = new TimestampOverlay(prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false));
+        timestampOverlay = new TimestampOverlay(this);
         map.getOverlays().add(timestampOverlay);
 
         etaAdapter.setRoutes(world);
@@ -294,8 +293,6 @@ public class TrackerTabActivity extends MapActivity implements IShuttleServiceCa
             myLocationOverlay.enableMyLocation();
         else
             myLocationOverlay.disableMyLocation();
-        if (timestampOverlay != null)
-            timestampOverlay.set24Hour(prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false));
     }
 
     /** Calls stopsOverlay.putEtas(). For use with runOnUiThread() */

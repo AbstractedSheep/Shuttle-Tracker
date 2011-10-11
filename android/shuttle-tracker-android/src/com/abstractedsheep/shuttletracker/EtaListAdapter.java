@@ -27,6 +27,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import android.text.format.DateFormat;
+import android.util.Log;
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.json.EtaJson;
 import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
@@ -82,8 +84,10 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 	
 	public void putEtas(List<EtaJson> etaList) {
         for (EtaJson eta : etaList) {
+            if (eta.getStop_id().equals("brinsmade"))
+                Log.d("Tracker", eta.getRetrievalTime() + " " + eta.getEta());
             EtaJson tempEta = etas.get(eta.getStop_id() + eta.getRoute());
-            if (tempEta == null || eta.getEta() < tempEta.getEta()) {
+            if (tempEta == null) {
                 etas.put(eta.getStop_id() + eta.getRoute(), eta);
             }
 
@@ -219,12 +223,9 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 		
 		if (eta != null) {
 			long now = (new Date()).getTime();
-			Date arrival = new Date(now + eta.getEta());
+			long arrival = eta.getEta() - (now - eta.getRetrievalTime());
 			
-			if (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false))
-				etaString = formatter24.format(arrival);
-			else
-				etaString = formatter12.format(arrival);
+			etaString = (arrival / 1000 / 60) + " minutes";
 		}
 		 
 		if (groupPosition == expandedGroup && childPosition == expandedChild) {
@@ -312,13 +313,13 @@ public class EtaListAdapter extends BaseExpandableListAdapter {
 			Collections.sort(etas.getEta());
 			text = "";
 			Integer t;
-			for (int i = 0; i < 12; i++) {
+			for (int i = 0; i < 8; i++) {
 				if (i < etas.getEta().size()) {
 					t = etas.getEta().get(i);
-					if (prefs.getBoolean(TrackerPreferences.USE_24_HOUR, false)) {
-						time = formatter24.format(new Date(now.getTime() + t));
+					if (DateFormat.is24HourFormat(ctx)) {
+						time = formatter24.format(new Date(now.getTime() + t - (now.getTime() - etas.getRetrievalTime())));
 					} else {
-						time = formatter12.format(new Date(now.getTime() + t));
+						time = formatter12.format(new Date(now.getTime() + t - (now.getTime() - etas.getRetrievalTime())));
 					}
 					
 				} else {
