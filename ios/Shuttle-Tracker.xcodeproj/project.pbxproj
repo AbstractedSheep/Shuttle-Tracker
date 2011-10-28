@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F626134FC14100A38505 /* MapPlacemark.m */; };
+		5C6FCFF6145B0F4B00E74C49 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */; };
 		DA4E1676136C9E3900001A3B /* LaterEtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */; };
 		DA4E1677136C9E3900001A3B /* LaterEtasViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */; };
 		DA4E1679136CBFEA00001A3B /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DA4E1678136CBFEA00001A3B /* Default.png */; };
@@ -85,6 +86,7 @@
 /* Begin PBXFileReference section */
 		5C54F625134FC14100A38505 /* MapPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPlacemark.h; sourceTree = "<group>"; };
 		5C54F626134FC14100A38505 /* MapPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPlacemark.m; sourceTree = "<group>"; };
+		5C6FCFF5145B0F4B00E74C49 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		5CACD345135262BC00A4CD75 /* DataUrls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataUrls.h; sourceTree = "<group>"; };
 		DA4E1673136C9E3900001A3B /* LaterEtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaterEtasViewController.h; sourceTree = "<group>"; };
 		DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaterEtasViewController.m; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 				DAD407A7134166C100F05D88 /* MainViewController.m */,
 				DAD407A8134166C200F05D88 /* MapViewController.m */,
 				DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */,
+				5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */,
 				DAD407B7134168A200F05D88 /* Settings.bundle */,
 				DAD407B61341689200F05D88 /* Images */,
 				DAD4070B1341635100F05D88 /* iPhone */,
@@ -594,6 +597,7 @@
 				DAD4080713417A3B00F05D88 /* MainViewController_iPad.m in Sources */,
 				5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */,
 				DA4E1676136C9E3900001A3B /* LaterEtasViewController.m in Sources */,
+				5C6FCFF6145B0F4B00E74C49 /* DataModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,6 +728,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				5C6FCFF5145B0F4B00E74C49 /* DataModel.xcdatamodel */,
+			);
+			currentVersion = 5C6FCFF5145B0F4B00E74C49 /* DataModel.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = DAD406EC1341635100F05D88 /* Project object */;
 }
