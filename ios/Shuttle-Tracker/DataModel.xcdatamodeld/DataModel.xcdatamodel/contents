@@ -4,39 +4,46 @@
         <attribute name="eta" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="route" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="shuttleId" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="stopId" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="stopName" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="shuttle" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Shuttle" inverseName="eta" inverseEntity="Shuttle" syncable="YES"/>
-        <relationship name="stop" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="etas" inverseEntity="Stop" syncable="YES"/>
+        <attribute name="stopId" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="shuttle" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Shuttle" inverseName="eta" inverseEntity="Shuttle" syncable="YES"/>
+        <relationship name="stop" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="etas" inverseEntity="Stop" syncable="YES"/>
     </entity>
     <entity name="Route" representedClassName="Route" syncable="YES">
         <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="idTag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="idTag" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="points" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="width" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="stops" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="routes" inverseEntity="Stop" syncable="YES"/>
+        <relationship name="points" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RoutePt" inverseName="route" inverseEntity="RoutePt" syncable="YES"/>
+        <relationship name="shuttles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Shuttle" inverseName="route" inverseEntity="Shuttle" syncable="YES"/>
+        <relationship name="stops" toMany="YES" minCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="routes" inverseEntity="Stop" syncable="YES"/>
+    </entity>
+    <entity name="RoutePt" syncable="YES">
+        <attribute name="locationX" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="locationY" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="pointNumber" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="route" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Route" inverseName="points" inverseEntity="Route" syncable="YES"/>
     </entity>
     <entity name="Shuttle" representedClassName="Shuttle" syncable="YES">
-        <attribute name="heading" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="heading" optional="YES" attributeType="Integer 16" defaultValueString="0.0" syncable="YES"/>
         <attribute name="locationX" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="locationY" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="updateTime" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="eta" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="ETA" inverseName="shuttle" inverseEntity="ETA" syncable="YES"/>
-        <relationship name="route" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Route" syncable="YES"/>
+        <relationship name="eta" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ETA" inverseName="shuttle" inverseEntity="ETA" syncable="YES"/>
+        <relationship name="route" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Route" inverseName="shuttles" inverseEntity="Route" syncable="YES"/>
     </entity>
     <entity name="Stop" representedClassName="Stop" syncable="YES">
         <attribute name="idTag" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shortName" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="etas" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="ETA" inverseName="stop" inverseEntity="ETA" syncable="YES"/>
-        <relationship name="routes" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Route" inverseName="stops" inverseEntity="Route" syncable="YES"/>
+        <relationship name="etas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ETA" inverseName="stop" inverseEntity="ETA" syncable="YES"/>
+        <relationship name="routes" toMany="YES" minCount="1" deletionRule="Nullify" destinationEntity="Route" inverseName="stops" inverseEntity="Route" syncable="YES"/>
     </entity>
     <elements>
         <element name="ETA" positionX="160" positionY="192" width="128" height="105"/>
         <element name="Route" positionX="160" positionY="192" width="128" height="105"/>
-        <element name="Shuttle" positionX="160" positionY="192" width="128" height="135"/>
-        <element name="Stop" positionX="160" positionY="192" width="128" height="120"/>
+        <element name="Shuttle" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="Stop" positionX="-279" positionY="342" width="128" height="120"/>
+        <element name="RoutePt" positionX="160" positionY="192" width="128" height="105"/>
     </elements>
 </model>
