@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F626134FC14100A38505 /* MapPlacemark.m */; };
 		5C6FCFF6145B0F4B00E74C49 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */; };
+		5C785152145B299B00079190 /* ETA.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C785151145B299B00079190 /* ETA.m */; };
+		5C785156145B29DD00079190 /* Route.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C785155145B29DD00079190 /* Route.m */; };
+		5C785159145B29EE00079190 /* Shuttle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C785158145B29EE00079190 /* Shuttle.m */; };
+		5C78515C145B29FA00079190 /* Stop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C78515B145B29FA00079190 /* Stop.m */; };
 		DA4E1676136C9E3900001A3B /* LaterEtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */; };
 		DA4E1677136C9E3900001A3B /* LaterEtasViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */; };
 		DA4E1679136CBFEA00001A3B /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DA4E1678136CBFEA00001A3B /* Default.png */; };
@@ -87,6 +91,14 @@
 		5C54F625134FC14100A38505 /* MapPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPlacemark.h; sourceTree = "<group>"; };
 		5C54F626134FC14100A38505 /* MapPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPlacemark.m; sourceTree = "<group>"; };
 		5C6FCFF5145B0F4B00E74C49 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		5C785150145B299B00079190 /* ETA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
+		5C785151145B299B00079190 /* ETA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
+		5C785154145B29DD00079190 /* Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Route.h; sourceTree = "<group>"; };
+		5C785155145B29DD00079190 /* Route.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Route.m; sourceTree = "<group>"; };
+		5C785157145B29EE00079190 /* Shuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shuttle.h; sourceTree = "<group>"; };
+		5C785158145B29EE00079190 /* Shuttle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shuttle.m; sourceTree = "<group>"; };
+		5C78515A145B29FA00079190 /* Stop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stop.h; sourceTree = "<group>"; };
+		5C78515B145B29FA00079190 /* Stop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stop.m; sourceTree = "<group>"; };
 		5CACD345135262BC00A4CD75 /* DataUrls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataUrls.h; sourceTree = "<group>"; };
 		DA4E1673136C9E3900001A3B /* LaterEtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaterEtasViewController.h; sourceTree = "<group>"; };
 		DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaterEtasViewController.m; sourceTree = "<group>"; };
@@ -263,22 +275,30 @@
 				DAD407081341635100F05D88 /* Shuttle_TrackerAppDelegate.h */,
 				DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */,
 				DAD4079B134166C100F05D88 /* DataManager.h */,
-				5CACD345135262BC00A4CD75 /* DataUrls.h */,
-				DAD4079C134166C100F05D88 /* EtasViewController.h */,
-				DAD4079D134166C100F05D88 /* EtaWrapper.h */,
-				DAD4079E134166C100F05D88 /* JSONParser.h */,
-				DA4E1673136C9E3900001A3B /* LaterEtasViewController.h */,
-				DAD407A0134166C100F05D88 /* MainViewController.h */,
-				5C54F625134FC14100A38505 /* MapPlacemark.h */,
-				DAD407A1134166C100F05D88 /* MapViewController.h */,
 				DAD407A2134166C100F05D88 /* DataManager.m */,
+				5CACD345135262BC00A4CD75 /* DataUrls.h */,
+				5C785150145B299B00079190 /* ETA.h */,
+				5C785151145B299B00079190 /* ETA.m */,
+				DAD4079C134166C100F05D88 /* EtasViewController.h */,
 				DAD407A3134166C100F05D88 /* EtasViewController.m */,
+				DAD4079D134166C100F05D88 /* EtaWrapper.h */,
 				DAD407A4134166C100F05D88 /* EtaWrapper.m */,
+				DAD4079E134166C100F05D88 /* JSONParser.h */,
 				DAD407A5134166C100F05D88 /* JSONParser.m */,
+				DA4E1673136C9E3900001A3B /* LaterEtasViewController.h */,
 				DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */,
-				5C54F626134FC14100A38505 /* MapPlacemark.m */,
+				DAD407A0134166C100F05D88 /* MainViewController.h */,
 				DAD407A7134166C100F05D88 /* MainViewController.m */,
+				5C54F625134FC14100A38505 /* MapPlacemark.h */,
+				5C54F626134FC14100A38505 /* MapPlacemark.m */,
+				DAD407A1134166C100F05D88 /* MapViewController.h */,
 				DAD407A8134166C200F05D88 /* MapViewController.m */,
+				5C785154145B29DD00079190 /* Route.h */,
+				5C785155145B29DD00079190 /* Route.m */,
+				5C785157145B29EE00079190 /* Shuttle.h */,
+				5C785158145B29EE00079190 /* Shuttle.m */,
+				5C78515A145B29FA00079190 /* Stop.h */,
+				5C78515B145B29FA00079190 /* Stop.m */,
 				DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */,
 				5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */,
 				DAD407B7134168A200F05D88 /* Settings.bundle */,
@@ -598,6 +618,10 @@
 				5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */,
 				DA4E1676136C9E3900001A3B /* LaterEtasViewController.m in Sources */,
 				5C6FCFF6145B0F4B00E74C49 /* DataModel.xcdatamodeld in Sources */,
+				5C785152145B299B00079190 /* ETA.m in Sources */,
+				5C785156145B29DD00079190 /* Route.m in Sources */,
+				5C785159145B29EE00079190 /* Shuttle.m in Sources */,
+				5C78515C145B29FA00079190 /* Stop.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
