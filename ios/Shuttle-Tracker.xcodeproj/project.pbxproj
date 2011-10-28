@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F626134FC14100A38505 /* MapPlacemark.m */; };
 		5C6FCFF6145B0F4B00E74C49 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */; };
+		5C78515F145B317300079190 /* Stop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C78515E145B317300079190 /* Stop.m */; };
+		5C785162145B317400079190 /* Shuttle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C785161145B317300079190 /* Shuttle.m */; };
+		5C785165145B317400079190 /* RoutePt.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C785164145B317400079190 /* RoutePt.m */; };
+		5C785168145B317400079190 /* Route.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C785167145B317400079190 /* Route.m */; };
+		5C78516B145B317400079190 /* ETA.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C78516A145B317400079190 /* ETA.m */; };
 		DA4E1676136C9E3900001A3B /* LaterEtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */; };
 		DA4E1677136C9E3900001A3B /* LaterEtasViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */; };
 		DA4E1679136CBFEA00001A3B /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DA4E1678136CBFEA00001A3B /* Default.png */; };
@@ -87,6 +92,16 @@
 		5C54F625134FC14100A38505 /* MapPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPlacemark.h; sourceTree = "<group>"; };
 		5C54F626134FC14100A38505 /* MapPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPlacemark.m; sourceTree = "<group>"; };
 		5C6FCFF5145B0F4B00E74C49 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		5C78515D145B317300079190 /* Stop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stop.h; sourceTree = "<group>"; };
+		5C78515E145B317300079190 /* Stop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stop.m; sourceTree = "<group>"; };
+		5C785160145B317300079190 /* Shuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shuttle.h; sourceTree = "<group>"; };
+		5C785161145B317300079190 /* Shuttle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shuttle.m; sourceTree = "<group>"; };
+		5C785163145B317400079190 /* RoutePt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoutePt.h; sourceTree = "<group>"; };
+		5C785164145B317400079190 /* RoutePt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoutePt.m; sourceTree = "<group>"; };
+		5C785166145B317400079190 /* Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Route.h; sourceTree = "<group>"; };
+		5C785167145B317400079190 /* Route.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Route.m; sourceTree = "<group>"; };
+		5C785169145B317400079190 /* ETA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
+		5C78516A145B317400079190 /* ETA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
 		5CACD345135262BC00A4CD75 /* DataUrls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataUrls.h; sourceTree = "<group>"; };
 		DA4E1673136C9E3900001A3B /* LaterEtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaterEtasViewController.h; sourceTree = "<group>"; };
 		DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaterEtasViewController.m; sourceTree = "<group>"; };
@@ -265,6 +280,8 @@
 				DAD4079B134166C100F05D88 /* DataManager.h */,
 				DAD407A2134166C100F05D88 /* DataManager.m */,
 				5CACD345135262BC00A4CD75 /* DataUrls.h */,
+				5C785169145B317400079190 /* ETA.h */,
+				5C78516A145B317400079190 /* ETA.m */,
 				DAD4079C134166C100F05D88 /* EtasViewController.h */,
 				DAD407A3134166C100F05D88 /* EtasViewController.m */,
 				DAD4079D134166C100F05D88 /* EtaWrapper.h */,
@@ -279,6 +296,14 @@
 				5C54F626134FC14100A38505 /* MapPlacemark.m */,
 				DAD407A1134166C100F05D88 /* MapViewController.h */,
 				DAD407A8134166C200F05D88 /* MapViewController.m */,
+				5C785166145B317400079190 /* Route.h */,
+				5C785167145B317400079190 /* Route.m */,
+				5C785163145B317400079190 /* RoutePt.h */,
+				5C785164145B317400079190 /* RoutePt.m */,
+				5C785160145B317300079190 /* Shuttle.h */,
+				5C785161145B317300079190 /* Shuttle.m */,
+				5C78515D145B317300079190 /* Stop.h */,
+				5C78515E145B317300079190 /* Stop.m */,
 				DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */,
 				5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */,
 				DAD407B7134168A200F05D88 /* Settings.bundle */,
@@ -598,6 +623,11 @@
 				5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */,
 				DA4E1676136C9E3900001A3B /* LaterEtasViewController.m in Sources */,
 				5C6FCFF6145B0F4B00E74C49 /* DataModel.xcdatamodeld in Sources */,
+				5C78515F145B317300079190 /* Stop.m in Sources */,
+				5C785162145B317400079190 /* Shuttle.m in Sources */,
+				5C785165145B317400079190 /* RoutePt.m in Sources */,
+				5C785168145B317400079190 /* Route.m in Sources */,
+				5C78516B145B317400079190 /* ETA.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

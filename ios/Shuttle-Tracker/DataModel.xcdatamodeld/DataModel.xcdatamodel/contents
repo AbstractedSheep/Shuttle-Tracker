@@ -17,7 +17,7 @@
         <relationship name="shuttles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Shuttle" inverseName="route" inverseEntity="Shuttle" syncable="YES"/>
         <relationship name="stops" toMany="YES" minCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="routes" inverseEntity="Stop" syncable="YES"/>
     </entity>
-    <entity name="RoutePt" syncable="YES">
+    <entity name="RoutePt" representedClassName="RoutePt" syncable="YES">
         <attribute name="locationX" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="locationY" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="pointNumber" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -42,7 +42,7 @@
     <elements>
         <element name="ETA" positionX="160" positionY="192" width="128" height="105"/>
         <element name="Route" positionX="160" positionY="192" width="128" height="105"/>
-        <element name="Shuttle" positionX="160" positionY="192" width="128" height="150"/>
+        <element name="Shuttle" positionX="160" positionY="192" width="128" height="135"/>
         <element name="Stop" positionX="-279" positionY="342" width="128" height="120"/>
         <element name="RoutePt" positionX="160" positionY="192" width="128" height="105"/>
     </elements>
