@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C1E967C145B389700548108 /* shuttle_color_east.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C1E9678145B389700548108 /* shuttle_color_east.png */; };
+		5C1E967D145B389700548108 /* shuttle_color_north.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C1E9679145B389700548108 /* shuttle_color_north.png */; };
+		5C1E967E145B389700548108 /* shuttle_color_south.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C1E967A145B389700548108 /* shuttle_color_south.png */; };
+		5C1E967F145B389700548108 /* shuttle_color_west.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C1E967B145B389700548108 /* shuttle_color_west.png */; };
 		5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F626134FC14100A38505 /* MapPlacemark.m */; };
 		5C6FCFF6145B0F4B00E74C49 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */; };
 		5C78515F145B317300079190 /* Stop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C78515E145B317300079190 /* Stop.m */; };
@@ -89,6 +93,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C1E9678145B389700548108 /* shuttle_color_east.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color_east.png; sourceTree = "<group>"; };
+		5C1E9679145B389700548108 /* shuttle_color_north.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color_north.png; sourceTree = "<group>"; };
+		5C1E967A145B389700548108 /* shuttle_color_south.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color_south.png; sourceTree = "<group>"; };
+		5C1E967B145B389700548108 /* shuttle_color_west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color_west.png; sourceTree = "<group>"; };
 		5C54F625134FC14100A38505 /* MapPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPlacemark.h; sourceTree = "<group>"; };
 		5C54F626134FC14100A38505 /* MapPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPlacemark.m; sourceTree = "<group>"; };
 		5C6FCFF5145B0F4B00E74C49 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
@@ -488,6 +496,10 @@
 				DAD407BD134168CA00F05D88 /* glyphish_map.png */,
 				DAD407BE134168CA00F05D88 /* glyphish_map@2x.png */,
 				DAD407BF134168CA00F05D88 /* shuttle_color.png */,
+				5C1E9678145B389700548108 /* shuttle_color_east.png */,
+				5C1E9679145B389700548108 /* shuttle_color_north.png */,
+				5C1E967A145B389700548108 /* shuttle_color_south.png */,
+				5C1E967B145B389700548108 /* shuttle_color_west.png */,
 				DAD407C0134168CA00F05D88 /* shuttle.png */,
 				DAD407C1134168CA00F05D88 /* stop_marker.png */,
 			);
@@ -574,6 +586,10 @@
 				DA4E1677136C9E3900001A3B /* LaterEtasViewController.xib in Resources */,
 				DA4E1679136CBFEA00001A3B /* Default.png in Resources */,
 				DA4E167B136CBFEF00001A3B /* Default@2x.png in Resources */,
+				5C1E967C145B389700548108 /* shuttle_color_east.png in Resources */,
+				5C1E967D145B389700548108 /* shuttle_color_north.png in Resources */,
+				5C1E967E145B389700548108 /* shuttle_color_south.png in Resources */,
+				5C1E967F145B389700548108 /* shuttle_color_west.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
