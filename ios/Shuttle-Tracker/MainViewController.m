@@ -81,8 +81,6 @@
         [self.view addSubview:self.splitViewController.view];
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         //  Create a tabbed view, with a map view, ETA view, and settings view.
-        
-        self.title = NSLocalizedString(@"Shuttles", @"Shuttles");
         self.tabBarController = [[[UITabBarController alloc] init] autorelease];
         
         self.tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasTableNavController, settingsNavController, nil];

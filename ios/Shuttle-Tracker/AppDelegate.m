@@ -8,10 +8,6 @@
 
 #import "AppDelegate.h"
 
-#import "MasterViewController.h"
-
-#import "DetailViewController.h"
-
 #import "MainViewController.h"
 
 @implementation AppDelegate
@@ -42,25 +38,6 @@
     self.window.rootViewController = mainViewController;
     mainViewController.managedObjectContext = self.managedObjectContext;
     
-//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-//        MasterViewController *masterViewController = [[[MasterViewController alloc] init] autorelease];
-//        self.window.rootViewController = self.navigationController;
-//        masterViewController.managedObjectContext = self.managedObjectContext;
-//    } else {
-//        MasterViewController *masterViewController = [[[MasterViewController alloc] init] autorelease];
-//        UINavigationController *masterNavigationController = [[[UINavigationController alloc] initWithRootViewController:masterViewController] autorelease];
-//        
-//        DetailViewController *detailViewController = [[[DetailViewController alloc] init] autorelease];
-//        UINavigationController *detailNavigationController = [[[UINavigationController alloc] initWithRootViewController:detailViewController] autorelease];
-//    	
-//        self.splitViewController = [[[UISplitViewController alloc] init] autorelease];
-//        self.splitViewController.delegate = detailViewController;
-//        self.splitViewController.viewControllers = [NSArray arrayWithObjects:masterNavigationController, detailNavigationController, nil];
-//        
-//        self.window.rootViewController = self.splitViewController;
-//        masterViewController.detailViewController = detailViewController;
-//        masterViewController.managedObjectContext = self.managedObjectContext;
-//    }
     [self.window makeKeyAndVisible];
     return YES;
 }

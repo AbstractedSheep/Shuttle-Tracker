@@ -117,6 +117,8 @@ typedef enum {
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
+    self.title = NSLocalizedString(@"Shuttles", @"Shuttles");
+    
     CGRect rect = [[UIScreen mainScreen] bounds];
     
 	_mapView = [[MKMapView alloc] initWithFrame:rect];

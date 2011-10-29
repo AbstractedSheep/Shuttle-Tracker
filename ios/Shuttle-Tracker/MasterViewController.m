@@ -8,15 +8,12 @@
 
 #import "MasterViewController.h"
 
-#import "DetailViewController.h"
-
 @interface MasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
 @implementation MasterViewController
 
-@synthesize detailViewController = _detailViewController;
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;
 
@@ -31,7 +28,6 @@
 							
 - (void)dealloc
 {
-    [_detailViewController release];
     [__fetchedResultsController release];
     [__managedObjectContext release];
     [super dealloc];
@@ -164,17 +160,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-	    if (!self.detailViewController) {
-	        self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
-	    }
-        NSManagedObject *selectedObject = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        self.detailViewController.detailItem = selectedObject;    
-        [self.navigationController pushViewController:self.detailViewController animated:YES];
-    } else {
-        NSManagedObject *selectedObject = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        self.detailViewController.detailItem = selectedObject;    
-    }
 }
 
 #pragma mark - Fetched results controller

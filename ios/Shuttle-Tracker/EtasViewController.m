@@ -37,7 +37,7 @@
 - (id)initWithStyle:(UITableViewStyle)style
 {
     if ((self = [super initWithStyle:style])) {
-		self.title = @"ETAs";
+        self.title = NSLocalizedString(@"ETAs", @"ETAs");
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];

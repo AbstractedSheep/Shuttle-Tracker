@@ -16,7 +16,6 @@
 		5C68B524145C85AC00D9A82E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B523145C85AC00D9A82E /* AppDelegate.m */; };
 		5C68B527145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */; };
 		5C68B52A145C85AC00D9A82E /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B529145C85AC00D9A82E /* MasterViewController.m */; };
-		5C68B52D145C85AC00D9A82E /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B52C145C85AC00D9A82E /* DetailViewController.m */; };
 		5C68B54B145C87B300D9A82E /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B544145C87B200D9A82E /* DataManager.m */; };
 		5C68B54C145C87B300D9A82E /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B545145C87B200D9A82E /* EtaWrapper.m */; };
 		5C68B54D145C87B300D9A82E /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B546145C87B200D9A82E /* MapViewController.m */; };
@@ -97,8 +96,6 @@
 		5C68B526145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shuttle_Tracker.xcdatamodel; sourceTree = "<group>"; };
 		5C68B528145C85AC00D9A82E /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
 		5C68B529145C85AC00D9A82E /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
-		5C68B52B145C85AC00D9A82E /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
-		5C68B52C145C85AC00D9A82E /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		5C68B544145C87B200D9A82E /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		5C68B545145C87B200D9A82E /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
 		5C68B546145C87B200D9A82E /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
@@ -264,8 +261,6 @@
 				5C68B547145C87B200D9A82E /* DataManager.h */,
 				5C68B544145C87B200D9A82E /* DataManager.m */,
 				5C68B548145C87B200D9A82E /* DataUrls.h */,
-				5C68B52B145C85AC00D9A82E /* DetailViewController.h */,
-				5C68B52C145C85AC00D9A82E /* DetailViewController.m */,
 				5C68B5F7145C8C8D00D9A82E /* EtasViewController.h */,
 				5C68B5F6145C8C8D00D9A82E /* EtasViewController.m */,
 				5C68B549145C87B200D9A82E /* EtaWrapper.h */,
@@ -541,7 +536,6 @@
 				5C68B524145C85AC00D9A82E /* AppDelegate.m in Sources */,
 				5C68B527145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld in Sources */,
 				5C68B52A145C85AC00D9A82E /* MasterViewController.m in Sources */,
-				5C68B52D145C85AC00D9A82E /* DetailViewController.m in Sources */,
 				5C68B54B145C87B300D9A82E /* DataManager.m in Sources */,
 				5C68B54C145C87B300D9A82E /* EtaWrapper.m in Sources */,
 				5C68B54D145C87B300D9A82E /* MapViewController.m in Sources */,
