@@ -2,16 +2,17 @@
 //  main.m
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 3/28/11.
-//  Copyright 2011 Brendon Justin. All rights reserved.
+//  Created by Brendon Justin on 10/29/11.
+//  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
+#import "AppDelegate.h"
+
 int main(int argc, char *argv[])
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	int retVal = UIApplicationMain(argc, argv, nil, nil);
-	[pool release];
-	return retVal;
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    }
 }

@@ -7,515 +7,128 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C1E967C145B389700548108 /* shuttle_color_east.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C1E9678145B389700548108 /* shuttle_color_east.png */; };
-		5C1E967D145B389700548108 /* shuttle_color_north.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C1E9679145B389700548108 /* shuttle_color_north.png */; };
-		5C1E967E145B389700548108 /* shuttle_color_south.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C1E967A145B389700548108 /* shuttle_color_south.png */; };
-		5C1E967F145B389700548108 /* shuttle_color_west.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C1E967B145B389700548108 /* shuttle_color_west.png */; };
-		5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C54F626134FC14100A38505 /* MapPlacemark.m */; };
-		5C6FCFF6145B0F4B00E74C49 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */; };
-		5C78515F145B317300079190 /* Stop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C78515E145B317300079190 /* Stop.m */; };
-		5C785162145B317400079190 /* Shuttle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C785161145B317300079190 /* Shuttle.m */; };
-		5C785165145B317400079190 /* RoutePt.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C785164145B317400079190 /* RoutePt.m */; };
-		5C785168145B317400079190 /* Route.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C785167145B317400079190 /* Route.m */; };
-		5C78516B145B317400079190 /* ETA.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C78516A145B317400079190 /* ETA.m */; };
-		DA4E1676136C9E3900001A3B /* LaterEtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */; };
-		DA4E1677136C9E3900001A3B /* LaterEtasViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */; };
-		DA4E1679136CBFEA00001A3B /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = DA4E1678136CBFEA00001A3B /* Default.png */; };
-		DA4E167B136CBFEF00001A3B /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DA4E167A136CBFEF00001A3B /* Default@2x.png */; };
-		DAD407041341635100F05D88 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DAD407021341635100F05D88 /* InfoPlist.strings */; };
-		DAD407071341635100F05D88 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407061341635100F05D88 /* main.m */; };
-		DAD4070A1341635100F05D88 /* Shuttle_TrackerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */; };
-		DAD4070E1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4070D1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m */; };
-		DAD407111341635100F05D88 /* MainWindow_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD4070F1341635100F05D88 /* MainWindow_iPhone.xib */; };
-		DAD407151341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407141341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m */; };
-		DAD407181341635100F05D88 /* MainWindow_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407161341635100F05D88 /* MainWindow_iPad.xib */; };
-		DAD40737134165F300F05D88 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD40736134165F300F05D88 /* CoreLocation.framework */; };
-		DAD4073A134165FF00F05D88 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD40739134165FF00F05D88 /* MapKit.framework */; };
-		DAD4073C1341660300F05D88 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD4073B1341660300F05D88 /* MessageUI.framework */; };
-		DAD407541341666500F05D88 /* CDataScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4073F1341666500F05D88 /* CDataScanner.m */; };
-		DAD407551341666500F05D88 /* CFilteringJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407421341666500F05D88 /* CFilteringJSONSerializer.m */; };
-		DAD407561341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407441341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m */; };
-		DAD407571341666500F05D88 /* CJSONSerializedData.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407461341666500F05D88 /* CJSONSerializedData.m */; };
-		DAD407581341666500F05D88 /* CDataScanner_Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407491341666500F05D88 /* CDataScanner_Extensions.m */; };
-		DAD407591341666500F05D88 /* NSDictionary_JSONExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4074B1341666500F05D88 /* NSDictionary_JSONExtensions.m */; };
-		DAD4075A1341666500F05D88 /* CJSONDeserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4074E1341666500F05D88 /* CJSONDeserializer.m */; };
-		DAD4075B1341666500F05D88 /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407501341666500F05D88 /* CJSONScanner.m */; };
-		DAD4075C1341666500F05D88 /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407521341666500F05D88 /* CJSONSerializer.m */; };
-		DAD407861341667300F05D88 /* IASKAppSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407601341667300F05D88 /* IASKAppSettingsViewController.m */; };
-		DAD407871341667300F05D88 /* IASKAppSettingsWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407621341667300F05D88 /* IASKAppSettingsWebViewController.m */; };
-		DAD407881341667300F05D88 /* IASKSpecifierValuesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407641341667300F05D88 /* IASKSpecifierValuesViewController.m */; };
-		DAD407891341667300F05D88 /* IASKSettingsReader.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407671341667300F05D88 /* IASKSettingsReader.m */; };
-		DAD4078A1341667300F05D88 /* IASKSettingsStore.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407691341667300F05D88 /* IASKSettingsStore.m */; };
-		DAD4078B1341667300F05D88 /* IASKSettingsStoreFile.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4076B1341667300F05D88 /* IASKSettingsStoreFile.m */; };
-		DAD4078C1341667300F05D88 /* IASKSettingsStoreUserDefaults.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4076D1341667300F05D88 /* IASKSettingsStoreUserDefaults.m */; };
-		DAD4078D1341667300F05D88 /* IASKSpecifier.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4076F1341667300F05D88 /* IASKSpecifier.m */; };
-		DAD4078E1341667300F05D88 /* IASKPSSliderSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407721341667300F05D88 /* IASKPSSliderSpecifierViewCell.m */; };
-		DAD4078F1341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407741341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m */; };
-		DAD407901341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407761341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m */; };
-		DAD407911341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407781341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m */; };
-		DAD407921341667300F05D88 /* IASKSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4077A1341667300F05D88 /* IASKSlider.m */; };
-		DAD407931341667300F05D88 /* IASKSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4077C1341667300F05D88 /* IASKSwitch.m */; };
-		DAD407941341667300F05D88 /* IASKTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4077E1341667300F05D88 /* IASKTextField.m */; };
-		DAD407951341667300F05D88 /* IASKAppSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407801341667300F05D88 /* IASKAppSettingsView.xib */; };
-		DAD407961341667300F05D88 /* IASKAppSettingsWebView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407811341667300F05D88 /* IASKAppSettingsWebView.xib */; };
-		DAD407971341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407821341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib */; };
-		DAD407981341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407831341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib */; };
-		DAD407991341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407841341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib */; };
-		DAD4079A1341667300F05D88 /* IASKSpecifierValuesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DAD407851341667300F05D88 /* IASKSpecifierValuesView.xib */; };
-		DAD407A9134166C200F05D88 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A2134166C100F05D88 /* DataManager.m */; };
-		DAD407AA134166C200F05D88 /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A3134166C100F05D88 /* EtasViewController.m */; };
-		DAD407AB134166C200F05D88 /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A4134166C100F05D88 /* EtaWrapper.m */; };
-		DAD407AC134166C200F05D88 /* JSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A5134166C100F05D88 /* JSONParser.m */; };
-		DAD407AE134166C200F05D88 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A7134166C100F05D88 /* MainViewController.m */; };
-		DAD407AF134166C200F05D88 /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD407A8134166C200F05D88 /* MapViewController.m */; };
-		DAD407B8134168A200F05D88 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DAD407B7134168A200F05D88 /* Settings.bundle */; };
-		DAD407C2134168CA00F05D88 /* glyphish_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407B9134168CA00F05D88 /* glyphish_clock.png */; };
-		DAD407C3134168CA00F05D88 /* glyphish_clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BA134168CA00F05D88 /* glyphish_clock@2x.png */; };
-		DAD407C4134168CA00F05D88 /* glyphish_gear.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BB134168CA00F05D88 /* glyphish_gear.png */; };
-		DAD407C5134168CA00F05D88 /* glyphish_gear@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BC134168CA00F05D88 /* glyphish_gear@2x.png */; };
-		DAD407C6134168CA00F05D88 /* glyphish_map.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BD134168CA00F05D88 /* glyphish_map.png */; };
-		DAD407C7134168CA00F05D88 /* glyphish_map@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BE134168CA00F05D88 /* glyphish_map@2x.png */; };
-		DAD407C8134168CA00F05D88 /* shuttle_color.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407BF134168CA00F05D88 /* shuttle_color.png */; };
-		DAD407C9134168CA00F05D88 /* shuttle.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407C0134168CA00F05D88 /* shuttle.png */; };
-		DAD407CA134168CA00F05D88 /* stop_marker.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407C1134168CA00F05D88 /* stop_marker.png */; };
-		DAD407D6134169A600F05D88 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D3134169A600F05D88 /* Icon-Small-50.png */; };
-		DAD407D7134169A600F05D88 /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D4134169A600F05D88 /* Icon-Small.png */; };
-		DAD407D8134169A600F05D88 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D5134169A600F05D88 /* Icon-Small@2x.png */; };
-		DAD407DA13416B2300F05D88 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407D913416B2300F05D88 /* Icon.png */; };
-		DAD407DC13416B2800F05D88 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407DB13416B2800F05D88 /* Icon@2x.png */; };
-		DAD407DE13416B3000F05D88 /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD407DD13416B3000F05D88 /* Icon-72.png */; };
-		DAD407E21341701500F05D88 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD407E11341701500F05D88 /* UIKit.framework */; };
-		DAD407EE1341704E00F05D88 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD407ED1341704D00F05D88 /* CoreGraphics.framework */; };
-		DAD407F01341709A00F05D88 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD407EF1341709A00F05D88 /* Foundation.framework */; };
-		DAD4080413417A1E00F05D88 /* MainViewController_iPhone.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4080313417A1E00F05D88 /* MainViewController_iPhone.m */; };
-		DAD4080713417A3B00F05D88 /* MainViewController_iPad.m in Sources */ = {isa = PBXBuildFile; fileRef = DAD4080613417A3B00F05D88 /* MainViewController_iPad.m */; };
-		DAD4080F13417B6D00F05D88 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD4080E13417B6D00F05D88 /* Default-Landscape~ipad.png */; };
+		5C68B512145C85AC00D9A82E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B511145C85AC00D9A82E /* UIKit.framework */; };
+		5C68B514145C85AC00D9A82E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B513145C85AC00D9A82E /* Foundation.framework */; };
+		5C68B516145C85AC00D9A82E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B515145C85AC00D9A82E /* CoreGraphics.framework */; };
+		5C68B518145C85AC00D9A82E /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B517145C85AC00D9A82E /* CoreData.framework */; };
+		5C68B51E145C85AC00D9A82E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B51C145C85AC00D9A82E /* InfoPlist.strings */; };
+		5C68B520145C85AC00D9A82E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B51F145C85AC00D9A82E /* main.m */; };
+		5C68B524145C85AC00D9A82E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B523145C85AC00D9A82E /* AppDelegate.m */; };
+		5C68B527145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */; };
+		5C68B52A145C85AC00D9A82E /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B529145C85AC00D9A82E /* MasterViewController.m */; };
+		5C68B52D145C85AC00D9A82E /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B52C145C85AC00D9A82E /* DetailViewController.m */; };
+		5C68B530145C85AC00D9A82E /* MasterViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B52E145C85AC00D9A82E /* MasterViewController_iPhone.xib */; };
+		5C68B533145C85AC00D9A82E /* MasterViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B531145C85AC00D9A82E /* MasterViewController_iPad.xib */; };
+		5C68B536145C85AC00D9A82E /* DetailViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B534145C85AC00D9A82E /* DetailViewController_iPhone.xib */; };
+		5C68B539145C85AC00D9A82E /* DetailViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B537145C85AC00D9A82E /* DetailViewController_iPad.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5C1E9678145B389700548108 /* shuttle_color_east.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color_east.png; sourceTree = "<group>"; };
-		5C1E9679145B389700548108 /* shuttle_color_north.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color_north.png; sourceTree = "<group>"; };
-		5C1E967A145B389700548108 /* shuttle_color_south.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color_south.png; sourceTree = "<group>"; };
-		5C1E967B145B389700548108 /* shuttle_color_west.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color_west.png; sourceTree = "<group>"; };
-		5C54F625134FC14100A38505 /* MapPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPlacemark.h; sourceTree = "<group>"; };
-		5C54F626134FC14100A38505 /* MapPlacemark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPlacemark.m; sourceTree = "<group>"; };
-		5C6FCFF5145B0F4B00E74C49 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
-		5C78515D145B317300079190 /* Stop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stop.h; sourceTree = "<group>"; };
-		5C78515E145B317300079190 /* Stop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stop.m; sourceTree = "<group>"; };
-		5C785160145B317300079190 /* Shuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shuttle.h; sourceTree = "<group>"; };
-		5C785161145B317300079190 /* Shuttle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shuttle.m; sourceTree = "<group>"; };
-		5C785163145B317400079190 /* RoutePt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoutePt.h; sourceTree = "<group>"; };
-		5C785164145B317400079190 /* RoutePt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoutePt.m; sourceTree = "<group>"; };
-		5C785166145B317400079190 /* Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Route.h; sourceTree = "<group>"; };
-		5C785167145B317400079190 /* Route.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Route.m; sourceTree = "<group>"; };
-		5C785169145B317400079190 /* ETA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
-		5C78516A145B317400079190 /* ETA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
-		5CACD345135262BC00A4CD75 /* DataUrls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataUrls.h; sourceTree = "<group>"; };
-		DA4E1673136C9E3900001A3B /* LaterEtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaterEtasViewController.h; sourceTree = "<group>"; };
-		DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaterEtasViewController.m; sourceTree = "<group>"; };
-		DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaterEtasViewController.xib; sourceTree = "<group>"; };
-		DA4E1678136CBFEA00001A3B /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		DA4E167A136CBFEF00001A3B /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		DAD406F51341635100F05D88 /* Shuttle-Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shuttle-Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DAD407011341635100F05D88 /* Shuttle-Tracker-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Shuttle-Tracker-Info.plist"; sourceTree = "<group>"; };
-		DAD407031341635100F05D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		DAD407051341635100F05D88 /* Shuttle-Tracker-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shuttle-Tracker-Prefix.pch"; sourceTree = "<group>"; };
-		DAD407061341635100F05D88 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		DAD407081341635100F05D88 /* Shuttle_TrackerAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shuttle_TrackerAppDelegate.h; sourceTree = "<group>"; };
-		DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Shuttle_TrackerAppDelegate.m; sourceTree = "<group>"; };
-		DAD4070C1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Shuttle_TrackerAppDelegate_iPhone.h; path = iPhone/Shuttle_TrackerAppDelegate_iPhone.h; sourceTree = "<group>"; };
-		DAD4070D1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Shuttle_TrackerAppDelegate_iPhone.m; path = iPhone/Shuttle_TrackerAppDelegate_iPhone.m; sourceTree = "<group>"; };
-		DAD407101341635100F05D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = iPhone/en.lproj/MainWindow_iPhone.xib; sourceTree = "<group>"; };
-		DAD407131341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Shuttle_TrackerAppDelegate_iPad.h; path = iPad/Shuttle_TrackerAppDelegate_iPad.h; sourceTree = "<group>"; };
-		DAD407141341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Shuttle_TrackerAppDelegate_iPad.m; path = iPad/Shuttle_TrackerAppDelegate_iPad.m; sourceTree = "<group>"; };
-		DAD407171341635100F05D88 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = iPad/en.lproj/MainWindow_iPad.xib; sourceTree = "<group>"; };
-		DAD40736134165F300F05D88 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		DAD40739134165FF00F05D88 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		DAD4073B1341660300F05D88 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		DAD4073E1341666500F05D88 /* CDataScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner.h; sourceTree = "<group>"; };
-		DAD4073F1341666500F05D88 /* CDataScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner.m; sourceTree = "<group>"; };
-		DAD407411341666500F05D88 /* CFilteringJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CFilteringJSONSerializer.h; sourceTree = "<group>"; };
-		DAD407421341666500F05D88 /* CFilteringJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CFilteringJSONSerializer.m; sourceTree = "<group>"; };
-		DAD407431341666500F05D88 /* CJSONDeserializer_BlocksExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer_BlocksExtensions.h; sourceTree = "<group>"; };
-		DAD407441341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer_BlocksExtensions.m; sourceTree = "<group>"; };
-		DAD407451341666500F05D88 /* CJSONSerializedData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializedData.h; sourceTree = "<group>"; };
-		DAD407461341666500F05D88 /* CJSONSerializedData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializedData.m; sourceTree = "<group>"; };
-		DAD407481341666500F05D88 /* CDataScanner_Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDataScanner_Extensions.h; sourceTree = "<group>"; };
-		DAD407491341666500F05D88 /* CDataScanner_Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDataScanner_Extensions.m; sourceTree = "<group>"; };
-		DAD4074A1341666500F05D88 /* NSDictionary_JSONExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionary_JSONExtensions.h; sourceTree = "<group>"; };
-		DAD4074B1341666500F05D88 /* NSDictionary_JSONExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDictionary_JSONExtensions.m; sourceTree = "<group>"; };
-		DAD4074D1341666500F05D88 /* CJSONDeserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONDeserializer.h; sourceTree = "<group>"; };
-		DAD4074E1341666500F05D88 /* CJSONDeserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONDeserializer.m; sourceTree = "<group>"; };
-		DAD4074F1341666500F05D88 /* CJSONScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONScanner.h; sourceTree = "<group>"; };
-		DAD407501341666500F05D88 /* CJSONScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONScanner.m; sourceTree = "<group>"; };
-		DAD407511341666500F05D88 /* CJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CJSONSerializer.h; sourceTree = "<group>"; };
-		DAD407521341666500F05D88 /* CJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CJSONSerializer.m; sourceTree = "<group>"; };
-		DAD407531341666500F05D88 /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
-		DAD4075F1341667300F05D88 /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
-		DAD407601341667300F05D88 /* IASKAppSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsViewController.m; sourceTree = "<group>"; };
-		DAD407611341667300F05D88 /* IASKAppSettingsWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsWebViewController.h; sourceTree = "<group>"; };
-		DAD407621341667300F05D88 /* IASKAppSettingsWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsWebViewController.m; sourceTree = "<group>"; };
-		DAD407631341667300F05D88 /* IASKSpecifierValuesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSpecifierValuesViewController.h; sourceTree = "<group>"; };
-		DAD407641341667300F05D88 /* IASKSpecifierValuesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSpecifierValuesViewController.m; sourceTree = "<group>"; };
-		DAD407661341667300F05D88 /* IASKSettingsReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsReader.h; sourceTree = "<group>"; };
-		DAD407671341667300F05D88 /* IASKSettingsReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsReader.m; sourceTree = "<group>"; };
-		DAD407681341667300F05D88 /* IASKSettingsStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsStore.h; sourceTree = "<group>"; };
-		DAD407691341667300F05D88 /* IASKSettingsStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsStore.m; sourceTree = "<group>"; };
-		DAD4076A1341667300F05D88 /* IASKSettingsStoreFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsStoreFile.h; sourceTree = "<group>"; };
-		DAD4076B1341667300F05D88 /* IASKSettingsStoreFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsStoreFile.m; sourceTree = "<group>"; };
-		DAD4076C1341667300F05D88 /* IASKSettingsStoreUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSettingsStoreUserDefaults.h; sourceTree = "<group>"; };
-		DAD4076D1341667300F05D88 /* IASKSettingsStoreUserDefaults.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSettingsStoreUserDefaults.m; sourceTree = "<group>"; };
-		DAD4076E1341667300F05D88 /* IASKSpecifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSpecifier.h; sourceTree = "<group>"; };
-		DAD4076F1341667300F05D88 /* IASKSpecifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSpecifier.m; sourceTree = "<group>"; };
-		DAD407711341667300F05D88 /* IASKPSSliderSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSSliderSpecifierViewCell.h; sourceTree = "<group>"; };
-		DAD407721341667300F05D88 /* IASKPSSliderSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSSliderSpecifierViewCell.m; sourceTree = "<group>"; };
-		DAD407731341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSTextFieldSpecifierViewCell.h; sourceTree = "<group>"; };
-		DAD407741341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSTextFieldSpecifierViewCell.m; sourceTree = "<group>"; };
-		DAD407751341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSTitleValueSpecifierViewCell.h; sourceTree = "<group>"; };
-		DAD407761341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSTitleValueSpecifierViewCell.m; sourceTree = "<group>"; };
-		DAD407771341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKPSToggleSwitchSpecifierViewCell.h; sourceTree = "<group>"; };
-		DAD407781341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKPSToggleSwitchSpecifierViewCell.m; sourceTree = "<group>"; };
-		DAD407791341667300F05D88 /* IASKSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSlider.h; sourceTree = "<group>"; };
-		DAD4077A1341667300F05D88 /* IASKSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSlider.m; sourceTree = "<group>"; };
-		DAD4077B1341667300F05D88 /* IASKSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKSwitch.h; sourceTree = "<group>"; };
-		DAD4077C1341667300F05D88 /* IASKSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKSwitch.m; sourceTree = "<group>"; };
-		DAD4077D1341667300F05D88 /* IASKTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKTextField.h; sourceTree = "<group>"; };
-		DAD4077E1341667300F05D88 /* IASKTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKTextField.m; sourceTree = "<group>"; };
-		DAD407801341667300F05D88 /* IASKAppSettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKAppSettingsView.xib; sourceTree = "<group>"; };
-		DAD407811341667300F05D88 /* IASKAppSettingsWebView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKAppSettingsWebView.xib; sourceTree = "<group>"; };
-		DAD407821341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSSliderSpecifierViewCell.xib; sourceTree = "<group>"; };
-		DAD407831341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSTextFieldSpecifierViewCell.xib; sourceTree = "<group>"; };
-		DAD407841341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKPSToggleSwitchSpecifierViewCell.xib; sourceTree = "<group>"; };
-		DAD407851341667300F05D88 /* IASKSpecifierValuesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IASKSpecifierValuesView.xib; sourceTree = "<group>"; };
-		DAD4079B134166C100F05D88 /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
-		DAD4079C134166C100F05D88 /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtasViewController.h; sourceTree = "<group>"; };
-		DAD4079D134166C100F05D88 /* EtaWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtaWrapper.h; sourceTree = "<group>"; };
-		DAD4079E134166C100F05D88 /* JSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONParser.h; sourceTree = "<group>"; };
-		DAD407A0134166C100F05D88 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
-		DAD407A1134166C100F05D88 /* MapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapViewController.h; sourceTree = "<group>"; };
-		DAD407A2134166C100F05D88 /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
-		DAD407A3134166C100F05D88 /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtasViewController.m; sourceTree = "<group>"; };
-		DAD407A4134166C100F05D88 /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
-		DAD407A5134166C100F05D88 /* JSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONParser.m; sourceTree = "<group>"; };
-		DAD407A7134166C100F05D88 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
-		DAD407A8134166C200F05D88 /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
-		DAD407B7134168A200F05D88 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		DAD407B9134168CA00F05D88 /* glyphish_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_clock.png; sourceTree = "<group>"; };
-		DAD407BA134168CA00F05D88 /* glyphish_clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_clock@2x.png"; sourceTree = "<group>"; };
-		DAD407BB134168CA00F05D88 /* glyphish_gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_gear.png; sourceTree = "<group>"; };
-		DAD407BC134168CA00F05D88 /* glyphish_gear@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_gear@2x.png"; sourceTree = "<group>"; };
-		DAD407BD134168CA00F05D88 /* glyphish_map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_map.png; sourceTree = "<group>"; };
-		DAD407BE134168CA00F05D88 /* glyphish_map@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_map@2x.png"; sourceTree = "<group>"; };
-		DAD407BF134168CA00F05D88 /* shuttle_color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle_color.png; sourceTree = "<group>"; };
-		DAD407C0134168CA00F05D88 /* shuttle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shuttle.png; sourceTree = "<group>"; };
-		DAD407C1134168CA00F05D88 /* stop_marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop_marker.png; sourceTree = "<group>"; };
-		DAD407D3134169A600F05D88 /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
-		DAD407D4134169A600F05D88 /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
-		DAD407D5134169A600F05D88 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
-		DAD407D913416B2300F05D88 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		DAD407DB13416B2800F05D88 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
-		DAD407DD13416B3000F05D88 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
-		DAD407E11341701500F05D88 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		DAD407ED1341704D00F05D88 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		DAD407EF1341709A00F05D88 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		DAD4080213417A1E00F05D88 /* MainViewController_iPhone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController_iPhone.h; path = iPhone/MainViewController_iPhone.h; sourceTree = "<group>"; };
-		DAD4080313417A1E00F05D88 /* MainViewController_iPhone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController_iPhone.m; path = iPhone/MainViewController_iPhone.m; sourceTree = "<group>"; };
-		DAD4080513417A3B00F05D88 /* MainViewController_iPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController_iPad.h; path = iPad/MainViewController_iPad.h; sourceTree = "<group>"; };
-		DAD4080613417A3B00F05D88 /* MainViewController_iPad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController_iPad.m; path = iPad/MainViewController_iPad.m; sourceTree = "<group>"; };
-		DAD4080E13417B6D00F05D88 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		5C68B50D145C85AC00D9A82E /* Shuttle-Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shuttle-Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C68B511145C85AC00D9A82E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		5C68B513145C85AC00D9A82E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		5C68B515145C85AC00D9A82E /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		5C68B517145C85AC00D9A82E /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		5C68B51B145C85AC00D9A82E /* Shuttle-Tracker-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Shuttle-Tracker-Info.plist"; sourceTree = "<group>"; };
+		5C68B51D145C85AC00D9A82E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5C68B51F145C85AC00D9A82E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5C68B521145C85AC00D9A82E /* Shuttle-Tracker-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shuttle-Tracker-Prefix.pch"; sourceTree = "<group>"; };
+		5C68B522145C85AC00D9A82E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		5C68B523145C85AC00D9A82E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		5C68B526145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shuttle_Tracker.xcdatamodel; sourceTree = "<group>"; };
+		5C68B528145C85AC00D9A82E /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
+		5C68B529145C85AC00D9A82E /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
+		5C68B52B145C85AC00D9A82E /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		5C68B52C145C85AC00D9A82E /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		5C68B52F145C85AC00D9A82E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MasterViewController_iPhone.xib; sourceTree = "<group>"; };
+		5C68B532145C85AC00D9A82E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MasterViewController_iPad.xib; sourceTree = "<group>"; };
+		5C68B535145C85AC00D9A82E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DetailViewController_iPhone.xib; sourceTree = "<group>"; };
+		5C68B538145C85AC00D9A82E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DetailViewController_iPad.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		DAD406F21341635100F05D88 /* Frameworks */ = {
+		5C68B50A145C85AB00D9A82E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAD407F01341709A00F05D88 /* Foundation.framework in Frameworks */,
-				DAD407EE1341704E00F05D88 /* CoreGraphics.framework in Frameworks */,
-				DAD407E21341701500F05D88 /* UIKit.framework in Frameworks */,
-				DAD4073C1341660300F05D88 /* MessageUI.framework in Frameworks */,
-				DAD4073A134165FF00F05D88 /* MapKit.framework in Frameworks */,
-				DAD40737134165F300F05D88 /* CoreLocation.framework in Frameworks */,
+				5C68B512145C85AC00D9A82E /* UIKit.framework in Frameworks */,
+				5C68B514145C85AC00D9A82E /* Foundation.framework in Frameworks */,
+				5C68B516145C85AC00D9A82E /* CoreGraphics.framework in Frameworks */,
+				5C68B518145C85AC00D9A82E /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		DAD406EA1341635100F05D88 = {
+		5C68B502145C85AB00D9A82E = {
 			isa = PBXGroup;
 			children = (
-				DA4E1678136CBFEA00001A3B /* Default.png */,
-				DA4E167A136CBFEF00001A3B /* Default@2x.png */,
-				DAD4080E13417B6D00F05D88 /* Default-Landscape~ipad.png */,
-				DAD407DD13416B3000F05D88 /* Icon-72.png */,
-				DAD407DB13416B2800F05D88 /* Icon@2x.png */,
-				DAD407D913416B2300F05D88 /* Icon.png */,
-				DAD406FF1341635100F05D88 /* Shuttle-Tracker */,
-				DAD4075D1341667300F05D88 /* InAppSettingsKit */,
-				DAD4073D1341666500F05D88 /* TouchJSON */,
-				DAD406F81341635100F05D88 /* Frameworks */,
-				DAD406F61341635100F05D88 /* Products */,
+				5C68B519145C85AC00D9A82E /* Shuttle-Tracker */,
+				5C68B510145C85AC00D9A82E /* Frameworks */,
+				5C68B50E145C85AC00D9A82E /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		DAD406F61341635100F05D88 /* Products */ = {
+		5C68B50E145C85AC00D9A82E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DAD406F51341635100F05D88 /* Shuttle-Tracker.app */,
+				5C68B50D145C85AC00D9A82E /* Shuttle-Tracker.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		DAD406F81341635100F05D88 /* Frameworks */ = {
+		5C68B510145C85AC00D9A82E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DAD407EF1341709A00F05D88 /* Foundation.framework */,
-				DAD407ED1341704D00F05D88 /* CoreGraphics.framework */,
-				DAD407E11341701500F05D88 /* UIKit.framework */,
-				DAD4073B1341660300F05D88 /* MessageUI.framework */,
-				DAD40739134165FF00F05D88 /* MapKit.framework */,
-				DAD40736134165F300F05D88 /* CoreLocation.framework */,
+				5C68B511145C85AC00D9A82E /* UIKit.framework */,
+				5C68B513145C85AC00D9A82E /* Foundation.framework */,
+				5C68B515145C85AC00D9A82E /* CoreGraphics.framework */,
+				5C68B517145C85AC00D9A82E /* CoreData.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		DAD406FF1341635100F05D88 /* Shuttle-Tracker */ = {
+		5C68B519145C85AC00D9A82E /* Shuttle-Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				DAD407081341635100F05D88 /* Shuttle_TrackerAppDelegate.h */,
-				DAD407091341635100F05D88 /* Shuttle_TrackerAppDelegate.m */,
-				DAD4079B134166C100F05D88 /* DataManager.h */,
-				DAD407A2134166C100F05D88 /* DataManager.m */,
-				5CACD345135262BC00A4CD75 /* DataUrls.h */,
-				5C785169145B317400079190 /* ETA.h */,
-				5C78516A145B317400079190 /* ETA.m */,
-				DAD4079C134166C100F05D88 /* EtasViewController.h */,
-				DAD407A3134166C100F05D88 /* EtasViewController.m */,
-				DAD4079D134166C100F05D88 /* EtaWrapper.h */,
-				DAD407A4134166C100F05D88 /* EtaWrapper.m */,
-				DAD4079E134166C100F05D88 /* JSONParser.h */,
-				DAD407A5134166C100F05D88 /* JSONParser.m */,
-				DA4E1673136C9E3900001A3B /* LaterEtasViewController.h */,
-				DA4E1674136C9E3900001A3B /* LaterEtasViewController.m */,
-				DAD407A0134166C100F05D88 /* MainViewController.h */,
-				DAD407A7134166C100F05D88 /* MainViewController.m */,
-				5C54F625134FC14100A38505 /* MapPlacemark.h */,
-				5C54F626134FC14100A38505 /* MapPlacemark.m */,
-				DAD407A1134166C100F05D88 /* MapViewController.h */,
-				DAD407A8134166C200F05D88 /* MapViewController.m */,
-				5C785166145B317400079190 /* Route.h */,
-				5C785167145B317400079190 /* Route.m */,
-				5C785163145B317400079190 /* RoutePt.h */,
-				5C785164145B317400079190 /* RoutePt.m */,
-				5C785160145B317300079190 /* Shuttle.h */,
-				5C785161145B317300079190 /* Shuttle.m */,
-				5C78515D145B317300079190 /* Stop.h */,
-				5C78515E145B317300079190 /* Stop.m */,
-				DA4E1675136C9E3900001A3B /* LaterEtasViewController.xib */,
-				5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */,
-				DAD407B7134168A200F05D88 /* Settings.bundle */,
-				DAD407B61341689200F05D88 /* Images */,
-				DAD4070B1341635100F05D88 /* iPhone */,
-				DAD407121341635100F05D88 /* iPad */,
-				DAD407001341635100F05D88 /* Supporting Files */,
+				5C68B522145C85AC00D9A82E /* AppDelegate.h */,
+				5C68B523145C85AC00D9A82E /* AppDelegate.m */,
+				5C68B528145C85AC00D9A82E /* MasterViewController.h */,
+				5C68B529145C85AC00D9A82E /* MasterViewController.m */,
+				5C68B52B145C85AC00D9A82E /* DetailViewController.h */,
+				5C68B52C145C85AC00D9A82E /* DetailViewController.m */,
+				5C68B52E145C85AC00D9A82E /* MasterViewController_iPhone.xib */,
+				5C68B531145C85AC00D9A82E /* MasterViewController_iPad.xib */,
+				5C68B534145C85AC00D9A82E /* DetailViewController_iPhone.xib */,
+				5C68B537145C85AC00D9A82E /* DetailViewController_iPad.xib */,
+				5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */,
+				5C68B51A145C85AC00D9A82E /* Supporting Files */,
 			);
 			path = "Shuttle-Tracker";
 			sourceTree = "<group>";
 		};
-		DAD407001341635100F05D88 /* Supporting Files */ = {
+		5C68B51A145C85AC00D9A82E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				DAD407011341635100F05D88 /* Shuttle-Tracker-Info.plist */,
-				DAD407021341635100F05D88 /* InfoPlist.strings */,
-				DAD407051341635100F05D88 /* Shuttle-Tracker-Prefix.pch */,
-				DAD407061341635100F05D88 /* main.m */,
+				5C68B51B145C85AC00D9A82E /* Shuttle-Tracker-Info.plist */,
+				5C68B51C145C85AC00D9A82E /* InfoPlist.strings */,
+				5C68B51F145C85AC00D9A82E /* main.m */,
+				5C68B521145C85AC00D9A82E /* Shuttle-Tracker-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		DAD4070B1341635100F05D88 /* iPhone */ = {
-			isa = PBXGroup;
-			children = (
-				DAD4070C1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.h */,
-				DAD4070D1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m */,
-				DAD4080213417A1E00F05D88 /* MainViewController_iPhone.h */,
-				DAD4080313417A1E00F05D88 /* MainViewController_iPhone.m */,
-				DAD4070F1341635100F05D88 /* MainWindow_iPhone.xib */,
-			);
-			name = iPhone;
-			sourceTree = "<group>";
-		};
-		DAD407121341635100F05D88 /* iPad */ = {
-			isa = PBXGroup;
-			children = (
-				DAD407131341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.h */,
-				DAD407141341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m */,
-				DAD4080513417A3B00F05D88 /* MainViewController_iPad.h */,
-				DAD4080613417A3B00F05D88 /* MainViewController_iPad.m */,
-				DAD407161341635100F05D88 /* MainWindow_iPad.xib */,
-			);
-			name = iPad;
-			sourceTree = "<group>";
-		};
-		DAD4073D1341666500F05D88 /* TouchJSON */ = {
-			isa = PBXGroup;
-			children = (
-				DAD4073E1341666500F05D88 /* CDataScanner.h */,
-				DAD4073F1341666500F05D88 /* CDataScanner.m */,
-				DAD407401341666500F05D88 /* Experimental */,
-				DAD407471341666500F05D88 /* Extensions */,
-				DAD4074C1341666500F05D88 /* JSON */,
-			);
-			path = TouchJSON;
-			sourceTree = "<group>";
-		};
-		DAD407401341666500F05D88 /* Experimental */ = {
-			isa = PBXGroup;
-			children = (
-				DAD407411341666500F05D88 /* CFilteringJSONSerializer.h */,
-				DAD407421341666500F05D88 /* CFilteringJSONSerializer.m */,
-				DAD407431341666500F05D88 /* CJSONDeserializer_BlocksExtensions.h */,
-				DAD407441341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m */,
-				DAD407451341666500F05D88 /* CJSONSerializedData.h */,
-				DAD407461341666500F05D88 /* CJSONSerializedData.m */,
-			);
-			path = Experimental;
-			sourceTree = "<group>";
-		};
-		DAD407471341666500F05D88 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				DAD407481341666500F05D88 /* CDataScanner_Extensions.h */,
-				DAD407491341666500F05D88 /* CDataScanner_Extensions.m */,
-				DAD4074A1341666500F05D88 /* NSDictionary_JSONExtensions.h */,
-				DAD4074B1341666500F05D88 /* NSDictionary_JSONExtensions.m */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		DAD4074C1341666500F05D88 /* JSON */ = {
-			isa = PBXGroup;
-			children = (
-				DAD4074D1341666500F05D88 /* CJSONDeserializer.h */,
-				DAD4074E1341666500F05D88 /* CJSONDeserializer.m */,
-				DAD4074F1341666500F05D88 /* CJSONScanner.h */,
-				DAD407501341666500F05D88 /* CJSONScanner.m */,
-				DAD407511341666500F05D88 /* CJSONSerializer.h */,
-				DAD407521341666500F05D88 /* CJSONSerializer.m */,
-				DAD407531341666500F05D88 /* JSONRepresentation.h */,
-			);
-			path = JSON;
-			sourceTree = "<group>";
-		};
-		DAD4075D1341667300F05D88 /* InAppSettingsKit */ = {
-			isa = PBXGroup;
-			children = (
-				DAD4075E1341667300F05D88 /* Controllers */,
-				DAD407651341667300F05D88 /* Models */,
-				DAD407701341667300F05D88 /* Views */,
-				DAD4077F1341667300F05D88 /* Xibs */,
-			);
-			path = InAppSettingsKit;
-			sourceTree = "<group>";
-		};
-		DAD4075E1341667300F05D88 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				DAD4075F1341667300F05D88 /* IASKAppSettingsViewController.h */,
-				DAD407601341667300F05D88 /* IASKAppSettingsViewController.m */,
-				DAD407611341667300F05D88 /* IASKAppSettingsWebViewController.h */,
-				DAD407621341667300F05D88 /* IASKAppSettingsWebViewController.m */,
-				DAD407631341667300F05D88 /* IASKSpecifierValuesViewController.h */,
-				DAD407641341667300F05D88 /* IASKSpecifierValuesViewController.m */,
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
-		DAD407651341667300F05D88 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				DAD407661341667300F05D88 /* IASKSettingsReader.h */,
-				DAD407671341667300F05D88 /* IASKSettingsReader.m */,
-				DAD407681341667300F05D88 /* IASKSettingsStore.h */,
-				DAD407691341667300F05D88 /* IASKSettingsStore.m */,
-				DAD4076A1341667300F05D88 /* IASKSettingsStoreFile.h */,
-				DAD4076B1341667300F05D88 /* IASKSettingsStoreFile.m */,
-				DAD4076C1341667300F05D88 /* IASKSettingsStoreUserDefaults.h */,
-				DAD4076D1341667300F05D88 /* IASKSettingsStoreUserDefaults.m */,
-				DAD4076E1341667300F05D88 /* IASKSpecifier.h */,
-				DAD4076F1341667300F05D88 /* IASKSpecifier.m */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		DAD407701341667300F05D88 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				DAD407711341667300F05D88 /* IASKPSSliderSpecifierViewCell.h */,
-				DAD407721341667300F05D88 /* IASKPSSliderSpecifierViewCell.m */,
-				DAD407731341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.h */,
-				DAD407741341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m */,
-				DAD407751341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.h */,
-				DAD407761341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m */,
-				DAD407771341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.h */,
-				DAD407781341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m */,
-				DAD407791341667300F05D88 /* IASKSlider.h */,
-				DAD4077A1341667300F05D88 /* IASKSlider.m */,
-				DAD4077B1341667300F05D88 /* IASKSwitch.h */,
-				DAD4077C1341667300F05D88 /* IASKSwitch.m */,
-				DAD4077D1341667300F05D88 /* IASKTextField.h */,
-				DAD4077E1341667300F05D88 /* IASKTextField.m */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		DAD4077F1341667300F05D88 /* Xibs */ = {
-			isa = PBXGroup;
-			children = (
-				DAD407801341667300F05D88 /* IASKAppSettingsView.xib */,
-				DAD407811341667300F05D88 /* IASKAppSettingsWebView.xib */,
-				DAD407821341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib */,
-				DAD407831341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib */,
-				DAD407841341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib */,
-				DAD407851341667300F05D88 /* IASKSpecifierValuesView.xib */,
-			);
-			path = Xibs;
-			sourceTree = "<group>";
-		};
-		DAD407B61341689200F05D88 /* Images */ = {
-			isa = PBXGroup;
-			children = (
-				DAD407D3134169A600F05D88 /* Icon-Small-50.png */,
-				DAD407D4134169A600F05D88 /* Icon-Small.png */,
-				DAD407D5134169A600F05D88 /* Icon-Small@2x.png */,
-				DAD407B9134168CA00F05D88 /* glyphish_clock.png */,
-				DAD407BA134168CA00F05D88 /* glyphish_clock@2x.png */,
-				DAD407BB134168CA00F05D88 /* glyphish_gear.png */,
-				DAD407BC134168CA00F05D88 /* glyphish_gear@2x.png */,
-				DAD407BD134168CA00F05D88 /* glyphish_map.png */,
-				DAD407BE134168CA00F05D88 /* glyphish_map@2x.png */,
-				DAD407BF134168CA00F05D88 /* shuttle_color.png */,
-				5C1E9678145B389700548108 /* shuttle_color_east.png */,
-				5C1E9679145B389700548108 /* shuttle_color_north.png */,
-				5C1E967A145B389700548108 /* shuttle_color_south.png */,
-				5C1E967B145B389700548108 /* shuttle_color_west.png */,
-				DAD407C0134168CA00F05D88 /* shuttle.png */,
-				DAD407C1134168CA00F05D88 /* stop_marker.png */,
-			);
-			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DAD406F41341635100F05D88 /* Shuttle-Tracker */ = {
+		5C68B50C145C85AB00D9A82E /* Shuttle-Tracker */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DAD4071B1341635100F05D88 /* Build configuration list for PBXNativeTarget "Shuttle-Tracker" */;
+			buildConfigurationList = 5C68B53C145C85AC00D9A82E /* Build configuration list for PBXNativeTarget "Shuttle-Tracker" */;
 			buildPhases = (
-				DAD406F11341635100F05D88 /* Sources */,
-				DAD406F21341635100F05D88 /* Frameworks */,
-				DAD406F31341635100F05D88 /* Resources */,
+				5C68B509145C85AB00D9A82E /* Sources */,
+				5C68B50A145C85AB00D9A82E /* Frameworks */,
+				5C68B50B145C85AB00D9A82E /* Resources */,
 			);
 			buildRules = (
 			);
@@ -523,231 +136,172 @@
 			);
 			name = "Shuttle-Tracker";
 			productName = "Shuttle-Tracker";
-			productReference = DAD406F51341635100F05D88 /* Shuttle-Tracker.app */;
+			productReference = 5C68B50D145C85AC00D9A82E /* Shuttle-Tracker.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		DAD406EC1341635100F05D88 /* Project object */ = {
+		5C68B504145C85AB00D9A82E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Naga Softworks, LLC";
 			};
-			buildConfigurationList = DAD406EF1341635100F05D88 /* Build configuration list for PBXProject "Shuttle-Tracker" */;
+			buildConfigurationList = 5C68B507145C85AB00D9A82E /* Build configuration list for PBXProject "Shuttle-Tracker" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 			);
-			mainGroup = DAD406EA1341635100F05D88;
-			productRefGroup = DAD406F61341635100F05D88 /* Products */;
+			mainGroup = 5C68B502145C85AB00D9A82E;
+			productRefGroup = 5C68B50E145C85AC00D9A82E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DAD406F41341635100F05D88 /* Shuttle-Tracker */,
+				5C68B50C145C85AB00D9A82E /* Shuttle-Tracker */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		DAD406F31341635100F05D88 /* Resources */ = {
+		5C68B50B145C85AB00D9A82E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAD407041341635100F05D88 /* InfoPlist.strings in Resources */,
-				DAD407111341635100F05D88 /* MainWindow_iPhone.xib in Resources */,
-				DAD407181341635100F05D88 /* MainWindow_iPad.xib in Resources */,
-				DAD407951341667300F05D88 /* IASKAppSettingsView.xib in Resources */,
-				DAD407961341667300F05D88 /* IASKAppSettingsWebView.xib in Resources */,
-				DAD407971341667300F05D88 /* IASKPSSliderSpecifierViewCell.xib in Resources */,
-				DAD407981341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.xib in Resources */,
-				DAD407991341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */,
-				DAD4079A1341667300F05D88 /* IASKSpecifierValuesView.xib in Resources */,
-				DAD407B8134168A200F05D88 /* Settings.bundle in Resources */,
-				DAD407C2134168CA00F05D88 /* glyphish_clock.png in Resources */,
-				DAD407C3134168CA00F05D88 /* glyphish_clock@2x.png in Resources */,
-				DAD407C4134168CA00F05D88 /* glyphish_gear.png in Resources */,
-				DAD407C5134168CA00F05D88 /* glyphish_gear@2x.png in Resources */,
-				DAD407C6134168CA00F05D88 /* glyphish_map.png in Resources */,
-				DAD407C7134168CA00F05D88 /* glyphish_map@2x.png in Resources */,
-				DAD407C8134168CA00F05D88 /* shuttle_color.png in Resources */,
-				DAD407C9134168CA00F05D88 /* shuttle.png in Resources */,
-				DAD407CA134168CA00F05D88 /* stop_marker.png in Resources */,
-				DAD407D6134169A600F05D88 /* Icon-Small-50.png in Resources */,
-				DAD407D7134169A600F05D88 /* Icon-Small.png in Resources */,
-				DAD407D8134169A600F05D88 /* Icon-Small@2x.png in Resources */,
-				DAD407DA13416B2300F05D88 /* Icon.png in Resources */,
-				DAD407DC13416B2800F05D88 /* Icon@2x.png in Resources */,
-				DAD407DE13416B3000F05D88 /* Icon-72.png in Resources */,
-				DAD4080F13417B6D00F05D88 /* Default-Landscape~ipad.png in Resources */,
-				DA4E1677136C9E3900001A3B /* LaterEtasViewController.xib in Resources */,
-				DA4E1679136CBFEA00001A3B /* Default.png in Resources */,
-				DA4E167B136CBFEF00001A3B /* Default@2x.png in Resources */,
-				5C1E967C145B389700548108 /* shuttle_color_east.png in Resources */,
-				5C1E967D145B389700548108 /* shuttle_color_north.png in Resources */,
-				5C1E967E145B389700548108 /* shuttle_color_south.png in Resources */,
-				5C1E967F145B389700548108 /* shuttle_color_west.png in Resources */,
+				5C68B51E145C85AC00D9A82E /* InfoPlist.strings in Resources */,
+				5C68B530145C85AC00D9A82E /* MasterViewController_iPhone.xib in Resources */,
+				5C68B533145C85AC00D9A82E /* MasterViewController_iPad.xib in Resources */,
+				5C68B536145C85AC00D9A82E /* DetailViewController_iPhone.xib in Resources */,
+				5C68B539145C85AC00D9A82E /* DetailViewController_iPad.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		DAD406F11341635100F05D88 /* Sources */ = {
+		5C68B509145C85AB00D9A82E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DAD407071341635100F05D88 /* main.m in Sources */,
-				DAD4070A1341635100F05D88 /* Shuttle_TrackerAppDelegate.m in Sources */,
-				DAD4070E1341635100F05D88 /* Shuttle_TrackerAppDelegate_iPhone.m in Sources */,
-				DAD407151341635100F05D88 /* Shuttle_TrackerAppDelegate_iPad.m in Sources */,
-				DAD407541341666500F05D88 /* CDataScanner.m in Sources */,
-				DAD407551341666500F05D88 /* CFilteringJSONSerializer.m in Sources */,
-				DAD407561341666500F05D88 /* CJSONDeserializer_BlocksExtensions.m in Sources */,
-				DAD407571341666500F05D88 /* CJSONSerializedData.m in Sources */,
-				DAD407581341666500F05D88 /* CDataScanner_Extensions.m in Sources */,
-				DAD407591341666500F05D88 /* NSDictionary_JSONExtensions.m in Sources */,
-				DAD4075A1341666500F05D88 /* CJSONDeserializer.m in Sources */,
-				DAD4075B1341666500F05D88 /* CJSONScanner.m in Sources */,
-				DAD4075C1341666500F05D88 /* CJSONSerializer.m in Sources */,
-				DAD407861341667300F05D88 /* IASKAppSettingsViewController.m in Sources */,
-				DAD407871341667300F05D88 /* IASKAppSettingsWebViewController.m in Sources */,
-				DAD407881341667300F05D88 /* IASKSpecifierValuesViewController.m in Sources */,
-				DAD407891341667300F05D88 /* IASKSettingsReader.m in Sources */,
-				DAD4078A1341667300F05D88 /* IASKSettingsStore.m in Sources */,
-				DAD4078B1341667300F05D88 /* IASKSettingsStoreFile.m in Sources */,
-				DAD4078C1341667300F05D88 /* IASKSettingsStoreUserDefaults.m in Sources */,
-				DAD4078D1341667300F05D88 /* IASKSpecifier.m in Sources */,
-				DAD4078E1341667300F05D88 /* IASKPSSliderSpecifierViewCell.m in Sources */,
-				DAD4078F1341667300F05D88 /* IASKPSTextFieldSpecifierViewCell.m in Sources */,
-				DAD407901341667300F05D88 /* IASKPSTitleValueSpecifierViewCell.m in Sources */,
-				DAD407911341667300F05D88 /* IASKPSToggleSwitchSpecifierViewCell.m in Sources */,
-				DAD407921341667300F05D88 /* IASKSlider.m in Sources */,
-				DAD407931341667300F05D88 /* IASKSwitch.m in Sources */,
-				DAD407941341667300F05D88 /* IASKTextField.m in Sources */,
-				DAD407A9134166C200F05D88 /* DataManager.m in Sources */,
-				DAD407AA134166C200F05D88 /* EtasViewController.m in Sources */,
-				DAD407AB134166C200F05D88 /* EtaWrapper.m in Sources */,
-				DAD407AC134166C200F05D88 /* JSONParser.m in Sources */,
-				DAD407AE134166C200F05D88 /* MainViewController.m in Sources */,
-				DAD407AF134166C200F05D88 /* MapViewController.m in Sources */,
-				DAD4080413417A1E00F05D88 /* MainViewController_iPhone.m in Sources */,
-				DAD4080713417A3B00F05D88 /* MainViewController_iPad.m in Sources */,
-				5C54F627134FC14100A38505 /* MapPlacemark.m in Sources */,
-				DA4E1676136C9E3900001A3B /* LaterEtasViewController.m in Sources */,
-				5C6FCFF6145B0F4B00E74C49 /* DataModel.xcdatamodeld in Sources */,
-				5C78515F145B317300079190 /* Stop.m in Sources */,
-				5C785162145B317400079190 /* Shuttle.m in Sources */,
-				5C785165145B317400079190 /* RoutePt.m in Sources */,
-				5C785168145B317400079190 /* Route.m in Sources */,
-				5C78516B145B317400079190 /* ETA.m in Sources */,
+				5C68B520145C85AC00D9A82E /* main.m in Sources */,
+				5C68B524145C85AC00D9A82E /* AppDelegate.m in Sources */,
+				5C68B527145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld in Sources */,
+				5C68B52A145C85AC00D9A82E /* MasterViewController.m in Sources */,
+				5C68B52D145C85AC00D9A82E /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		DAD407021341635100F05D88 /* InfoPlist.strings */ = {
+		5C68B51C145C85AC00D9A82E /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				DAD407031341635100F05D88 /* en */,
+				5C68B51D145C85AC00D9A82E /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		DAD4070F1341635100F05D88 /* MainWindow_iPhone.xib */ = {
+		5C68B52E145C85AC00D9A82E /* MasterViewController_iPhone.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				DAD407101341635100F05D88 /* en */,
+				5C68B52F145C85AC00D9A82E /* en */,
 			);
-			name = MainWindow_iPhone.xib;
+			name = MasterViewController_iPhone.xib;
 			sourceTree = "<group>";
 		};
-		DAD407161341635100F05D88 /* MainWindow_iPad.xib */ = {
+		5C68B531145C85AC00D9A82E /* MasterViewController_iPad.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				DAD407171341635100F05D88 /* en */,
+				5C68B532145C85AC00D9A82E /* en */,
 			);
-			name = MainWindow_iPad.xib;
+			name = MasterViewController_iPad.xib;
+			sourceTree = "<group>";
+		};
+		5C68B534145C85AC00D9A82E /* DetailViewController_iPhone.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5C68B535145C85AC00D9A82E /* en */,
+			);
+			name = DetailViewController_iPhone.xib;
+			sourceTree = "<group>";
+		};
+		5C68B537145C85AC00D9A82E /* DetailViewController_iPad.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5C68B538145C85AC00D9A82E /* en */,
+			);
+			name = DetailViewController_iPad.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		DAD407191341635100F05D88 /* Debug */ = {
+		5C68B53A145C85AC00D9A82E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		DAD4071A1341635100F05D88 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		DAD4071C1341635100F05D88 /* Debug */ = {
+		5C68B53B145C85AC00D9A82E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5C68B53D145C85AC00D9A82E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Shuttle-Tracker/Shuttle-Tracker-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Shuttle-Tracker/Shuttle-Tracker-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
-		DAD4071D1341635100F05D88 /* Release */ = {
+		5C68B53E145C85AC00D9A82E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Shuttle-Tracker/Shuttle-Tracker-Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Shuttle-Tracker/Shuttle-Tracker-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -755,20 +309,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DAD406EF1341635100F05D88 /* Build configuration list for PBXProject "Shuttle-Tracker" */ = {
+		5C68B507145C85AB00D9A82E /* Build configuration list for PBXProject "Shuttle-Tracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DAD407191341635100F05D88 /* Debug */,
-				DAD4071A1341635100F05D88 /* Release */,
+				5C68B53A145C85AC00D9A82E /* Debug */,
+				5C68B53B145C85AC00D9A82E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DAD4071B1341635100F05D88 /* Build configuration list for PBXNativeTarget "Shuttle-Tracker" */ = {
+		5C68B53C145C85AC00D9A82E /* Build configuration list for PBXNativeTarget "Shuttle-Tracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DAD4071C1341635100F05D88 /* Debug */,
-				DAD4071D1341635100F05D88 /* Release */,
+				5C68B53D145C85AC00D9A82E /* Debug */,
+				5C68B53E145C85AC00D9A82E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -776,17 +330,17 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		5C6FCFF4145B0F4B00E74C49 /* DataModel.xcdatamodeld */ = {
+		5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				5C6FCFF5145B0F4B00E74C49 /* DataModel.xcdatamodel */,
+				5C68B526145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodel */,
 			);
-			currentVersion = 5C6FCFF5145B0F4B00E74C49 /* DataModel.xcdatamodel */;
-			path = DataModel.xcdatamodeld;
+			currentVersion = 5C68B526145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodel */;
+			path = Shuttle_Tracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
 /* End XCVersionGroup section */
 	};
-	rootObject = DAD406EC1341635100F05D88 /* Project object */;
+	rootObject = 5C68B504145C85AB00D9A82E /* Project object */;
 }
