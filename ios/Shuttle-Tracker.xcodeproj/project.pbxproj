@@ -79,6 +79,7 @@
 		5C68B624145C965700D9A82E /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B623145C965700D9A82E /* Default.png */; };
 		5C68B626145C965A00D9A82E /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B625145C965900D9A82E /* Default@2x.png */; };
 		5C68B628145C966100D9A82E /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B627145C966100D9A82E /* Default-Landscape~ipad.png */; };
+		5C68B62B145C979D00D9A82E /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B62A145C979D00D9A82E /* MainViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -193,6 +194,8 @@
 		5C68B623145C965700D9A82E /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		5C68B625145C965900D9A82E /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		5C68B627145C966100D9A82E /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		5C68B629145C979D00D9A82E /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		5C68B62A145C979D00D9A82E /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,8 +261,6 @@
 			children = (
 				5C68B522145C85AC00D9A82E /* AppDelegate.h */,
 				5C68B523145C85AC00D9A82E /* AppDelegate.m */,
-				5C68B528145C85AC00D9A82E /* MasterViewController.h */,
-				5C68B529145C85AC00D9A82E /* MasterViewController.m */,
 				5C68B547145C87B200D9A82E /* DataManager.h */,
 				5C68B544145C87B200D9A82E /* DataManager.m */,
 				5C68B548145C87B200D9A82E /* DataUrls.h */,
@@ -273,10 +274,14 @@
 				5C68B551145C87EE00D9A82E /* JSONParser.m */,
 				5C68B5FA145C8E2000D9A82E /* LaterEtasViewController.h */,
 				5C68B5F9145C8E2000D9A82E /* LaterEtasViewController.m */,
+				5C68B629145C979D00D9A82E /* MainViewController.h */,
+				5C68B62A145C979D00D9A82E /* MainViewController.m */,
 				5C68B54F145C87DB00D9A82E /* MapPlacemark.h */,
 				5C68B54E145C87DB00D9A82E /* MapPlacemark.m */,
 				5C68B54A145C87B200D9A82E /* MapViewController.h */,
 				5C68B546145C87B200D9A82E /* MapViewController.m */,
+				5C68B528145C85AC00D9A82E /* MasterViewController.h */,
+				5C68B529145C85AC00D9A82E /* MasterViewController.m */,
 				5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */,
 				5C68B51A145C85AC00D9A82E /* Supporting Files */,
 			);
@@ -568,6 +573,7 @@
 				5C68B5F5145C8A9500D9A82E /* CJSONSerializer.m in Sources */,
 				5C68B5F8145C8C8D00D9A82E /* EtasViewController.m in Sources */,
 				5C68B5FB145C8E2000D9A82E /* LaterEtasViewController.m in Sources */,
+				5C68B62B145C979D00D9A82E /* MainViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

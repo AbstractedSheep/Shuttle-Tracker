@@ -93,6 +93,9 @@ typedef enum {
 
 
 @interface MapViewController()
+
+@property (strong, nonatomic) UIPopoverController *masterPopoverController;
+
 - (void)managedRoutesLoaded;
 //	notifyVehiclesUpdated may not be called on the main thread, so use it to call
 //	vehicles updated on the main thread.
@@ -107,11 +110,10 @@ typedef enum {
 
 @end
 
-
 @implementation MapViewController
 
 @synthesize dataManager;
-
+@synthesize masterPopoverController = _masterPopoverController;
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
@@ -403,5 +405,20 @@ typedef enum {
     return nil;
 }
 
+#pragma mark - Split view
+
+- (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
+{
+    barButtonItem.title = NSLocalizedString(@"Master", @"Master");
+    [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
+    self.masterPopoverController = popoverController;
+}
+
+- (void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+{
+    // Called when the view is shown again in the split view, invalidating the button and popover controller.
+    [self.navigationItem setLeftBarButtonItem:nil animated:YES];
+    self.masterPopoverController = nil;
+}
 
 @end

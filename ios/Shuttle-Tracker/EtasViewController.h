@@ -10,7 +10,7 @@
 #import "DataManager.h"
 
 
-@interface EtasViewController : UITableViewController {
+@interface EtasViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
     DataManager *dataManager;
     NSDateFormatter *timeDisplayFormatter;
     BOOL useRelativeTimes;
@@ -20,5 +20,7 @@
 @property (nonatomic, assign) DataManager *dataManager;
 @property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
 @property (nonatomic) BOOL useRelativeTimes;
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @end

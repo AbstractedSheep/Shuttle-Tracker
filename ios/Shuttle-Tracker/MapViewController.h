@@ -13,7 +13,7 @@
 
 @class JSONParser;
 
-@interface MapViewController : UIViewController <MKMapViewDelegate> {
+@interface MapViewController : UIViewController <MKMapViewDelegate, UISplitViewControllerDelegate> {
 	MKMapView *_mapView;
     
     DataManager *dataManager;
