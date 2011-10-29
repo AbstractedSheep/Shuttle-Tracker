@@ -55,10 +55,27 @@
 
 - (void)loadView {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        //  Create the table of ETAs, for the left view on the iPad
         self.title = NSLocalizedString(@"ETAs", @"ETAs");
         self.clearsSelectionOnViewWillAppear = NO;
         self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
+        
+        EtasViewController *etasViewController = [[EtasViewController alloc] init];
+        etasViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1] autorelease];
+        etasViewController.dataManager = self.dataManager;
+        
+        UINavigationController *etasTableNavController = [[UINavigationController alloc] initWithRootViewController:etasViewController];
+        [etasViewController release];
+        
+        //	Note that this class (MainViewController_iPhone) gets a reference to timeDisplayFormatter
+        //	via the init method of its superclass, MainViewController.
+        etasViewController.timeDisplayFormatter = self.timeDisplayFormatter;
+        
+        [self addChildViewController:etasTableNavController];
+        [etasTableNavController release];
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        //  Create the tabbed view, with a map view, ETA view, and settings view.
+        
         self.title = NSLocalizedString(@"Shuttles", @"Shuttles");
         self.tabBarController = [[[UITabBarController alloc] init] autorelease];
         

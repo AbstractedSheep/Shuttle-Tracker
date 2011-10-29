@@ -17,10 +17,6 @@
 		5C68B527145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */; };
 		5C68B52A145C85AC00D9A82E /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B529145C85AC00D9A82E /* MasterViewController.m */; };
 		5C68B52D145C85AC00D9A82E /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B52C145C85AC00D9A82E /* DetailViewController.m */; };
-		5C68B530145C85AC00D9A82E /* MasterViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B52E145C85AC00D9A82E /* MasterViewController_iPhone.xib */; };
-		5C68B533145C85AC00D9A82E /* MasterViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B531145C85AC00D9A82E /* MasterViewController_iPad.xib */; };
-		5C68B536145C85AC00D9A82E /* DetailViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B534145C85AC00D9A82E /* DetailViewController_iPhone.xib */; };
-		5C68B539145C85AC00D9A82E /* DetailViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B537145C85AC00D9A82E /* DetailViewController_iPad.xib */; };
 		5C68B54B145C87B300D9A82E /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B544145C87B200D9A82E /* DataManager.m */; };
 		5C68B54C145C87B300D9A82E /* EtaWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B545145C87B200D9A82E /* EtaWrapper.m */; };
 		5C68B54D145C87B300D9A82E /* MapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B546145C87B200D9A82E /* MapViewController.m */; };
@@ -80,10 +76,6 @@
 		5C68B529145C85AC00D9A82E /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
 		5C68B52B145C85AC00D9A82E /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		5C68B52C145C85AC00D9A82E /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
-		5C68B52F145C85AC00D9A82E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MasterViewController_iPhone.xib; sourceTree = "<group>"; };
-		5C68B532145C85AC00D9A82E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MasterViewController_iPad.xib; sourceTree = "<group>"; };
-		5C68B535145C85AC00D9A82E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DetailViewController_iPhone.xib; sourceTree = "<group>"; };
-		5C68B538145C85AC00D9A82E /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DetailViewController_iPad.xib; sourceTree = "<group>"; };
 		5C68B544145C87B200D9A82E /* DataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
 		5C68B545145C87B200D9A82E /* EtaWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtaWrapper.m; sourceTree = "<group>"; };
 		5C68B546145C87B200D9A82E /* MapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapViewController.m; sourceTree = "<group>"; };
@@ -234,10 +226,6 @@
 				5C68B54E145C87DB00D9A82E /* MapPlacemark.m */,
 				5C68B54A145C87B200D9A82E /* MapViewController.h */,
 				5C68B546145C87B200D9A82E /* MapViewController.m */,
-				5C68B52E145C85AC00D9A82E /* MasterViewController_iPhone.xib */,
-				5C68B531145C85AC00D9A82E /* MasterViewController_iPad.xib */,
-				5C68B534145C85AC00D9A82E /* DetailViewController_iPhone.xib */,
-				5C68B537145C85AC00D9A82E /* DetailViewController_iPad.xib */,
 				5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */,
 				5C68B51A145C85AC00D9A82E /* Supporting Files */,
 			);
@@ -432,10 +420,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C68B51E145C85AC00D9A82E /* InfoPlist.strings in Resources */,
-				5C68B530145C85AC00D9A82E /* MasterViewController_iPhone.xib in Resources */,
-				5C68B533145C85AC00D9A82E /* MasterViewController_iPad.xib in Resources */,
-				5C68B536145C85AC00D9A82E /* DetailViewController_iPhone.xib in Resources */,
-				5C68B539145C85AC00D9A82E /* DetailViewController_iPad.xib in Resources */,
 				5C68B5CE145C896F00D9A82E /* IASKAppSettingsView.xib in Resources */,
 				5C68B5CF145C896F00D9A82E /* IASKAppSettingsWebView.xib in Resources */,
 				5C68B5D0145C896F00D9A82E /* IASKPSSliderSpecifierViewCell.xib in Resources */,
@@ -500,38 +484,6 @@
 				5C68B51D145C85AC00D9A82E /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		5C68B52E145C85AC00D9A82E /* MasterViewController_iPhone.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5C68B52F145C85AC00D9A82E /* en */,
-			);
-			name = MasterViewController_iPhone.xib;
-			sourceTree = "<group>";
-		};
-		5C68B531145C85AC00D9A82E /* MasterViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5C68B532145C85AC00D9A82E /* en */,
-			);
-			name = MasterViewController_iPad.xib;
-			sourceTree = "<group>";
-		};
-		5C68B534145C85AC00D9A82E /* DetailViewController_iPhone.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5C68B535145C85AC00D9A82E /* en */,
-			);
-			name = DetailViewController_iPhone.xib;
-			sourceTree = "<group>";
-		};
-		5C68B537145C85AC00D9A82E /* DetailViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5C68B538145C85AC00D9A82E /* en */,
-			);
-			name = DetailViewController_iPad.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

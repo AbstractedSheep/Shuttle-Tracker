@@ -37,15 +37,15 @@
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        MasterViewController *masterViewController = [[[MasterViewController alloc] initWithNibName:@"MasterViewController_iPhone" bundle:nil] autorelease];
+        MasterViewController *masterViewController = [[[MasterViewController alloc] init] autorelease];
         self.navigationController = [[[UINavigationController alloc] initWithRootViewController:masterViewController] autorelease];
         self.window.rootViewController = self.navigationController;
         masterViewController.managedObjectContext = self.managedObjectContext;
     } else {
-        MasterViewController *masterViewController = [[[MasterViewController alloc] initWithNibName:@"MasterViewController_iPad" bundle:nil] autorelease];
+        MasterViewController *masterViewController = [[[MasterViewController alloc] init] autorelease];
         UINavigationController *masterNavigationController = [[[UINavigationController alloc] initWithRootViewController:masterViewController] autorelease];
         
-        DetailViewController *detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPad" bundle:nil] autorelease];
+        DetailViewController *detailViewController = [[[DetailViewController alloc] init] autorelease];
         UINavigationController *detailNavigationController = [[[UINavigationController alloc] initWithRootViewController:detailViewController] autorelease];
     	
         self.splitViewController = [[[UISplitViewController alloc] init] autorelease];
