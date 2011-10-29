@@ -10,12 +10,20 @@
 
 #import "DetailViewController.h"
 
+#import "DataManager.h"
+#import "EtasViewController.h"
+#import "IASKAppSettingsViewController.h"
+#import "MapViewController.h"
+
 @interface MasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @end
 
 @implementation MasterViewController
 
+@synthesize dataManager = _dataManager;
+@synthesize tabBarController = _tabBarController;
+@synthesize timeDisplayFormatter = _timeDisplayFormatter;
 @synthesize detailViewController = _detailViewController;
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;
@@ -24,11 +32,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Master", @"Master");
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            self.clearsSelectionOnViewWillAppear = NO;
-            self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
-        }
+
     }
     return self;
 }
@@ -48,6 +52,47 @@
 }
 
 #pragma mark - View lifecycle
+
+- (void)loadView {
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        self.title = NSLocalizedString(@"ETAs", @"ETAs");
+        self.clearsSelectionOnViewWillAppear = NO;
+        self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
+    } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        self.title = NSLocalizedString(@"Shuttles", @"Shuttles");
+        self.tabBarController = [[[UITabBarController alloc] init] autorelease];
+        
+        MapViewController *mapViewController = [[MapViewController alloc] init];
+        mapViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0] autorelease];
+        mapViewController.dataManager = self.dataManager;
+        
+        EtasViewController *etasViewController = [[EtasViewController alloc] init];
+        etasViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1] autorelease];
+        etasViewController.dataManager = self.dataManager;
+        
+        UINavigationController *etasTableNavController = [[UINavigationController alloc] initWithRootViewController:etasViewController];
+        [etasViewController release];
+        
+        //	Note that this class (MainViewController_iPhone) gets a reference to timeDisplayFormatter
+        //	via the init method of its superclass, MainViewController.
+        etasViewController.timeDisplayFormatter = self.timeDisplayFormatter;
+        
+        IASKAppSettingsViewController *settingsViewController = [[IASKAppSettingsViewController alloc] initWithNibName:@"IASKAppSettingsView" bundle:nil];
+        settingsViewController.title = @"Settings";
+        settingsViewController.delegate = self.dataManager;
+        
+        UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+        [settingsViewController release];
+        settingsNavController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2] autorelease];
+        
+        self.tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasTableNavController, settingsNavController, nil];
+        [mapViewController release];
+        [etasTableNavController release];
+        [settingsNavController release];
+        
+        [self.view addSubview:self.tabBarController.view];
+    }
+}
 
 - (void)viewDidLoad
 {

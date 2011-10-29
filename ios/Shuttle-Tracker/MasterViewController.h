@@ -8,11 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@class DetailViewController;
+@class DataManager, DetailViewController;
 
 #import <CoreData/CoreData.h>
 
 @interface MasterViewController : UITableViewController <NSFetchedResultsControllerDelegate>
+
+@property (strong, nonatomic) DataManager *dataManager;
+@property (strong, nonatomic) UITabBarController *tabBarController;
+@property (strong, nonatomic) NSDateFormatter *timeDisplayFormatter;
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
 
