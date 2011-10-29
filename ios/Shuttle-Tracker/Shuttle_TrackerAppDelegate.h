@@ -8,10 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface Shuttle_TrackerAppDelegate : NSObject <UIApplicationDelegate> {
+@interface Shuttle_TrackerAppDelegate : UIResponder <UIApplicationDelegate> {
 
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
+
+@property (readonly, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, nonatomic) NSManagedObjectModel *managedObjectModel;
+@property (readonly, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+
+- (void)saveContext;
+- (NSURL *)applicationDocumentsDirectory;
 
 @end

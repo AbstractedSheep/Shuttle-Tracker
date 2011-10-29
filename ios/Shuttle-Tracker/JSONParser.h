@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+#import <CoreData/CoreData.h>
 
 
 @interface JSONParser : NSObject {
@@ -29,6 +30,7 @@
 @property (nonatomic, retain) NSMutableArray *etas;
 @property (nonatomic, retain) NSMutableArray *extraEtas;
 @property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 
 
 - (id)initWithUrl:(NSURL *)url;
