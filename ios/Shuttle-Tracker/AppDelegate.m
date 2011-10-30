@@ -10,6 +10,8 @@
 
 #import "MainViewController.h"
 
+#import "DataManager.h"
+
 @implementation AppDelegate
 
 @synthesize window = _window;
