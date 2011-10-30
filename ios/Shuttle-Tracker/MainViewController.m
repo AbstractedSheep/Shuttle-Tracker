@@ -77,14 +77,6 @@
     //	via the class creating it.
     etasViewController.timeDisplayFormatter = self.timeDisplayFormatter;
     
-    IASKAppSettingsViewController *settingsViewController = [[IASKAppSettingsViewController alloc] initWithNibName:@"IASKAppSettingsView" bundle:nil];
-    settingsViewController.title = @"Settings";
-    settingsViewController.delegate = self.dataManager;
-    
-    UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
-    [settingsViewController release];
-    settingsNavController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2] autorelease];
-    
     //  Device-specific view creation
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         //  Make a split view, with ETAs on the left and the map on the right.
@@ -95,17 +87,26 @@
         
         [self.view addSubview:self.splitViewController.view];
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        //  Create the settings view controller, only found on the iPhone
+        IASKAppSettingsViewController *settingsViewController = [[IASKAppSettingsViewController alloc] initWithNibName:@"IASKAppSettingsView" bundle:nil];
+        settingsViewController.title = @"Settings";
+        settingsViewController.delegate = self.dataManager;
+        
+        UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+        [settingsViewController release];
+        settingsNavController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2] autorelease];
+        
         //  Create a tabbed view, with a map view, ETA view, and settings view.
         self.tabBarController = [[[UITabBarController alloc] init] autorelease];
         
         self.tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasTableNavController, settingsNavController, nil];
+        [settingsNavController release];
         
         [self.view addSubview:self.tabBarController.view];
     }
     
     [mapViewController release];
     [etasTableNavController release];
-    [settingsNavController release];
     
     // Check if 12 or 24 hour mode
     BOOL use24Time = NO;
