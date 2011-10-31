@@ -57,6 +57,7 @@
     DataManager *dataManager = [[DataManager alloc] init];
     self.dataManager = dataManager;
     [dataManager release];
+    [self.dataManager setParserManagedObjectContext:self.managedObjectContext];
     
     //	dataManager creates a timeDisplayFormatter in its init method, so get
     //	a reference to it.

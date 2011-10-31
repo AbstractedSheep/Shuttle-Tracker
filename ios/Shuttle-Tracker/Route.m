@@ -19,6 +19,7 @@
 @dynamic idTag;
 @dynamic name;
 @dynamic width;
+@dynamic routeId;
 @dynamic points;
 @dynamic shuttles;
 @dynamic stops;

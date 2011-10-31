@@ -17,6 +17,7 @@
 @property (nonatomic, retain) NSString * idTag;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * width;
+@property (nonatomic, retain) NSNumber * routeId;
 @property (nonatomic, retain) NSSet *points;
 @property (nonatomic, retain) NSSet *shuttles;
 @property (nonatomic, retain) NSSet *stops;

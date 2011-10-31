@@ -664,4 +664,10 @@
 	}
 }
 
+- (void)setParserManagedObjectContext:(NSManagedObjectContext *)context {
+    routesStopsJsonParser.managedObjectContext = context;
+    vehiclesJsonParser.managedObjectContext = context;
+    etasJsonParser.managedObjectContext = context;
+}
+
 @end

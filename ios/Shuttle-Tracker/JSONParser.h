@@ -11,7 +11,7 @@
 #import <CoreData/CoreData.h>
 
 
-@interface JSONParser : NSObject {
+@interface JSONParser : NSObject <NSFetchedResultsControllerDelegate> {
     NSArray *routes;
     NSArray *stops;
     

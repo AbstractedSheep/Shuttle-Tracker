@@ -68,6 +68,7 @@
 - (BOOL)toggleFavoriteStopWithEta:(EtaWrapper *)wrappedEta;
 - (BOOL)isFavorite:(EtaWrapper *)wrappedEta;
 - (BOOL)isFavoritesSection:(NSUInteger)section;
+- (void)setParserManagedObjectContext:(NSManagedObjectContext *)context;
 
 
 @end

@@ -12,6 +12,9 @@
 #import "EtaWrapper.h"
 #import "MapPlacemark.h"
 #import "ETA.h"
+#import "Route.h"
+#import "RoutePt.h"
+#import "Stop.h"
 
 @implementation JSONParser
 
@@ -79,21 +82,12 @@
         NSEnumerator *routesEnum = [jsonRoutes objectEnumerator];
 		
         while ((value = [routesEnum nextObject])) {
-            PlacemarkStyle *style = [[PlacemarkStyle alloc] init];
-            MapRoute *route = [[MapRoute alloc] init];
+            Route *route = (Route *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
             
-            string = [value objectForKey:@"color"];
-            style.colorString = string;
-            
-            string = [value objectForKey:@"id"];
-            style.idTag = string;
-            route.idTag = string;
+            route.routeId = [value objectForKey:@"id"];
             
             NSNumber *number = [value objectForKey:@"width"];
-            style.width = [number intValue];
-            
-            route.style = style;
-            [style release];
+            route.width = number;
             
             string = [value objectForKey:@"name"];
             route.name = string;
@@ -102,26 +96,31 @@
             NSEnumerator *coordsEnum = [coordsDict objectEnumerator];
             NSDictionary *coordsValues;
             
-            NSMutableArray *coordsString = [[NSMutableArray alloc] init];
-            
-            CLLocationCoordinate2D coordinate;
-            
+            long ptCount = 0;
             while ((coordsValues = [coordsEnum nextObject])) {
+                RoutePt *routePt = (RoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"RoutePt" inManagedObjectContext:self.managedObjectContext];
+                
                 string = [coordsValues objectForKey:@"latitude"];
-                coordinate.latitude = [string floatValue];
+                routePt.latitude = [NSNumber numberWithFloat:[string floatValue]];
                 
                 string = [coordsValues objectForKey:@"longitude"];
-                coordinate.longitude = [string floatValue];
+                routePt.longitude = [NSNumber numberWithFloat:[string floatValue] ];
                 
-                [coordsString addObject:[NSString stringWithFormat:@"%f, %f", 
-										 coordinate.longitude, coordinate.latitude]];
+                routePt.route = route;
+                routePt.pointNumber = [NSNumber numberWithLong:ptCount++];
             }
             
-            route.lineString = coordsString;
-            [coordsString release];
-            
-            [mutableRoutes addObject:route];
-            [route release];
+            // Save the context.
+            NSError *error = nil;
+            if (![self.managedObjectContext save:&error]) {
+                /*
+                 Replace this implementation with code to handle the error appropriately.
+                 
+                 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                 */
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
         }
         
         [routes release];
@@ -132,19 +131,16 @@
         NSEnumerator *stopsEnum = [jsonStops objectEnumerator];
         
         while ((value = [stopsEnum nextObject])) {
-            MapStop *stop = [[MapStop alloc] init];
-            
-            CLLocationCoordinate2D coordinate;
+            Stop *stop = (Stop *)[NSEntityDescription insertNewObjectForEntityForName:@"Stop" inManagedObjectContext:self.managedObjectContext];
             
             string = [value objectForKey:@"latitude"];
-            coordinate.latitude = [string floatValue];
+            stop.latitude = [NSNumber numberWithFloat:[string floatValue]];
             
             string = [value objectForKey:@"longitude"];
-            coordinate.longitude = [string floatValue];
-            
-            stop.coordinate = coordinate;
+            stop.longitude = [NSNumber numberWithFloat:[string floatValue]];
             
             string = [value objectForKey:@"name"];
+            stop.name = string;
 			
 			//	Special handling for long stop names.
 			if ([string isEqualToString:@"Blitman Residence Commons"]) {
@@ -157,35 +153,50 @@
                 string = @"6th Ave. & City Stn";
             }
 			
-            stop.name = string;
+            stop.shortName = string;
             
             string = [value objectForKey:@"short_name"];
             stop.idTag = string;
             
-            NSDictionary *routesDict = [value objectForKey:@"routes"];
-            NSEnumerator *routesEnum = [routesDict objectEnumerator];
-            NSDictionary *routeValues;
-            
-            NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
-            NSMutableArray *tempRouteNames = [[NSMutableArray alloc] init];
-            
-            NSNumber *number;
-            
-            while ((routeValues = [routesEnum nextObject])) {
-                number = [routeValues objectForKey:@"id"];
-                [tempRouteIds addObject:number];
-                
-                string = [routeValues objectForKey:@"name"];
-                [tempRouteNames addObject:string];
-            }
-            
-            stop.routeIds = tempRouteIds;
-            stop.routeNames = tempRouteNames;
-            [tempRouteIds release];
-            [tempRouteNames release];
-            
-            [mutableStops addObject:stop];
-            [stop release];
+//            NSDictionary *routesDict = [value objectForKey:@"routes"];
+//            NSEnumerator *routesEnum = [routesDict objectEnumerator];
+//            NSDictionary *routeValues;
+//            
+//            NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
+//            NSMutableArray *tempRouteNames = [[NSMutableArray alloc] init];
+//            
+//            NSNumber *number;
+//            
+//            //  Associate the stop with its routes
+//            while ((routeValues = [routesEnum nextObject])) {
+//                number = [routeValues objectForKey:@"id"];
+//                [tempRouteIds addObject:number];
+//                
+//                string = [routeValues objectForKey:@"name"];
+//                [tempRouteNames addObject:string];
+//            }
+//            
+//            NSEntityDescription *entityDescription = [NSEntityDescription
+//                                                      entityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
+//            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+//            [request setEntity:entityDescription];
+//            
+//            // Set example predicate and sort orderings...
+//            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+//                                      @"(routeId LIKE[c] '%d')", stopId];
+//            [request setPredicate:predicate];
+//            
+//            NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
+//                                                initWithKey:@"firstName" ascending:YES];
+//            [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+//            [sortDescriptor release];
+//            
+//            NSError *error = nil;
+//            NSArray *array = [moc executeFetchRequest:request error:&error];
+//            if (array == nil)
+//            {
+//                // Deal with error...
+//            }
         }
         
         [stops release];
@@ -233,8 +244,6 @@
             JSONVehicle *vehicle = [[JSONVehicle alloc] init];
             
             CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(0.0f, 0.0f);
-            
-            NSString *vehicleName = [dict objectForKey:@"name"];
             
             //  Set the vehicle properties to the corresponding JSON values
             for (NSString *string in dict) {
@@ -317,7 +326,7 @@
 		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
-            EtaWrapper *eta = [[EtaWrapper alloc] init];
+            ETA *eta = (ETA *)[NSEntityDescription insertNewObjectForEntityForName:@"ETA" inManagedObjectContext:self.managedObjectContext];
             
             //  Set the eta properties to the corresponding JSON values
             for (NSString *string in dict) {
@@ -325,18 +334,55 @@
                     eta.shuttleId = [dict objectForKey:string];
                 } else if ([string isEqualToString:@"stop_id"]) {
                     eta.stopId = [dict objectForKey:string];
+                    
+                    //  TODO: set which DB stop it corresponds to
                 } else if ([string isEqualToString:@"eta"]) {
                     eta.eta = [NSDate dateWithTimeIntervalSinceNow:[[dict objectForKey:string] 
 																	floatValue]/1000.0f];
                 } else if ([string isEqualToString:@"route"]) {
-                    eta.route = [[dict objectForKey:string] intValue];
+                    eta.routeId = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+                    
+                    //  TODO: set which DB route it corresponds to
                 } else if ([string isEqualToString:@"name"]) {
 					eta.stopName = [dict objectForKey:string];
 				}
             }
             
-            [etas addObject:eta];
-            [eta release];
+            //  Find the corresponding stop
+            NSEntityDescription *entityDescription = [NSEntityDescription
+                                                      entityForName:@"Stop" inManagedObjectContext:self.managedObjectContext];
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            // Set example predicate and sort orderings...
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                      @"(stopId == '%d')", eta.stopId];
+            [request setPredicate:predicate];
+            
+            NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
+                                                initWithKey:@"firstName" ascending:YES];
+            [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+            [sortDescriptor release];
+            
+            NSError *error = nil;
+            NSArray *array = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if (array == nil)
+            {
+                // Deal with error...
+            } else {
+                eta.stop = [array objectAtIndex:0];
+            }
+            
+            // Save the context.
+            if (![self.managedObjectContext save:&error]) {
+                /*
+                 Replace this implementation with code to handle the error appropriately.
+                 
+                 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                 */
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
         }
 		
 		[smallPool release];
