@@ -31,6 +31,7 @@
 @property (nonatomic, retain) NSMutableArray *extraEtas;
 @property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 
 - (id)initWithUrl:(NSURL *)url;
