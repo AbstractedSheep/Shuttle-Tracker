@@ -89,7 +89,7 @@
         shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
         vehiclesJsonParser = [[JSONParser alloc] initWithUrl:shuttleJsonUrl];
         
-        etasJsonUrl = [NSURL URLWithString:kDMEtasUrl];
+        etasJsonUrl = [NSURL URLWithString:kDMNextEtasUrl];
         etasJsonParser = [[JSONParser alloc] initWithUrl:etasJsonUrl];
         
         vehicles = [[NSMutableArray alloc] init];
