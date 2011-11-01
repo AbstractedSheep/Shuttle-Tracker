@@ -14,6 +14,7 @@
 #import "ETA.h"
 #import "Route.h"
 #import "RoutePt.h"
+#import "Shuttle.h"
 #import "Stop.h"
 
 @implementation JSONParser
@@ -158,6 +159,18 @@
             string = [value objectForKey:@"short_name"];
             stop.idTag = string;
             
+            // Save the context.
+            NSError *error = nil;
+            if (![self.managedObjectContext save:&error]) {
+                /*
+                 Replace this implementation with code to handle the error appropriately.
+                 
+                 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                 */
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
+            
 //            NSDictionary *routesDict = [value objectForKey:@"routes"];
 //            NSEnumerator *routesEnum = [routesDict objectEnumerator];
 //            NSDictionary *routeValues;
@@ -241,20 +254,41 @@
 		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
-            JSONVehicle *vehicle = [[JSONVehicle alloc] init];
+            Shuttle *vehicle;
+            NSString *vehicleName = [dict objectForKey:@"name"];
             
-            CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(0.0f, 0.0f);
+            //  Find the vehicle, if it exists already
+            NSEntityDescription *entityDescription = [NSEntityDescription
+                                                      entityForName:@"Shuttle" inManagedObjectContext:self.managedObjectContext];
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            // Set predicate and sort orderings...
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                      @"(name == '%@')", vehicleName];
+            [request setPredicate:predicate];
+            
+            NSError *error = nil;
+            NSArray *array = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if (array == nil)
+            {
+                // Deal with error...
+            } else if ([array count] > 0) {
+                vehicle = (Shuttle *)[array objectAtIndex:0];
+            } else {
+                vehicle = (Shuttle *)[NSEntityDescription insertNewObjectForEntityForName:@"Shuttle" inManagedObjectContext:self.managedObjectContext];
+            }
             
             //  Set the vehicle properties to the corresponding JSON values
             for (NSString *string in dict) {
-                if ([string isEqualToString:@"name"]) {
-                    vehicle.name = [dict objectForKey:string];
-                } else if ([string isEqualToString:@"latitude"]) {
-                    coordinate.latitude = [[dict objectForKey:string] floatValue];
+                if ([string isEqualToString:@"latitude"]) {
+                    vehicle.latitude = [NSNumber numberWithInt:[[dict objectForKey:string] floatValue]];
                 } else if ([string isEqualToString:@"longitude"]) {
-                    coordinate.longitude = [[dict objectForKey:string] floatValue];
+                    vehicle.longitude = [NSNumber numberWithInt:[[dict objectForKey:string] floatValue]];
                 } else if ([string isEqualToString:@"heading"]) {
-                    vehicle.heading = [[dict objectForKey:string] intValue];
+                    vehicle.heading = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+                } else if ([string isEqualToString:@"speed"]) {
+                    vehicle.speed = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
                 } else if ([string isEqualToString:@"update_time"]) {
 					NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 					[dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
@@ -262,17 +296,26 @@
 					vehicle.updateTime = [dateFormatter dateFromString:[dict objectForKey:string]];
 					[dateFormatter release];
 				} else if ([string isEqualToString:@"route_id"]) {
-					vehicle.routeNo = [[dict objectForKey:string] intValue];
+					vehicle.routeId = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
 				}
             }
-            
-            //  Set the coordinate of the vehicle after both the latitude and longitude are set
-            vehicle.coordinate = coordinate;
 			
-			vehicle.timeDisplayFormatter = timeDisplayFormatter;
+            // Save the context.
+            error = nil;
+            if (![self.managedObjectContext save:&error]) {
+                /*
+                 Replace this implementation with code to handle the error appropriately.
+                 
+                 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                 */
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
             
-            [vehicles addObject:vehicle];
-            [vehicle release];
+//			vehicle.timeDisplayFormatter = timeDisplayFormatter;
+//            
+//          [vehicles addObject:vehicle];
+//          [vehicle release];
         }
 		
 		[smallPool release];
@@ -354,13 +397,13 @@
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
-            // Set example predicate and sort orderings...
+            // Set predicate and sort orderings...
             NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                      @"(stopId == '%d')", eta.stopId];
+                                      @"(idTag == '%@')", eta.stopId];
             [request setPredicate:predicate];
             
             NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-                                                initWithKey:@"firstName" ascending:YES];
+                                                initWithKey:@"name" ascending:YES];
             [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
             [sortDescriptor release];
             
@@ -369,8 +412,10 @@
             if (array == nil)
             {
                 // Deal with error...
-            } else {
+            } else if ([array count] > 0) {
                 eta.stop = [array objectAtIndex:0];
+            } else {
+                //  No stop was found
             }
             
             // Save the context.

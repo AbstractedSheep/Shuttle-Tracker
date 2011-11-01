@@ -8,7 +8,7 @@
         <attribute name="stopName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="route" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Route" inverseName="etas" inverseEntity="Route" syncable="YES"/>
         <relationship name="shuttle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Shuttle" inverseName="eta" inverseEntity="Shuttle" syncable="YES"/>
-        <relationship name="stop" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="etas" inverseEntity="Stop" syncable="YES"/>
+        <relationship name="stop" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="etas" inverseEntity="Stop" syncable="YES"/>
     </entity>
     <entity name="Route" representedClassName="Route" syncable="YES">
         <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
@@ -46,10 +46,10 @@
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shortName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="etas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ETA" inverseName="stop" inverseEntity="ETA" syncable="YES"/>
-        <relationship name="routes" toMany="YES" minCount="1" deletionRule="Nullify" destinationEntity="Route" inverseName="stops" inverseEntity="Route" syncable="YES"/>
+        <relationship name="routes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Route" inverseName="stops" inverseEntity="Route" syncable="YES"/>
     </entity>
     <elements>
-        <element name="ETA" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="ETA" positionX="160" positionY="192" width="128" height="165"/>
         <element name="Route" positionX="160" positionY="192" width="128" height="180"/>
         <element name="RoutePt" positionX="160" positionY="192" width="128" height="105"/>
         <element name="Shuttle" positionX="160" positionY="192" width="128" height="135"/>
