@@ -175,7 +175,13 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        //  Any orientation on the iPad
+        return YES;
+    } else {
+        //  Portrait only, on the iPhone and iPod Touch
+        return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    }
 }
 
 - (void)changeDataUpdateRate:(NSNotification *)notification {

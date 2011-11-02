@@ -72,7 +72,7 @@
 //  Only support landscape on the iPad, and only support portrait on the iPhone
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        return UIInterfaceOrientationIsLandscape(toInterfaceOrientation);
+        return YES;
     } else {
         return (toInterfaceOrientation == UIInterfaceOrientationPortrait);
     }
