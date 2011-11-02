@@ -129,10 +129,10 @@
                                                                             inManagedObjectContext:self.managedObjectContext];
                 
                 string = [coordsValues objectForKey:@"latitude"];
-                routePt.latitude = [NSNumber numberWithFloat:[string floatValue]];
+                routePt.latitude = [NSNumber numberWithDouble:[string doubleValue]];
                 
                 string = [coordsValues objectForKey:@"longitude"];
-                routePt.longitude = [NSNumber numberWithFloat:[string floatValue] ];
+                routePt.longitude = [NSNumber numberWithDouble:[string doubleValue]];
                 
                 [route addPointsObject:routePt];
                 routePt.route = route;
@@ -188,10 +188,10 @@
             }
             
             string = [value objectForKey:@"latitude"];
-            stop.latitude = [NSNumber numberWithFloat:[string floatValue]];
+            stop.latitude = [NSNumber numberWithDouble:[string doubleValue]];
             
             string = [value objectForKey:@"longitude"];
-            stop.longitude = [NSNumber numberWithFloat:[string floatValue]];
+            stop.longitude = [NSNumber numberWithDouble:[string doubleValue]];
 			
 			//	Special handling for long stop names.
 			if ([string isEqualToString:@"Blitman Residence Commons"]) {
@@ -335,9 +335,9 @@
             //  Set the vehicle properties to the corresponding JSON values
             for (NSString *string in dict) {
                 if ([string isEqualToString:@"latitude"]) {
-                    vehicle.latitude = [NSNumber numberWithInt:[[dict objectForKey:string] floatValue]];
+                    vehicle.latitude = [NSNumber numberWithDouble:[[dict objectForKey:string] doubleValue]];
                 } else if ([string isEqualToString:@"longitude"]) {
-                    vehicle.longitude = [NSNumber numberWithInt:[[dict objectForKey:string] floatValue]];
+                    vehicle.longitude = [NSNumber numberWithDouble:[[dict objectForKey:string] doubleValue]];
                 } else if ([string isEqualToString:@"heading"]) {
                     vehicle.heading = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
                 } else if ([string isEqualToString:@"speed"]) {

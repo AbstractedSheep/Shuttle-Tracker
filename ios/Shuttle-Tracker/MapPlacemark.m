@@ -92,6 +92,8 @@
 @synthesize heading;
 @synthesize updateTime;
 @synthesize routeNo;
+@synthesize routeImageSet;
+@synthesize viewNeedsUpdate;
 
 - (void)copyAttributesExceptLocation:(MapVehicle *)newVehicle {
     

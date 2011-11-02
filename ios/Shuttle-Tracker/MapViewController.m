@@ -7,13 +7,14 @@
 //
 
 #import "MapViewController.h"
-#import "JSONParser.h"
+
 #import "MapPlacemark.h"
-#import "IASKSettingsReader.h"
 #import "Route.h"
 #import "RoutePt.h"
 #import "Shuttle.h"
 #import "Stop.h"
+
+#import "IASKSettingsReader.h"
 
 @interface UIImage (magentatocolor)
 
@@ -116,8 +117,7 @@ typedef enum {
 - (void)addRoute:(Route *)route;
 - (void)addStop:(Stop *)stop;
 //	Adding vehicles should only be done on the main thread.
-- (void)addVehicle:(Shuttle *)vehicle;
-- (void)addJsonVehicle:(JSONVehicle *)vehicle;
+- (MapVehicle *)addVehicle:(Shuttle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
 
 @end
@@ -240,20 +240,6 @@ typedef enum {
 //	A notification is sent by DataManager whenever the vehicles are updated.
 //  TODO: update
 - (void)vehiclesUpdated:(NSNotification *)notification {
-//	for (JSONVehicle *vehicle in dmVehicles) {
-//		if ([[_mapView annotations] indexOfObject:vehicle] == NSNotFound) {
-//			[self addJsonVehicle:vehicle];
-//		} else if (vehicle.viewNeedsUpdate) {
-//			//	If the annotation view needs to be updated, for example if the
-//			//	shuttle switched routes, then 1. Remove the shuttle from the map
-//			//	view, 2. Remove the associated annotation view, and 3. Add the
-//			//	shuttle back to the map view.
-//			[_mapView removeAnnotation:vehicle];
-//			vehicle.annotationView = nil;
-//			[self addJsonVehicle:vehicle];
-//		}
-//	}
-//	
 //	for (id existingObject in [_mapView annotations]) {
 //		if ([existingObject isKindOfClass:[JSONVehicle class]] && [dmVehicles indexOfObject:existingObject] == NSNotFound) {
 //			[_mapView removeAnnotation:existingObject];
@@ -272,12 +258,18 @@ typedef enum {
         // Deal with error...
     } else if ([dbVehicles count] > 0) {
         for (Shuttle *shuttle in dbVehicles) {
-            Shuttle *existingShuttle = [vehicles objectForKey:shuttle.name];
+            MapVehicle *existingShuttle = [vehicles objectForKey:shuttle.name];
             if (existingShuttle == nil) {
 //                NSLog(@"Shuttle name: %@", shuttle.name);
-                [vehicles setObject:shuttle forKey:shuttle.name];
-                
-                //  TODO: Add an annotation to the map view
+                [vehicles setObject:[self addVehicle:shuttle] forKey:shuttle.name];
+            } else if (existingShuttle.viewNeedsUpdate) {
+                //	If the annotation view needs to be updated, for example if the
+                //	shuttle switched routes, then 1. Remove the shuttle from the map
+                //	view, letting the annotation be released, and 2. Add the
+                //	shuttle back to the map view.
+                [_mapView removeAnnotation:existingShuttle];
+                [vehicles removeObjectForKey:existingShuttle.name];
+                [self addVehicle:shuttle];
             }
         }
     } else {
@@ -320,7 +312,7 @@ typedef enum {
         int counter = 0;
         for (RoutePt *point in routePts) {
             //  Get a CoreLocation coordinate from the point
-            clLoc = CLLocationCoordinate2DMake([point.latitude floatValue], [point.longitude floatValue]);
+            clLoc = CLLocationCoordinate2DMake([point.latitude doubleValue], [point.longitude doubleValue]);
             
             points[counter] = MKMapPointForCoordinate(clLoc);
             counter++;
@@ -357,24 +349,29 @@ typedef enum {
     CLLocationCoordinate2D clLoc;
     
     //  Get a CoreLocation coordinate from the point
-    clLoc = CLLocationCoordinate2DMake([stop.latitude floatValue], [stop.longitude floatValue]);
+    clLoc = CLLocationCoordinate2DMake([stop.latitude doubleValue], [stop.longitude doubleValue]);
     
     MapStop *mapStop = [[MapStop alloc] initWithLocation:clLoc];
+    mapStop.name = stop.name;
     [_mapView addAnnotation:mapStop];
     [mapStop release];
 }
 
-//- (void)addStop:(MapStop *)stop {
-//    [_mapView addAnnotation:stop];
-//    
-//}
 
-- (void)addVehicle:(Shuttle *)vehicle {
+- (MapVehicle *)addVehicle:(Shuttle *)vehicle {
+    MapVehicle *newVehicle = [[MapVehicle alloc] init];
     
-}
-
-- (void)addJsonVehicle:(JSONVehicle *)vehicle {
-    [_mapView addAnnotation:vehicle];
+    //  Get a CoreLocation coordinate from the point
+    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake([vehicle.latitude doubleValue], [vehicle.longitude doubleValue]);
+    newVehicle.coordinate = clLoc;
+    newVehicle.heading = [vehicle.heading intValue];
+    newVehicle.updateTime = vehicle.updateTime;
+    newVehicle.name = vehicle.name;
+    
+    [_mapView addAnnotation:newVehicle];
+    [newVehicle release];
+    
+    return newVehicle;
 }
 
 
@@ -453,41 +450,44 @@ typedef enum {
 			return [(MapStop *)annotation annotationView];
 		}
 		
-		MKAnnotationView *stopAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(MapStop *)annotation reuseIdentifier:@"stopAnnotation"] autorelease];
+		MKAnnotationView *stopAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(MapStop *)annotation
+                                                                             reuseIdentifier:@"stopAnnotation"] autorelease];
         stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
         stopAnnotationView.canShowCallout = YES;
         
         [(MapStop *)annotation setAnnotationView:stopAnnotationView];
 		
 		return stopAnnotationView;
-    } else if ([annotation isKindOfClass:[JSONVehicle class]]) {
-        JSONVehicle *vehicle = (JSONVehicle *)annotation;
+    } else if ([annotation isKindOfClass:[MapVehicle class]]) {
+        MapVehicle *vehicle = (MapVehicle *)annotation;
         
         if ([vehicle annotationView]) {
             //  Check to see if the vehicle's image is the plain shuttle image.
             //  If it is, check for a colored shuttle image for the shuttle's route.
             //  Set the shuttle's image to the colored one, if we have it.
-//            if (!vehicle.routeImageSet) {
-//                if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
-//                    [[vehicle annotationView] setImage:[shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]]];
-//					vehicle.routeImageSet = YES;
-//                }
-//            }
+            if (!vehicle.routeImageSet) {
+                if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
+                    [[vehicle annotationView] setImage:[shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]]];
+					vehicle.routeImageSet = YES;
+                }
+            }
             
             return [vehicle annotationView];
         }
         
-        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:vehicle reuseIdentifier:@"vehicleAnnotation"] autorelease];
+        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:vehicle
+                                                                                reuseIdentifier:@"vehicleAnnotation"] autorelease];
         
         //  Check if there is a colored shuttle image for the shuttle's current route.
         //  If there is, use it.
-//        if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
-//            vehicleAnnotationView.image = [shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]];
-//			vehicle.routeImageSet = YES;
-//        } else {
-//            vehicleAnnotationView.image = shuttleImage;
-//			vehicle.routeImageSet = NO;
-//        }
+        UIImage *coloredImage = [shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]];
+        if (coloredImage != nil) {
+            vehicleAnnotationView.image = coloredImage;
+			vehicle.routeImageSet = YES;
+        } else {
+            vehicleAnnotationView.image = shuttleImage;
+			vehicle.routeImageSet = NO;
+        }
         
         vehicleAnnotationView.image = shuttleImage;
         vehicle.routeImageSet = NO;

@@ -102,6 +102,8 @@
 @property (nonatomic) int heading;
 @property (nonatomic, retain) NSDate *updateTime;
 @property (nonatomic) int routeNo;
+@property (nonatomic) BOOL routeImageSet;
+@property (nonatomic) BOOL viewNeedsUpdate;
 
 - (void)copyAttributesExceptLocation:(MapVehicle *)newVehicle;
 
