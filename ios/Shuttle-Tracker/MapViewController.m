@@ -13,6 +13,7 @@
 #import "Route.h"
 #import "RoutePt.h"
 #import "Shuttle.h"
+#import "Stop.h"
 
 @interface UIImage (magentatocolor)
 
@@ -112,10 +113,10 @@ typedef enum {
 - (void)notifyVehiclesUpdated:(NSNotification *)notification;
 - (void)vehiclesUpdated:(NSNotification *)notification;
 //	Adding routes and stops is not guaranteed to be done on the main thread.
-- (void)addDBRoute:(Route *)route;
-- (void)addRoute:(MapRoute *)route;
-- (void)addStop:(MapStop *)stop;
+- (void)addRoute:(Route *)route;
+- (void)addStop:(Stop *)stop;
 //	Adding vehicles should only be done on the main thread.
+- (void)addVehicle:(Shuttle *)vehicle;
 - (void)addJsonVehicle:(JSONVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
 
@@ -191,27 +192,39 @@ typedef enum {
 //  The routes and stops were loaded in the dataManager
 //  TODO
 - (void)managedRoutesLoaded {
-//    for (MapRoute *route in [dataManager routes]) {
-//        [self addRoute:route];
-//    }
-//    
-//    for (MapStop *stop in [dataManager stops]) {
-//        [self addStop:stop];
-//    }
     //  Get all routes
-    NSEntityDescription *entityDescription = [NSEntityDescription
-                                              entityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-    [request setEntity:entityDescription];
+    NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"Route" 
+                                                         inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *routeRequest = [[[NSFetchRequest alloc] init] autorelease];
+    [routeRequest setEntity:routeEntityDescription];
     
     NSError *error = nil;
-    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:routeRequest error:&error];
     if (dbRoutes == nil)
     {
         // Deal with error...
     } else if ([dbRoutes count] > 0) {
         for (Route *route in dbRoutes) {
-            [self addDBRoute:route];
+            [self addRoute:route];
+        }
+    } else {
+        //  No routes, so do nothing
+    }
+    
+    //  Get all stops
+    NSEntityDescription *stopEntityDescription = [NSEntityDescription entityForName:@"Stop" 
+                                                              inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *stopRequest = [[[NSFetchRequest alloc] init] autorelease];
+    [stopRequest setEntity:stopEntityDescription];
+    
+    error = nil;
+    NSArray *dbStops = [self.managedObjectContext executeFetchRequest:stopRequest error:&error];
+    if (dbStops == nil)
+    {
+        // Deal with error...
+    } else if ([dbStops count] > 0) {
+        for (Stop *stop in dbStops) {
+            [self addStop:stop];
         }
     } else {
         //  No routes, so do nothing
@@ -275,7 +288,7 @@ typedef enum {
 
 //  Add the overlay for the route to the map view, and create a shuttle image with
 //  a color matching the route's color
-- (void)addDBRoute:(Route *)route {
+- (void)addRoute:(Route *)route {
     CLLocationCoordinate2D clLoc;
     MKMapPoint *points;
     
@@ -340,56 +353,23 @@ typedef enum {
 }
 
 
-//  Add the overlay for the route to the map view, and create a shuttle image with
-//  a color matching the route's color
-- (void)addRoute:(MapRoute *)route {
-    NSArray *temp;
+- (void)addStop:(Stop *)stop {
     CLLocationCoordinate2D clLoc;
-    MKMapPoint *points = malloc(sizeof(MKMapPoint) * route.lineString.count);
     
-    int counter = 0;
+    //  Get a CoreLocation coordinate from the point
+    clLoc = CLLocationCoordinate2DMake([stop.latitude floatValue], [stop.longitude floatValue]);
     
-    //  Create an array of coordinates for the polyline which will represent the route
-    for (NSString *coordinate in route.lineString) {
-        temp = [coordinate componentsSeparatedByString:@","];
-        
-        if (temp && [temp count] > 1) {
-            //  Get a CoreLocation coordinate from the coordinate string
-            clLoc = CLLocationCoordinate2DMake([[temp objectAtIndex:1] floatValue], [[temp objectAtIndex:0] floatValue]);
-            
-            points[counter] = MKMapPointForCoordinate(clLoc);
-            counter++;
-        }
-        
-    }
-    
-    MKPolyline *polyLine = [MKPolyline polylineWithPoints:points count:counter];
-    [routeLines addObject:polyLine];
-    
-    free(points);
-    
-    MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
-    [routeLineViews addObject:routeView];
-	[routeView release];
-    
-    routeView.lineWidth = route.style.width;
-    routeView.fillColor = route.style.color;
-    routeView.strokeColor = route.style.color;
-    
-    [_mapView addOverlay:polyLine];
-    
-    //  Create the colored shuttle image for the route
-    UIImage *coloredImage;
-    
-    if (route.style.color) {
-        coloredImage = [magentaShuttleImage convertMagentatoColor:route.style.color];
-        
-        [shuttleImages setValue:coloredImage forKey:route.idTag];
-    }
+    MapStop *mapStop = [[MapStop alloc] initWithLocation:clLoc];
+    [_mapView addAnnotation:mapStop];
+    [mapStop release];
 }
 
-- (void)addStop:(MapStop *)stop {
-    [_mapView addAnnotation:stop];
+//- (void)addStop:(MapStop *)stop {
+//    [_mapView addAnnotation:stop];
+//    
+//}
+
+- (void)addVehicle:(Shuttle *)vehicle {
     
 }
 
