@@ -260,16 +260,26 @@ typedef enum {
         for (Shuttle *shuttle in dbVehicles) {
             MapVehicle *existingShuttle = [vehicles objectForKey:shuttle.name];
             if (existingShuttle == nil) {
+                //  Add the shuttle to the map view
+                
 //                NSLog(@"Shuttle name: %@", shuttle.name);
                 [vehicles setObject:[self addVehicle:shuttle] forKey:shuttle.name];
-            } else if (existingShuttle.viewNeedsUpdate) {
-                //	If the annotation view needs to be updated, for example if the
-                //	shuttle switched routes, then 1. Remove the shuttle from the map
-                //	view, letting the annotation be released, and 2. Add the
-                //	shuttle back to the map view.
-                [_mapView removeAnnotation:existingShuttle];
-                [vehicles removeObjectForKey:existingShuttle.name];
-                [self addVehicle:shuttle];
+            } else {
+                if ([shuttle.routeId intValue] != existingShuttle.routeNo) {
+                    NSLog(@"routeId: %d, old routeId: %d", [shuttle.routeId intValue], existingShuttle.routeNo);
+                    //	If the shuttle switched routes, then 1. Remove the shuttle from the map
+                    //	view, letting the annotation be released, and 2. Add the
+                    //	shuttle back to the map view.
+                    
+                    [_mapView removeAnnotation:existingShuttle];
+                    [vehicles removeObjectForKey:existingShuttle.name];
+                    [self addVehicle:shuttle];
+                } else if ([shuttle.updateTime timeIntervalSinceDate:existingShuttle.updateTime] > 0) {
+                    //  If the shuttle location is out of date, update it
+                    
+                    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake([shuttle.latitude doubleValue], [shuttle.longitude doubleValue]);
+                    existingShuttle.coordinate = clLoc;
+                }
             }
         }
     } else {
@@ -366,9 +376,11 @@ typedef enum {
     newVehicle.coordinate = clLoc;
     newVehicle.heading = [vehicle.heading intValue];
     newVehicle.updateTime = vehicle.updateTime;
+    newVehicle.routeNo = [vehicle.routeId intValue];
     newVehicle.name = vehicle.name;
     
     [_mapView addAnnotation:newVehicle];
+    [vehicles setObject:newVehicle forKey:newVehicle.name];
     [newVehicle release];
     
     return newVehicle;
@@ -466,8 +478,9 @@ typedef enum {
             //  If it is, check for a colored shuttle image for the shuttle's route.
             //  Set the shuttle's image to the colored one, if we have it.
             if (!vehicle.routeImageSet) {
-                if ([shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]] != nil) {
-                    [[vehicle annotationView] setImage:[shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]]];
+                UIImage *coloredImage = [shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]];
+                if (coloredImage != nil) {
+                    [[vehicle annotationView] setImage:coloredImage];
 					vehicle.routeImageSet = YES;
                 }
             }
@@ -495,7 +508,6 @@ typedef enum {
         vehicleAnnotationView.canShowCallout = YES;
         
         [vehicle setAnnotationView:vehicleAnnotationView];
-		vehicle.viewNeedsUpdate = NO;
 		
 		return vehicleAnnotationView;
     }
