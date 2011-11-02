@@ -85,14 +85,14 @@
             NSNumber *routeId = [value objectForKey:@"id"];
             
             //  Find the route, if it exists already
-            NSEntityDescription *entityDescription = [NSEntityDescription
-                                                      entityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route" 
+                                                                 inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
             // Set predicate and sort orderings...
             NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                      @"(routeId == '%@')", routeId];
+                                      @"(routeId == %@)", routeId];
             [request setPredicate:predicate];
             
             NSError *error = nil;
@@ -109,12 +109,15 @@
                 route.routeId = routeId;
             }
 
-            
+
             NSNumber *number = [value objectForKey:@"width"];
             route.width = number;
             
             string = [value objectForKey:@"name"];
             route.name = string;
+            
+            string = [value objectForKey:@"color"];
+            route.color = string;
             
             NSDictionary *coordsDict = [value objectForKey:@"coords"];
             NSEnumerator *coordsEnum = [coordsDict objectEnumerator];
@@ -122,7 +125,8 @@
             
             long ptCount = 0;
             while ((coordsValues = [coordsEnum nextObject])) {
-                RoutePt *routePt = (RoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"RoutePt" inManagedObjectContext:self.managedObjectContext];
+                RoutePt *routePt = (RoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"RoutePt"
+                                                                            inManagedObjectContext:self.managedObjectContext];
                 
                 string = [coordsValues objectForKey:@"latitude"];
                 routePt.latitude = [NSNumber numberWithFloat:[string floatValue]];
@@ -158,14 +162,14 @@
             NSString *stopName = [value objectForKey:@"name"];
             
             //  Find the stop, if it exists already
-            NSEntityDescription *entityDescription = [NSEntityDescription
-                                                      entityForName:@"Stop" inManagedObjectContext:self.managedObjectContext];
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Stop"
+                                                                 inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
             // Set predicate and sort orderings...
             NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                      @"(name == '%@')", stopName];
+                                      @"(name == %@)", stopName];
             [request setPredicate:predicate];
             
             NSError *error = nil;
@@ -178,7 +182,8 @@
                 stop = (Stop *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                stop = (Stop *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
+                stop = (Stop *)[NSEntityDescription insertNewObjectForEntityForName:@"Stop"
+                                                             inManagedObjectContext:self.managedObjectContext];
                 stop.name = stopName;
             }
             
@@ -296,14 +301,14 @@
             NSString *vehicleName = [dict objectForKey:@"name"];
             
             //  Find the vehicle, if it exists already
-            NSEntityDescription *entityDescription = [NSEntityDescription
-                                                      entityForName:@"Shuttle" inManagedObjectContext:self.managedObjectContext];
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Shuttle"
+                                                                 inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
             // Set predicate and sort orderings...
             NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                      @"(name == '%@')", vehicleName];
+                                      @"(name == %@)", vehicleName];
             [request setPredicate:predicate];
             
             NSError *error = nil;
@@ -316,7 +321,8 @@
                 vehicle = (Shuttle *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                vehicle = (Shuttle *)[NSEntityDescription insertNewObjectForEntityForName:@"Shuttle" inManagedObjectContext:self.managedObjectContext];
+                vehicle = (Shuttle *)[NSEntityDescription insertNewObjectForEntityForName:@"Shuttle"
+                                                                   inManagedObjectContext:self.managedObjectContext];
                 vehicle.name = vehicleName;
                 
                 //  Set up KVO
@@ -413,14 +419,14 @@
             NSNumber *etaRouteId = [NSNumber numberWithInt:[[dict objectForKey:@"route"] intValue]];
             
             //  Find the ETA, if it exists already
-            NSEntityDescription *entityDescription = [NSEntityDescription
-                                                      entityForName:@"ETA" inManagedObjectContext:self.managedObjectContext];
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"ETA" 
+                                                                 inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
             // Set predicate and sort orderings...
             NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                      @"(stopId == '%@') AND (routeId == '%@')", etaStopId, etaRouteId];
+                                      @"(stopId == %@) AND (routeId == %@)", etaStopId, etaRouteId];
             [request setPredicate:predicate];
             
             NSError *error = nil;
@@ -433,7 +439,8 @@
                 eta = (ETA *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                eta = (ETA *)[NSEntityDescription insertNewObjectForEntityForName:@"ETA" inManagedObjectContext:self.managedObjectContext];
+                eta = (ETA *)[NSEntityDescription insertNewObjectForEntityForName:@"ETA"
+                                                           inManagedObjectContext:self.managedObjectContext];
                 eta.stopId = etaStopId;
                 eta.routeId = etaRouteId;
                 
@@ -465,14 +472,14 @@
             }
             
             //  Find the corresponding stop
-            entityDescription = [NSEntityDescription
-                                                      entityForName:@"Stop" inManagedObjectContext:self.managedObjectContext];
+            entityDescription = [NSEntityDescription entityForName:@"Stop" 
+                                            inManagedObjectContext:self.managedObjectContext];
             request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
             // Set predicate and sort orderings...
             predicate = [NSPredicate predicateWithFormat:
-                                      @"(idTag == '%@')", eta.stopId];
+                                      @"(idTag == %@)", eta.stopId];
             [request setPredicate:predicate];
             
             NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
@@ -600,7 +607,10 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"] autorelease];
+    NSFetchedResultsController *aFetchedResultsController = [[[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                                                 managedObjectContext:self.managedObjectContext
+                                                                                                   sectionNameKeyPath:nil
+                                                                                                            cacheName:@"Master"] autorelease];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     

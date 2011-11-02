@@ -287,7 +287,7 @@ typedef enum {
     
     // Set predicate and sort orderings...
     NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                 @"(route == '%@')", route];
+                 @"(route == %@)", route];
     [request setPredicate:predicate];
     
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
@@ -301,42 +301,41 @@ typedef enum {
     {
         // Deal with error...
     } else {
-    }
-    
-    points = malloc(sizeof(MKMapPoint) * routePts.count);
-    
-    //  Create an array of coordinates for the polyline which will represent the route
-    int counter = 0;
-    for (RoutePt *point in routePts) {
-        //  Get a CoreLocation coordinate from the point
-        clLoc = CLLocationCoordinate2DMake([point.latitude floatValue], [point.longitude floatValue]);
+        points = malloc(sizeof(MKMapPoint) * routePts.count);
         
-        points[counter] = MKMapPointForCoordinate(clLoc);
-        counter++;
-    }
-    
-    MKPolyline *polyLine = [MKPolyline polylineWithPoints:points count:counter];
-    [routeLines addObject:polyLine];
-    
-    free(points);
-    
-    MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
-    [routeLineViews addObject:routeView];
-	[routeView release];
-    
-    routeView.lineWidth = [route.width intValue];
-    routeView.fillColor = [UIColor UIColorFromRGBString:route.color];
-    routeView.strokeColor = routeView.fillColor;
-    
-    [_mapView addOverlay:polyLine];
-    
-    //  Create the colored shuttle image for the route
-    UIImage *coloredImage;
-    
-    if (routeView.fillColor) {
-        coloredImage = [magentaShuttleImage convertMagentatoColor:routeView.fillColor];
+        //  Create an array of coordinates for the polyline which will represent the route
+        int counter = 0;
+        for (RoutePt *point in routePts) {
+            //  Get a CoreLocation coordinate from the point
+            clLoc = CLLocationCoordinate2DMake([point.latitude floatValue], [point.longitude floatValue]);
+            
+            points[counter] = MKMapPointForCoordinate(clLoc);
+            counter++;
+        }
         
-        [shuttleImages setValue:coloredImage forKey:route.idTag];
+        MKPolyline *polyLine = [MKPolyline polylineWithPoints:points count:counter];
+        [routeLines addObject:polyLine];
+        
+        free(points);
+        
+        MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
+        [routeLineViews addObject:routeView];
+        [routeView release];
+        
+        routeView.lineWidth = [route.width intValue];
+        routeView.fillColor = [UIColor UIColorFromRGBString:route.color];
+        routeView.strokeColor = routeView.fillColor;
+        
+        [_mapView addOverlay:polyLine];
+        
+        //  Create the colored shuttle image for the route
+        UIImage *coloredImage;
+        
+        if (routeView.fillColor) {
+            coloredImage = [magentaShuttleImage convertMagentatoColor:routeView.fillColor];
+            
+            [shuttleImages setValue:coloredImage forKey:route.idTag];
+        }
     }
 }
 
