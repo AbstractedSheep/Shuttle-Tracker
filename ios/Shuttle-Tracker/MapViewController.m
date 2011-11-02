@@ -176,14 +176,15 @@ typedef enum {
 
 
 //  The routes and stops were loaded in the dataManager
+//  TODO
 - (void)managedRoutesLoaded {
-    for (MapRoute *route in [dataManager routes]) {
-        [self addRoute:route];
-    }
-    
-    for (MapStop *stop in [dataManager stops]) {
-        [self addStop:stop];
-    }
+//    for (MapRoute *route in [dataManager routes]) {
+//        [self addRoute:route];
+//    }
+//    
+//    for (MapStop *stop in [dataManager stops]) {
+//        [self addStop:stop];
+//    }
 }
 
 //	A notification is sent by DataManager whenever the vehicles are updated.
@@ -193,34 +194,35 @@ typedef enum {
 }
 
 //	A notification is sent by DataManager whenever the vehicles are updated.
+//  TODO: update
 - (void)vehiclesUpdated:(NSNotification *)notification {
-	NSDictionary *info = [notification userInfo];
-	
-	NSArray *dmVehicles = [info objectForKey:@"vehicles"];
-	
-	if (!dmVehicles) {
-		return;
-	}
-	
-	for (JSONVehicle *vehicle in dmVehicles) {
-		if ([[_mapView annotations] indexOfObject:vehicle] == NSNotFound) {
-			[self addJsonVehicle:vehicle];
-		} else if (vehicle.viewNeedsUpdate) {
-			//	If the annotation view needs to be updated, for example if the
-			//	shuttle switched routes, then 1. Remove the shuttle from the map
-			//	view, 2. Remove the associated annotation view, and 3. Add the
-			//	shuttle back to the map view.
-			[_mapView removeAnnotation:vehicle];
-			vehicle.annotationView = nil;
-			[self addJsonVehicle:vehicle];
-		}
-	}
-	
-	for (id existingObject in [_mapView annotations]) {
-		if ([existingObject isKindOfClass:[JSONVehicle class]] && [dmVehicles indexOfObject:existingObject] == NSNotFound) {
-			[_mapView removeAnnotation:existingObject];
-		}
-	}
+//	NSDictionary *info = [notification userInfo];
+//	
+//	NSArray *dmVehicles = [info objectForKey:@"vehicles"];
+//	
+//	if (!dmVehicles) {
+//		return;
+//	}
+//	
+//	for (JSONVehicle *vehicle in dmVehicles) {
+//		if ([[_mapView annotations] indexOfObject:vehicle] == NSNotFound) {
+//			[self addJsonVehicle:vehicle];
+//		} else if (vehicle.viewNeedsUpdate) {
+//			//	If the annotation view needs to be updated, for example if the
+//			//	shuttle switched routes, then 1. Remove the shuttle from the map
+//			//	view, 2. Remove the associated annotation view, and 3. Add the
+//			//	shuttle back to the map view.
+//			[_mapView removeAnnotation:vehicle];
+//			vehicle.annotationView = nil;
+//			[self addJsonVehicle:vehicle];
+//		}
+//	}
+//	
+//	for (id existingObject in [_mapView annotations]) {
+//		if ([existingObject isKindOfClass:[JSONVehicle class]] && [dmVehicles indexOfObject:existingObject] == NSNotFound) {
+//			[_mapView removeAnnotation:existingObject];
+//		}
+//	}
 }
 
 

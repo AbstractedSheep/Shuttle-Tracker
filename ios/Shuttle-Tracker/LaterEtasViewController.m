@@ -102,7 +102,7 @@
     
     //  Set the favorite/unfavorite button appearance
     //  based on the status of the view's associated stop.
-    if ([dataManager isFavorite:wrappedEta]) {
+    if (0) {
         favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
                                                                        target:self 
                                                                        action:@selector(toggleFavorite:)];
@@ -168,7 +168,7 @@
 
 //	Handle the "Favorite/Unfavorite" button
 - (void)toggleFavorite:(id)sender {
-    if ([dataManager toggleFavoriteStopWithEta:wrappedEta]) {
+    if (0) {
         favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
                                                                        target:self 
                                                                        action:@selector(toggleFavorite:)];

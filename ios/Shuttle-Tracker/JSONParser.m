@@ -71,9 +71,6 @@
 			return NO;
         }
         
-        NSMutableArray *mutableRoutes = [[NSMutableArray alloc] init];
-        NSMutableArray *mutableStops = [[NSMutableArray alloc] init];
-        
 		NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
         NSDictionary *value;
         NSString *string;
@@ -107,6 +104,7 @@
                 string = [coordsValues objectForKey:@"longitude"];
                 routePt.longitude = [NSNumber numberWithFloat:[string floatValue] ];
                 
+                [route addPointsObject:routePt];
                 routePt.route = route;
                 routePt.pointNumber = [NSNumber numberWithLong:ptCount++];
             }
@@ -123,9 +121,6 @@
                 abort();
             }
         }
-        
-        [routes release];
-        routes = mutableRoutes;
         
         NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
         
@@ -211,9 +206,6 @@
 //                // Deal with error...
 //            }
         }
-        
-        [stops release];
-        stops = mutableStops;
 		
 		[smallPool release];
         
@@ -232,10 +224,6 @@
 													encoding:NSUTF8StringEncoding 
 													   error:&theError];
     NSDictionary *jsonDict = nil;
-    
-    [vehicles release];
-    
-    vehicles = [[NSMutableArray alloc] init];
     
     if (theError) {
         NSLog(@"Error retrieving JSON data");
@@ -282,10 +270,10 @@
                 vehicle.name = vehicleName;
                 
                 //  Set up KVO
-                [vehicle addObserver:self
-                          forKeyPath:@"latitude"
-                             options:NSKeyValueObservingOptionNew
-                             context:nil];
+//                [vehicle addObserver:self
+//                          forKeyPath:@"latitude"
+//                             options:NSKeyValueObservingOptionNew
+//                             context:nil];
             }
             
             //  Set the vehicle properties to the corresponding JSON values
@@ -320,11 +308,6 @@
                 NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                 abort();
             }
-            
-//			vehicle.timeDisplayFormatter = timeDisplayFormatter;
-//            
-//          [vehicles addObject:vehicle];
-//          [vehicle release];
         }
 		
 		[smallPool release];
@@ -344,10 +327,6 @@
 													encoding:NSUTF8StringEncoding 
 													   error:&theError];
     NSDictionary *jsonDict = nil;
-    
-    [etas release];
-    
-    etas = [[NSMutableArray alloc] init];
     
     if (theError) {
         NSLog(@"Error retrieving JSON data");
@@ -408,11 +387,11 @@
                 eta.stopId = etaStopId;
                 eta.routeId = etaRouteId;
                 
-                //  Set up KVO
-                [eta addObserver:self
-                          forKeyPath:@"eta"
-                             options:NSKeyValueObservingOptionNew
-                             context:nil];
+//                //  Set up KVO
+//                [eta addObserver:self
+//                          forKeyPath:@"eta"
+//                             options:NSKeyValueObservingOptionNew
+//                             context:nil];
             }
             
             //  Set the eta properties to the corresponding JSON values
@@ -489,10 +468,6 @@
 													encoding:NSUTF8StringEncoding 
 													   error:&theError];
     NSDictionary *jsonDict = nil;
-    
-    [extraEtas release];
-    
-    extraEtas = [[NSMutableArray alloc] init];
     
     if (theError) {
         NSLog(@"Error retrieving JSON data");
@@ -594,16 +569,16 @@
 }
 
 
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object 
-                         change:(NSDictionary *)change 
-                        context:(void *)context
-{
-    if ([keyPath isEqualToString:@"latitude"])
-    {
-        //  TODO: post local notification for (Vehicle *) object
-        return;
-    }
-}
+//- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object 
+//                         change:(NSDictionary *)change 
+//                        context:(void *)context
+//{
+//    if ([keyPath isEqualToString:@"latitude"])
+//    {
+//        //  TODO: post local notification for (Vehicle *) object
+//        return;
+//    }
+//}
 
 
 - (void)dealloc {

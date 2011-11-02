@@ -110,17 +110,13 @@
 {
     // Return the number of sections.
     //  One section for each route (or "Loading...")
-	if (dataManager && [dataManager numberSections]) {
-		return [dataManager numberSections];
-	} else {
-		return 1;
-	}
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [dataManager numberEtasForSection:section];
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -141,7 +137,7 @@
     
     int counter = 0;
     
-	NSArray *etas = [dataManager etasForSection:indexPath.section];
+	NSArray *etas = [NSArray array];
     
     //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
     for (EtaWrapper *eta in etas) {
@@ -190,10 +186,8 @@
 
 //	Use the short names of the routes, since they display better than the full names
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	NSArray *sectionHeaders = [dataManager sectionHeaders];
-	
-	if (sectionHeaders && [sectionHeaders count] > section) {
-		return [sectionHeaders objectAtIndex:section];
+	if (0) {
+        
 	} else {
 		return @"Loading...";
 	}
@@ -208,7 +202,7 @@
     
     int counter = 0;
     
-	NSArray *etas = [dataManager etasForSection:indexPath.section];
+	NSArray *etas = [NSArray array];
 	
     //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
     for (EtaWrapper *eta in etas) {
@@ -243,7 +237,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if ([dataManager isFavoritesSection:indexPath.section]) {
+	if (0) {
 		return @"Unfavorite";
 	} else {
 		return @"Favorite";
@@ -252,7 +246,7 @@
 
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-	if ([dataManager isFavoritesSection:indexPath.section]) {
+	if (0) {
 		return UITableViewCellEditingStyleDelete;
 	} else {
 		return UITableViewCellEditingStyleInsert;
@@ -265,11 +259,10 @@
 	//	delete button, tell the data manager and update the table.
 	if (editingStyle == UITableViewCellEditingStyleDelete)
 	{
-		//	Remove a favorite stop: tell the data manager and delete
-		//	the row from the table.  If it was the last row, delete
-		//	the whole favorites section.
+		//	Remove a favorite stop: delete the row from the table.
+        //  If it was the last row, delete the whole favorites section.
 		
-		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+//		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
 		
 		//	If the last row in a section is going to be removed, just delete the section.
 		//	Otherwise remove the row.
@@ -281,10 +274,9 @@
 								  withRowAnimation:UITableViewRowAnimationFade];
 		}
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
-		//	Add a favorite stop: tell the data manager and reload
-		//	the table.
+		//	Add a favorite stop: reload the table.
 		
-		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
+//		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
 		
 		//	Reload the table
 		[self unsafeDelayedTableReloadForced];
