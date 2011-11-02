@@ -16,6 +16,9 @@
 
 #import "IASKSettingsReader.h"
 
+//  Set shuttles updated more than 1 minute ago as "stale"
+const unsigned int UPDATE_THRESHOLD = 60;
+
 @interface UIImage (magentatocolor)
 
 - (UIImage *)convertMagentatoColor:(UIColor *)newColor;
@@ -190,7 +193,6 @@ typedef enum {
 
 
 //  The routes and stops were loaded in the dataManager
-//  TODO
 - (void)managedRoutesLoaded {
     //  Get all routes
     NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"Route" 
@@ -227,7 +229,7 @@ typedef enum {
             [self addStop:stop];
         }
     } else {
-        //  No routes, so do nothing
+        //  No stops, so do nothing
     }
 }
 
@@ -238,7 +240,6 @@ typedef enum {
 }
 
 //	A notification is sent by DataManager whenever the vehicles are updated.
-//  TODO: update
 - (void)vehiclesUpdated:(NSNotification *)notification {
 //	for (id existingObject in [_mapView annotations]) {
 //		if ([existingObject isKindOfClass:[JSONVehicle class]] && [dmVehicles indexOfObject:existingObject] == NSNotFound) {
@@ -263,9 +264,13 @@ typedef enum {
                 //  Add the shuttle to the map view
                 
 //                NSLog(@"Shuttle name: %@", shuttle.name);
-                [vehicles setObject:[self addVehicle:shuttle] forKey:shuttle.name];
+                if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
+                    [vehicles setObject:[self addVehicle:shuttle] forKey:shuttle.name];
+                }
             } else {
-                if ([shuttle.routeId intValue] != existingShuttle.routeNo) {
+                if ([shuttle.updateTime timeIntervalSinceNow] > UPDATE_THRESHOLD) {
+                    [vehicles removeObjectForKey:existingShuttle.name];
+                } else if ([shuttle.routeId intValue] != existingShuttle.routeNo) {
                     NSLog(@"routeId: %d, old routeId: %d", [shuttle.routeId intValue], existingShuttle.routeNo);
                     //	If the shuttle switched routes, then 1. Remove the shuttle from the map
                     //	view, letting the annotation be released, and 2. Add the
