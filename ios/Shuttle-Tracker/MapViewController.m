@@ -10,10 +10,20 @@
 #import "JSONParser.h"
 #import "MapPlacemark.h"
 #import "IASKSettingsReader.h"
+#import "Route.h"
+#import "RoutePt.h"
+#import "Shuttle.h"
 
 @interface UIImage (magentatocolor)
 
 - (UIImage *)convertMagentatoColor:(UIColor *)newColor;
+
+@end
+
+@interface UIColor (stringcolor)
+
++ (UIColor *)UIColorFromRGBString:(NSString *)rgbString;
++ (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString;
 
 @end
 
@@ -102,6 +112,7 @@ typedef enum {
 - (void)notifyVehiclesUpdated:(NSNotification *)notification;
 - (void)vehiclesUpdated:(NSNotification *)notification;
 //	Adding routes and stops is not guaranteed to be done on the main thread.
+- (void)addDBRoute:(Route *)route;
 - (void)addRoute:(MapRoute *)route;
 - (void)addStop:(MapStop *)stop;
 //	Adding vehicles should only be done on the main thread.
@@ -113,6 +124,7 @@ typedef enum {
 @implementation MapViewController
 
 @synthesize dataManager;
+@synthesize managedObjectContext = __managedObjectContext;
 @synthesize masterPopoverController = _masterPopoverController;
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
@@ -165,6 +177,7 @@ typedef enum {
     [magentaShuttleImage retain];
     
     shuttleImages = [[NSMutableDictionary alloc] init];
+    vehicles = [[NSMutableDictionary alloc] init];
 	
 	//	Take notice when a setting is changed.
 	//	Note that this is not the only object that takes notice.
@@ -185,6 +198,24 @@ typedef enum {
 //    for (MapStop *stop in [dataManager stops]) {
 //        [self addStop:stop];
 //    }
+    //  Get all routes
+    NSEntityDescription *entityDescription = [NSEntityDescription
+                                              entityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    NSError *error = nil;
+    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:request error:&error];
+    if (dbRoutes == nil)
+    {
+        // Deal with error...
+    } else if ([dbRoutes count] > 0) {
+        for (Route *route in dbRoutes) {
+            [self addDBRoute:route];
+        }
+    } else {
+        //  No routes, so do nothing
+    }
 }
 
 //	A notification is sent by DataManager whenever the vehicles are updated.
@@ -196,14 +227,6 @@ typedef enum {
 //	A notification is sent by DataManager whenever the vehicles are updated.
 //  TODO: update
 - (void)vehiclesUpdated:(NSNotification *)notification {
-//	NSDictionary *info = [notification userInfo];
-//	
-//	NSArray *dmVehicles = [info objectForKey:@"vehicles"];
-//	
-//	if (!dmVehicles) {
-//		return;
-//	}
-//	
 //	for (JSONVehicle *vehicle in dmVehicles) {
 //		if ([[_mapView annotations] indexOfObject:vehicle] == NSNotFound) {
 //			[self addJsonVehicle:vehicle];
@@ -223,6 +246,98 @@ typedef enum {
 //			[_mapView removeAnnotation:existingObject];
 //		}
 //	}
+    //  Get all vehicles
+    NSEntityDescription *entityDescription = [NSEntityDescription
+                                              entityForName:@"Shuttle" inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    NSError *error = nil;
+    NSArray *dbVehicles = [self.managedObjectContext executeFetchRequest:request error:&error];
+    if (dbVehicles == nil)
+    {
+        // Deal with error...
+    } else if ([dbVehicles count] > 0) {
+        for (Shuttle *shuttle in dbVehicles) {
+            Shuttle *existingShuttle = [vehicles objectForKey:shuttle.name];
+            if (existingShuttle == nil) {
+//                NSLog(@"Shuttle name: %@", shuttle.name);
+                [vehicles setObject:shuttle forKey:shuttle.name];
+                
+                //  TODO: Add an annotation to the map view
+            }
+        }
+    } else {
+        //  No vehicles, so do nothing
+    }
+}
+
+
+//  Add the overlay for the route to the map view, and create a shuttle image with
+//  a color matching the route's color
+- (void)addDBRoute:(Route *)route {
+    CLLocationCoordinate2D clLoc;
+    MKMapPoint *points;
+    
+    //  Get all vehicles
+    NSEntityDescription *entityDescription = [NSEntityDescription
+                                              entityForName:@"RoutePt" inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    // Set predicate and sort orderings...
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                 @"(route == '%@')", route];
+    [request setPredicate:predicate];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
+                                        initWithKey:@"pointNumber" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    [sortDescriptor release];
+    
+    NSError *error = nil;
+    NSArray *routePts = [self.managedObjectContext executeFetchRequest:request error:&error];
+    if (routePts == nil)
+    {
+        // Deal with error...
+    } else {
+    }
+    
+    points = malloc(sizeof(MKMapPoint) * routePts.count);
+    
+    //  Create an array of coordinates for the polyline which will represent the route
+    int counter = 0;
+    for (RoutePt *point in routePts) {
+        //  Get a CoreLocation coordinate from the point
+        clLoc = CLLocationCoordinate2DMake([point.latitude floatValue], [point.longitude floatValue]);
+        
+        points[counter] = MKMapPointForCoordinate(clLoc);
+        counter++;
+    }
+    
+    MKPolyline *polyLine = [MKPolyline polylineWithPoints:points count:counter];
+    [routeLines addObject:polyLine];
+    
+    free(points);
+    
+    MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
+    [routeLineViews addObject:routeView];
+	[routeView release];
+    
+    routeView.lineWidth = [route.width intValue];
+    routeView.fillColor = [UIColor UIColorFromRGBString:route.color];
+    routeView.strokeColor = routeView.fillColor;
+    
+    [_mapView addOverlay:polyLine];
+    
+    //  Create the colored shuttle image for the route
+    UIImage *coloredImage;
+    
+    if (routeView.fillColor) {
+        coloredImage = [magentaShuttleImage convertMagentatoColor:routeView.fillColor];
+        
+        [shuttleImages setValue:coloredImage forKey:route.idTag];
+    }
 }
 
 
@@ -423,6 +538,58 @@ typedef enum {
     // Called when the view is shown again in the split view, invalidating the button and popover controller.
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
     self.masterPopoverController = nil;
+}
+
+@end
+
+@implementation UIColor (stringcolor)
+
+//  Take an NSString formatted as such: RRGGBB and return a UIColor
+//  Note that this removes any '#' characters from rgbString
+//  before doing anything.
++ (UIColor *)UIColorFromRGBString:(NSString *)rgbString {
+    NSScanner *scanner;
+    unsigned int rgbValue;
+    
+    rgbString = [rgbString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
+    
+    if (rgbString) {
+        scanner = [NSScanner scannerWithString:rgbString];
+        [scanner scanHexInt:&rgbValue];
+        
+    } else {
+        rgbValue = 0;
+    }
+    
+    //  From the JSON, color comes as RGB
+    UIColor *colorToReturn = [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0
+                                             green:((float)((rgbValue & 0xFF00) >> 8))/255.0
+                                              blue:((float)((rgbValue & 0xFF)))/255.0
+                                             alpha:1];
+    
+    return colorToReturn;
+}
+
+//  Take an NSString formatted as such: RRGGBBAA and return a UIColor
++ (UIColor *)UIColorFromRGBAString:(NSString *)rgbaString {
+    NSScanner *scanner;
+    unsigned int rgbaValue;
+    
+    if (rgbaString) {
+        scanner = [NSScanner scannerWithString:rgbaString];
+        [scanner scanHexInt:&rgbaValue];
+        
+    } else {
+        rgbaValue = 0;
+    }
+    
+    //  Assume ABGR format and convert appropriately
+    UIColor *colorToReturn = [UIColor colorWithRed:((float)((rgbaValue & 0xFF)))/255.0
+                                             green:((float)((rgbaValue & 0xFF00) >> 8))/255.0
+                                              blue:((float)((rgbaValue & 0xFF0000) >> 16))/255.0
+                                             alpha:((float)((rgbaValue & 0xFF000000) >> 24))/255.0];
+    
+    return colorToReturn;
 }
 
 @end

@@ -66,10 +66,12 @@
     MapViewController *mapViewController = [[MapViewController alloc] init];
     mapViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0] autorelease];
     mapViewController.dataManager = self.dataManager;
+    mapViewController.managedObjectContext = self.managedObjectContext;
     
     EtasViewController *etasViewController = [[EtasViewController alloc] init];
     etasViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1] autorelease];
     etasViewController.dataManager = self.dataManager;
+    etasViewController.managedObjectContext = self.managedObjectContext;
     
     UINavigationController *etasTableNavController = [[UINavigationController alloc] initWithRootViewController:etasViewController];
     [etasViewController release];

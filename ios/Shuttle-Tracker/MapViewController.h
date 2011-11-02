@@ -20,7 +20,7 @@
     
     NSURL *shuttleJSONUrl;
     
-    NSMutableArray *vehicles;
+    NSMutableDictionary *vehicles;
     
     NSMutableArray *routeLines;
     NSMutableArray *routeLineViews;
@@ -32,6 +32,7 @@
 }
 
 @property (nonatomic, assign) DataManager *dataManager;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 
 @end

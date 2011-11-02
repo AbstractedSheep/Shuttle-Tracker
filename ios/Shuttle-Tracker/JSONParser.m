@@ -80,9 +80,35 @@
         NSEnumerator *routesEnum = [jsonRoutes objectEnumerator];
 		
         while ((value = [routesEnum nextObject])) {
-            Route *route = (Route *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
+            Route *route;
             
-            route.routeId = [value objectForKey:@"id"];
+            NSNumber *routeId = [value objectForKey:@"id"];
+            
+            //  Find the route, if it exists already
+            NSEntityDescription *entityDescription = [NSEntityDescription
+                                                      entityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            // Set predicate and sort orderings...
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                      @"(routeId == '%@')", routeId];
+            [request setPredicate:predicate];
+            
+            NSError *error = nil;
+            NSArray *array = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if (array == nil)
+            {
+                // Deal with error...
+            } else if ([array count] > 0) {
+                //  The ETA for this stop on this route already exists
+                route = (Route *)[array objectAtIndex:0];
+            } else {
+                //  Create a new vehicle with this name
+                route = (Route *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
+                route.routeId = routeId;
+            }
+
             
             NSNumber *number = [value objectForKey:@"width"];
             route.width = number;
@@ -110,7 +136,7 @@
             }
             
             // Save the context.
-            NSError *error = nil;
+            error = nil;
             if (![self.managedObjectContext save:&error]) {
                 /*
                  Replace this implementation with code to handle the error appropriately.
@@ -127,16 +153,40 @@
         NSEnumerator *stopsEnum = [jsonStops objectEnumerator];
         
         while ((value = [stopsEnum nextObject])) {
-            Stop *stop = (Stop *)[NSEntityDescription insertNewObjectForEntityForName:@"Stop" inManagedObjectContext:self.managedObjectContext];
+            Stop *stop;
+            
+            NSString *stopName = [value objectForKey:@"name"];
+            
+            //  Find the stop, if it exists already
+            NSEntityDescription *entityDescription = [NSEntityDescription
+                                                      entityForName:@"Stop" inManagedObjectContext:self.managedObjectContext];
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            // Set predicate and sort orderings...
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                      @"(name == '%@')", stopName];
+            [request setPredicate:predicate];
+            
+            NSError *error = nil;
+            NSArray *array = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if (array == nil)
+            {
+                // Deal with error...
+            } else if ([array count] > 0) {
+                //  The ETA for this stop on this route already exists
+                stop = (Stop *)[array objectAtIndex:0];
+            } else {
+                //  Create a new vehicle with this name
+                stop = (Stop *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
+                stop.name = stopName;
+            }
             
             string = [value objectForKey:@"latitude"];
             stop.latitude = [NSNumber numberWithFloat:[string floatValue]];
             
             string = [value objectForKey:@"longitude"];
             stop.longitude = [NSNumber numberWithFloat:[string floatValue]];
-            
-            string = [value objectForKey:@"name"];
-            stop.name = string;
 			
 			//	Special handling for long stop names.
 			if ([string isEqualToString:@"Blitman Residence Commons"]) {
@@ -155,7 +205,7 @@
             stop.idTag = string;
             
             // Save the context.
-            NSError *error = nil;
+            error = nil;
             if (![self.managedObjectContext save:&error]) {
                 /*
                  Replace this implementation with code to handle the error appropriately.
@@ -362,7 +412,7 @@
             NSString *etaStopId = [dict objectForKey:@"stopId"];
             NSNumber *etaRouteId = [NSNumber numberWithInt:[[dict objectForKey:@"route"] intValue]];
             
-            //  Find the vehicle, if it exists already
+            //  Find the ETA, if it exists already
             NSEntityDescription *entityDescription = [NSEntityDescription
                                                       entityForName:@"ETA" inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
