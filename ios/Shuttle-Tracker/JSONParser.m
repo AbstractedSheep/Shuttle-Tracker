@@ -274,9 +274,18 @@
             {
                 // Deal with error...
             } else if ([array count] > 0) {
+                //  The vehicle with name "name" already exists, so use it
                 vehicle = (Shuttle *)[array objectAtIndex:0];
             } else {
+                //  Create a new vehicle with this name
                 vehicle = (Shuttle *)[NSEntityDescription insertNewObjectForEntityForName:@"Shuttle" inManagedObjectContext:self.managedObjectContext];
+                vehicle.name = vehicleName;
+                
+                //  Set up KVO
+                [vehicle addObserver:self
+                          forKeyPath:@"latitude"
+                             options:NSKeyValueObservingOptionNew
+                             context:nil];
             }
             
             //  Set the vehicle properties to the corresponding JSON values
@@ -369,7 +378,42 @@
 		
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonDict) {
-            ETA *eta = (ETA *)[NSEntityDescription insertNewObjectForEntityForName:@"ETA" inManagedObjectContext:self.managedObjectContext];
+            ETA *eta;
+            
+            NSString *etaStopId = [dict objectForKey:@"stopId"];
+            NSNumber *etaRouteId = [NSNumber numberWithInt:[[dict objectForKey:@"route"] intValue]];
+            
+            //  Find the vehicle, if it exists already
+            NSEntityDescription *entityDescription = [NSEntityDescription
+                                                      entityForName:@"ETA" inManagedObjectContext:self.managedObjectContext];
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            // Set predicate and sort orderings...
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                      @"(stopId == '%@') AND (routeId == '%@')", etaStopId, etaRouteId];
+            [request setPredicate:predicate];
+            
+            NSError *error = nil;
+            NSArray *array = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if (array == nil)
+            {
+                // Deal with error...
+            } else if ([array count] > 0) {
+                //  The ETA for this stop on this route already exists
+                eta = (ETA *)[array objectAtIndex:0];
+            } else {
+                //  Create a new vehicle with this name
+                eta = (ETA *)[NSEntityDescription insertNewObjectForEntityForName:@"ETA" inManagedObjectContext:self.managedObjectContext];
+                eta.stopId = etaStopId;
+                eta.routeId = etaRouteId;
+                
+                //  Set up KVO
+                [eta addObserver:self
+                          forKeyPath:@"eta"
+                             options:NSKeyValueObservingOptionNew
+                             context:nil];
+            }
             
             //  Set the eta properties to the corresponding JSON values
             for (NSString *string in dict) {
@@ -392,13 +436,13 @@
             }
             
             //  Find the corresponding stop
-            NSEntityDescription *entityDescription = [NSEntityDescription
+            entityDescription = [NSEntityDescription
                                                       entityForName:@"Stop" inManagedObjectContext:self.managedObjectContext];
-            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
             // Set predicate and sort orderings...
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:
+            predicate = [NSPredicate predicateWithFormat:
                                       @"(idTag == '%@')", eta.stopId];
             [request setPredicate:predicate];
             
@@ -407,8 +451,8 @@
             [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
             [sortDescriptor release];
             
-            NSError *error = nil;
-            NSArray *array = [self.managedObjectContext executeFetchRequest:request error:&error];
+            error = nil;
+            array = [self.managedObjectContext executeFetchRequest:request error:&error];
             if (array == nil)
             {
                 // Deal with error...
@@ -550,27 +594,14 @@
 }
 
 
-- (void)insertNewObject
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object 
+                         change:(NSDictionary *)change 
+                        context:(void *)context
 {
-    // Create a new instance of the entity managed by the fetched results controller.
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-    
-    // If appropriate, configure the new managed object.
-    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-    [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
-    
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        /*
-         Replace this implementation with code to handle the error appropriately.
-         
-         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-         */
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
+    if ([keyPath isEqualToString:@"latitude"])
+    {
+        //  TODO: post local notification for (Vehicle *) object
+        return;
     }
 }
 
