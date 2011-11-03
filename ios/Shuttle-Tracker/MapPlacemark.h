@@ -95,7 +95,6 @@
     int heading;
 	NSDate *updateTime;
     int routeNo;
-	
 }
 
 @property (nonatomic, retain) NSDictionary *ETAs;
@@ -106,5 +105,6 @@
 @property (nonatomic) BOOL viewNeedsUpdate;
 
 - (void)copyAttributesExceptLocation:(MapVehicle *)newVehicle;
+- (void)setUpdateTime:(NSDate *)updateTime withFormatter:(NSDateFormatter *)dateFormatter;
 
 @end

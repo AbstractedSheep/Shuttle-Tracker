@@ -16,8 +16,8 @@
 
 #import "IASKSettingsReader.h"
 
-//  Set shuttles updated more than 1 minute ago as "stale"
-const unsigned int UPDATE_THRESHOLD = 60;
+//  Set shuttles updated more than 2 minute ago as "stale"
+const float UPDATE_THRESHOLD = -120;
 
 @interface UIImage (magentatocolor)
 
@@ -263,12 +263,12 @@ typedef enum {
             if (existingShuttle == nil) {
                 //  Add the shuttle to the map view
                 
-//                NSLog(@"Shuttle name: %@", shuttle.name);
-                if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
+                //                NSLog(@"Shuttle name: %@", shuttle.name);
+                if ([shuttle.updateTime timeIntervalSinceNow] > UPDATE_THRESHOLD) {
                     [vehicles setObject:[self addVehicle:shuttle] forKey:shuttle.name];
                 }
             } else {
-                if ([shuttle.updateTime timeIntervalSinceNow] > UPDATE_THRESHOLD) {
+                if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
                     [vehicles removeObjectForKey:existingShuttle.name];
                 } else if ([shuttle.routeId intValue] != existingShuttle.routeNo) {
                     NSLog(@"routeId: %d, old routeId: %d", [shuttle.routeId intValue], existingShuttle.routeNo);
@@ -380,8 +380,8 @@ typedef enum {
     CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake([vehicle.latitude doubleValue], [vehicle.longitude doubleValue]);
     newVehicle.coordinate = clLoc;
     newVehicle.heading = [vehicle.heading intValue];
-    newVehicle.updateTime = vehicle.updateTime;
     newVehicle.routeNo = [vehicle.routeId intValue];
+    [newVehicle setUpdateTime:vehicle.updateTime withFormatter:self.dataManager.timeDisplayFormatter];
     newVehicle.name = vehicle.name;
     
     [_mapView addAnnotation:newVehicle];
