@@ -241,11 +241,6 @@ typedef enum {
 
 //	A notification is sent by DataManager whenever the vehicles are updated.
 - (void)vehiclesUpdated:(NSNotification *)notification {
-//	for (id existingObject in [_mapView annotations]) {
-//		if ([existingObject isKindOfClass:[JSONVehicle class]] && [dmVehicles indexOfObject:existingObject] == NSNotFound) {
-//			[_mapView removeAnnotation:existingObject];
-//		}
-//	}
     //  Get all vehicles
     NSEntityDescription *entityDescription = [NSEntityDescription
                                               entityForName:@"Shuttle" inManagedObjectContext:self.managedObjectContext];
@@ -524,7 +519,7 @@ typedef enum {
 
 - (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
 {
-    barButtonItem.title = NSLocalizedString(@"Master", @"Master");
+    barButtonItem.title = NSLocalizedString(@"ETAs", @"ETAs");
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
     self.masterPopoverController = popoverController;
 }

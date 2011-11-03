@@ -38,6 +38,7 @@
 {
     if ((self = [super initWithStyle:style])) {
         self.title = NSLocalizedString(@"ETAs", @"ETAs");
+        self.contentSizeForViewInPopover = CGSizeMake(320, 600);
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];

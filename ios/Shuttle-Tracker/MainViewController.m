@@ -68,6 +68,9 @@
     mapViewController.dataManager = self.dataManager;
     mapViewController.managedObjectContext = self.managedObjectContext;
     
+    UINavigationController *mapNavController = [[UINavigationController alloc] initWithRootViewController:mapViewController];
+    [mapViewController release];
+    
     EtasViewController *etasViewController = [[EtasViewController alloc] init];
     etasViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1] autorelease];
     etasViewController.dataManager = self.dataManager;
@@ -83,10 +86,10 @@
     //  Device-specific view creation
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         //  Make a split view, with ETAs on the left and the map on the right.
-        
         self.splitViewController = [[[UISplitViewController alloc] init] autorelease];
+        self.splitViewController.view.frame = self.view.frame;
         self.splitViewController.delegate = mapViewController;
-        self.splitViewController.viewControllers = [NSArray arrayWithObjects:etasTableNavController, mapViewController, nil];
+        self.splitViewController.viewControllers = [NSArray arrayWithObjects:etasTableNavController, mapNavController, nil];
         
         [self.view addSubview:self.splitViewController.view];
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
@@ -108,7 +111,7 @@
         [self.view addSubview:self.tabBarController.view];
     }
     
-    [mapViewController release];
+    [mapNavController release];
     [etasTableNavController release];
     
     // Check if 12 or 24 hour mode
