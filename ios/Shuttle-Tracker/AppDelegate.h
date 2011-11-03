@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class DataManager;
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
@@ -22,5 +24,10 @@
 @property (strong, nonatomic) UINavigationController *navigationController;
 
 @property (strong, nonatomic) UISplitViewController *splitViewController;
+
+@property (strong, nonatomic) DataManager *dataManager;
+@property (strong, nonatomic) UITabBarController *tabBarController;
+@property (strong, nonatomic) NSDateFormatter *timeDisplayFormatter;
+@property (strong, nonatomic) NSTimer *dataUpdateTimer;
 
 @end

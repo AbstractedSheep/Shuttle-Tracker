@@ -8,9 +8,12 @@
 
 #import "AppDelegate.h"
 
-#import "MainViewController.h"
+#import "EtasViewController.h"
+#import "MapViewController.h"
+#import "IASKAppSettingsViewController.h"
 
 #import "DataManager.h"
+
 
 @implementation AppDelegate
 
@@ -20,6 +23,10 @@
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 @synthesize navigationController = _navigationController;
 @synthesize splitViewController = _splitViewController;
+@synthesize dataManager = _dataManager;
+@synthesize tabBarController = _tabBarController;
+@synthesize timeDisplayFormatter = _timeDisplayFormatter;
+@synthesize dataUpdateTimer = _dataUpdateTimer;
 
 - (void)dealloc
 {
@@ -35,10 +42,112 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    
     // Override point for customization after application launch.
-    MainViewController *mainViewController = [[[MainViewController alloc] init] autorelease];
-    self.window.rootViewController = mainViewController;
-    mainViewController.managedObjectContext = self.managedObjectContext;
+    DataManager *dataManager = [[DataManager alloc] init];
+    self.dataManager = dataManager;
+    [dataManager release];
+    [self.dataManager setParserManagedObjectContext:self.managedObjectContext];
+    
+    //	dataManager creates a timeDisplayFormatter in its init method, so get
+    //	a reference to it.
+    self.timeDisplayFormatter = self.dataManager.timeDisplayFormatter;
+    
+    MapViewController *mapViewController = [[MapViewController alloc] init];
+    mapViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0] autorelease];
+    mapViewController.dataManager = self.dataManager;
+    mapViewController.managedObjectContext = self.managedObjectContext;
+    
+    UINavigationController *mapNavController = [[UINavigationController alloc] initWithRootViewController:mapViewController];
+    [mapViewController release];
+    
+    EtasViewController *etasViewController = [[EtasViewController alloc] init];
+    etasViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1] autorelease];
+    etasViewController.dataManager = self.dataManager;
+    etasViewController.managedObjectContext = self.managedObjectContext;
+    
+    UINavigationController *etasTableNavController = [[UINavigationController alloc] initWithRootViewController:etasViewController];
+    [etasViewController release];
+    
+    //	Note that this class (MainViewController) gets a reference to timeDisplayFormatter
+    //	via the class creating it.
+    etasViewController.timeDisplayFormatter = self.timeDisplayFormatter;
+    
+    //  Device-specific view creation
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+        //  Make a split view, with ETAs on the left and the map on the right.
+        self.splitViewController = [[[UISplitViewController alloc] init] autorelease];
+        self.splitViewController.view.frame = self.window.frame;
+        self.splitViewController.delegate = mapViewController;
+        self.splitViewController.viewControllers = [NSArray arrayWithObjects:etasTableNavController, mapNavController, nil];
+        
+        self.window.rootViewController = self.splitViewController;
+    } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        //  Create the settings view controller, only found on the iPhone
+        IASKAppSettingsViewController *settingsViewController = [[IASKAppSettingsViewController alloc] initWithNibName:@"IASKAppSettingsView" bundle:nil];
+        settingsViewController.title = @"Settings";
+        settingsViewController.delegate = self.dataManager;
+        
+        UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
+        [settingsViewController release];
+        settingsNavController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2] autorelease];
+        
+        //  Create a tabbed view, with a map view, ETA view, and settings view.
+        self.tabBarController = [[[UITabBarController alloc] init] autorelease];
+        
+        self.tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasTableNavController, settingsNavController, nil];
+        [settingsNavController release];
+        
+        self.window.rootViewController = self.tabBarController;
+    }
+    
+    [mapNavController release];
+    [etasTableNavController release];
+    
+    // Check if 12 or 24 hour mode
+    BOOL use24Time = NO;
+    
+    NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
+    [timeFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    
+    NSMutableArray *dateArray = [[NSMutableArray alloc] init];
+    [dateArray setArray:[[timeFormatter stringFromDate:[NSDate date]] componentsSeparatedByString:@" "]];
+    
+    if ([dateArray count] == 1) // if no am/pm extension exists
+        use24Time = YES;
+    
+    [timeFormatter release];
+    [dateArray release];
+    
+    //	Create an empty array to use for the favorite ETAs
+    NSMutableArray *favoriteEtasArray = [NSMutableArray array];
+    
+    // Set the application defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *appDefaults;
+    appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:use24Time ? @"YES" : @"NO", 
+                                                       @"NO", @"YES", [NSNumber numberWithInt:5], @"NO",
+                                                       [NSKeyedArchiver archivedDataWithRootObject:favoriteEtasArray], nil]
+                                              forKeys:[NSArray arrayWithObjects:@"use24Time", 
+                                                       @"useLocation", @"findClosestStop", 
+                                                       @"dataUpdateInterval", @"useRelativeTimes",
+                                                       @"favoritesList", nil]];
+    [defaults registerDefaults:appDefaults];
+    [defaults synchronize];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(changeDataUpdateRate:)
+                                                 name:@"dataUpdateInterval"
+                                               object:nil];
+    
+	float updateInterval = [[defaults objectForKey:@"dataUpdateInterval"] floatValue];
+	
+	//	Schedule a timer to make the DataManager pull new data every 5 seconds
+    self.dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval 
+                                                            target:self.dataManager 
+                                                          selector:@selector(updateData) 
+                                                          userInfo:nil 
+                                                           repeats:YES];
     
     [self.window makeKeyAndVisible];
     return YES;
@@ -97,6 +206,23 @@
             abort();
         } 
     }
+}
+
+#pragma mark - Local notification handler
+
+- (void)changeDataUpdateRate:(NSNotification *)notification {
+	//	Invalidate the timer so another can be made with a different interval.
+	[self.dataUpdateTimer invalidate];
+	
+	NSDictionary *info = [notification userInfo];
+	
+	float updateInterval = [[info objectForKey:@"dataUpdateInterval"] floatValue];
+	
+	//	Schedule a timer to make the DataManager pull new data every 5 seconds
+    self.dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self.dataManager 
+                                                          selector:@selector(updateData) 
+                                                          userInfo:nil 
+                                                           repeats:YES];
 }
 
 #pragma mark - Core Data stack
