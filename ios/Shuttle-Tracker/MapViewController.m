@@ -242,8 +242,8 @@ typedef enum {
 //	A notification is sent by DataManager whenever the vehicles are updated.
 - (void)vehiclesUpdated:(NSNotification *)notification {
     //  Get all vehicles
-    NSEntityDescription *entityDescription = [NSEntityDescription
-                                              entityForName:@"Shuttle" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Shuttle"
+                                                         inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
     
@@ -295,18 +295,16 @@ typedef enum {
     MKMapPoint *points;
     
     //  Get all vehicles
-    NSEntityDescription *entityDescription = [NSEntityDescription
-                                              entityForName:@"RoutePt" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"RoutePt"
+                                                         inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
     
     // Set predicate and sort orderings...
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                 @"(route == %@)", route];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route == %@)", route];
     [request setPredicate:predicate];
     
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-                                        initWithKey:@"pointNumber" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber" ascending:YES];
     [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     [sortDescriptor release];
     

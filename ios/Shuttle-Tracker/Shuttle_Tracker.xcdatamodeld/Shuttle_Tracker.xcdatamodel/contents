@@ -10,6 +10,10 @@
         <relationship name="shuttle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Shuttle" inverseName="eta" inverseEntity="Shuttle" syncable="YES"/>
         <relationship name="stop" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="etas" inverseEntity="Stop" syncable="YES"/>
     </entity>
+    <entity name="FavoriteStop" representedClassName="FavoriteStop" syncable="YES">
+        <relationship name="route" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Route" syncable="YES"/>
+        <relationship name="stop" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" syncable="YES"/>
+    </entity>
     <entity name="Route" representedClassName="Route" syncable="YES">
         <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="idTag" optional="YES" attributeType="String" syncable="YES"/>
@@ -54,5 +58,6 @@
         <element name="RoutePt" positionX="160" positionY="192" width="128" height="105"/>
         <element name="Shuttle" positionX="160" positionY="192" width="128" height="135"/>
         <element name="Stop" positionX="-279" positionY="342" width="128" height="120"/>
+        <element name="FavoriteStop" positionX="160" positionY="192" width="128" height="75"/>
     </elements>
 </model>

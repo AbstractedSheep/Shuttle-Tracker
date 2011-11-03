@@ -77,9 +77,9 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         //  Make a split view, with ETAs on the left and the map on the right.
         self.splitViewController = [[[UISplitViewController alloc] init] autorelease];
-        self.splitViewController.view.frame = self.window.frame;
-        self.splitViewController.delegate = mapViewController;
         self.splitViewController.viewControllers = [NSArray arrayWithObjects:etasTableNavController, mapNavController, nil];
+//        self.splitViewController.view.frame = self.window.frame;
+        self.splitViewController.delegate = mapViewController;
         
         self.window.rootViewController = self.splitViewController;
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {

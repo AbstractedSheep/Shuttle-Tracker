@@ -13,6 +13,9 @@
 #import "DataManager.h"
 #import "LaterEtasViewController.h"
 #import "IASKSettingsReader.h"
+#import "ETA.h"
+#import "Route.h"
+#import "Stop.h"
 
 
 @interface EtasViewController ()
@@ -45,7 +48,9 @@
         
         //	Take notice when a setting is changed.
         //	Note that this is not the only object that takes notice.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
+                                                     name:kIASKAppSettingChanged
+                                                   object:nil];
     }
 	
     return self;
@@ -111,13 +116,66 @@
 {
     // Return the number of sections.
     //  One section for each route (or "Loading...")
+    //  Get all routes
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route"
+                                                         inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    NSError *error = nil;
+    NSInteger numRoutes = [self.managedObjectContext countForFetchRequest:request error:&error];
+    if (error != nil)
+    {
+        // Deal with error...
+    } else {
+        return numRoutes + 1;
+    }
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    int rows = 0;
     // Return the number of rows in the section.
-    return 0;
+    if (section == 0) {
+        //  Get all favorite stops
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop" 
+                                                             inManagedObjectContext:self.managedObjectContext];
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entityDescription];
+        
+        NSError *error = nil;
+        NSInteger numStops = [self.managedObjectContext countForFetchRequest:request error:&error];
+        if (error == nil)
+        {
+            // Deal with error...
+        } else {
+            rows = numStops;
+        }
+    } else {
+        //  Get all stops for a route
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Stop" 
+                                                             inManagedObjectContext:self.managedObjectContext];
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entityDescription];
+        
+        // Set predicate and sort orderings...
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY routes.routeId == %@", [NSNumber numberWithInt:section]];
+        
+        [request setPredicate:predicate];
+        
+        NSError *error = nil;
+        NSInteger numStops = [self.managedObjectContext countForFetchRequest:request error:&error];
+        if (error == nil)
+        {
+            // Deal with error...
+        } else {
+            rows = numStops;
+        }
+        
+    }
+    
+    return rows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -187,11 +245,34 @@
 
 //	Use the short names of the routes, since they display better than the full names
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	if (0) {
-        
-	} else {
-		return @"Loading...";
-	}
+    if (section == 0) {
+        return @"Favorites";
+    }
+    
+    //  Get all routes
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route"
+                                                         inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
+    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    [sortDescriptor release];
+    
+    NSError *error = nil;
+    NSArray *routes = [self.managedObjectContext executeFetchRequest:request error:&error];
+    if (error != nil)
+    {
+        // Deal with error...
+    } else {
+        if (section <= [routes count]) {
+            return [[routes objectAtIndex:section - 1] name];
+        } else {
+            return @"Loading...";
+        }
+    }
+    
+    return @"Loading...";
 }
 
 
@@ -238,7 +319,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (0) {
+	if (indexPath.section == 0) {
 		return @"Unfavorite";
 	} else {
 		return @"Favorite";
@@ -247,7 +328,7 @@
 
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-	if (0) {
+	if (indexPath.section == 0) {
 		return UITableViewCellEditingStyleDelete;
 	} else {
 		return UITableViewCellEditingStyleInsert;
@@ -310,7 +391,8 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"] autorelease];
+    NSFetchedResultsController *aFetchedResultsController = [[[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"] autorelease];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
