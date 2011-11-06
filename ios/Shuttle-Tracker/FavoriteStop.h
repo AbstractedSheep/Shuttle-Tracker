@@ -2,18 +2,17 @@
 //  FavoriteStop.h
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 11/3/11.
+//  Created by Brendon Justin on 11/6/11.
 //  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+#import "Stop.h"
 
-@class Route, Stop;
 
-@interface FavoriteStop : NSManagedObject
+@interface FavoriteStop : Stop
 
-@property (nonatomic, retain) Stop *stop;
-@property (nonatomic, retain) Route *route;
+@property (nonatomic, retain) NSNumber * routeId;
 
 @end

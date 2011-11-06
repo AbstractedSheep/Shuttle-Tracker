@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C3B7329146344BF007AC9CF /* FavoriteStop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C3B7328146344BF007AC9CF /* FavoriteStop.m */; };
+		5C52A7BB1467065900331F14 /* FavoriteStop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C52A7BA1467065900331F14 /* FavoriteStop.m */; };
 		5C68B512145C85AC00D9A82E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B511145C85AC00D9A82E /* UIKit.framework */; };
 		5C68B514145C85AC00D9A82E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B513145C85AC00D9A82E /* Foundation.framework */; };
 		5C68B516145C85AC00D9A82E /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B515145C85AC00D9A82E /* CoreGraphics.framework */; };
@@ -89,8 +89,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5C3B7327146344BF007AC9CF /* FavoriteStop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteStop.h; sourceTree = "<group>"; };
-		5C3B7328146344BF007AC9CF /* FavoriteStop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteStop.m; sourceTree = "<group>"; };
+		5C52A7B91467065900331F14 /* FavoriteStop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteStop.h; sourceTree = "<group>"; };
+		5C52A7BA1467065900331F14 /* FavoriteStop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteStop.m; sourceTree = "<group>"; };
 		5C68B50D145C85AC00D9A82E /* Shuttle-Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shuttle-Tracker.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C68B511145C85AC00D9A82E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5C68B513145C85AC00D9A82E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -286,8 +286,8 @@
 				5C68B5F6145C8C8D00D9A82E /* EtasViewController.m */,
 				5C68B549145C87B200D9A82E /* EtaWrapper.h */,
 				5C68B545145C87B200D9A82E /* EtaWrapper.m */,
-				5C3B7327146344BF007AC9CF /* FavoriteStop.h */,
-				5C3B7328146344BF007AC9CF /* FavoriteStop.m */,
+				5C52A7B91467065900331F14 /* FavoriteStop.h */,
+				5C52A7BA1467065900331F14 /* FavoriteStop.m */,
 				5C68B552145C87EE00D9A82E /* JSONParser.h */,
 				5C68B551145C87EE00D9A82E /* JSONParser.m */,
 				5C68B5FA145C8E2000D9A82E /* LaterEtasViewController.h */,
@@ -605,7 +605,7 @@
 				5CC8E6CF145F2FFD00548DA6 /* Shuttle.m in Sources */,
 				5CC8E6D2145F2FFE00548DA6 /* Stop.m in Sources */,
 				5CC8E6D5145F436300548DA6 /* Route.m in Sources */,
-				5C3B7329146344BF007AC9CF /* FavoriteStop.m in Sources */,
+				5C52A7BB1467065900331F14 /* FavoriteStop.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
