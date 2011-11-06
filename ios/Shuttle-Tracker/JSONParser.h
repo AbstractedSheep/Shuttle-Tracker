@@ -12,15 +12,6 @@
 
 
 @interface JSONParser : NSObject <NSFetchedResultsControllerDelegate> {
-    NSArray *routes;
-    NSArray *stops;
-    
-    NSMutableArray *vehicles;
-    NSMutableArray *etas;
-	
-	NSMutableArray *extraEtas;
-    
-    NSURL *jsonUrl;
 	NSDateFormatter *timeDisplayFormatter;
 }
 
@@ -33,12 +24,10 @@
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
-
-- (id)initWithUrl:(NSURL *)url;
-- (BOOL)parseRoutesandStops;
-- (BOOL)parseShuttles;
-- (BOOL)parseEtas;
-- (BOOL)parseExtraEtas;
+- (BOOL)parseRoutesandStopsFromJson:(NSString *)jsonString;
+- (BOOL)parseShuttlesFromJson:(NSString *)jsonString;
+- (BOOL)parseEtasFromJson:(NSString *)jsonString;
+- (BOOL)parseExtraEtasFromJson:(NSString *)jsonString;
 
 
 @end

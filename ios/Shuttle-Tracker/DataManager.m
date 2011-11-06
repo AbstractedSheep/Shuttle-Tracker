@@ -57,15 +57,9 @@
 //			favoriteStopNames = [[NSMutableArray alloc] init];
 //		}
         
-        NSURL *routesJsonUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
-        routesStopsJsonParser = [[JSONParser alloc] initWithUrl:routesJsonUrl];
-        
-        //  shuttleJSONUrl = [NSURL URLWithString:@"http://nagasoftworks.com/ShuttleTracker/shuttleOutputData.txt"];
-        shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
-        vehiclesJsonParser = [[JSONParser alloc] initWithUrl:shuttleJsonUrl];
-        
-        etasJsonUrl = [NSURL URLWithString:kDMNextEtasUrl];
-        etasJsonParser = [[JSONParser alloc] initWithUrl:etasJsonUrl];
+        routesStopsJsonParser = [[JSONParser alloc] init];
+        vehiclesJsonParser = [[JSONParser alloc] init];
+        etasJsonParser = [[JSONParser alloc] init];
 		
 		loadVehicleJsonQueue = NULL;
 		loadEtaJsonQueue = NULL;
@@ -106,8 +100,18 @@
 
 
 - (void)loadFromJson {
-    [routesStopsJsonParser parseRoutesandStops];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
+    NSError *theError = nil;
+    shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
+    NSString *jsonString = [NSString stringWithContentsOfURL:shuttleJsonUrl 
+                                                    encoding:NSUTF8StringEncoding 
+                                                       error:&theError];
+    
+    if (theError) {
+        NSLog(@"Error retrieving JSON data: %@", theError);
+    } else {
+        [routesStopsJsonParser parseRoutesandStopsFromJson:jsonString];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
+    }
 }
 
 
@@ -132,7 +136,18 @@
 	}
     
     dispatch_async(loadVehicleJsonQueue, ^{
-        if ([vehiclesJsonParser parseShuttles]) {
+        NSError *theError = nil;
+        shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:shuttleJsonUrl 
+                                                        encoding:NSUTF8StringEncoding 
+                                                           error:&theError];
+        
+        if (theError) {
+            NSLog(@"Error retrieving JSON data: %@", theError);
+        } else {
+            [vehiclesJsonParser performSelectorOnMainThread:@selector(parseShuttlesFromJson:)
+                                                 withObject:jsonString
+                                              waitUntilDone:YES];
 			[[NSNotificationCenter defaultCenter] postNotificationName:kDMVehiclesUpdated
 																object:nil
 															  userInfo:nil];
@@ -148,9 +163,20 @@
 	}
 	
     dispatch_async(loadEtaJsonQueue, ^{
-        if ([etasJsonParser parseEtas]) {
+        NSError *theError = nil;
+        etasJsonUrl = [NSURL URLWithString:kDMNextEtasUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:etasJsonUrl 
+                                                        encoding:NSUTF8StringEncoding 
+                                                           error:&theError];
+        
+        if (theError) {
+            NSLog(@"Error retrieving JSON data: %@", theError);
+        } else {
+            [vehiclesJsonParser performSelectorOnMainThread:@selector(parseEtasFromJson:)
+                                                 withObject:jsonString
+                                              waitUntilDone:YES];
 			[[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
-																object:nil 
+																object:nil
 															  userInfo:nil];
         }
     });

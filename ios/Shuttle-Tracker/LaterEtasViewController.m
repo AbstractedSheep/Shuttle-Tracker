@@ -38,8 +38,8 @@
 		
 		etasUrl = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@&rt=%d&st=%@", 
 				   kLEExtraEtasUrl, eta.route, eta.stopId]];
-		
-		extraEtasParser = [[JSONParser alloc] initWithUrl:etasUrl];
+        
+        extraEtasParser = [[JSONParser alloc] init];
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
@@ -87,8 +87,19 @@
 - (void)getExtraEtas {
 	dispatch_queue_t extraEtasQueue = dispatch_queue_create("com.abstractedsheep.extraetasqueue", NULL);
 	dispatch_async(extraEtasQueue, ^{
-        [extraEtasParser parseExtraEtas];
-		[self performSelectorOnMainThread:@selector(delayedTableReload) withObject:nil waitUntilDone:NO];
+        NSError *theError = nil;
+        NSString *jsonString = [NSString stringWithContentsOfURL:etasUrl 
+                                                        encoding:NSUTF8StringEncoding 
+                                                           error:&theError];
+        
+        if (theError) {
+            NSLog(@"Error retrieving JSON data");
+        } else {
+            [extraEtasParser performSelectorOnMainThread:@selector(parseExtraEtasFromJson:)
+                                              withObject:jsonString
+                                           waitUntilDone:YES];
+            [self performSelectorOnMainThread:@selector(delayedTableReload) withObject:nil waitUntilDone:NO];
+        }
 	});
 	
 	dispatch_release(extraEtasQueue);
