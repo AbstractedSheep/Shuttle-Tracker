@@ -152,7 +152,9 @@ typedef enum {
     routeLineViews = [[NSMutableArray alloc] init];
     
 	//	Take notice when the routes and stops are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded) name:kDMRoutesandStopsLoaded object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
+                                                 name:kDMRoutesandStopsLoaded
+                                               object:nil];
 	
 	[dataManager loadRoutesAndStops];
     
@@ -185,10 +187,14 @@ typedef enum {
 	
 	//	Take notice when a setting is changed.
 	//	Note that this is not the only object that takes notice.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
+                                                 name:kIASKAppSettingChanged
+                                               object:nil];
 	
 	//	Take notice when vehicles are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:) name:kDMVehiclesUpdated object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
+                                                 name:kDMVehiclesUpdated
+                                               object:nil];
 }
 
 

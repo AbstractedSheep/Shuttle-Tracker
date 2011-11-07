@@ -95,7 +95,7 @@
         //  Create a tabbed view, with a map view, ETA view, and settings view.
         self.tabBarController = [[[UITabBarController alloc] init] autorelease];
         
-        self.tabBarController.viewControllers = [NSArray arrayWithObjects:mapViewController, etasTableNavController, settingsNavController, nil];
+        self.tabBarController.viewControllers = [NSArray arrayWithObjects:mapNavController, etasTableNavController, settingsNavController, nil];
         [settingsNavController release];
         
         self.window.rootViewController = self.tabBarController;

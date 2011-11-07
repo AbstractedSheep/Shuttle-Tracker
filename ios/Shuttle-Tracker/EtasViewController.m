@@ -146,7 +146,7 @@
         
         NSError *error = nil;
         NSInteger numStops = [self.managedObjectContext countForFetchRequest:request error:&error];
-        if (error == nil)
+        if (error != nil)
         {
             // Deal with error...
         } else {
@@ -166,7 +166,7 @@
         
         NSError *error = nil;
         NSInteger numStops = [self.managedObjectContext countForFetchRequest:request error:&error];
-        if (error == nil)
+        if (error != nil)
         {
             // Deal with error...
         } else {
@@ -191,33 +191,26 @@
         cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
-    // Configure the cell...
-    EtaWrapper *etaWrapped = nil;
-    
-    int counter = 0;
-    
-	NSArray *etas = [NSArray array];
-    
-    //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
-    for (EtaWrapper *eta in etas) {
-		if (counter == indexPath.row) {
-			etaWrapped = eta;
-			break;
-		}
-            
-		counter++;
+    if (indexPath.section == 0) {
+        //  Do something
+    } else {
+        //  Do something else
     }
     
+    // Configure the cell...
+    ETA *eta = nil;
+    
     //  If the EtaWrapper was found, add the stop info and the ETA
-    if (etaWrapped) {
+    if (eta) {
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
-        cell.textLabel.text = etaWrapped.stopName;
+        cell.textLabel.text = eta.stopName;
 		
 		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
-		if (etaWrapped.eta) {
+        //  Show the ETA, if it is in the future.
+        int minutesToEta = 0;
+        minutesToEta = (int)([eta.eta timeIntervalSinceNow] / 60);
+		if (minutesToEta > 0) {
             if (self.useRelativeTimes) {
-                int minutesToEta = 0;
-                minutesToEta = (int)([etaWrapped.eta timeIntervalSinceNow] / 60);
                 
                 //  Grammar for one vs. more than one
                 if (minutesToEta > 1) {
@@ -232,7 +225,7 @@
                 }
             } else {
                 //  Show ETAs as timestamps
-                cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
+                cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:eta.eta];
             }
 		} else {
 			cell.detailTextLabel.text = @"————";

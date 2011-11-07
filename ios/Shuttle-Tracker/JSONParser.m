@@ -201,45 +201,37 @@
             abort();
         }
         
-        //            NSDictionary *routesDict = [value objectForKey:@"routes"];
-        //            NSEnumerator *routesEnum = [routesDict objectEnumerator];
-        //            NSDictionary *routeValues;
-        //            
-        //            NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
-        //            NSMutableArray *tempRouteNames = [[NSMutableArray alloc] init];
-        //            
-        //            NSNumber *number;
-        //            
-        //            //  Associate the stop with its routes
-        //            while ((routeValues = [routesEnum nextObject])) {
-        //                number = [routeValues objectForKey:@"id"];
-        //                [tempRouteIds addObject:number];
-        //                
-        //                string = [routeValues objectForKey:@"name"];
-        //                [tempRouteNames addObject:string];
-        //            }
-        //            
-        //            NSEntityDescription *entityDescription = [NSEntityDescription
-        //                                                      entityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
-        //            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-        //            [request setEntity:entityDescription];
-        //            
-        //            // Set example predicate and sort orderings...
-        //            NSPredicate *predicate = [NSPredicate predicateWithFormat:
-        //                                      @"(routeId LIKE[c] '%d')", stopId];
-        //            [request setPredicate:predicate];
-        //            
-        //            NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-        //                                                initWithKey:@"firstName" ascending:YES];
-        //            [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-        //            [sortDescriptor release];
-        //            
-        //            NSError *error = nil;
-        //            NSArray *array = [moc executeFetchRequest:request error:&error];
-        //            if (array == nil)
-        //            {
-        //                // Deal with error...
-        //            }
+        NSDictionary *routesDict = [value objectForKey:@"routes"];
+        NSEnumerator *routesEnum = [routesDict objectEnumerator];
+        NSDictionary *routeValues;
+        
+        NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
+        
+        NSNumber *number;
+        
+        //  Associate the stop with its routes
+        while ((routeValues = [routesEnum nextObject])) {
+            number = [routeValues objectForKey:@"id"];
+            [tempRouteIds addObject:number];
+        }
+        
+        entityDescription = [NSEntityDescription entityForName:@"Route"
+                                        inManagedObjectContext:self.managedObjectContext];
+        request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entityDescription];
+        
+        // Set example predicate and sort orderings...
+        predicate = [NSPredicate predicateWithFormat: @"(routeId IN $ROUTEIDLIST)"];
+        [request setPredicate:[predicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:tempRouteIds forKey:@"ROUTEIDLIST"]]];
+        
+        error = nil;
+        array = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if (array == nil)
+        {
+            // Deal with error...
+        } else {
+            stop.routes = [NSSet setWithArray:array];
+        }
     }
     
     [smallPool release];

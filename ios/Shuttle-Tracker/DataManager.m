@@ -101,8 +101,8 @@
 
 - (void)loadFromJson {
     NSError *theError = nil;
-    shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
-    NSString *jsonString = [NSString stringWithContentsOfURL:shuttleJsonUrl 
+    NSURL *routesStopsUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
+    NSString *jsonString = [NSString stringWithContentsOfURL:routesStopsUrl 
                                                     encoding:NSUTF8StringEncoding 
                                                        error:&theError];
     
