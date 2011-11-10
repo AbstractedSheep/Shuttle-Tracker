@@ -24,6 +24,8 @@
 - (void)unsafeDelayedTableReload;
 - (void)unsafeDelayedTableReloadForced;
 - (void)settingChanged:(NSNotification *)notification;
+- (void)notifyStopsUpdated:(NSNotification *)notification;
+- (void)stopsUpdated:(NSNotification *)notification;
 
 @end
 
@@ -45,6 +47,13 @@
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
+        
+        routeStops = [[NSMutableDictionary alloc] init];
+        
+        //	Take notice when routes and stops are loaded.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyStopsUpdated:)
+                                                     name:kDMRoutesandStopsLoaded
+                                                   object:nil];
         
         //	Take notice when a setting is changed.
         //	Note that this is not the only object that takes notice.
@@ -110,12 +119,14 @@
     // e.g. self.myOutlet = nil;
 }
 
-#pragma mark - Table view data source
+//	A notification is sent by DataManager whenever stops are loaded.
+//	Call the work function stopsUpdated on the main thread.
+- (void)notifyStopsUpdated:(NSNotification *)notification {
+	[self performSelectorOnMainThread:@selector(stopsUpdated:) withObject:notification waitUntilDone:NO];
+}
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    // Return the number of sections.
-    //  One section for each route (or "Loading...")
+//	A notification is sent by DataManager when the stops are loaded.
+- (void)stopsUpdated:(NSNotification *)notification {
     //  Get all routes
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route"
                                                          inManagedObjectContext:self.managedObjectContext];
@@ -123,14 +134,35 @@
     [request setEntity:entityDescription];
     
     NSError *error = nil;
-    NSInteger numRoutes = [self.managedObjectContext countForFetchRequest:request error:&error];
-    if (error != nil)
+    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:request error:&error];
+    if (dbRoutes == nil)
     {
         // Deal with error...
     } else {
-        return numRoutes + 1;
+        for (Route *route in dbRoutes) {
+            NSMutableArray *stopNames = [[NSMutableArray alloc] init];
+            
+            //  Get all stops for that route
+            NSSet *dbStops = route.stops;
+            
+            for (Stop *stop in dbStops) {
+                [stopNames addObject:stop.name];
+            }
+            
+            [routeStops setValue:stopNames forKey:[route.routeId stringValue]];
+            [stopNames release];
+        }
     }
-    return 1;
+}
+
+#pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    // Return the number of sections.
+    //  One section for each route (or "Loading...")
+    
+    return [routeStops count] + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -153,26 +185,11 @@
             rows = numStops;
         }
     } else {
-        //  Get all stops for a route
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Stop" 
-                                                             inManagedObjectContext:self.managedObjectContext];
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-        [request setEntity:entityDescription];
+        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", section]];
         
-        // Set predicate and sort orderings...
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY routes.routeId == %@", [NSNumber numberWithInt:section]];
-        
-        [request setPredicate:predicate];
-        
-        NSError *error = nil;
-        NSInteger numStops = [self.managedObjectContext countForFetchRequest:request error:&error];
-        if (error != nil)
-        {
-            // Deal with error...
-        } else {
-            rows = numStops;
+        if (stopsArray != nil) {
+            rows = [stopsArray count]; 
         }
-        
     }
     
     return rows;
@@ -181,6 +198,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"EtaCell";
+    ETA *eta = nil;
+    NSString *stopName;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -194,16 +213,39 @@
     if (indexPath.section == 0) {
         //  Do something
     } else {
-        //  Do something else
+        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        
+        if (stopsArray != nil && [stopsArray count] > indexPath.row) {
+            stopName = [stopsArray objectAtIndex:indexPath.row];
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"ETA"
+                                                                 inManagedObjectContext:self.managedObjectContext];
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:YES];
+            [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+            
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(routeId == %@) AND (stopName == %@)", [NSNumber numberWithInt:indexPath.section], stopName];
+            [request setPredicate:predicate];
+            
+            NSError *error = nil;
+            NSArray *etas = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if ([etas count] > 0) {
+                eta = [etas objectAtIndex:0];
+            }
+        }
     }
     
     // Configure the cell...
-    ETA *eta = nil;
     
     //  If the EtaWrapper was found, add the stop info and the ETA
     if (eta) {
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
-        cell.textLabel.text = eta.stopName;
+        if (eta.stop != nil) {
+            cell.textLabel.text = eta.stop.shortName;
+        } else {
+            cell.textLabel.text = stopName;
+        }
 		
 		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
         //  Show the ETA, if it is in the future.
@@ -230,6 +272,11 @@
 		} else {
 			cell.detailTextLabel.text = @"————";
 		}
+    } else {
+        if (stopName != nil) {
+            cell.textLabel.text = stopName;
+            cell.detailTextLabel.text = @"————";
+        }
     }
     
     return cell;
@@ -248,9 +295,8 @@
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
     
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-    [sortDescriptor release];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"routeId == %@", [NSNumber numberWithInt:section]];
+    [request setPredicate:predicate];
     
     NSError *error = nil;
     NSArray *routes = [self.managedObjectContext executeFetchRequest:request error:&error];
@@ -258,11 +304,7 @@
     {
         // Deal with error...
     } else {
-        if (section <= [routes count]) {
-            return [[routes objectAtIndex:section - 1] name];
-        } else {
-            return @"Loading...";
-        }
+        return [[routes objectAtIndex:0] name];
     }
     
     return @"Loading...";

@@ -14,7 +14,7 @@
     DataManager *dataManager;
     NSDateFormatter *timeDisplayFormatter;
     BOOL useRelativeTimes;
-	
+	NSMutableDictionary *routeStops;
 }
 
 @property (nonatomic, assign) DataManager *dataManager;
