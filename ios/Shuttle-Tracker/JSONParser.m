@@ -135,6 +135,7 @@
     NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
     
     NSEnumerator *stopsEnum = [jsonStops objectEnumerator];
+    int stopNum = 0;
     
     while ((value = [stopsEnum nextObject])) {
         Stop *stop;
@@ -173,6 +174,8 @@
         string = [value objectForKey:@"longitude"];
         stop.longitude = [NSNumber numberWithDouble:[string doubleValue]];
         
+        string = stopName;
+        
         //	Special handling for long stop names.
         if ([string isEqualToString:@"Blitman Residence Commons"]) {
             string = @"Blitman Commons";
@@ -188,6 +191,8 @@
         
         string = [value objectForKey:@"short_name"];
         stop.idTag = string;
+        
+        stop.stopNum = [NSNumber numberWithInt:stopNum++];
         
         // Save the context.
         error = nil;
@@ -365,7 +370,7 @@
     for (NSDictionary *dict in jsonDict) {
         ETA *eta;
         
-        NSString *etaStopId = [dict objectForKey:@"stopId"];
+        NSString *etaStopId = [dict objectForKey:@"stop_id"];
         NSNumber *etaRouteId = [NSNumber numberWithInt:[[dict objectForKey:@"route"] intValue]];
         
         //  Find the ETA, if it exists already
@@ -410,14 +415,10 @@
                 
                 //  TODO: set which DB stop it corresponds to
             } else if ([string isEqualToString:@"eta"]) {
-                eta.eta = [NSDate dateWithTimeIntervalSinceNow:[[dict objectForKey:string] 
-                                                                floatValue]/1000.0f];
+                int etaTime = [[dict objectForKey:string] intValue];
+                eta.eta = [NSDate dateWithTimeIntervalSinceNow:etaTime/1000.0f];
             } else if ([string isEqualToString:@"route"]) {
                 eta.routeId = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
-                
-                //  TODO: set which DB route it corresponds to
-            } else if ([string isEqualToString:@"name"]) {
-                eta.stopName = [dict objectForKey:string];
             }
         }
         

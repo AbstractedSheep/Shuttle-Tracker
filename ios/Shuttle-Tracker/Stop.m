@@ -2,7 +2,7 @@
 //  Stop.m
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 10/31/11.
+//  Created by Brendon Justin on 11/11/11.
 //  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 
@@ -14,10 +14,11 @@
 @implementation Stop
 
 @dynamic idTag;
-@dynamic name;
-@dynamic shortName;
 @dynamic latitude;
 @dynamic longitude;
+@dynamic name;
+@dynamic shortName;
+@dynamic stopNum;
 @dynamic etas;
 @dynamic routes;
 

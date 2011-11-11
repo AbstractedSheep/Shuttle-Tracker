@@ -140,17 +140,11 @@
         // Deal with error...
     } else {
         for (Route *route in dbRoutes) {
-            NSMutableArray *stopNames = [[NSMutableArray alloc] init];
-            
             //  Get all stops for that route
-            NSSet *dbStops = route.stops;
+            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stopNum" ascending:YES];
             
-            for (Stop *stop in dbStops) {
-                [stopNames addObject:stop.name];
-            }
-            
-            [routeStops setValue:stopNames forKey:[route.routeId stringValue]];
-            [stopNames release];
+            [routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] 
+                          forKey:[route.routeId stringValue]];
         }
     }
 }
@@ -199,7 +193,7 @@
 {
     static NSString *CellIdentifier = @"EtaCell";
     ETA *eta = nil;
-    NSString *stopName;
+    Stop *stop = nil;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -216,16 +210,16 @@
         NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
-            stopName = [stopsArray objectAtIndex:indexPath.row];
+            stop = [stopsArray objectAtIndex:indexPath.row];
             NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"ETA"
                                                                  inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
-            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:YES];
+            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
             [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(routeId == %@) AND (stopName == %@)", [NSNumber numberWithInt:indexPath.section], stopName];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(routeId == %@) AND (stopId == %@)", [NSNumber numberWithInt:indexPath.section], stop.idTag];
             [request setPredicate:predicate];
             
             NSError *error = nil;
@@ -243,38 +237,31 @@
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
         if (eta.stop != nil) {
             cell.textLabel.text = eta.stop.shortName;
-        } else {
-            cell.textLabel.text = stopName;
+        } else if (stop != nil) {
+            cell.textLabel.text = stop.shortName;
         }
 		
 		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
         //  Show the ETA, if it is in the future.
         int minutesToEta = 0;
         minutesToEta = (int)([eta.eta timeIntervalSinceNow] / 60);
-		if (minutesToEta > 0) {
-            if (self.useRelativeTimes) {
-                
-                //  Grammar for one vs. more than one
-                if (minutesToEta > 1) {
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d minutes", minutesToEta];
-                }
-                else if (minutesToEta == 1) {
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"%d minute", minutesToEta];
-                }
-                else if (minutesToEta < 1) {
-                    //  Cover our ears and show imminent and past times the same way
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"< 1 minute"];
-                }
-            } else {
-                //  Show ETAs as timestamps
-                cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:eta.eta];
+        if (self.useRelativeTimes) {
+            
+            //  Grammar for one vs. more than one
+            if (minutesToEta >= 1) {
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%d min.", minutesToEta];
             }
-		} else {
-			cell.detailTextLabel.text = @"————";
-		}
+            else if (minutesToEta < 1) {
+                //  Cover our ears and show imminent and past times the same way
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"< 1 min."];
+            }
+        } else {
+            //  Show ETAs as timestamps
+            cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:eta.eta];
+        }
     } else {
-        if (stopName != nil) {
-            cell.textLabel.text = stopName;
+        if (stop != nil) {
+            cell.textLabel.text = stop.shortName;
             cell.detailTextLabel.text = @"————";
         }
     }

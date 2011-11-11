@@ -2,7 +2,7 @@
 //  Stop.h
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 10/31/11.
+//  Created by Brendon Justin on 11/11/11.
 //  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 
@@ -14,10 +14,11 @@
 @interface Stop : NSManagedObject
 
 @property (nonatomic, retain) NSString * idTag;
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSString * shortName;
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSNumber * longitude;
+@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSString * shortName;
+@property (nonatomic, retain) NSNumber * stopNum;
 @property (nonatomic, retain) NSSet *etas;
 @property (nonatomic, retain) NSSet *routes;
 @end

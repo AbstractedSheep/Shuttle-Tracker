@@ -48,6 +48,7 @@
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="shortName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="stopNum" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="etas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ETA" inverseName="stop" inverseEntity="ETA" syncable="YES"/>
         <relationship name="routes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Route" inverseName="stops" inverseEntity="Route" syncable="YES"/>
     </entity>
@@ -57,6 +58,6 @@
         <element name="Route" positionX="-72" positionY="540" width="128" height="180"/>
         <element name="RoutePt" positionX="-281" positionY="585" width="128" height="105"/>
         <element name="Shuttle" positionX="169" positionY="507" width="128" height="195"/>
-        <element name="Stop" positionX="-261" positionY="333" width="128" height="150"/>
+        <element name="Stop" positionX="-261" positionY="333" width="128" height="165"/>
     </elements>
 </model>

@@ -81,10 +81,10 @@
 		5C68B628145C966100D9A82E /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B627145C966100D9A82E /* Default-Landscape~ipad.png */; };
 		5CA03570145E09980068CA3D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5CA0356F145E09980068CA3D /* Settings.bundle */; };
 		5CA03579145E0AD30068CA3D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 5CA03578145E0AD30068CA3D /* iTunesArtwork */; };
+		5CAF7169146D82B200ABB05A /* Stop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CAF7168146D82B200ABB05A /* Stop.m */; };
 		5CC8E6C5145F2E7800548DA6 /* ETA.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CC8E6C4145F2E7800548DA6 /* ETA.m */; };
 		5CC8E6CC145F2F4E00548DA6 /* RoutePt.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CC8E6CB145F2F4E00548DA6 /* RoutePt.m */; };
 		5CC8E6CF145F2FFD00548DA6 /* Shuttle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CC8E6CE145F2FFD00548DA6 /* Shuttle.m */; };
-		5CC8E6D2145F2FFE00548DA6 /* Stop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CC8E6D1145F2FFE00548DA6 /* Stop.m */; };
 		5CC8E6D5145F436300548DA6 /* Route.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CC8E6D4145F436300548DA6 /* Route.m */; };
 /* End PBXBuildFile section */
 
@@ -202,14 +202,14 @@
 		5C68B627145C966100D9A82E /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		5CA0356F145E09980068CA3D /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		5CA03578145E0AD30068CA3D /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
+		5CAF7167146D82B200ABB05A /* Stop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stop.h; sourceTree = "<group>"; };
+		5CAF7168146D82B200ABB05A /* Stop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stop.m; sourceTree = "<group>"; };
 		5CC8E6C3145F2E7800548DA6 /* ETA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
 		5CC8E6C4145F2E7800548DA6 /* ETA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
 		5CC8E6CA145F2F4E00548DA6 /* RoutePt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoutePt.h; sourceTree = "<group>"; };
 		5CC8E6CB145F2F4E00548DA6 /* RoutePt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoutePt.m; sourceTree = "<group>"; };
 		5CC8E6CD145F2FFD00548DA6 /* Shuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shuttle.h; sourceTree = "<group>"; };
 		5CC8E6CE145F2FFD00548DA6 /* Shuttle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shuttle.m; sourceTree = "<group>"; };
-		5CC8E6D0145F2FFE00548DA6 /* Stop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stop.h; sourceTree = "<group>"; };
-		5CC8E6D1145F2FFE00548DA6 /* Stop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stop.m; sourceTree = "<group>"; };
 		5CC8E6D3145F436300548DA6 /* Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Route.h; sourceTree = "<group>"; };
 		5CC8E6D4145F436300548DA6 /* Route.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Route.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -304,8 +304,8 @@
 				5CC8E6CB145F2F4E00548DA6 /* RoutePt.m */,
 				5CC8E6CD145F2FFD00548DA6 /* Shuttle.h */,
 				5CC8E6CE145F2FFD00548DA6 /* Shuttle.m */,
-				5CC8E6D0145F2FFE00548DA6 /* Stop.h */,
-				5CC8E6D1145F2FFE00548DA6 /* Stop.m */,
+				5CAF7167146D82B200ABB05A /* Stop.h */,
+				5CAF7168146D82B200ABB05A /* Stop.m */,
 				5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */,
 				5CA0356F145E09980068CA3D /* Settings.bundle */,
 				5C68B51A145C85AC00D9A82E /* Supporting Files */,
@@ -603,9 +603,9 @@
 				5CC8E6C5145F2E7800548DA6 /* ETA.m in Sources */,
 				5CC8E6CC145F2F4E00548DA6 /* RoutePt.m in Sources */,
 				5CC8E6CF145F2FFD00548DA6 /* Shuttle.m in Sources */,
-				5CC8E6D2145F2FFE00548DA6 /* Stop.m in Sources */,
 				5CC8E6D5145F436300548DA6 /* Route.m in Sources */,
 				5C52A7BB1467065900331F14 /* FavoriteStop.m in Sources */,
+				5CAF7169146D82B200ABB05A /* Stop.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
