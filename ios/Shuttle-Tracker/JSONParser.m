@@ -59,7 +59,7 @@
     NSEnumerator *routesEnum = [jsonRoutes objectEnumerator];
     
     while ((value = [routesEnum nextObject])) {
-        Route *route;
+        Route *route = nil;
         
         NSNumber *routeId = [value objectForKey:@"id"];
         
@@ -88,46 +88,47 @@
             route.routeId = routeId;
         }
         
-        
-        NSNumber *number = [value objectForKey:@"width"];
-        route.width = number;
-        
-        string = [value objectForKey:@"name"];
-        route.name = string;
-        
-        string = [value objectForKey:@"color"];
-        route.color = string;
-        
-        NSDictionary *coordsDict = [value objectForKey:@"coords"];
-        NSEnumerator *coordsEnum = [coordsDict objectEnumerator];
-        NSDictionary *coordsValues;
-        
-        long ptCount = 0;
-        while ((coordsValues = [coordsEnum nextObject])) {
-            RoutePt *routePt = (RoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"RoutePt"
-                                                                        inManagedObjectContext:self.managedObjectContext];
+        if (route) {
+            NSNumber *number = [value objectForKey:@"width"];
+            route.width = number;
             
-            string = [coordsValues objectForKey:@"latitude"];
-            routePt.latitude = [NSNumber numberWithDouble:[string doubleValue]];
+            string = [value objectForKey:@"name"];
+            route.name = string;
             
-            string = [coordsValues objectForKey:@"longitude"];
-            routePt.longitude = [NSNumber numberWithDouble:[string doubleValue]];
+            string = [value objectForKey:@"color"];
+            route.color = string;
             
-            [route addPointsObject:routePt];
-            routePt.route = route;
-            routePt.pointNumber = [NSNumber numberWithLong:ptCount++];
-        }
-        
-        // Save the context.
-        error = nil;
-        if (![self.managedObjectContext save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
+            NSDictionary *coordsDict = [value objectForKey:@"coords"];
+            NSEnumerator *coordsEnum = [coordsDict objectEnumerator];
+            NSDictionary *coordsValues;
+            
+            long ptCount = 0;
+            while ((coordsValues = [coordsEnum nextObject])) {
+                RoutePt *routePt = (RoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"RoutePt"
+                                                                            inManagedObjectContext:self.managedObjectContext];
+                
+                string = [coordsValues objectForKey:@"latitude"];
+                routePt.latitude = [NSNumber numberWithDouble:[string doubleValue]];
+                
+                string = [coordsValues objectForKey:@"longitude"];
+                routePt.longitude = [NSNumber numberWithDouble:[string doubleValue]];
+                
+                [route addPointsObject:routePt];
+                routePt.route = route;
+                routePt.pointNumber = [NSNumber numberWithLong:ptCount++];
+                
+                // Save the context.
+                error = nil;
+                if (![self.managedObjectContext save:&error]) {
+                    /*
+                     Replace this implementation with code to handle the error appropriately.
+                     
+                     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                     */
+                    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                    abort();
+                }
+            }
         }
     }
     
@@ -137,7 +138,7 @@
     int stopNum = 0;
     
     while ((value = [stopsEnum nextObject])) {
-        Stop *stop;
+        Stop *stop = nil;
         
         NSString *stopName = [value objectForKey:@"name"];
         
@@ -167,74 +168,77 @@
             stop.name = stopName;
         }
         
-        string = [value objectForKey:@"latitude"];
-        stop.latitude = [NSNumber numberWithDouble:[string doubleValue]];
-        
-        string = [value objectForKey:@"longitude"];
-        stop.longitude = [NSNumber numberWithDouble:[string doubleValue]];
-        
-        string = stopName;
-        
-        //	Special handling for long stop names.
-        if ([string isEqualToString:@"Blitman Residence Commons"]) {
-            string = @"Blitman Commons";
-        } else if ([string isEqualToString:@"Polytechnic Residence Commons"]) {
-            string = @"Polytech Commons";
-        } else if ([string isEqualToString:@"Troy Building Crosswalk"]) {
-            string = @"Troy Bldg. Crossing";
-        } else if ([string isEqualToString:@"6th Ave. and City Station"]) {
-            string = @"6th Ave. & City Stn";
-        }
-        
-        stop.shortName = string;
-        
-        string = [value objectForKey:@"short_name"];
-        stop.idTag = string;
-        
-        stop.stopNum = [NSNumber numberWithInt:stopNum++];
-        
-        // Save the context.
-        error = nil;
-        if (![self.managedObjectContext save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        NSDictionary *routesDict = [value objectForKey:@"routes"];
-        NSEnumerator *routesEnum = [routesDict objectEnumerator];
-        NSDictionary *routeValues;
-        
-        NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
-        
-        NSNumber *number;
-        
-        //  Associate the stop with its routes
-        while ((routeValues = [routesEnum nextObject])) {
-            number = [routeValues objectForKey:@"id"];
-            [tempRouteIds addObject:number];
-        }
-        
-        entityDescription = [NSEntityDescription entityForName:@"Route"
-                                        inManagedObjectContext:self.managedObjectContext];
-        request = [[[NSFetchRequest alloc] init] autorelease];
-        [request setEntity:entityDescription];
-        
-        // Set example predicate and sort orderings...
-        predicate = [NSPredicate predicateWithFormat: @"(routeId IN $ROUTEIDLIST)"];
-        [request setPredicate:[predicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:tempRouteIds forKey:@"ROUTEIDLIST"]]];
-        
-        error = nil;
-        array = [self.managedObjectContext executeFetchRequest:request error:&error];
-        if (array == nil)
-        {
-            // Deal with error...
-        } else {
-            stop.routes = [NSSet setWithArray:array];
+        if (stop) {
+            string = [value objectForKey:@"latitude"];
+            stop.latitude = [NSNumber numberWithDouble:[string doubleValue]];
+            
+            string = [value objectForKey:@"longitude"];
+            stop.longitude = [NSNumber numberWithDouble:[string doubleValue]];
+            
+            string = stopName;
+            
+            //	Special handling for long stop names.
+            if ([string isEqualToString:@"Blitman Residence Commons"]) {
+                string = @"Blitman Commons";
+            } else if ([string isEqualToString:@"Polytechnic Residence Commons"]) {
+                string = @"Polytech Commons";
+            } else if ([string isEqualToString:@"Troy Building Crosswalk"]) {
+                string = @"Troy Bldg. Crossing";
+            } else if ([string isEqualToString:@"6th Ave. and City Station"]) {
+                string = @"6th Ave. & City Stn";
+            }
+            
+            stop.shortName = string;
+            
+            string = [value objectForKey:@"short_name"];
+            stop.idTag = string;
+            
+            stop.stopNum = [NSNumber numberWithInt:stopNum++];
+            
+            NSDictionary *routesDict = [value objectForKey:@"routes"];
+            NSEnumerator *routesEnum = [routesDict objectEnumerator];
+            NSDictionary *routeValues;
+            
+            NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
+            
+            NSNumber *number;
+            
+            //  Associate the stop with its routes
+            while ((routeValues = [routesEnum nextObject])) {
+                number = [routeValues objectForKey:@"id"];
+                [tempRouteIds addObject:number];
+            }
+            
+            entityDescription = [NSEntityDescription entityForName:@"Route"
+                                            inManagedObjectContext:self.managedObjectContext];
+            request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            // Set example predicate and sort orderings...
+            predicate = [NSPredicate predicateWithFormat: @"(routeId IN $ROUTEIDLIST)"];
+            [request setPredicate:[predicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:tempRouteIds forKey:@"ROUTEIDLIST"]]];
+            [tempRouteIds release];
+            
+            error = nil;
+            array = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if (array == nil)
+            {
+                // Deal with error...
+            } else {
+                stop.routes = [NSSet setWithArray:array];
+            }
+            
+            // Save the context.
+            error = nil;
+            if (![self.managedObjectContext save:&error]) {
+                /*
+                 Replace this implementation with code to handle the error appropriately.
+                 
+                 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                 */
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
         }
     }
     
@@ -262,7 +266,7 @@
     
     //  Each dictionary corresponds to one set of curly braces ({ and })
     for (NSDictionary *dict in jsonDict) {
-        Shuttle *vehicle;
+        Shuttle *vehicle = nil;
         NSString *vehicleName = [dict objectForKey:@"name"];
         
         //  Find the vehicle, if it exists already
@@ -291,37 +295,39 @@
             vehicle.name = vehicleName;
         }
         
-        //  Set the vehicle properties to the corresponding JSON values
-        for (NSString *string in dict) {
-            if ([string isEqualToString:@"latitude"]) {
-                vehicle.latitude = [NSNumber numberWithDouble:[[dict objectForKey:string] doubleValue]];
-            } else if ([string isEqualToString:@"longitude"]) {
-                vehicle.longitude = [NSNumber numberWithDouble:[[dict objectForKey:string] doubleValue]];
-            } else if ([string isEqualToString:@"heading"]) {
-                vehicle.heading = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
-            } else if ([string isEqualToString:@"speed"]) {
-                vehicle.speed = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
-            } else if ([string isEqualToString:@"update_time"]) {
-                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-                
-                vehicle.updateTime = [dateFormatter dateFromString:[dict objectForKey:string]];
-                [dateFormatter release];
-            } else if ([string isEqualToString:@"route_id"]) {
-                vehicle.routeId = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+        if (vehicle) {
+            //  Set the vehicle properties to the corresponding JSON values
+            for (NSString *string in dict) {
+                if ([string isEqualToString:@"latitude"]) {
+                    vehicle.latitude = [NSNumber numberWithDouble:[[dict objectForKey:string] doubleValue]];
+                } else if ([string isEqualToString:@"longitude"]) {
+                    vehicle.longitude = [NSNumber numberWithDouble:[[dict objectForKey:string] doubleValue]];
+                } else if ([string isEqualToString:@"heading"]) {
+                    vehicle.heading = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+                } else if ([string isEqualToString:@"speed"]) {
+                    vehicle.speed = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+                } else if ([string isEqualToString:@"update_time"]) {
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+                    
+                    vehicle.updateTime = [dateFormatter dateFromString:[dict objectForKey:string]];
+                    [dateFormatter release];
+                } else if ([string isEqualToString:@"route_id"]) {
+                    vehicle.routeId = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+                }
             }
-        }
-        
-        // Save the context.
-        error = nil;
-        if (![self.managedObjectContext save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
+            
+            // Save the context.
+            error = nil;
+            if (![self.managedObjectContext save:&error]) {
+                /*
+                 Replace this implementation with code to handle the error appropriately.
+                 
+                 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                 */
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
         }
     }
     
@@ -361,7 +367,7 @@
     
     //  Each dictionary corresponds to one set of curly braces ({ and })
     for (NSDictionary *dict in jsonDict) {
-        ETA *eta;
+        ETA *eta = nil;
         
         NSString *etaStopId = [dict objectForKey:@"stop_id"];
         NSNumber *etaRouteId = [NSNumber numberWithInt:[[dict objectForKey:@"route"] intValue]];
@@ -393,77 +399,79 @@
             eta.routeId = etaRouteId;
         }
         
-        //  Set the eta properties to the corresponding JSON values
-        for (NSString *string in dict) {
-            if ([string isEqualToString:@"shuttle_id"]) {
-                eta.shuttleId = [dict objectForKey:string];
-            } else if ([string isEqualToString:@"stop_id"]) {
-                eta.stopId = [dict objectForKey:string];
-                
-                //  TODO: set which DB stop it corresponds to
-            } else if ([string isEqualToString:@"eta"]) {
-                int etaTime = [[dict objectForKey:string] intValue];
-                eta.eta = [NSDate dateWithTimeIntervalSinceNow:etaTime/1000.0f];
-            } else if ([string isEqualToString:@"route"]) {
-                eta.routeId = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+        if (eta) {
+            //  Set the eta properties to the corresponding JSON values
+            for (NSString *string in dict) {
+                if ([string isEqualToString:@"shuttle_id"]) {
+                    eta.shuttleId = [dict objectForKey:string];
+                } else if ([string isEqualToString:@"stop_id"]) {
+                    eta.stopId = [dict objectForKey:string];
+                    
+                    //  TODO: set which DB stop it corresponds to
+                } else if ([string isEqualToString:@"eta"]) {
+                    int etaTime = [[dict objectForKey:string] intValue];
+                    eta.eta = [NSDate dateWithTimeIntervalSinceNow:etaTime/1000.0f];
+                } else if ([string isEqualToString:@"route"]) {
+                    eta.routeId = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+                }
             }
-        }
-        
-        //  Find the corresponding stop
-        entityDescription = [NSEntityDescription entityForName:@"Stop" 
-                                        inManagedObjectContext:self.managedObjectContext];
-        request = [[[NSFetchRequest alloc] init] autorelease];
-        [request setEntity:entityDescription];
-        
-        // Set predicate and sort orderings...
-        predicate = [NSPredicate predicateWithFormat:
-                     @"(idTag == %@)", eta.stopId];
-        [request setPredicate:predicate];
-        [request setFetchLimit:1];
-        
-        error = nil;
-        array = [self.managedObjectContext executeFetchRequest:request error:&error];
-        if (array == nil)
-        {
-            // Deal with error...
-        } else if ([array count] > 0) {
-            eta.stop = [array objectAtIndex:0];
-        } else {
-            //  No stop was found
-        }
-        
-        //  Find the corresponding route
-        entityDescription = [NSEntityDescription entityForName:@"Route" 
-                                        inManagedObjectContext:self.managedObjectContext];
-        request = [[[NSFetchRequest alloc] init] autorelease];
-        [request setEntity:entityDescription];
-        
-        // Set predicate and sort orderings...
-        predicate = [NSPredicate predicateWithFormat:
-                     @"(routeId == %@)", eta.routeId];
-        [request setPredicate:predicate];
-        [request setFetchLimit:1];
-        
-        error = nil;
-        array = [self.managedObjectContext executeFetchRequest:request error:&error];
-        if (array == nil)
-        {
-            // Deal with error...
-        } else if ([array count] > 0) {
-            eta.route = [array objectAtIndex:0];
-        } else {
-            //  No route was found
-        }
-        
-        // Save the context.
-        if (![self.managedObjectContext save:&error]) {
-            /*
-             Replace this implementation with code to handle the error appropriately.
-             
-             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-             */
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
+            
+            //  Find the corresponding stop
+            entityDescription = [NSEntityDescription entityForName:@"Stop" 
+                                            inManagedObjectContext:self.managedObjectContext];
+            request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            // Set predicate and sort orderings...
+            predicate = [NSPredicate predicateWithFormat:
+                         @"(idTag == %@)", eta.stopId];
+            [request setPredicate:predicate];
+            [request setFetchLimit:1];
+            
+            error = nil;
+            array = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if (array == nil)
+            {
+                // Deal with error...
+            } else if ([array count] > 0) {
+                eta.stop = [array objectAtIndex:0];
+            } else {
+                //  No stop was found
+            }
+            
+            //  Find the corresponding route
+            entityDescription = [NSEntityDescription entityForName:@"Route" 
+                                            inManagedObjectContext:self.managedObjectContext];
+            request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            // Set predicate and sort orderings...
+            predicate = [NSPredicate predicateWithFormat:
+                         @"(routeId == %@)", eta.routeId];
+            [request setPredicate:predicate];
+            [request setFetchLimit:1];
+            
+            error = nil;
+            array = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if (array == nil)
+            {
+                // Deal with error...
+            } else if ([array count] > 0) {
+                eta.route = [array objectAtIndex:0];
+            } else {
+                //  No route was found
+            }
+            
+            // Save the context.
+            if (![self.managedObjectContext save:&error]) {
+                /*
+                 Replace this implementation with code to handle the error appropriately.
+                 
+                 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                 */
+                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+                abort();
+            }
         }
     }
     

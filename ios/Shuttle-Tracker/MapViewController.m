@@ -21,7 +21,7 @@ const float UPDATE_THRESHOLD = -120;
 
 @interface UIImage (magentatocolor)
 
-- (UIImage *)convertMagentatoColor:(UIColor *)newColor;
+- (UIImage *)copyMagentaImageasColor:(UIColor *)newColor;
 
 @end
 
@@ -45,7 +45,7 @@ typedef enum {
 
 //  Convert the magenta pixels in an image to a new color.
 //  Returns a new image with retain count 1.
-- (UIImage *)convertMagentatoColor:(UIColor *)newColor {
+- (UIImage *)copyMagentaImageasColor:(UIColor *)newColor {
     BOOL monochromeModel = NO;
     
     CGSize size = [self size];
@@ -200,34 +200,42 @@ typedef enum {
     UIImage *magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
     [magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
     
-    UIImage *whiteImage = [magentaShuttleImage convertMagentatoColor:[UIColor whiteColor]];
+    UIImage *whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
     [shuttleImagesEast setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+    [whiteImage release];
     
     //  North
     magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
     [magentaShuttleImages setObject:magentaShuttleImage forKey:@"north"];
     
-    whiteImage = [magentaShuttleImage convertMagentatoColor:[UIColor whiteColor]];
+    whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
     [shuttleImagesNorth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+    [whiteImage release];
     
     //  West
     magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
     [magentaShuttleImages setObject:magentaShuttleImage forKey:@"west"];
     
-    whiteImage = [magentaShuttleImage convertMagentatoColor:[UIColor whiteColor]];
+    whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
     [shuttleImagesWest setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+    [whiteImage release];
     
     //  South
     magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
     [magentaShuttleImages setObject:magentaShuttleImage forKey:@"south"];
     
-    whiteImage = [magentaShuttleImage convertMagentatoColor:[UIColor whiteColor]];
+    whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
     [shuttleImagesSouth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+    [whiteImage release];
     
     [shuttleImages setObject:shuttleImagesEast forKey:@"east"];
     [shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
     [shuttleImages setObject:shuttleImagesWest forKey:@"west"];
     [shuttleImages setObject:shuttleImagesSouth forKey:@"south"];
+    [shuttleImagesEast release];
+    [shuttleImagesNorth release];
+    [shuttleImagesWest release];
+    [shuttleImagesSouth release];
     
     vehicles = [[NSMutableDictionary alloc] init];
 	
@@ -404,17 +412,21 @@ typedef enum {
         UIImage *coloredImage;
         
         if (routeView.fillColor) {
-            coloredImage = [[magentaShuttleImages objectForKey:@"west"] convertMagentatoColor:routeView.fillColor];
+            coloredImage = [[magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
             [[shuttleImages objectForKey:@"east"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            [coloredImage release];
             
-            coloredImage = [[magentaShuttleImages objectForKey:@"north"] convertMagentatoColor:routeView.fillColor];
+            coloredImage = [[magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
             [[shuttleImages objectForKey:@"north"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            [coloredImage release];
             
-            coloredImage = [[magentaShuttleImages objectForKey:@"west"] convertMagentatoColor:routeView.fillColor];
+            coloredImage = [[magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
             [[shuttleImages objectForKey:@"west"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            [coloredImage release];
             
-            coloredImage = [[magentaShuttleImages objectForKey:@"south"] convertMagentatoColor:routeView.fillColor];
+            coloredImage = [[magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
             [[shuttleImages objectForKey:@"south"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            [coloredImage release];
         }
     }
 }
