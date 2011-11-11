@@ -3,7 +3,7 @@
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 4/30/11.
-//  Copyright 2011 Naga Softworks, LLC. All rights reserved.
+//  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

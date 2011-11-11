@@ -9,7 +9,6 @@
 //  Consider consolidating ETA display code from this file and LaterEtasViewController
 
 #import "EtasViewController.h"
-#import "EtaWrapper.h"
 #import "DataManager.h"
 #import "ExtraEtasViewController.h"
 #import "IASKSettingsReader.h"
