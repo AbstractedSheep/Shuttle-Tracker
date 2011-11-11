@@ -561,11 +561,11 @@ typedef enum {
                 if (vehicle.heading >= 315 || vehicle.heading < 45) {
                     shuttleDirectionImages = [shuttleImages objectForKey:@"north"];
                 } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
-                    shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
+                    shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
                 } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
                     shuttleDirectionImages = [shuttleImages objectForKey:@"south"];
                 } else {
-                    shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
+                    shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
                 }
                 
                 coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
@@ -584,14 +584,14 @@ typedef enum {
         //  Use the colored image for the shuttle's current route.  A route of -1 uses the white image.
         UIImage *coloredImage;
         NSMutableDictionary *shuttleDirectionImages;
-        if (vehicle.heading >= 3155 || vehicle.heading < 45) {
+        if (vehicle.heading >= 315 || vehicle.heading < 45) {
             shuttleDirectionImages = [shuttleImages objectForKey:@"north"];
         } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
-            shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
+            shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
         } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
             shuttleDirectionImages = [shuttleImages objectForKey:@"south"];
         } else {
-            shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
+            shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
         }
         
         coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
