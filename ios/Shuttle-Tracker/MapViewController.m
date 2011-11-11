@@ -46,6 +46,8 @@ typedef enum {
 //  Convert the magenta pixels in an image to a new color.
 //  Returns a new image with retain count 1.
 - (UIImage *)convertMagentatoColor:(UIColor *)newColor {
+    BOOL monochromeModel = NO;
+    
     CGSize size = [self size];
     int width = size.width;
     int height = size.height;
@@ -63,6 +65,13 @@ typedef enum {
     CGContextRef context = CGBitmapContextCreate(pixels, width, height, 8, width * sizeof(uint32_t), colorSpace, 
                                                  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedLast);
     
+    CGColorSpaceRef space = CGColorGetColorSpace(newColor.CGColor);
+    CGColorSpaceModel model = CGColorSpaceGetModel(space);
+
+    if (model == kCGColorSpaceModelMonochrome) {
+        monochromeModel = YES;
+    }
+    
     //  Get an array of the rgb values of the new color.
     //  Note that these values are floating point values on [0,1] 
     const CGFloat *rgb = CGColorGetComponents(newColor.CGColor);
@@ -78,9 +87,15 @@ typedef enum {
             //  If the color of the current pixel is magenta, which is (255, 0, 255) in RGB,
             //  change the color to the new color.
             if (rgbaPixel[RED] == 255 && rgbaPixel[GREEN] == 0 && rgbaPixel[BLUE] == 255) {
-                rgbaPixel[RED] = rgb[0] * 255.0f;
-                rgbaPixel[GREEN] = rgb[1] * 255.0f;
-                rgbaPixel[BLUE] = rgb[2] * 255.0f;
+                if (monochromeModel) {
+                    rgbaPixel[RED] = rgb[0] * 255.0f;
+                    rgbaPixel[GREEN] = rgb[0] * 255.0f;
+                    rgbaPixel[BLUE] = rgb[0] * 255.0f;
+                } else {
+                    rgbaPixel[RED] = rgb[0] * 255.0f;
+                    rgbaPixel[GREEN] = rgb[1] * 255.0f;
+                    rgbaPixel[BLUE] = rgb[2] * 255.0f;
+                }
             }
         }
     }
@@ -151,13 +166,6 @@ typedef enum {
     routeLines = [[NSMutableArray alloc] init];
     routeLineViews = [[NSMutableArray alloc] init];
     
-	//	Take notice when the routes and stops are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
-                                                 name:kDMRoutesandStopsLoaded
-                                               object:nil];
-	
-	[dataManager loadRoutesAndStops];
-    
     //  The RPI student union is at -73.6765441399,42.7302712352
     //  The center point used here is a bit south of it
     MKCoordinateRegion region;
@@ -179,12 +187,57 @@ typedef enum {
 	shuttleImage = [UIImage imageNamed:@"shuttle"];
 	[shuttleImage retain];
     
-    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color"];
-    [magentaShuttleImage retain];
+    magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
     
-    shuttleImages = [[NSMutableDictionary alloc] init];
+    shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
+    NSMutableDictionary *shuttleImagesEast = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *shuttleImagesNorth = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *shuttleImagesWest = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *shuttleImagesSouth = [[NSMutableDictionary alloc] init];
+    
+    //  Create east, north, west and south shuttle images
+    //  East
+    UIImage *magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
+    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
+    
+    UIImage *whiteImage = [magentaShuttleImage convertMagentatoColor:[UIColor whiteColor]];
+    [shuttleImagesEast setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+    
+    //  North
+    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
+    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"north"];
+    
+    whiteImage = [magentaShuttleImage convertMagentatoColor:[UIColor whiteColor]];
+    [shuttleImagesNorth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+    
+    //  West
+    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
+    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"west"];
+    
+    whiteImage = [magentaShuttleImage convertMagentatoColor:[UIColor whiteColor]];
+    [shuttleImagesWest setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+    
+    //  South
+    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
+    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"south"];
+    
+    whiteImage = [magentaShuttleImage convertMagentatoColor:[UIColor whiteColor]];
+    [shuttleImagesSouth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+    
+    [shuttleImages setObject:shuttleImagesEast forKey:@"east"];
+    [shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
+    [shuttleImages setObject:shuttleImagesWest forKey:@"west"];
+    [shuttleImages setObject:shuttleImagesSouth forKey:@"south"];
+    
     vehicles = [[NSMutableDictionary alloc] init];
 	
+	//	Take notice when the routes and stops are updated.
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
+                                                 name:kDMRoutesandStopsLoaded
+                                               object:nil];
+	
+	[dataManager loadRoutesAndStops];
+    
 	//	Take notice when a setting is changed.
 	//	Note that this is not the only object that takes notice.
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
@@ -271,14 +324,14 @@ typedef enum {
             } else {
                 if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
                     [vehicles removeObjectForKey:existingShuttle.name];
-                } else if ([shuttle.routeId intValue] != existingShuttle.routeNo) {
+                } else if ([shuttle.routeId intValue] != existingShuttle.routeNo || [shuttle.heading intValue] != existingShuttle.heading) {
                     NSLog(@"routeId: %d, old routeId: %d", [shuttle.routeId intValue], existingShuttle.routeNo);
                     //	If the shuttle switched routes, then 1. Remove the shuttle from the map
                     //	view, letting the annotation be released, and 2. Add the
                     //	shuttle back to the map view.
                     
-                    [_mapView removeAnnotation:existingShuttle];
                     [vehicles removeObjectForKey:existingShuttle.name];
+                    [_mapView removeAnnotation:existingShuttle];
                     [self addVehicle:shuttle];
                 } else if ([shuttle.updateTime timeIntervalSinceDate:existingShuttle.updateTime] > 0) {
                     //  If the shuttle location is out of date, update it
@@ -351,9 +404,17 @@ typedef enum {
         UIImage *coloredImage;
         
         if (routeView.fillColor) {
-            coloredImage = [magentaShuttleImage convertMagentatoColor:routeView.fillColor];
+            coloredImage = [[magentaShuttleImages objectForKey:@"west"] convertMagentatoColor:routeView.fillColor];
+            [[shuttleImages objectForKey:@"east"] setValue:coloredImage forKey:[route.routeId stringValue]];
             
-            [shuttleImages setValue:coloredImage forKey:route.idTag];
+            coloredImage = [[magentaShuttleImages objectForKey:@"north"] convertMagentatoColor:routeView.fillColor];
+            [[shuttleImages objectForKey:@"north"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            
+            coloredImage = [[magentaShuttleImages objectForKey:@"west"] convertMagentatoColor:routeView.fillColor];
+            [[shuttleImages objectForKey:@"west"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            
+            coloredImage = [[magentaShuttleImages objectForKey:@"south"] convertMagentatoColor:routeView.fillColor];
+            [[shuttleImages objectForKey:@"south"] setValue:coloredImage forKey:[route.routeId stringValue]];
         }
     }
 }
@@ -482,7 +543,20 @@ typedef enum {
             //  If it is, check for a colored shuttle image for the shuttle's route.
             //  Set the shuttle's image to the colored one, if we have it.
             if (!vehicle.routeImageSet) {
-                UIImage *coloredImage = [shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]];
+                //  Use the colored image for the shuttle's current route.  A route of -1 uses the white image.
+                UIImage *coloredImage;
+                NSMutableDictionary *shuttleDirectionImages;
+                if (vehicle.heading >= 315 || vehicle.heading < 45) {
+                    shuttleDirectionImages = [shuttleImages objectForKey:@"north"];
+                } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
+                    shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
+                } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
+                    shuttleDirectionImages = [shuttleImages objectForKey:@"south"];
+                } else {
+                    shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
+                }
+                
+                coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
                 if (coloredImage != nil) {
                     [[vehicle annotationView] setImage:coloredImage];
 					vehicle.routeImageSet = YES;
@@ -495,9 +569,21 @@ typedef enum {
         MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:vehicle
                                                                                 reuseIdentifier:@"vehicleAnnotation"] autorelease];
         
-        //  Check if there is a colored shuttle image for the shuttle's current route.
-        //  If there is, use it.
-        UIImage *coloredImage = [shuttleImages objectForKey:[NSNumber numberWithInt:[vehicle routeNo]]];
+        //  Use the colored image for the shuttle's current route.  A route of -1 uses the white image.
+        UIImage *coloredImage;
+        NSMutableDictionary *shuttleDirectionImages;
+        if (vehicle.heading >= 3155 || vehicle.heading < 45) {
+            shuttleDirectionImages = [shuttleImages objectForKey:@"north"];
+        } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
+            shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
+        } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
+            shuttleDirectionImages = [shuttleImages objectForKey:@"south"];
+        } else {
+            shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
+        }
+        
+        coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
+        
         if (coloredImage != nil) {
             vehicleAnnotationView.image = coloredImage;
 			vehicle.routeImageSet = YES;
@@ -505,9 +591,6 @@ typedef enum {
             vehicleAnnotationView.image = shuttleImage;
 			vehicle.routeImageSet = NO;
         }
-        
-        vehicleAnnotationView.image = shuttleImage;
-        vehicle.routeImageSet = NO;
         
         vehicleAnnotationView.canShowCallout = YES;
         
