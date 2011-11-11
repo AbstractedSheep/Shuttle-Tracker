@@ -8,11 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class EtaWrapper, JSONParser, DataManager, UINavigationButton;
+@class Stop, JSONParser, DataManager, UINavigationButton;
 
-@interface LaterEtasViewController : UITableViewController {
-    EtaWrapper *wrappedEta;
-	
+@interface ExtraEtasViewController : UITableViewController {
 	NSURL *etasUrl;
 	JSONParser *extraEtasParser;
 	
@@ -27,10 +25,12 @@
     BOOL useRelativeTimes;
 }
 
-- (id)initWithEta:(EtaWrapper *)eta;
+- (id)initWithStop:(Stop *)stop forRouteNumber:(NSNumber *)routeNumber;
 - (void)toggleFavorite:(id)sender;
 
-@property (nonatomic, retain) EtaWrapper *wrappedEta;
+@property (nonatomic, retain) Stop *stop;
+@property (nonatomic, retain) NSNumber *routeNum;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, assign) DataManager *dataManager;
 @property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
 @property (nonatomic) BOOL useRelativeTimes;

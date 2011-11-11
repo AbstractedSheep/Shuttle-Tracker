@@ -11,7 +11,7 @@
 #import "EtasViewController.h"
 #import "EtaWrapper.h"
 #import "DataManager.h"
-#import "LaterEtasViewController.h"
+#import "ExtraEtasViewController.h"
 #import "IASKSettingsReader.h"
 #import "ETA.h"
 #import "Route.h"
@@ -35,7 +35,6 @@
 @synthesize dataManager;
 @synthesize timeDisplayFormatter;
 @synthesize useRelativeTimes;
-@synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;
 
 
@@ -219,6 +218,8 @@
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
             [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
             
+            [request setFetchLimit:1];
+            
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(routeId == %@) AND (stopId == %@)", [NSNumber numberWithInt:indexPath.section], stop.idTag];
             [request setPredicate:predicate];
             
@@ -302,23 +303,21 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	EtaWrapper *etaWrapped = nil;
+    Stop *stop = nil;
+ 
+    //  Do nothing for favorites, for now
+    if (indexPath.section == 0) {
+        return;
+    }
     
-    int counter = 0;
+    NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
     
-	NSArray *etas = [NSArray array];
-	
-    //  Search for the correct EtaWrapper based on route (route 1 == section 0, route 2 == section 1)
-    for (EtaWrapper *eta in etas) {
-		if (counter == indexPath.row) {
-			etaWrapped = eta;
-			break;
-		}
-		
-		counter++;
+    if (stopsArray != nil && [stopsArray count] > indexPath.row) {
+        stop = [stopsArray objectAtIndex:indexPath.row];
     }
 	
-	LaterEtasViewController *levc = [[LaterEtasViewController alloc] initWithEta:etaWrapped];
+	ExtraEtasViewController *levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
+    levc.managedObjectContext = self.managedObjectContext;
 	levc.dataManager = dataManager;
 	levc.timeDisplayFormatter = timeDisplayFormatter;
 	
@@ -387,56 +386,6 @@
 	}
 }
 
-#pragma mark - Fetched results controller
-
-- (NSFetchedResultsController *)fetchedResultsController
-{
-    if (__fetchedResultsController != nil) {
-        return __fetchedResultsController;
-    }
-    
-    // Set up the fetched results controller.
-    // Create the fetch request for the entity.
-    NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
-    // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
-    [fetchRequest setEntity:entity];
-    
-    // Set the batch size to a suitable number.
-    [fetchRequest setFetchBatchSize:20];
-    
-    // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO] autorelease];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortDescriptor, nil];
-    
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    
-    // Edit the section name key path and cache name if appropriate.
-    // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"] autorelease];
-    aFetchedResultsController.delegate = self;
-    self.fetchedResultsController = aFetchedResultsController;
-    
-	NSError *error = nil;
-	if (![self.fetchedResultsController performFetch:&error]) {
-	    /*
-	     Replace this implementation with code to handle the error appropriately.
-         
-	     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-	     */
-	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-	    abort();
-	}
-    
-    return __fetchedResultsController;
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
 
 //	Call unsafeDelayedTableReload on the main thread.  A threadsafe
 //	way to call for a table reload.

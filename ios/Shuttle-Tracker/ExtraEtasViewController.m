@@ -6,15 +6,16 @@
 //  Copyright 2011 Naga Softworks, LLC. All rights reserved.
 //
 
-#import "LaterEtasViewController.h"
+#import "ExtraEtasViewController.h"
 #import "DataUrls.h"
-#import "EtaWrapper.h"
+#import "ETA.h"
+#import "Stop.h"
 #import "JSONParser.h"
 #import "DataManager.h"
 #import "IASKSettingsReader.h"
 
 
-@interface LaterEtasViewController ()
+@interface ExtraEtasViewController ()
 
 - (void)getExtraEtas;
 - (void)delayedTableReload;
@@ -24,20 +25,23 @@
 @end
 
 
-@implementation LaterEtasViewController
+@implementation ExtraEtasViewController
 
-@synthesize wrappedEta;
+@synthesize stop = _stop;
+@synthesize routeNum = _routeNum;
+@synthesize managedObjectContext = __managedObjectContext;
 @synthesize dataManager;
 @synthesize timeDisplayFormatter;
 @synthesize useRelativeTimes;
 
-- (id)initWithEta:(EtaWrapper *)eta {
-	if ((self = [self initWithNibName:@"LaterEtasViewController" bundle:[NSBundle mainBundle]])) {
-		self.wrappedEta = eta;
-		self.title = eta.stopName;
+- (id)initWithStop:(Stop *)stop forRouteNumber:(NSNumber *)routeNumber {
+	if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
+		self.stop = stop;
+        self.routeNum = routeNumber;
+		self.title = stop.name;
 		
 		etasUrl = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@&rt=%d&st=%@", 
-				   kLEExtraEtasUrl, eta.route, eta.stopId]];
+				   kLEExtraEtasUrl, routeNumber, stop.idTag]];
         
         extraEtasParser = [[JSONParser alloc] init];
         
@@ -52,7 +56,9 @@
         
         //	Take notice when a setting is changed.
         //	Note that this is not the only object that takes notice.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:) name:kIASKAppSettingChanged object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(settingChanged:)
+                                                     name:kIASKAppSettingChanged object:nil];
 	}
 	
 	return self;
@@ -69,7 +75,6 @@
 
 - (void)dealloc
 {
-	[wrappedEta release];
 	[etasUrl release];
 	[extraEtasParser release];
     [super dealloc];
@@ -206,13 +211,13 @@
 {
     // Return the number of rows in the section.
 	//	If there are no etas, then return a Loading... cell
-    return [etas count] ? ([etas count] > 6 ? 6 : [etas count]) : 1;
+    return [etas count] ? [etas count] : 1;
 }
 
 
 //	Use the name of the stop as the section header
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	return wrappedEta.stopName;
+	return self.stop.name;
 }
 
 
@@ -230,22 +235,18 @@
     }
     
     // Configure the cell...
-    EtaWrapper *etaWrapped = nil;
+    ETA *eta = nil;
     
 	//	If there are no etas, then return a Loading... cell
 	
 	if ([etas count] == 0  && indexPath.section == 0 && indexPath.row == 0) {
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
-		if (wrappedEta.eta == nil) {
-			cell.textLabel.text = @"————";
-		} else {
-			cell.textLabel.text = @"Loading...";
-		}
+		cell.textLabel.text = @"Loading...";
 	} else if (row < [etas count]) {
-		etaWrapped = [etas objectAtIndex:row];
+		eta = [etas objectAtIndex:row];
 		
 		//  If the EtaWrapper was found, add the stop info and the ETA
-		if (etaWrapped) {
+		if (eta) {
 			//	The main text label, left aligned and black in UITableViewCellStyleValue1
             unsigned int nthShuttle = indexPath.row + 1;
             NSString *shuttleNoString;
@@ -263,25 +264,22 @@
 			cell.textLabel.text = [shuttleNoString stringByAppendingString:@" Shuttle:"];
 			
 			//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
-			if (etaWrapped.eta) {
+			if (eta.eta) {
                 if (self.useRelativeTimes) {
                     int minutesToEta = 0;
-                    minutesToEta = (int)([etaWrapped.eta timeIntervalSinceNow] / 60);
+                    minutesToEta = (int)([eta.eta timeIntervalSinceNow] / 60);
                     
                     //  Grammar for one vs. more than one
-                    if (minutesToEta > 1) {
-                        cell.detailTextLabel.text = [NSString stringWithFormat:@"%d minutes", minutesToEta];
-                    }
-                    else if (minutesToEta == 1) {
-                        cell.detailTextLabel.text = [NSString stringWithFormat:@"%d minute", minutesToEta];
+                    if (minutesToEta >= 1) {
+                        cell.detailTextLabel.text = [NSString stringWithFormat:@"%d min.", minutesToEta];
                     }
                     else if (minutesToEta < 1) {
                         //  Cover our ears and show imminent and past times the same way
-                        cell.detailTextLabel.text = [NSString stringWithFormat:@"< 1 minute"];
+                        cell.detailTextLabel.text = [NSString stringWithFormat:@"< 1 min."];
                     }
                 } else {
                     //  Show ETAs as timestamps
-                    cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:etaWrapped.eta];
+                    cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:eta.eta];
                 }
 			} else {
 				cell.detailTextLabel.text = @"————";
@@ -317,8 +315,21 @@
 		[etas release];
 	}
 	
-	etas = [extraEtasParser extraEtas];
-	[etas retain];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"ETA"
+                                                         inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
+    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    
+    [request setFetchLimit:5];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(routeId == %@) AND (stopId == %@)", self.routeNum, self.stop.idTag];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    etas = [self.managedObjectContext executeFetchRequest:request error:&error];
 	
 	[NSTimer scheduledTimerWithTimeInterval:0.125f 
 									 target:self.tableView 

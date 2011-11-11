@@ -56,7 +56,7 @@
 		5C68B5F4145C8A9500D9A82E /* CJSONScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B5E9145C8A9500D9A82E /* CJSONScanner.m */; };
 		5C68B5F5145C8A9500D9A82E /* CJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B5EB145C8A9500D9A82E /* CJSONSerializer.m */; };
 		5C68B5F8145C8C8D00D9A82E /* EtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B5F6145C8C8D00D9A82E /* EtasViewController.m */; };
-		5C68B5FB145C8E2000D9A82E /* LaterEtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B5F9145C8E2000D9A82E /* LaterEtasViewController.m */; };
+		5C68B5FB145C8E2000D9A82E /* ExtraEtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B5F9145C8E2000D9A82E /* ExtraEtasViewController.m */; };
 		5C68B609145C950500D9A82E /* glyphish_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B5FD145C950500D9A82E /* glyphish_clock.png */; };
 		5C68B60A145C950500D9A82E /* glyphish_clock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B5FE145C950500D9A82E /* glyphish_clock@2x.png */; };
 		5C68B60B145C950500D9A82E /* glyphish_gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B5FF145C950500D9A82E /* glyphish_gear.png */; };
@@ -176,8 +176,8 @@
 		5C68B5EC145C8A9500D9A82E /* JSONRepresentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRepresentation.h; sourceTree = "<group>"; };
 		5C68B5F6145C8C8D00D9A82E /* EtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EtasViewController.m; sourceTree = "<group>"; };
 		5C68B5F7145C8C8D00D9A82E /* EtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EtasViewController.h; sourceTree = "<group>"; };
-		5C68B5F9145C8E2000D9A82E /* LaterEtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LaterEtasViewController.m; sourceTree = "<group>"; };
-		5C68B5FA145C8E2000D9A82E /* LaterEtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LaterEtasViewController.h; sourceTree = "<group>"; };
+		5C68B5F9145C8E2000D9A82E /* ExtraEtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtraEtasViewController.m; sourceTree = "<group>"; };
+		5C68B5FA145C8E2000D9A82E /* ExtraEtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtraEtasViewController.h; sourceTree = "<group>"; };
 		5C68B5FD145C950500D9A82E /* glyphish_clock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_clock.png; sourceTree = "<group>"; };
 		5C68B5FE145C950500D9A82E /* glyphish_clock@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "glyphish_clock@2x.png"; sourceTree = "<group>"; };
 		5C68B5FF145C950500D9A82E /* glyphish_gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glyphish_gear.png; sourceTree = "<group>"; };
@@ -286,12 +286,12 @@
 				5C68B5F6145C8C8D00D9A82E /* EtasViewController.m */,
 				5C68B549145C87B200D9A82E /* EtaWrapper.h */,
 				5C68B545145C87B200D9A82E /* EtaWrapper.m */,
+				5C68B5FA145C8E2000D9A82E /* ExtraEtasViewController.h */,
+				5C68B5F9145C8E2000D9A82E /* ExtraEtasViewController.m */,
 				5C52A7B91467065900331F14 /* FavoriteStop.h */,
 				5C52A7BA1467065900331F14 /* FavoriteStop.m */,
 				5C68B552145C87EE00D9A82E /* JSONParser.h */,
 				5C68B551145C87EE00D9A82E /* JSONParser.m */,
-				5C68B5FA145C8E2000D9A82E /* LaterEtasViewController.h */,
-				5C68B5F9145C8E2000D9A82E /* LaterEtasViewController.m */,
 				5C68B54F145C87DB00D9A82E /* MapPlacemark.h */,
 				5C68B54E145C87DB00D9A82E /* MapPlacemark.m */,
 				5C68B54A145C87B200D9A82E /* MapViewController.h */,
@@ -599,7 +599,7 @@
 				5C68B5F4145C8A9500D9A82E /* CJSONScanner.m in Sources */,
 				5C68B5F5145C8A9500D9A82E /* CJSONSerializer.m in Sources */,
 				5C68B5F8145C8C8D00D9A82E /* EtasViewController.m in Sources */,
-				5C68B5FB145C8E2000D9A82E /* LaterEtasViewController.m in Sources */,
+				5C68B5FB145C8E2000D9A82E /* ExtraEtasViewController.m in Sources */,
 				5CC8E6C5145F2E7800548DA6 /* ETA.m in Sources */,
 				5CC8E6CC145F2F4E00548DA6 /* RoutePt.m in Sources */,
 				5CC8E6CF145F2FFD00548DA6 /* Shuttle.m in Sources */,
