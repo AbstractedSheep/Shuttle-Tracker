@@ -14,6 +14,7 @@
 	NSURL *etasUrl;
 	JSONParser *extraEtasParser;
 	
+    NSDate *lastEtaRefresh;
 	NSArray *etas;
 	
 	DataManager *dataManager;
