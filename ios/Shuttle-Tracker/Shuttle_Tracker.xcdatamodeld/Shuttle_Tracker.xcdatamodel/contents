@@ -12,6 +12,9 @@
     </entity>
     <entity name="FavoriteStop" representedClassName="FavoriteStop" parentEntity="Stop" syncable="YES">
         <attribute name="routeId" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="stopId" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="route" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Route" inverseName="favorites" inverseEntity="Route" syncable="YES"/>
+        <relationship name="stop" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="favorites" inverseEntity="Stop" syncable="YES"/>
     </entity>
     <entity name="Route" representedClassName="Route" syncable="YES">
         <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
@@ -20,6 +23,7 @@
         <attribute name="routeId" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="width" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="etas" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="ETA" inverseName="route" inverseEntity="ETA" syncable="YES"/>
+        <relationship name="favorites" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="FavoriteStop" inverseName="route" inverseEntity="FavoriteStop" syncable="YES"/>
         <relationship name="points" toMany="YES" minCount="1" deletionRule="Nullify" destinationEntity="RoutePt" inverseName="route" inverseEntity="RoutePt" syncable="YES"/>
         <relationship name="shuttles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Shuttle" inverseName="route" inverseEntity="Shuttle" syncable="YES"/>
         <relationship name="stops" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Stop" inverseName="routes" inverseEntity="Stop" syncable="YES"/>
@@ -50,14 +54,15 @@
         <attribute name="shortName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="stopNum" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="etas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ETA" inverseName="stop" inverseEntity="ETA" syncable="YES"/>
+        <relationship name="favorites" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="FavoriteStop" inverseName="stop" inverseEntity="FavoriteStop" syncable="YES"/>
         <relationship name="routes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Route" inverseName="stops" inverseEntity="Route" syncable="YES"/>
     </entity>
     <elements>
         <element name="ETA" positionX="133" positionY="216" width="128" height="165"/>
-        <element name="FavoriteStop" positionX="-261" positionY="180" width="128" height="75"/>
-        <element name="Route" positionX="-72" positionY="540" width="128" height="180"/>
+        <element name="FavoriteStop" positionX="-261" positionY="180" width="128" height="105"/>
+        <element name="Route" positionX="-72" positionY="540" width="128" height="195"/>
         <element name="RoutePt" positionX="-281" positionY="585" width="128" height="105"/>
         <element name="Shuttle" positionX="169" positionY="507" width="128" height="195"/>
-        <element name="Stop" positionX="-261" positionY="333" width="128" height="165"/>
+        <element name="Stop" positionX="-261" positionY="333" width="128" height="180"/>
     </elements>
 </model>

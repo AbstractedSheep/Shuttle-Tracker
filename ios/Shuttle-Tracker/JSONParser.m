@@ -289,12 +289,6 @@
             vehicle = (Shuttle *)[NSEntityDescription insertNewObjectForEntityForName:@"Shuttle"
                                                                inManagedObjectContext:self.managedObjectContext];
             vehicle.name = vehicleName;
-            
-            //  Set up KVO
-            //                [vehicle addObserver:self
-            //                          forKeyPath:@"latitude"
-            //                             options:NSKeyValueObservingOptionNew
-            //                             context:nil];
         }
         
         //  Set the vehicle properties to the corresponding JSON values
@@ -397,12 +391,6 @@
                                                        inManagedObjectContext:self.managedObjectContext];
             eta.stopId = etaStopId;
             eta.routeId = etaRouteId;
-            
-            //                //  Set up KVO
-            //                [eta addObserver:self
-            //                          forKeyPath:@"eta"
-            //                             options:NSKeyValueObservingOptionNew
-            //                             context:nil];
         }
         
         //  Set the eta properties to the corresponding JSON values
@@ -431,11 +419,7 @@
         predicate = [NSPredicate predicateWithFormat:
                      @"(idTag == %@)", eta.stopId];
         [request setPredicate:predicate];
-        
-        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc]
-                                            initWithKey:@"name" ascending:YES];
-        [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
-        [sortDescriptor release];
+        [request setFetchLimit:1];
         
         error = nil;
         array = [self.managedObjectContext executeFetchRequest:request error:&error];
@@ -446,6 +430,29 @@
             eta.stop = [array objectAtIndex:0];
         } else {
             //  No stop was found
+        }
+        
+        //  Find the corresponding route
+        entityDescription = [NSEntityDescription entityForName:@"Route" 
+                                        inManagedObjectContext:self.managedObjectContext];
+        request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entityDescription];
+        
+        // Set predicate and sort orderings...
+        predicate = [NSPredicate predicateWithFormat:
+                     @"(routeId == %@)", eta.routeId];
+        [request setPredicate:predicate];
+        [request setFetchLimit:1];
+        
+        error = nil;
+        array = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if (array == nil)
+        {
+            // Deal with error...
+        } else if ([array count] > 0) {
+            eta.route = [array objectAtIndex:0];
+        } else {
+            //  No route was found
         }
         
         // Save the context.
@@ -495,18 +502,6 @@
     
     return YES;
 }
-
-
-//- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object 
-//                         change:(NSDictionary *)change 
-//                        context:(void *)context
-//{
-//    if ([keyPath isEqualToString:@"latitude"])
-//    {
-//        //  TODO: post local notification for (Vehicle *) object
-//        return;
-//    }
-//}
 
 
 - (void)dealloc {

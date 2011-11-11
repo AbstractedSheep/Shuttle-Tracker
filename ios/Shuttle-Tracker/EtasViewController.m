@@ -251,8 +251,11 @@
             if (minutesToEta >= 1) {
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"%d min.", minutesToEta];
             }
-            else if (minutesToEta < 1) {
-                //  Cover our ears and show imminent and past times the same way
+            else if (minutesToEta < -2) {
+                //  If an ETA is long since passed, don't show anything
+                cell.detailTextLabel.text = @"————";
+            } else {
+                //  If an ETA is recently passed, let it show as imminent
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"< 1 min."];
             }
         } else {
