@@ -136,6 +136,7 @@ typedef enum {
 - (void)addStop:(Stop *)stop;
 //	Adding vehicles should only be done on the main thread.
 - (MapVehicle *)addVehicle:(Shuttle *)vehicle;
+- (void)setVehicleAnnotationImage:(MapVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
 
 @end
@@ -333,14 +334,14 @@ typedef enum {
                 if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
                     [vehicles removeObjectForKey:existingShuttle.name];
                 } else if ([shuttle.routeId intValue] != existingShuttle.routeNo || [shuttle.heading intValue] != existingShuttle.heading) {
-                    NSLog(@"routeId: %d, old routeId: %d", [shuttle.routeId intValue], existingShuttle.routeNo);
-                    //	If the shuttle switched routes, then 1. Remove the shuttle from the map
-                    //	view, letting the annotation be released, and 2. Add the
-                    //	shuttle back to the map view.
+                    // NSLog(@"routeId: %d, old routeId: %d", [shuttle.routeId intValue], existingShuttle.routeNo);
+                    //	If the shuttle switched routes, then update the image.
+                    //  Also update the image if the shuttle has changed heading
                     
-                    [vehicles removeObjectForKey:existingShuttle.name];
-                    [_mapView removeAnnotation:existingShuttle];
-                    [self addVehicle:shuttle];
+                    existingShuttle.routeNo = [shuttle.routeId intValue];
+                    existingShuttle.heading = [shuttle.heading intValue];
+                    
+                    [self setVehicleAnnotationImage:existingShuttle];
                 } else if ([shuttle.updateTime timeIntervalSinceDate:existingShuttle.updateTime] > 0) {
                     //  If the shuttle location is out of date, update it
                     
@@ -464,6 +465,33 @@ typedef enum {
 }
 
 
+//  Set the vehicle's annotation view based on its current orientation
+//  and associated route.
+- (void)setVehicleAnnotationImage:(MapVehicle *)vehicle {
+    //  Use the colored image for the shuttle's current route.  A route of -1 uses the white image.
+    UIImage *coloredImage;
+    NSMutableDictionary *shuttleDirectionImages;
+    if (vehicle.heading >= 315 || vehicle.heading < 45) {
+        shuttleDirectionImages = [shuttleImages objectForKey:@"north"];
+    } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
+        shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
+    } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
+        shuttleDirectionImages = [shuttleImages objectForKey:@"south"];
+    } else {
+        shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
+    }
+    
+    coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
+    
+    if (coloredImage != nil) {
+        vehicle.annotationView.image = coloredImage;
+        vehicle.routeImageSet = YES;
+    } else {
+        vehicle.annotationView.image = shuttleImage;
+        vehicle.routeImageSet = NO;
+    }
+}
+
 //	InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
 //	settingChanged currently only handles turning on or off showing the user's location.
 //	Other objects may also do something when a setting is changed.
@@ -555,60 +583,22 @@ typedef enum {
             //  If it is, check for a colored shuttle image for the shuttle's route.
             //  Set the shuttle's image to the colored one, if we have it.
             if (!vehicle.routeImageSet) {
-                //  Use the colored image for the shuttle's current route.  A route of -1 uses the white image.
-                UIImage *coloredImage;
-                NSMutableDictionary *shuttleDirectionImages;
-                if (vehicle.heading >= 315 || vehicle.heading < 45) {
-                    shuttleDirectionImages = [shuttleImages objectForKey:@"north"];
-                } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
-                    shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
-                } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
-                    shuttleDirectionImages = [shuttleImages objectForKey:@"south"];
-                } else {
-                    shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
-                }
-                
-                coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
-                if (coloredImage != nil) {
-                    [[vehicle annotationView] setImage:coloredImage];
-					vehicle.routeImageSet = YES;
-                }
+                [self setVehicleAnnotationImage:vehicle];
             }
             
             return [vehicle annotationView];
-        }
-        
-        MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:vehicle
-                                                                                reuseIdentifier:@"vehicleAnnotation"] autorelease];
-        
-        //  Use the colored image for the shuttle's current route.  A route of -1 uses the white image.
-        UIImage *coloredImage;
-        NSMutableDictionary *shuttleDirectionImages;
-        if (vehicle.heading >= 315 || vehicle.heading < 45) {
-            shuttleDirectionImages = [shuttleImages objectForKey:@"north"];
-        } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
-            shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
-        } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
-            shuttleDirectionImages = [shuttleImages objectForKey:@"south"];
         } else {
-            shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
+            MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:vehicle
+                                                                                    reuseIdentifier:@"vehicleAnnotation"] autorelease];
+            
+            [self setVehicleAnnotationImage:vehicle];
+            
+            vehicleAnnotationView.canShowCallout = YES;
+            
+            [vehicle setAnnotationView:vehicleAnnotationView];
         }
-        
-        coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
-        
-        if (coloredImage != nil) {
-            vehicleAnnotationView.image = coloredImage;
-			vehicle.routeImageSet = YES;
-        } else {
-            vehicleAnnotationView.image = shuttleImage;
-			vehicle.routeImageSet = NO;
-        }
-        
-        vehicleAnnotationView.canShowCallout = YES;
-        
-        [vehicle setAnnotationView:vehicleAnnotationView];
 		
-		return vehicleAnnotationView;
+		return vehicle.annotationView;
     }
     
     return nil;
