@@ -13,6 +13,7 @@
 #import "ExtraEtasViewController.h"
 #import "IASKSettingsReader.h"
 #import "ETA.h"
+#import "FavoriteStop.h"
 #import "Route.h"
 #import "Stop.h"
 
@@ -203,7 +204,39 @@
     }
     
     if (indexPath.section == 0) {
-        //  Do something
+        FavoriteStop *favStop = nil;
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+                                                             inManagedObjectContext:self.managedObjectContext];
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entityDescription];
+        
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
+        [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+        
+        NSError *error = nil;
+        NSArray *stops = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if ([stops count] > indexPath.row) {
+            favStop = [stops objectAtIndex:indexPath.row];
+            
+            entityDescription = [NSEntityDescription entityForName:@"ETA"
+                                            inManagedObjectContext:self.managedObjectContext];
+            request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
+            [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+            
+            [request setFetchLimit:1];
+            
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(routeId == %@) AND (stopId == %@)", favStop.route.routeId, favStop.stop.idTag];
+            [request setPredicate:predicate];
+            
+            error = nil;
+            NSArray *etas = [self.managedObjectContext executeFetchRequest:request error:&error];
+            if ([etas count] > 0) {
+                eta = [etas objectAtIndex:0];
+            }
+        }
     } else {
         NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
