@@ -11,8 +11,8 @@
         <relationship name="stop" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="etas" inverseEntity="Stop" syncable="YES"/>
     </entity>
     <entity name="FavoriteStop" representedClassName="FavoriteStop" parentEntity="Stop" syncable="YES">
-        <relationship name="route" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Route" inverseName="favorites" inverseEntity="Route" syncable="YES"/>
-        <relationship name="stop" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="favorites" inverseEntity="Stop" syncable="YES"/>
+        <relationship name="route" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Route" inverseName="favorites" inverseEntity="Route" syncable="YES"/>
+        <relationship name="stop" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Stop" inverseName="favorites" inverseEntity="Stop" syncable="YES"/>
     </entity>
     <entity name="Route" representedClassName="Route" syncable="YES">
         <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>

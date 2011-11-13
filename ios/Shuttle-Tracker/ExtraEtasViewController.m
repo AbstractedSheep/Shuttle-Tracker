@@ -36,10 +36,11 @@
 @synthesize useRelativeTimes;
 
 - (id)initWithStop:(Stop *)stop forRouteNumber:(NSNumber *)routeNumber {
-	if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
+//	if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
+    if ((self = [super init])) {
 		self.stop = stop;
         self.routeNum = routeNumber;
-		self.title = stop.name;
+		self.title = stop.shortName;
 		
         lastEtaRefresh = nil;
         
@@ -55,7 +56,6 @@
                                                                            target:self 
                                                                            action:@selector(toggleFavorite:)];
         self.navigationItem.rightBarButtonItem = favoriteButton;
-        [favoriteButton release];
         
         //	Take notice when a setting is changed.
         //	Note that this is not the only object that takes notice.
@@ -117,6 +117,11 @@
 
 #pragma mark - View lifecycle
 
+- (void)loadView {
+    CGRect rect = [[UIScreen mainScreen] bounds];
+    self.tableView = [[UITableView alloc] initWithFrame:rect style:UITableViewStyleGrouped];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -139,6 +144,8 @@
         //  handle error
     }
     
+    [favoriteButton release];
+    
     if (numStops > 0) {
         favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
                                                                        target:self 
@@ -150,7 +157,6 @@
     }
     
     self.navigationItem.rightBarButtonItem = favoriteButton;
-    [favoriteButton release];
     
 	updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
 										selector:@selector(getExtraEtas) 
@@ -205,6 +211,8 @@
 
 //	Handle the "Favorite/Unfavorite" button
 - (void)toggleFavorite:(id)sender {
+    BOOL added = NO;
+    
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
@@ -244,10 +252,22 @@
         }
         
         favStop.stop = self.stop;
+        added = YES;
+    }
+    
+    [favoriteButton release];
+    
+    if (added) {
+        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
+                                                                       target:self 
+                                                                       action:@selector(toggleFavorite:)];
+    } else {
+        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                       target:self 
+                                                                       action:@selector(toggleFavorite:)];
     }
     
     self.navigationItem.rightBarButtonItem = favoriteButton;
-    [favoriteButton release];
 }
 
 #pragma mark - Table view data source

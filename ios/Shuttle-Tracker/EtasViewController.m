@@ -214,9 +214,10 @@
         [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
         
         NSError *error = nil;
-        NSArray *stops = [self.managedObjectContext executeFetchRequest:request error:&error];
-        if ([stops count] > indexPath.row) {
-            favStop = [stops objectAtIndex:indexPath.row];
+        NSArray *favStops = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if ([favStops count] > indexPath.row) {
+            favStop = [favStops objectAtIndex:indexPath.row];
+            stop = favStop.stop;
             
             entityDescription = [NSEntityDescription entityForName:@"ETA"
                                             inManagedObjectContext:self.managedObjectContext];
@@ -339,19 +340,40 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     Stop *stop = nil;
+    ExtraEtasViewController *levc = nil;
  
     //  Do nothing for favorites, for now
     if (indexPath.section == 0) {
-        return;
-    }
-    
-    NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
-    
-    if (stopsArray != nil && [stopsArray count] > indexPath.row) {
-        stop = [stopsArray objectAtIndex:indexPath.row];
+        FavoriteStop *favStop = nil;
+        
+        //  Get favorite stops
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+                                                             inManagedObjectContext:self.managedObjectContext];
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entityDescription];
+        
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
+        [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+        
+        NSError *error = nil;
+        NSArray *stops = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if ([stops count] > 0)
+        {
+            favStop = [stops objectAtIndex:0];
+            stop = favStop.stop;
+            
+            levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:favStop.route.routeId];
+        }
+    } else {
+        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        
+        if (stopsArray != nil && [stopsArray count] > indexPath.row) {
+            stop = [stopsArray objectAtIndex:indexPath.row];
+            
+            levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
+        }
     }
 	
-	ExtraEtasViewController *levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
     levc.managedObjectContext = self.managedObjectContext;
 	levc.dataManager = dataManager;
 	levc.timeDisplayFormatter = timeDisplayFormatter;
