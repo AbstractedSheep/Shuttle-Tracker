@@ -84,6 +84,7 @@
 		5CC8E6CC145F2F4E00548DA6 /* RoutePt.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CC8E6CB145F2F4E00548DA6 /* RoutePt.m */; };
 		5CC8E6CF145F2FFD00548DA6 /* Shuttle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CC8E6CE145F2FFD00548DA6 /* Shuttle.m */; };
 		5CC8E6D5145F436300548DA6 /* Route.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CC8E6D4145F436300548DA6 /* Route.m */; };
+		5CDE8CE11470656F006956BE /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5CDE8CE01470656F006956BE /* Default-Portrait~ipad.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -206,6 +207,7 @@
 		5CC8E6CE145F2FFD00548DA6 /* Shuttle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shuttle.m; sourceTree = "<group>"; };
 		5CC8E6D3145F436300548DA6 /* Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Route.h; sourceTree = "<group>"; };
 		5CC8E6D4145F436300548DA6 /* Route.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Route.m; sourceTree = "<group>"; };
+		5CDE8CE01470656F006956BE /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -230,6 +232,7 @@
 			isa = PBXGroup;
 			children = (
 				5C68B627145C966100D9A82E /* Default-Landscape~ipad.png */,
+				5CDE8CE01470656F006956BE /* Default-Portrait~ipad.png */,
 				5C68B625145C965900D9A82E /* Default@2x.png */,
 				5C68B623145C965700D9A82E /* Default.png */,
 				5C68B621145C965200D9A82E /* Icon-72.png */,
@@ -545,6 +548,7 @@
 				5C68B628145C966100D9A82E /* Default-Landscape~ipad.png in Resources */,
 				5CA03570145E09980068CA3D /* Settings.bundle in Resources */,
 				5CA03579145E0AD30068CA3D /* iTunesArtwork in Resources */,
+				5CDE8CE11470656F006956BE /* Default-Portrait~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
