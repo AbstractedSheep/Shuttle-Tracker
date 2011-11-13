@@ -9,6 +9,7 @@
 #import "ExtraEtasViewController.h"
 #import "DataUrls.h"
 #import "ETA.h"
+#import "FavoriteStop.h"
 #import "Stop.h"
 #import "JSONParser.h"
 #import "DataManager.h"
@@ -101,7 +102,6 @@
         NSString *jsonString = [NSString stringWithContentsOfURL:etasUrl 
                                                         encoding:NSUTF8StringEncoding 
                                                            error:&theError];
-        
         if (theError) {
             NSLog(@"Error retrieving JSON data");
         } else {
@@ -123,7 +123,23 @@
     
     //  Set the favorite/unfavorite button appearance
     //  based on the status of the view's associated stop.
-    if (0) {
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+                                                         inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    [request setFetchLimit:1];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", self.routeNum, self.stop.idTag];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    int numStops = [self.managedObjectContext countForFetchRequest:request error:&error];
+    if (error != nil) {
+        //  handle error
+    }
+    
+    if (numStops > 0) {
         favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
                                                                        target:self 
                                                                        action:@selector(toggleFavorite:)];
@@ -189,14 +205,45 @@
 
 //	Handle the "Favorite/Unfavorite" button
 - (void)toggleFavorite:(id)sender {
-    if (0) {
-        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
-                                                                       target:self 
-                                                                       action:@selector(toggleFavorite:)];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+                                                         inManagedObjectContext:self.managedObjectContext];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    [request setEntity:entityDescription];
+    
+    [request setFetchLimit:1];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", self.routeNum, self.stop.idTag];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *stops = [self.managedObjectContext executeFetchRequest:request error:&error];
+    if (error != nil) {
+        //  handle error
+    } else if ([stops count] > 0) {
+        //  Remove the favorite stop
+        [self.managedObjectContext deleteObject:[stops objectAtIndex:0]];
     } else {
-        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                       target:self 
-                                                                       action:@selector(toggleFavorite:)];
+        //  Create the favorite stop
+        FavoriteStop *favStop = (FavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"FavoriteStop"
+                                                                      inManagedObjectContext:self.managedObjectContext];
+        
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route"
+                                                             inManagedObjectContext:self.managedObjectContext];
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entityDescription];
+        
+        [request setFetchLimit:1];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(routeId == %@)", self.routeNum];
+        [request setPredicate:predicate];
+        
+        NSError *error = nil;
+        NSArray *routes = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if ([routes count] > 0) {
+            favStop.route = [routes objectAtIndex:0];
+        }
+        
+        favStop.stop = self.stop;
     }
     
     self.navigationItem.rightBarButtonItem = favoriteButton;

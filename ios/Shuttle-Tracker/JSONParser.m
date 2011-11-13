@@ -503,6 +503,8 @@
         //			NSLog(@"Error, no jsonDict created.");
         
         return NO;
+    } else if ([jsonDict count] == 0) {
+        return NO;
     }
     
     extraEtas = [jsonDict objectForKey:@"eta"];
