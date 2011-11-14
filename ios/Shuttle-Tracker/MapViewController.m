@@ -325,8 +325,6 @@ typedef enum {
             MapVehicle *existingShuttle = [vehicles objectForKey:shuttle.name];
             if (existingShuttle == nil) {
                 //  Add the shuttle to the map view
-                
-                //                NSLog(@"Shuttle name: %@", shuttle.name);
                 if ([shuttle.updateTime timeIntervalSinceNow] > UPDATE_THRESHOLD) {
                     [vehicles setObject:[self addVehicle:shuttle] forKey:shuttle.name];
                 }
@@ -334,7 +332,6 @@ typedef enum {
                 if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
                     [vehicles removeObjectForKey:existingShuttle.name];
                 } else if ([shuttle.routeId intValue] != existingShuttle.routeNo || [shuttle.heading intValue] != existingShuttle.heading) {
-                    // NSLog(@"routeId: %d, old routeId: %d", [shuttle.routeId intValue], existingShuttle.routeNo);
                     //	If the shuttle switched routes, then update the image.
                     //  Also update the image if the shuttle has changed heading
                     
@@ -477,8 +474,10 @@ typedef enum {
         shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
     } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
         shuttleDirectionImages = [shuttleImages objectForKey:@"south"];
-    } else {
+    } else if (vehicle.heading >= 225 && vehicle.heading < 315) {
         shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
+    } else {
+        shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
     }
     
     coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
@@ -498,7 +497,6 @@ typedef enum {
 - (void)settingChanged:(NSNotification *)notification {
 	NSDictionary *info = [notification userInfo];
 	
-	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
 	if ([[notification object] isEqualToString:@"useLocation"]) {
 		if ([[info objectForKey:@"useLocation"] boolValue]) {
 			_mapView.showsUserLocation = YES;
