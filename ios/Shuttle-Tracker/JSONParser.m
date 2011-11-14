@@ -383,6 +383,10 @@
                                   @"(stop.idTag == %@) AND (route.routeId == %@)", etaStopId, etaRouteId];
         [request setPredicate:predicate];
         
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
+        [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+        [request setFetchLimit:1];
+        
         NSError *error = nil;
         NSArray *array = [self.managedObjectContext executeFetchRequest:request error:&error];
         if (array == nil)
@@ -413,8 +417,7 @@
             [request setEntity:entityDescription];
             
             // Set predicate and sort orderings...
-            predicate = [NSPredicate predicateWithFormat:
-                         @"(idTag == %@)", etaStopId];
+            predicate = [NSPredicate predicateWithFormat:@"(idTag == %@)", etaStopId];
             [request setPredicate:predicate];
             [request setFetchLimit:1];
             
@@ -436,8 +439,7 @@
             [request setEntity:entityDescription];
             
             // Set predicate and sort orderings...
-            predicate = [NSPredicate predicateWithFormat:
-                         @"(routeId == %@)", etaRouteId];
+            predicate = [NSPredicate predicateWithFormat:@"(routeId == %@)", etaRouteId];
             [request setPredicate:predicate];
             [request setFetchLimit:1];
             
