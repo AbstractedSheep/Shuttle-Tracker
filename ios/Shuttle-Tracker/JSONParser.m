@@ -380,7 +380,7 @@
         
         // Set predicate and sort orderings...
         NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                  @"(stopId == %@) AND (routeId == %@)", etaStopId, etaRouteId];
+                                  @"(stop.idTag == %@) AND (route.routeId == %@)", etaStopId, etaRouteId];
         [request setPredicate:predicate];
         
         NSError *error = nil;
@@ -395,24 +395,14 @@
             //  Create a new vehicle with this name
             eta = (ETA *)[NSEntityDescription insertNewObjectForEntityForName:@"ETA"
                                                        inManagedObjectContext:self.managedObjectContext];
-            eta.stopId = etaStopId;
-            eta.routeId = etaRouteId;
         }
         
         if (eta) {
             //  Set the eta properties to the corresponding JSON values
             for (NSString *string in dict) {
-                if ([string isEqualToString:@"shuttle_id"]) {
-                    eta.shuttleId = [dict objectForKey:string];
-                } else if ([string isEqualToString:@"stop_id"]) {
-                    eta.stopId = [dict objectForKey:string];
-                    
-                    //  TODO: set which DB stop it corresponds to
-                } else if ([string isEqualToString:@"eta"]) {
+                if ([string isEqualToString:@"eta"]) {
                     int etaTime = [[dict objectForKey:string] intValue];
                     eta.eta = [NSDate dateWithTimeIntervalSinceNow:etaTime/1000.0f];
-                } else if ([string isEqualToString:@"route"]) {
-                    eta.routeId = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
                 }
             }
             
@@ -424,7 +414,7 @@
             
             // Set predicate and sort orderings...
             predicate = [NSPredicate predicateWithFormat:
-                         @"(idTag == %@)", eta.stopId];
+                         @"(idTag == %@)", etaStopId];
             [request setPredicate:predicate];
             [request setFetchLimit:1];
             
@@ -447,7 +437,7 @@
             
             // Set predicate and sort orderings...
             predicate = [NSPredicate predicateWithFormat:
-                         @"(routeId == %@)", eta.routeId];
+                         @"(routeId == %@)", etaRouteId];
             [request setPredicate:predicate];
             [request setFetchLimit:1];
             

@@ -229,7 +229,7 @@
             
             [request setFetchLimit:1];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(routeId == %@) AND (stopId == %@)", favStop.route.routeId, favStop.stop.idTag];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", favStop.route.routeId, favStop.stop.idTag];
             [request setPredicate:predicate];
             
             error = nil;
@@ -253,7 +253,7 @@
             
             [request setFetchLimit:1];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(routeId == %@) AND (stopId == %@)", [NSNumber numberWithInt:indexPath.section], stop.idTag];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", [NSNumber numberWithInt:indexPath.section], stop.idTag];
             [request setPredicate:predicate];
             
             NSError *error = nil;
