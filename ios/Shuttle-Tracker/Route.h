@@ -2,8 +2,8 @@
 //  Route.h
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 11/13/11.
-//  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
+//  Created by Brendon Justin on 11/14/11.
+//  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -14,7 +14,6 @@
 @interface Route : NSManagedObject
 
 @property (nonatomic, retain) NSString * color;
-@property (nonatomic, retain) NSString * idTag;
 @property (nonatomic, retain) NSString * name;
 @property (nonatomic, retain) NSNumber * routeId;
 @property (nonatomic, retain) NSNumber * width;

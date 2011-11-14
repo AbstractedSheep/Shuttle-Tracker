@@ -78,13 +78,13 @@
 		5C68B628145C966100D9A82E /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B627145C966100D9A82E /* Default-Landscape~ipad.png */; };
 		5CA03570145E09980068CA3D /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 5CA0356F145E09980068CA3D /* Settings.bundle */; };
 		5CA03579145E0AD30068CA3D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 5CA03578145E0AD30068CA3D /* iTunesArtwork */; };
-		5CCBB54A1470BE4C00951BEF /* ETA.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CCBB5491470BE4C00951BEF /* ETA.m */; };
-		5CCBB54D1470BE4C00951BEF /* FavoriteStop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CCBB54C1470BE4C00951BEF /* FavoriteStop.m */; };
-		5CCBB5501470BE4D00951BEF /* RoutePt.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CCBB54F1470BE4D00951BEF /* RoutePt.m */; };
-		5CCBB5561470BE4D00951BEF /* Shuttle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CCBB5551470BE4D00951BEF /* Shuttle.m */; };
-		5CCBB5591470C16800951BEF /* Route.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CCBB5581470C16800951BEF /* Route.m */; };
-		5CCBB55C1470C23000951BEF /* Stop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CCBB55B1470C23000951BEF /* Stop.m */; };
 		5CDE8CE11470656F006956BE /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5CDE8CE01470656F006956BE /* Default-Portrait~ipad.png */; };
+		5CE6249E1471835500664156 /* RoutePt.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE6249D1471835500664156 /* RoutePt.m */; };
+		5CE624A11471835600664156 /* Shuttle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE624A01471835600664156 /* Shuttle.m */; };
+		5CE624A41471835600664156 /* Stop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE624A31471835600664156 /* Stop.m */; };
+		5CE624A71471835600664156 /* Route.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE624A61471835600664156 /* Route.m */; };
+		5CE624AA1471835600664156 /* FavoriteStop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE624A91471835600664156 /* FavoriteStop.m */; };
+		5CE624AD1471835600664156 /* ETA.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE624AC1471835600664156 /* ETA.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -195,19 +195,19 @@
 		5C68B627145C966100D9A82E /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		5CA0356F145E09980068CA3D /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		5CA03578145E0AD30068CA3D /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
-		5CCBB5481470BE4C00951BEF /* ETA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
-		5CCBB5491470BE4C00951BEF /* ETA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
-		5CCBB54B1470BE4C00951BEF /* FavoriteStop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteStop.h; sourceTree = "<group>"; };
-		5CCBB54C1470BE4C00951BEF /* FavoriteStop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteStop.m; sourceTree = "<group>"; };
-		5CCBB54E1470BE4D00951BEF /* RoutePt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoutePt.h; sourceTree = "<group>"; };
-		5CCBB54F1470BE4D00951BEF /* RoutePt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoutePt.m; sourceTree = "<group>"; };
-		5CCBB5541470BE4D00951BEF /* Shuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shuttle.h; sourceTree = "<group>"; };
-		5CCBB5551470BE4D00951BEF /* Shuttle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shuttle.m; sourceTree = "<group>"; };
-		5CCBB5571470C16800951BEF /* Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Route.h; sourceTree = "<group>"; };
-		5CCBB5581470C16800951BEF /* Route.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Route.m; sourceTree = "<group>"; };
-		5CCBB55A1470C22F00951BEF /* Stop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stop.h; sourceTree = "<group>"; };
-		5CCBB55B1470C23000951BEF /* Stop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stop.m; sourceTree = "<group>"; };
 		5CDE8CE01470656F006956BE /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		5CE6249C1471835500664156 /* RoutePt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoutePt.h; sourceTree = "<group>"; };
+		5CE6249D1471835500664156 /* RoutePt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoutePt.m; sourceTree = "<group>"; };
+		5CE6249F1471835600664156 /* Shuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Shuttle.h; sourceTree = "<group>"; };
+		5CE624A01471835600664156 /* Shuttle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Shuttle.m; sourceTree = "<group>"; };
+		5CE624A21471835600664156 /* Stop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stop.h; sourceTree = "<group>"; };
+		5CE624A31471835600664156 /* Stop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stop.m; sourceTree = "<group>"; };
+		5CE624A51471835600664156 /* Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Route.h; sourceTree = "<group>"; };
+		5CE624A61471835600664156 /* Route.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Route.m; sourceTree = "<group>"; };
+		5CE624A81471835600664156 /* FavoriteStop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteStop.h; sourceTree = "<group>"; };
+		5CE624A91471835600664156 /* FavoriteStop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteStop.m; sourceTree = "<group>"; };
+		5CE624AB1471835600664156 /* ETA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ETA.h; sourceTree = "<group>"; };
+		5CE624AC1471835600664156 /* ETA.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ETA.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -277,28 +277,28 @@
 				5C68B547145C87B200D9A82E /* DataManager.h */,
 				5C68B544145C87B200D9A82E /* DataManager.m */,
 				5C68B548145C87B200D9A82E /* DataUrls.h */,
-				5CCBB5481470BE4C00951BEF /* ETA.h */,
-				5CCBB5491470BE4C00951BEF /* ETA.m */,
+				5CE624AB1471835600664156 /* ETA.h */,
+				5CE624AC1471835600664156 /* ETA.m */,
 				5C68B5F7145C8C8D00D9A82E /* EtasViewController.h */,
 				5C68B5F6145C8C8D00D9A82E /* EtasViewController.m */,
 				5C68B5FA145C8E2000D9A82E /* ExtraEtasViewController.h */,
 				5C68B5F9145C8E2000D9A82E /* ExtraEtasViewController.m */,
-				5CCBB54B1470BE4C00951BEF /* FavoriteStop.h */,
-				5CCBB54C1470BE4C00951BEF /* FavoriteStop.m */,
+				5CE624A81471835600664156 /* FavoriteStop.h */,
+				5CE624A91471835600664156 /* FavoriteStop.m */,
 				5C68B552145C87EE00D9A82E /* JSONParser.h */,
 				5C68B551145C87EE00D9A82E /* JSONParser.m */,
 				5C68B54F145C87DB00D9A82E /* MapPlacemark.h */,
 				5C68B54E145C87DB00D9A82E /* MapPlacemark.m */,
 				5C68B54A145C87B200D9A82E /* MapViewController.h */,
 				5C68B546145C87B200D9A82E /* MapViewController.m */,
-				5CCBB5571470C16800951BEF /* Route.h */,
-				5CCBB5581470C16800951BEF /* Route.m */,
-				5CCBB54E1470BE4D00951BEF /* RoutePt.h */,
-				5CCBB54F1470BE4D00951BEF /* RoutePt.m */,
-				5CCBB5541470BE4D00951BEF /* Shuttle.h */,
-				5CCBB5551470BE4D00951BEF /* Shuttle.m */,
-				5CCBB55A1470C22F00951BEF /* Stop.h */,
-				5CCBB55B1470C23000951BEF /* Stop.m */,
+				5CE624A51471835600664156 /* Route.h */,
+				5CE624A61471835600664156 /* Route.m */,
+				5CE6249C1471835500664156 /* RoutePt.h */,
+				5CE6249D1471835500664156 /* RoutePt.m */,
+				5CE6249F1471835600664156 /* Shuttle.h */,
+				5CE624A01471835600664156 /* Shuttle.m */,
+				5CE624A21471835600664156 /* Stop.h */,
+				5CE624A31471835600664156 /* Stop.m */,
 				5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */,
 				5CA0356F145E09980068CA3D /* Settings.bundle */,
 				5C68B51A145C85AC00D9A82E /* Supporting Files */,
@@ -493,7 +493,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0420;
-				ORGANIZATIONNAME = "Naga Softworks, LLC";
+				ORGANIZATIONNAME = "Abstracted Sheep";
 			};
 			buildConfigurationList = 5C68B507145C85AB00D9A82E /* Build configuration list for PBXProject "Shuttle-Tracker" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -592,12 +592,12 @@
 				5C68B5F5145C8A9500D9A82E /* CJSONSerializer.m in Sources */,
 				5C68B5F8145C8C8D00D9A82E /* EtasViewController.m in Sources */,
 				5C68B5FB145C8E2000D9A82E /* ExtraEtasViewController.m in Sources */,
-				5CCBB54A1470BE4C00951BEF /* ETA.m in Sources */,
-				5CCBB54D1470BE4C00951BEF /* FavoriteStop.m in Sources */,
-				5CCBB5501470BE4D00951BEF /* RoutePt.m in Sources */,
-				5CCBB5561470BE4D00951BEF /* Shuttle.m in Sources */,
-				5CCBB5591470C16800951BEF /* Route.m in Sources */,
-				5CCBB55C1470C23000951BEF /* Stop.m in Sources */,
+				5CE6249E1471835500664156 /* RoutePt.m in Sources */,
+				5CE624A11471835600664156 /* Shuttle.m in Sources */,
+				5CE624A41471835600664156 /* Stop.m in Sources */,
+				5CE624A71471835600664156 /* Route.m in Sources */,
+				5CE624AA1471835600664156 /* FavoriteStop.m in Sources */,
+				5CE624AD1471835600664156 /* ETA.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

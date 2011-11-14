@@ -2,8 +2,8 @@
 //  Route.m
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 11/13/11.
-//  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
+//  Created by Brendon Justin on 11/14/11.
+//  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
 #import "Route.h"
@@ -17,7 +17,6 @@
 @implementation Route
 
 @dynamic color;
-@dynamic idTag;
 @dynamic name;
 @dynamic routeId;
 @dynamic width;

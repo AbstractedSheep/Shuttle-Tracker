@@ -2,8 +2,8 @@
 //  RoutePt.h
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 11/13/11.
-//  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
+//  Created by Brendon Justin on 11/14/11.
+//  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
