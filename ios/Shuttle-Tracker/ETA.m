@@ -2,8 +2,8 @@
 //  ETA.m
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 10/31/11.
-//  Copyright (c) 2011 Brendon Justin. All rights reserved.
+//  Created by Brendon Justin on 11/13/11.
+//  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 
 #import "ETA.h"
@@ -15,12 +15,12 @@
 @implementation ETA
 
 @dynamic eta;
+@dynamic routeId;
 @dynamic shuttleId;
 @dynamic stopId;
-@dynamic routeId;
 @dynamic stopName;
+@dynamic route;
 @dynamic shuttle;
 @dynamic stop;
-@dynamic route;
 
 @end

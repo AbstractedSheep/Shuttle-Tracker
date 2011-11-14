@@ -2,7 +2,7 @@
 //  FavoriteStop.m
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 11/12/11.
+//  Created by Brendon Justin on 11/13/11.
 //  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 

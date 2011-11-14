@@ -2,29 +2,40 @@
 //  Route.h
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 10/31/11.
-//  Copyright (c) 2011 Brendon Justin. All rights reserved.
+//  Created by Brendon Justin on 11/13/11.
+//  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ETA, RoutePt, Shuttle, Stop;
+@class ETA, FavoriteStop, RoutePt, Shuttle, Stop;
 
 @interface Route : NSManagedObject
 
 @property (nonatomic, retain) NSString * color;
 @property (nonatomic, retain) NSString * idTag;
 @property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSNumber * width;
 @property (nonatomic, retain) NSNumber * routeId;
+@property (nonatomic, retain) NSNumber * width;
+@property (nonatomic, retain) NSSet *etas;
+@property (nonatomic, retain) NSSet *favorites;
 @property (nonatomic, retain) NSSet *points;
 @property (nonatomic, retain) NSSet *shuttles;
 @property (nonatomic, retain) NSSet *stops;
-@property (nonatomic, retain) ETA *etas;
 @end
 
 @interface Route (CoreDataGeneratedAccessors)
+
+- (void)addEtasObject:(ETA *)value;
+- (void)removeEtasObject:(ETA *)value;
+- (void)addEtas:(NSSet *)values;
+- (void)removeEtas:(NSSet *)values;
+
+- (void)addFavoritesObject:(FavoriteStop *)value;
+- (void)removeFavoritesObject:(FavoriteStop *)value;
+- (void)addFavorites:(NSSet *)values;
+- (void)removeFavorites:(NSSet *)values;
 
 - (void)addPointsObject:(RoutePt *)value;
 - (void)removePointsObject:(RoutePt *)value;

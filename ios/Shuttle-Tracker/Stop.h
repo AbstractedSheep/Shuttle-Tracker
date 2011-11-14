@@ -2,14 +2,14 @@
 //  Stop.h
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 11/11/11.
-//  Copyright (c) 2011 Brendon Justin. All rights reserved.
+//  Created by Brendon Justin on 11/13/11.
+//  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ETA, Route;
+@class ETA, FavoriteStop, Route;
 
 @interface Stop : NSManagedObject
 
@@ -20,6 +20,7 @@
 @property (nonatomic, retain) NSString * shortName;
 @property (nonatomic, retain) NSNumber * stopNum;
 @property (nonatomic, retain) NSSet *etas;
+@property (nonatomic, retain) NSSet *favorites;
 @property (nonatomic, retain) NSSet *routes;
 @end
 
@@ -29,6 +30,11 @@
 - (void)removeEtasObject:(ETA *)value;
 - (void)addEtas:(NSSet *)values;
 - (void)removeEtas:(NSSet *)values;
+
+- (void)addFavoritesObject:(FavoriteStop *)value;
+- (void)removeFavoritesObject:(FavoriteStop *)value;
+- (void)addFavorites:(NSSet *)values;
+- (void)removeFavorites:(NSSet *)values;
 
 - (void)addRoutesObject:(Route *)value;
 - (void)removeRoutesObject:(Route *)value;

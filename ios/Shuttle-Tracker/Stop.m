@@ -2,12 +2,13 @@
 //  Stop.m
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 11/11/11.
-//  Copyright (c) 2011 Brendon Justin. All rights reserved.
+//  Created by Brendon Justin on 11/13/11.
+//  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 
 #import "Stop.h"
 #import "ETA.h"
+#import "FavoriteStop.h"
 #import "Route.h"
 
 
@@ -20,6 +21,7 @@
 @dynamic shortName;
 @dynamic stopNum;
 @dynamic etas;
+@dynamic favorites;
 @dynamic routes;
 
 @end

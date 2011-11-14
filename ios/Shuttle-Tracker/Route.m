@@ -2,12 +2,13 @@
 //  Route.m
 //  Shuttle-Tracker
 //
-//  Created by Brendon Justin on 10/31/11.
-//  Copyright (c) 2011 Brendon Justin. All rights reserved.
+//  Created by Brendon Justin on 11/13/11.
+//  Copyright (c) 2011 Naga Softworks, LLC. All rights reserved.
 //
 
 #import "Route.h"
 #import "ETA.h"
+#import "FavoriteStop.h"
 #import "RoutePt.h"
 #import "Shuttle.h"
 #import "Stop.h"
@@ -18,11 +19,12 @@
 @dynamic color;
 @dynamic idTag;
 @dynamic name;
-@dynamic width;
 @dynamic routeId;
+@dynamic width;
+@dynamic etas;
+@dynamic favorites;
 @dynamic points;
 @dynamic shuttles;
 @dynamic stops;
-@dynamic etas;
 
 @end
