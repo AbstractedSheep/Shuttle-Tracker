@@ -419,25 +419,87 @@
 	//	delete button, tell the data manager and update the table.
 	if (editingStyle == UITableViewCellEditingStyleDelete)
 	{
-		//	Remove a favorite stop: delete the row from the table.
-        //  If it was the last row, delete the whole favorites section.
-		
-//		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
-		
-		//	If the last row in a section is going to be removed, just delete the section.
-		//	Otherwise remove the row.
-		if ([self.tableView numberOfRowsInSection:indexPath.section] == 1) {
-			[self.tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
-														withRowAnimation:UITableViewRowAnimationFade];
-		} else {
-			[self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil] 
-								  withRowAnimation:UITableViewRowAnimationFade];
-		}
+		//	Remove a favorite stop and delete the row from the table.
+        
+        //  First, get the favorite stop from the database, then delete it.
+        FavoriteStop *favStop = nil;
+        
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+                                                             inManagedObjectContext:self.managedObjectContext];
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        [request setEntity:entityDescription];
+        
+        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
+        [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+        
+        NSError *error = nil;
+        NSArray *stops = [self.managedObjectContext executeFetchRequest:request error:&error];
+        if ([stops count] > indexPath.row)
+        {
+            favStop = [stops objectAtIndex:indexPath.row];
+            [self.managedObjectContext deleteObject:favStop];
+        }
+        
+        //  Now remove the row from display
+        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
+                              withRowAnimation:UITableViewRowAnimationFade];
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
-		//	Add a favorite stop: reload the table.
-		
-//		[dataManager toggleFavoriteEtaAtIndexPath:indexPath];
-		
+		//	Add a favorite stop then reload the table.
+        FavoriteStop *favStop = nil;
+        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        
+        if (stopsArray != nil && [stopsArray count] > indexPath.row) {
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+                                                                 inManagedObjectContext:self.managedObjectContext];
+            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            [request setEntity:entityDescription];
+            
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(stop.name == %@) AND (route.routeId == %@)", [[stopsArray objectAtIndex:indexPath.row] name], [NSNumber numberWithInt:indexPath.section]];
+            [request setPredicate:predicate];
+            
+            NSError *error = nil;
+            int favStops = [self.managedObjectContext countForFetchRequest:request error:&error];
+            if (favStops > 0) {
+                //  The stop is already a favorite, so do nothing.
+                return;
+            } else {
+                //  The stop is a new favorite, so add it.
+                favStop = (FavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"FavoriteStop"
+                                                                        inManagedObjectContext:self.managedObjectContext];
+                
+                entityDescription = [NSEntityDescription entityForName:@"Route"
+                                                inManagedObjectContext:self.managedObjectContext];
+                request = [[[NSFetchRequest alloc] init] autorelease];
+                [request setEntity:entityDescription];
+                
+                [request setFetchLimit:1];
+                
+                predicate = [NSPredicate predicateWithFormat:@"(routeId == %@)", [NSNumber numberWithInt:indexPath.section]];
+                [request setPredicate:predicate];
+                
+                error = nil;
+                NSArray *routes = [self.managedObjectContext executeFetchRequest:request error:&error];
+                if ([routes count] > 0) {
+                    favStop.route = [routes objectAtIndex:0];
+                    favStop.stop = [stopsArray objectAtIndex:indexPath.row];
+                    
+                    NSLog(@"%@", favStop.stop);
+                    // Save the context.
+                    error = nil;
+                    if (![self.managedObjectContext save:&error]) {
+                        /*
+                         Replace this implementation with code to handle the error appropriately.
+                         
+                         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                         */
+                        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+
+                        abort();
+                    }
+                }
+            }
+        }
+        
 		//	Reload the table
 		[self unsafeDelayedTableReloadForced];
 	}
