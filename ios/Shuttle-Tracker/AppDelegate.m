@@ -87,6 +87,7 @@
         IASKAppSettingsViewController *settingsViewController = [[IASKAppSettingsViewController alloc] initWithNibName:@"IASKAppSettingsView" bundle:nil];
         settingsViewController.title = @"Settings";
         settingsViewController.delegate = self.dataManager;
+        settingsViewController.showDoneButton = NO;
         
         UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
         [settingsViewController release];
