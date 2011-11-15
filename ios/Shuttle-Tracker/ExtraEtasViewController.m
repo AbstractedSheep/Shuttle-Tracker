@@ -157,12 +157,6 @@
     }
     
     self.navigationItem.rightBarButtonItem = favoriteButton;
-    
-	updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
-										selector:@selector(getExtraEtas) 
-										userInfo:nil 
-										 repeats:YES];
-	[updateTimer retain];
 	
 	[self getExtraEtas];
 
@@ -188,14 +182,20 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    
+	updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
+										selector:@selector(getExtraEtas) 
+										userInfo:nil 
+										 repeats:YES];
+	[updateTimer retain];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
-	
 	[updateTimer invalidate];
 	[updateTimer release];
+    
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -327,7 +327,7 @@
 		cell.textLabel.text = @"Loading...";
 	} else if (row < [etas count]) {
 		eta = [etas objectAtIndex:row];
-		
+        
 		//  If the EtaWrapper was found, add the stop info and the ETA
 		if (eta) {
 			//	The main text label, left aligned and black in UITableViewCellStyleValue1
@@ -362,7 +362,7 @@
                 }
             } else {
                 //  Show ETAs as timestamps
-                cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:[lastEtaRefresh dateByAddingTimeInterval:[eta intValue]]];
+                cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:[lastEtaRefresh dateByAddingTimeInterval:[eta intValue] / 1000]];
             }
 		} else {
             cell.detailTextLabel.text = @"————";
@@ -419,6 +419,8 @@
 		} else {
             self.useRelativeTimes = NO;
 		}
+        
+        [self.tableView reloadData];
 	}
 }
 

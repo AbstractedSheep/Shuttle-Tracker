@@ -495,6 +495,9 @@
         return NO;
     }
     
+    if (extraEtas) {
+        [extraEtas release];
+    }
     extraEtas = [jsonDict objectForKey:@"eta"];
     [extraEtas retain];
     
