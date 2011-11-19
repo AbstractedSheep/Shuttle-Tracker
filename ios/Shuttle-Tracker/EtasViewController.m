@@ -355,7 +355,7 @@
         NSArray *stops = [self.managedObjectContext executeFetchRequest:request error:&error];
         if ([stops count] > 0)
         {
-            favStop = [stops objectAtIndex:0];
+            favStop = [stops objectAtIndex:indexPath.row];
             stop = favStop.stop;
             
             levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:favStop.route.routeId];
