@@ -39,22 +39,6 @@
 		} else {
 			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
-		
-		//	Get the favorite stop names array from the app defaults in packed data form
-//		NSData *dataForFavoritesArray = [defaults objectForKey:@"favoritesList"];
-//		
-//		if (dataForFavoritesArray != nil)
-//		{
-//			//	Create an array from the packed data, and if the array is a valid object,
-//			//	set the favorite stops array to that array
-//			NSArray *savedFavoritesArray = [NSKeyedUnarchiver unarchiveObjectWithData:dataForFavoritesArray];
-//			if (savedFavoritesArray != nil)
-//                favoriteStopNames = [[NSMutableArray alloc] initWithArray:savedFavoritesArray];
-//			else
-//                favoriteStopNames = [[NSMutableArray alloc] init];
-//		} else {
-//			favoriteStopNames = [[NSMutableArray alloc] init];
-//		}
         
         routesStopsJsonParser = [[JSONParser alloc] init];
         vehiclesJsonParser = [[JSONParser alloc] init];
@@ -80,6 +64,10 @@
     [shuttleJsonUrl release];
     [etasJsonUrl release];
 	
+    if (loadMapInfoJsonQueue) {
+		dispatch_release(loadMapInfoJsonQueue);
+	}
+    
 	if (loadVehicleJsonQueue) {
 		dispatch_release(loadVehicleJsonQueue);
 	}
@@ -99,18 +87,26 @@
 
 
 - (void)loadFromJson {
-    NSError *theError = nil;
-    NSURL *routesStopsUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
-    NSString *jsonString = [NSString stringWithContentsOfURL:routesStopsUrl 
-                                                    encoding:NSUTF8StringEncoding 
-                                                       error:&theError];
+    if (!loadMapInfoJsonQueue) {
+		loadMapInfoJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+	}
     
-    if (theError) {
-        NSLog(@"Error retrieving JSON data: %@", theError);
-    } else {
-        [routesStopsJsonParser parseRoutesandStopsFromJson:jsonString];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kDMRoutesandStopsLoaded object:self];
-    }
+    dispatch_async(loadMapInfoJsonQueue, ^{
+        NSError *theError = nil;
+        NSURL *routesStopsUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:routesStopsUrl 
+                                                        encoding:NSUTF8StringEncoding 
+                                                           error:&theError];
+        
+        if (theError) {
+            NSLog(@"Error retrieving JSON data: %@", theError);
+        } else {
+            [routesStopsJsonParser performSelectorOnMainThread:@selector(parseRoutesandStopsFromJson:)
+                                                    withObject:jsonString
+                                                 waitUntilDone:YES];
+			[self performSelectorOnMainThread:@selector(routeJsonLoaded) withObject:nil waitUntilDone:NO];
+        }
+    });
 }
 
 
