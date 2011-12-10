@@ -147,6 +147,91 @@ typedef enum {
 @synthesize managedObjectContext = __managedObjectContext;
 @synthesize masterPopoverController = _masterPopoverController;
 
+- (id)init {
+    if ((self = [super init])) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
+        
+        if (useLocation) {
+            //  Show the user's location on the map
+            _mapView.showsUserLocation = YES;
+        }
+        
+        shuttleImage = [UIImage imageNamed:@"shuttle"];
+        [shuttleImage retain];
+        
+        magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
+        
+        shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
+        NSMutableDictionary *shuttleImagesEast = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *shuttleImagesNorth = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *shuttleImagesWest = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *shuttleImagesSouth = [[NSMutableDictionary alloc] init];
+        
+        //  Create east, north, west and south shuttle images
+        //  East
+        UIImage *magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
+        [magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
+        
+        UIImage *whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
+        [shuttleImagesEast setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
+        
+        //  North
+        magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
+        [magentaShuttleImages setObject:magentaShuttleImage forKey:@"north"];
+        
+        whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
+        [shuttleImagesNorth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
+        
+        //  West
+        magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
+        [magentaShuttleImages setObject:magentaShuttleImage forKey:@"west"];
+        
+        whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
+        [shuttleImagesWest setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
+        
+        //  South
+        magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
+        [magentaShuttleImages setObject:magentaShuttleImage forKey:@"south"];
+        
+        whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
+        [shuttleImagesSouth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
+        
+        [shuttleImages setObject:shuttleImagesEast forKey:@"east"];
+        [shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
+        [shuttleImages setObject:shuttleImagesWest forKey:@"west"];
+        [shuttleImages setObject:shuttleImagesSouth forKey:@"south"];
+        [shuttleImagesEast release];
+        [shuttleImagesNorth release];
+        [shuttleImagesWest release];
+        [shuttleImagesSouth release];
+        
+        vehicles = [[NSMutableDictionary alloc] init];
+        
+        //	Take notice when the routes and stops are updated.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
+                                                     name:kDMRoutesandStopsLoaded
+                                                   object:nil];
+        
+        //	Take notice when vehicles are updated.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
+                                                     name:kDMVehiclesUpdated
+                                                   object:nil];
+        
+        //	Take notice when a setting is changed.
+        //	Note that this is not the only object that takes notice.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
+                                                     name:kIASKAppSettingChanged
+                                                   object:nil];
+    }
+    
+    return self;
+}
+
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
     self.title = NSLocalizedString(@"Shuttles", @"Shuttles");
@@ -176,85 +261,6 @@ typedef enum {
     region.span.longitudeDelta = 0.0132;
     
     _mapView.region = region;
-	
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
-	
-	if (useLocation) {
-		//  Show the user's location on the map
-		_mapView.showsUserLocation = YES;
-	}
-    
-	shuttleImage = [UIImage imageNamed:@"shuttle"];
-	[shuttleImage retain];
-    
-    magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
-    
-    shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
-    NSMutableDictionary *shuttleImagesEast = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *shuttleImagesNorth = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *shuttleImagesWest = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *shuttleImagesSouth = [[NSMutableDictionary alloc] init];
-    
-    //  Create east, north, west and south shuttle images
-    //  East
-    UIImage *magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
-    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
-    
-    UIImage *whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-    [shuttleImagesEast setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-    [whiteImage release];
-    
-    //  North
-    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
-    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"north"];
-    
-    whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-    [shuttleImagesNorth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-    [whiteImage release];
-    
-    //  West
-    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
-    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"west"];
-    
-    whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-    [shuttleImagesWest setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-    [whiteImage release];
-    
-    //  South
-    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
-    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"south"];
-    
-    whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-    [shuttleImagesSouth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-    [whiteImage release];
-    
-    [shuttleImages setObject:shuttleImagesEast forKey:@"east"];
-    [shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
-    [shuttleImages setObject:shuttleImagesWest forKey:@"west"];
-    [shuttleImages setObject:shuttleImagesSouth forKey:@"south"];
-    [shuttleImagesEast release];
-    [shuttleImagesNorth release];
-    [shuttleImagesWest release];
-    [shuttleImagesSouth release];
-    
-    vehicles = [[NSMutableDictionary alloc] init];
-	
-	//	Take notice when the routes and stops are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
-                                                 name:kDMRoutesandStopsLoaded
-                                               object:nil];
-	
-	//	Take notice when vehicles are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
-                                                 name:kDMVehiclesUpdated
-                                               object:nil];
-    
-	//	Take notice when a setting is changed.
-	//	Note that this is not the only object that takes notice.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
-                                                 name:kIASKAppSettingChanged
-                                               object:nil];
     
 	[dataManager loadRoutesAndStops];
     
