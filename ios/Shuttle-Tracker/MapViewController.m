@@ -245,20 +245,43 @@ typedef enum {
                                                  name:kDMRoutesandStopsLoaded
                                                object:nil];
 	
-	[dataManager loadRoutesAndStops];
+	//	Take notice when vehicles are updated.
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
+                                                 name:kDMVehiclesUpdated
+                                               object:nil];
     
 	//	Take notice when a setting is changed.
 	//	Note that this is not the only object that takes notice.
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
                                                  name:kIASKAppSettingChanged
                                                object:nil];
-	
-	//	Take notice when vehicles are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
-                                                 name:kDMVehiclesUpdated
-                                               object:nil];
+    
+	[dataManager loadRoutesAndStops];
+    
+    shuttleCleanupTimer = [NSTimer timerWithTimeInterval:30 target:self selector:@selector(vehicleCleanup) userInfo:nil repeats:YES];
 }
 
+- (void)viewDidUnload {
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+    
+    [shuttleCleanupTimer invalidate];
+}
+
+- (void)vehicleCleanup {
+    NSMutableArray *oldVehicles = [[NSMutableArray alloc] init];
+    
+    for (MapVehicle *vehicle in vehicles) {
+        if ([vehicle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
+            [oldVehicles addObject:vehicle.name];
+        }
+    }
+    
+    for (NSString *name in oldVehicles) {
+        [vehicles removeObjectForKey:name];
+    }
+}
 
 //  The routes and stops were loaded in the dataManager
 - (void)managedRoutesLoaded {
@@ -519,12 +542,6 @@ typedef enum {
     [super didReceiveMemoryWarning];
     
     // Release any cached data, images, etc. that aren't in use.
-}
-
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
 
 
