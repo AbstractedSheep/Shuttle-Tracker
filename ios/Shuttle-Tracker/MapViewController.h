@@ -29,6 +29,7 @@
     NSMutableDictionary *magentaShuttleImages;
     NSMutableDictionary *shuttleImages;
     
+    NSTimer *shuttleCleanupTimer;
 }
 
 @property (nonatomic, assign) DataManager *dataManager;
