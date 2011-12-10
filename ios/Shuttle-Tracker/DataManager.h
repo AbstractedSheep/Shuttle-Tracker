@@ -24,6 +24,7 @@
     JSONParser *vehiclesJsonParser;
     JSONParser *etasJsonParser;
     
+    dispatch_queue_t loadMapInfoJsonQueue;
 	dispatch_queue_t loadVehicleJsonQueue;
 	dispatch_queue_t loadEtaJsonQueue;
 	
