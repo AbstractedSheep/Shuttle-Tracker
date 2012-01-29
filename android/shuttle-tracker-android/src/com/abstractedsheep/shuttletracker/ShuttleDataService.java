@@ -21,6 +21,8 @@
 package com.abstractedsheep.shuttletracker;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -47,6 +50,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.util.Xml.Encoding;
 
 public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	private ObjectMapper mapper = new ObjectMapper();
@@ -98,8 +102,13 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		try {
 			URL jsonUrl = new URL(url);
 			URLConnection jsonConnection = jsonUrl.openConnection();
+		    InputStream jsonStream = jsonConnection.getInputStream();
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(jsonStream, writer);
+			String jsonString = writer.toString();
+			jsonStream.close();
+			parsedClass = mapper.readValue(jsonString, generic);
 			
-			parsedClass = mapper.readValue(jsonConnection.getInputStream(), generic);
 			informedNoConnection = false;
 		} catch (JsonParseException e) {
 			Log.w("Tracker", "Error Parsing URL: " + url);

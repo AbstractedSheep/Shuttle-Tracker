@@ -184,16 +184,16 @@ public class VehicleItemizedOverlay extends BalloonItemizedOverlay<DirectionalOv
 		Point pt;		
 		Matrix rotate = new Matrix();
 		Bitmap tempBitmap;
-		long now;
+		Date now;
 		long age;
 		Date lastUpdate;
 			
 		for (VehicleJson v : vehicles) {
 			try {
-				now = (new Date()).getTime();
+				now = new Date();
 				lastUpdate = formatter.parse(v.getUpdate_time());
-				age = now - lastUpdate.getTime();
-				if (age > 45000)
+				age = now.getTime() - lastUpdate.getTime();
+				if (age > 300000)
 					continue;
 				
 				GeoPoint gp = new GeoPoint((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6));
