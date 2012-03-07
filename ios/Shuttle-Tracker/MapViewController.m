@@ -276,7 +276,7 @@ typedef enum {
 }
 
 - (void)vehicleCleanup {
-    NSMutableArray *oldVehicles = [[NSMutableArray alloc] init];
+    NSMutableArray *oldVehicles = [NSMutableArray array];
     
     for (MapVehicle *vehicle in vehicles) {
         if ([vehicle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {

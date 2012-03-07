@@ -119,7 +119,9 @@
 
 - (void)loadView {
     CGRect rect = [[UIScreen mainScreen] bounds];
-    self.tableView = [[UITableView alloc] initWithFrame:rect style:UITableViewStyleGrouped];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:rect style:UITableViewStyleGrouped];
+    self.tableView = tableView;
+    [tableView release];
 }
 
 - (void)viewDidLoad
