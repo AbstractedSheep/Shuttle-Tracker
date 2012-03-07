@@ -17,6 +17,7 @@
 #import "Route.h"
 #import "Stop.h"
 
+const BOOL makeLaunchImage = NO;
 
 @interface EtasViewController ()
 
@@ -150,12 +151,19 @@
 {
     // Return the number of sections.
     //  One section for each route (or "Loading...")
+    if (makeLaunchImage) {
+        return 1;
+    }
     
     return [routeStops count] + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (makeLaunchImage) {
+        return 0;
+    }
+    
     int rows = 0;
     // Return the number of rows in the section.
     if (section == 0) {
@@ -305,6 +313,10 @@
 
 //	Use the short names of the routes, since they display better than the full names
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (makeLaunchImage) {
+        return @"Loading...";
+    }
+    
     if (section == 0) {
         return @"Favorites";
     }
