@@ -97,8 +97,6 @@ const BOOL makeLaunchImage = NO;
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-	
 	//	Take notice when the ETAs are updated
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(delayedTableReload) 
@@ -106,6 +104,7 @@ const BOOL makeLaunchImage = NO;
 											   object:nil];
 
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [super viewDidLoad];
 }
 
 - (void)viewDidUnload
@@ -113,6 +112,23 @@ const BOOL makeLaunchImage = NO;
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    m_freshTimer = [NSTimer timerWithTimeInterval:10.0f 
+                                           target:self 
+                                         selector:@selector(delayedTableReload) 
+                                         userInfo:nil 
+                                          repeats:YES];
+    [m_freshTimer retain];
+    
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [m_freshTimer invalidate];
+    
+    [super viewWillDisappear:animated];
 }
 
 //	A notification is sent by DataManager whenever stops are loaded.
