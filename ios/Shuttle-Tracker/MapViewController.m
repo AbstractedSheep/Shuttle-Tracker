@@ -148,7 +148,7 @@ typedef enum {
 @synthesize masterPopoverController = _masterPopoverController;
 
 - (id)init {
-    if ((self = [super init])) {
+    if ( (self = [super init]) ) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
         
@@ -157,10 +157,14 @@ typedef enum {
             m_mapView.showsUserLocation = YES;
         }
         
+        m_vehicles = [NSMutableDictionary dictionary];
+        [m_vehicles retain];
+        
         m_shuttleImage = [UIImage imageNamed:@"shuttle"];
         [m_shuttleImage retain];
         
-        m_magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
+        m_magentaShuttleImages = [NSMutableDictionary dictionaryWithCapacity:4];
+        [m_magentaShuttleImages retain];
         
         m_shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
         NSMutableDictionary *shuttleImagesEast = [[NSMutableDictionary alloc] init];
@@ -209,8 +213,6 @@ typedef enum {
         [shuttleImagesNorth release];
         [shuttleImagesWest release];
         [shuttleImagesSouth release];
-        
-        m_vehicles = [[NSMutableDictionary alloc] init];
         
         //	Take notice when the routes and stops are updated.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
