@@ -17,7 +17,7 @@
 #import "IASKSettingsReader.h"
 
 //  Set shuttles updated more than 2 minute ago as "stale"
-const float UPDATE_THRESHOLD = -120;
+const float UPDATE_THRESHOLD = -120.0f;
 
 @interface UIImage (magentatocolor)
 
@@ -44,7 +44,7 @@ typedef enum {
 
 
 //  Convert the magenta pixels in an image to a new color.
-//  Returns a new image with retain count 1.
+//  Returns a new autoreleased image.
 - (UIImage *)copyMagentaImageasColor:(UIColor *)newColor {
     BOOL monochromeModel = NO;
     
@@ -110,7 +110,6 @@ typedef enum {
     
     // make a new UIImage to return
     UIImage *resultUIImage = [UIImage imageWithCGImage:image];
-    [resultUIImage retain];
     
     // we're done with image now too
     CGImageRelease(image);
@@ -175,7 +174,6 @@ typedef enum {
         
         UIImage *whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesEast setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-        [whiteImage release];
         
         //  North
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
@@ -183,7 +181,6 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesNorth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-        [whiteImage release];
         
         //  West
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
@@ -191,7 +188,6 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesWest setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-        [whiteImage release];
         
         //  South
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
@@ -199,7 +195,6 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesSouth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-        [whiteImage release];
         
         [m_shuttleImages setObject:shuttleImagesEast forKey:@"east"];
         [m_shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
@@ -358,7 +353,7 @@ typedef enum {
     NSError *error = nil;
     NSArray *dbVehicles = [self.managedObjectContext executeFetchRequest:request 
                                                                    error:&error];
-    if (dbVehicles == nil)
+    if (error != nil || dbVehicles == nil)
     {
         // Deal with error...
     } else if ([dbVehicles count] > 0) {
@@ -385,6 +380,8 @@ typedef enum {
                     
                     CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake([shuttle.latitude doubleValue], [shuttle.longitude doubleValue]);
                     existingShuttle.coordinate = clLoc;
+                } else {
+                    existingShuttle = existingShuttle;
                 }
             }
         }
@@ -418,7 +415,7 @@ typedef enum {
     NSError *error = nil;
     NSArray *routePts = [self.managedObjectContext executeFetchRequest:request 
                                                                  error:&error];
-    if (routePts == nil)
+    if (error != nil || routePts == nil)
     {
         // Deal with error...
     } else {
