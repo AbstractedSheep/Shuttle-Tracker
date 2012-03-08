@@ -33,9 +33,9 @@ const BOOL makeLaunchImage = NO;
 @implementation EtasViewController
 
 
-@synthesize dataManager;
-@synthesize timeDisplayFormatter;
-@synthesize useRelativeTimes;
+@synthesize dataManager = m_dataManager;
+@synthesize timeDisplayFormatter = m_timeDisplayFormatter;
+@synthesize useRelativeTimes = m_useRelativeTimes;
 @synthesize managedObjectContext = __managedObjectContext;
 
 
@@ -46,9 +46,9 @@ const BOOL makeLaunchImage = NO;
         self.contentSizeForViewInPopover = CGSizeMake(320, 600);
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
+        m_useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
         
-        routeStops = [[NSMutableDictionary alloc] init];
+        m_routeStops = [[NSMutableDictionary alloc] init];
         
         //	Take notice when routes and stops are loaded.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyStopsUpdated:)
@@ -139,7 +139,7 @@ const BOOL makeLaunchImage = NO;
             //  Get all stops for that route
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stopNum" ascending:YES];
             
-            [routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] 
+            [m_routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] 
                           forKey:[route.routeId stringValue]];
         }
     }
@@ -155,7 +155,7 @@ const BOOL makeLaunchImage = NO;
         return 1;
     }
     
-    return [routeStops count] + 1;
+    return [m_routeStops count] + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -182,7 +182,7 @@ const BOOL makeLaunchImage = NO;
             rows = numStops;
         }
     } else {
-        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", section]];
+        NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", section]];
         
         if (stopsArray != nil) {
             rows = [stopsArray count]; 
@@ -243,7 +243,7 @@ const BOOL makeLaunchImage = NO;
             }
         }
     } else {
-        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             stop = [stopsArray objectAtIndex:indexPath.row];
@@ -283,7 +283,7 @@ const BOOL makeLaunchImage = NO;
         //  Show the ETA, if it is in the future.
         int minutesToEta = 0;
         minutesToEta = (int)([eta.eta timeIntervalSinceNow] / 60);
-        if (self.useRelativeTimes) {
+        if (m_useRelativeTimes) {
             
             //  Grammar for one vs. more than one
             if (minutesToEta >= 1) {
@@ -298,7 +298,7 @@ const BOOL makeLaunchImage = NO;
             }
         } else {
             //  Show ETAs as timestamps
-            cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:eta.eta];
+            cell.detailTextLabel.text = [m_timeDisplayFormatter stringFromDate:eta.eta];
         }
     } else {
         if (stop != nil) {
@@ -373,7 +373,7 @@ const BOOL makeLaunchImage = NO;
             levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:favStop.route.routeId];
         }
     } else {
-        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             stop = [stopsArray objectAtIndex:indexPath.row];
@@ -383,8 +383,8 @@ const BOOL makeLaunchImage = NO;
     }
 	
     levc.managedObjectContext = self.managedObjectContext;
-	levc.dataManager = dataManager;
-	levc.timeDisplayFormatter = timeDisplayFormatter;
+	levc.dataManager = m_dataManager;
+	levc.timeDisplayFormatter = m_timeDisplayFormatter;
 	
 	// Pass the selected object to the new view controller.
 	[self.navigationController pushViewController:levc animated:YES];
@@ -454,7 +454,7 @@ const BOOL makeLaunchImage = NO;
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		//	Add a favorite stop then reload the table.
         FavoriteStop *favStop = nil;
-        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
@@ -555,9 +555,9 @@ const BOOL makeLaunchImage = NO;
 	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
 	if ([[notification object] isEqualToString:@"useRelativeTimes"]) {
 		if ([[info objectForKey:@"useRelativeTimes"] boolValue]) {
-            self.useRelativeTimes = YES;
+            m_useRelativeTimes = YES;
 		} else {
-            self.useRelativeTimes = NO;
+            m_useRelativeTimes = NO;
 		}
 	}
 }

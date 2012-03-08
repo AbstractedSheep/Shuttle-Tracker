@@ -12,7 +12,7 @@
 
 
 @interface JSONParser : NSObject <NSFetchedResultsControllerDelegate> {
-	NSDateFormatter *timeDisplayFormatter;
+	NSDateFormatter *m_timeDisplayFormatter;
 }
 
 @property (nonatomic, retain) NSArray *routes;

@@ -23,7 +23,7 @@
 @synthesize vehicles;
 @synthesize etas;
 @synthesize extraEtas;
-@synthesize timeDisplayFormatter;
+@synthesize timeDisplayFormatter = m_timeDisplayFormatter;
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;
 
