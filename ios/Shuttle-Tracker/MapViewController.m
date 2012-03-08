@@ -149,30 +149,26 @@ typedef enum {
 
 - (id)init {
     if ( (self = [super init]) ) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
+        //  Allocate a mutable dictionary because otherwise m_vehicles
+        //  doesn't work...
+        m_dict = [NSMutableDictionary dictionary];
         
-        if (useLocation) {
-            //  Show the user's location on the map
-            m_mapView.showsUserLocation = YES;
-        }
+        m_vehicles = [[NSMutableDictionary alloc] init];
         
-        m_vehicles = [NSMutableDictionary dictionary];
-        [m_vehicles retain];
+        m_routeLines = [[NSMutableArray alloc] init];
+        m_routeLineViews = [[NSMutableArray alloc] init];
         
         m_shuttleImage = [UIImage imageNamed:@"shuttle"];
         [m_shuttleImage retain];
         
-        m_magentaShuttleImages = [NSMutableDictionary dictionaryWithCapacity:4];
-        [m_magentaShuttleImages retain];
-        
+        m_magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
         m_shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
         NSMutableDictionary *shuttleImagesEast = [[NSMutableDictionary alloc] init];
         NSMutableDictionary *shuttleImagesNorth = [[NSMutableDictionary alloc] init];
         NSMutableDictionary *shuttleImagesWest = [[NSMutableDictionary alloc] init];
         NSMutableDictionary *shuttleImagesSouth = [[NSMutableDictionary alloc] init];
         
-        //  Create east, north, west and south shuttle images
+        //  Create east, north, west and south facing shuttle images
         //  East
         UIImage *magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
         [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
@@ -244,15 +240,20 @@ typedef enum {
     m_mapView.delegate = self;
 	m_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
+    
+    if (useLocation) {
+        //  Show the user's location on the map
+        m_mapView.showsUserLocation = YES;
+    }
+    
 	self.view = m_mapView;
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    m_routeLines = [[NSMutableArray alloc] init];
-    m_routeLineViews = [[NSMutableArray alloc] init];
     
     //  The RPI student union is at -73.6765441399,42.7302712352
     //  The center point used here is a bit south of it
@@ -295,7 +296,7 @@ typedef enum {
 - (void)managedRoutesLoaded {
     //  Get all routes
     NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"Route" 
-                                                         inManagedObjectContext:self.managedObjectContext];
+                                                              inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *routeRequest = [[[NSFetchRequest alloc] init] autorelease];
     [routeRequest setEntity:routeEntityDescription];
     
