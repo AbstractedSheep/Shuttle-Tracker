@@ -267,7 +267,11 @@ typedef enum {
     
 	[m_dataManager loadRoutesAndStops];
     
-    m_shuttleCleanupTimer = [NSTimer timerWithTimeInterval:30 target:self selector:@selector(vehicleCleanup) userInfo:nil repeats:YES];
+    m_shuttleCleanupTimer = [NSTimer timerWithTimeInterval:30 
+                                                    target:self 
+                                                  selector:@selector(vehicleCleanup) 
+                                                  userInfo:nil 
+                                                   repeats:YES];
 }
 
 - (void)viewDidUnload {
@@ -301,7 +305,8 @@ typedef enum {
     [routeRequest setEntity:routeEntityDescription];
     
     NSError *error = nil;
-    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:routeRequest error:&error];
+    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:routeRequest 
+                                                                 error:&error];
     if (dbRoutes == nil)
     {
         // Deal with error...
@@ -320,7 +325,8 @@ typedef enum {
     [stopRequest setEntity:stopEntityDescription];
     
     error = nil;
-    NSArray *dbStops = [self.managedObjectContext executeFetchRequest:stopRequest error:&error];
+    NSArray *dbStops = [self.managedObjectContext executeFetchRequest:stopRequest 
+                                                                error:&error];
     if (dbStops == nil)
     {
         // Deal with error...
@@ -336,7 +342,9 @@ typedef enum {
 //	A notification is sent by DataManager whenever the vehicles are updated.
 //	Call the work function vehiclesUpdated on the main thread.
 - (void)notifyVehiclesUpdated:(NSNotification *)notification {
-	[self performSelectorOnMainThread:@selector(vehiclesUpdated:) withObject:notification waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(vehiclesUpdated:) 
+                           withObject:notification 
+                        waitUntilDone:NO];
 }
 
 //	A notification is sent by DataManager whenever the vehicles are updated.
@@ -348,7 +356,8 @@ typedef enum {
     [request setEntity:entityDescription];
     
     NSError *error = nil;
-    NSArray *dbVehicles = [self.managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *dbVehicles = [self.managedObjectContext executeFetchRequest:request 
+                                                                   error:&error];
     if (dbVehicles == nil)
     {
         // Deal with error...
@@ -401,12 +410,14 @@ typedef enum {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route == %@)", route];
     [request setPredicate:predicate];
     
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber" 
+                                                                   ascending:YES];
     [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     [sortDescriptor release];
     
     NSError *error = nil;
-    NSArray *routePts = [self.managedObjectContext executeFetchRequest:request error:&error];
+    NSArray *routePts = [self.managedObjectContext executeFetchRequest:request 
+                                                                 error:&error];
     if (routePts == nil)
     {
         // Deal with error...
@@ -423,7 +434,8 @@ typedef enum {
             counter++;
         }
         
-        MKPolyline *polyLine = [MKPolyline polylineWithPoints:points count:counter];
+        MKPolyline *polyLine = [MKPolyline polylineWithPoints:points 
+                                                        count:counter];
         [m_routeLines addObject:polyLine];
         
         free(points);
@@ -443,19 +455,23 @@ typedef enum {
         
         if (routeView.fillColor) {
             coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"east"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            [[m_shuttleImages objectForKey:@"east"] setValue:coloredImage 
+                                                      forKey:[route.routeId stringValue]];
             [coloredImage release];
             
             coloredImage = [[m_magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"north"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            [[m_shuttleImages objectForKey:@"north"] setValue:coloredImage 
+                                                       forKey:[route.routeId stringValue]];
             [coloredImage release];
             
             coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"west"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            [[m_shuttleImages objectForKey:@"west"] setValue:coloredImage 
+                                                      forKey:[route.routeId stringValue]];
             [coloredImage release];
             
             coloredImage = [[m_magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"south"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            [[m_shuttleImages objectForKey:@"south"] setValue:coloredImage 
+                                                       forKey:[route.routeId stringValue]];
             [coloredImage release];
         }
     }
@@ -483,7 +499,8 @@ typedef enum {
     newVehicle.coordinate = clLoc;
     newVehicle.heading = [vehicle.heading intValue];
     newVehicle.routeNo = [vehicle.routeId intValue];
-    [newVehicle setUpdateTime:vehicle.updateTime withFormatter:self.dataManager.timeDisplayFormatter];
+    [newVehicle setUpdateTime:vehicle.updateTime 
+                withFormatter:self.dataManager.timeDisplayFormatter];
     newVehicle.name = vehicle.name;
     
     [m_mapView addAnnotation:newVehicle];
