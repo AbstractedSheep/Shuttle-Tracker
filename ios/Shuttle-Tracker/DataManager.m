@@ -24,28 +24,28 @@
 
 @implementation DataManager
 
-@synthesize timeDisplayFormatter;
+@synthesize timeDisplayFormatter = m_timeDisplayFormatter;
 
 
 - (id)init {
     if ((self = [super init])) {
-		timeDisplayFormatter = [[NSDateFormatter alloc] init];
+		m_timeDisplayFormatter = [[NSDateFormatter alloc] init];
 		
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 		BOOL use24Time = [[defaults objectForKey:@"use24Time"] boolValue];
 		
 		if (use24Time) {
-			[timeDisplayFormatter setDateFormat:@"HH:mm"];
+			[m_timeDisplayFormatter setDateFormat:@"HH:mm"];
 		} else {
-			[timeDisplayFormatter setDateFormat:@"hh:mm a"];
+			[m_timeDisplayFormatter setDateFormat:@"hh:mm a"];
 		}
         
-        routesStopsJsonParser = [[JSONParser alloc] init];
-        vehiclesJsonParser = [[JSONParser alloc] init];
-        etasJsonParser = [[JSONParser alloc] init];
+        m_routesStopsJsonParser = [[JSONParser alloc] init];
+        m_vehiclesJsonParser = [[JSONParser alloc] init];
+        m_etasJsonParser = [[JSONParser alloc] init];
 		
-		loadVehicleJsonQueue = NULL;
-		loadEtaJsonQueue = NULL;
+		m_loadVehicleJsonQueue = NULL;
+		m_loadEtaJsonQueue = NULL;
     }
     
     return self;
@@ -53,27 +53,27 @@
 
 
 - (void)dealloc {
-    if (vehiclesJsonParser) {
-        [vehiclesJsonParser release];
+    if (m_vehiclesJsonParser) {
+        [m_vehiclesJsonParser release];
     }
     
-    if (etasJsonParser) {
-        [etasJsonParser release];
+    if (m_etasJsonParser) {
+        [m_etasJsonParser release];
     }
     
-    [shuttleJsonUrl release];
-    [etasJsonUrl release];
+    [m_shuttleJsonUrl release];
+    [m_etasJsonUrl release];
 	
-    if (loadMapInfoJsonQueue) {
-		dispatch_release(loadMapInfoJsonQueue);
+    if (m_loadMapInfoJsonQueue) {
+		dispatch_release(m_loadMapInfoJsonQueue);
 	}
     
-	if (loadVehicleJsonQueue) {
-		dispatch_release(loadVehicleJsonQueue);
+	if (m_loadVehicleJsonQueue) {
+		dispatch_release(m_loadVehicleJsonQueue);
 	}
     
-	if (loadEtaJsonQueue) {
-		dispatch_release(loadEtaJsonQueue);
+	if (m_loadEtaJsonQueue) {
+		dispatch_release(m_loadEtaJsonQueue);
 	}
 	
     [super dealloc];
@@ -87,11 +87,11 @@
 
 
 - (void)loadFromJson {
-    if (!loadMapInfoJsonQueue) {
-		loadMapInfoJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    if (!m_loadMapInfoJsonQueue) {
+		m_loadMapInfoJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
 	}
     
-    dispatch_async(loadMapInfoJsonQueue, ^{
+    dispatch_async(m_loadMapInfoJsonQueue, ^{
         NSError *theError = nil;
         NSURL *routesStopsUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
         NSString *jsonString = [NSString stringWithContentsOfURL:routesStopsUrl 
@@ -101,7 +101,7 @@
         if (theError) {
             NSLog(@"Error retrieving JSON data: %@", theError);
         } else {
-            [routesStopsJsonParser performSelectorOnMainThread:@selector(parseRoutesandStopsFromJson:)
+            [m_routesStopsJsonParser performSelectorOnMainThread:@selector(parseRoutesandStopsFromJson:)
                                                     withObject:jsonString
                                                  waitUntilDone:YES];
 			[self performSelectorOnMainThread:@selector(routeJsonLoaded) withObject:nil waitUntilDone:NO];
@@ -126,21 +126,21 @@
 //	Note that the notification is not expected to be on the main thread.
 - (void)updateVehicleData {
     
-	if (!loadVehicleJsonQueue) {
-		loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+	if (!m_loadVehicleJsonQueue) {
+		m_loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
 	}
     
-    dispatch_async(loadVehicleJsonQueue, ^{
+    dispatch_async(m_loadVehicleJsonQueue, ^{
         NSError *theError = nil;
-        shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
-        NSString *jsonString = [NSString stringWithContentsOfURL:shuttleJsonUrl 
+        m_shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:m_shuttleJsonUrl 
                                                         encoding:NSUTF8StringEncoding 
                                                            error:&theError];
         
         if (theError) {
             NSLog(@"Error retrieving JSON data: %@", theError);
         } else {
-            [vehiclesJsonParser performSelectorOnMainThread:@selector(parseShuttlesFromJson:)
+            [m_vehiclesJsonParser performSelectorOnMainThread:@selector(parseShuttlesFromJson:)
                                                  withObject:jsonString
                                               waitUntilDone:YES];
 			[[NSNotificationCenter defaultCenter] postNotificationName:kDMVehiclesUpdated
@@ -153,21 +153,21 @@
 
 
 - (void)updateEtaData {
-	if (!loadEtaJsonQueue) {
-		loadEtaJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+	if (!m_loadEtaJsonQueue) {
+		m_loadEtaJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
 	}
 	
-    dispatch_async(loadEtaJsonQueue, ^{
+    dispatch_async(m_loadEtaJsonQueue, ^{
         NSError *theError = nil;
-        etasJsonUrl = [NSURL URLWithString:kDMNextEtasUrl];
-        NSString *jsonString = [NSString stringWithContentsOfURL:etasJsonUrl 
+        m_etasJsonUrl = [NSURL URLWithString:kDMNextEtasUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:m_etasJsonUrl 
                                                         encoding:NSUTF8StringEncoding 
                                                            error:&theError];
         
         if (theError) {
             NSLog(@"Error retrieving JSON data: %@", theError);
         } else {
-            [vehiclesJsonParser performSelectorOnMainThread:@selector(parseEtasFromJson:)
+            [m_vehiclesJsonParser performSelectorOnMainThread:@selector(parseEtasFromJson:)
                                                  withObject:jsonString
                                               waitUntilDone:YES];
 			[[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
@@ -180,16 +180,16 @@
 
 
 - (void)setTimeDisplayFormatter:(NSDateFormatter *)newTimeDisplayFormatter {
-	timeDisplayFormatter = newTimeDisplayFormatter;
+	m_timeDisplayFormatter = newTimeDisplayFormatter;
 	
-	vehiclesJsonParser.timeDisplayFormatter = timeDisplayFormatter;
+	m_vehiclesJsonParser.timeDisplayFormatter = m_timeDisplayFormatter;
 }
 
 
 - (void)setParserManagedObjectContext:(NSManagedObjectContext *)context {
-    routesStopsJsonParser.managedObjectContext = context;
-    vehiclesJsonParser.managedObjectContext = context;
-    etasJsonParser.managedObjectContext = context;
+    m_routesStopsJsonParser.managedObjectContext = context;
+    m_vehiclesJsonParser.managedObjectContext = context;
+    m_etasJsonParser.managedObjectContext = context;
 }
 
 @end
