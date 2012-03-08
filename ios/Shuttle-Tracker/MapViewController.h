@@ -16,6 +16,7 @@
 @interface MapViewController : UIViewController <MKMapViewDelegate, UISplitViewControllerDelegate> {
 	MKMapView               *m_mapView;
     
+    NSMutableDictionary     *m_dict;
     NSMutableDictionary     *m_vehicles;
     NSMutableArray          *m_routeLines;
     NSMutableArray          *m_routeLineViews;
@@ -25,7 +26,6 @@
     NSMutableDictionary     *m_shuttleImages;
     
     DataManager             *m_dataManager;
-    NSURL                   *m_shuttleJSONUrl;
     NSTimer                 *m_shuttleCleanupTimer;
 }
 
