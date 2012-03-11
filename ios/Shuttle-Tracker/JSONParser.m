@@ -16,6 +16,8 @@
 #import "Shuttle.h"
 #import "Stop.h"
 
+#import <CoreData/CoreData.h>
+
 @implementation JSONParser
 
 @synthesize routes;
