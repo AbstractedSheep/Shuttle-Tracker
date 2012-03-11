@@ -7,7 +7,6 @@
 //
 
 #import "JSONParser.h"
-#import "NSDictionary_JSONExtensions.h"
 #import "DataUrls.h"
 #import "MapPlacemark.h"
 #import "ETA.h"
@@ -42,25 +41,23 @@
 
 - (BOOL)parseRoutesandStopsFromJson:(NSString *)jsonString {
     NSError *theError = nil;
-    NSDictionary *jsonDict = nil;
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *string;
     
-    if (jsonString) {
-        jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
-    } else {
-        jsonDict = nil;
-        
+    //  Use Apple's JSON parser to read the data
+    id jsonDict = [NSJSONSerialization JSONObjectWithData:data 
+                                                options:NSJSONReadingMutableLeaves 
+                                                  error:&theError];
+    
+    if (theError != nil) {
+        NSLog(@"Error: %@", [theError description]);
         return NO;
     }
     
     NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
-    NSDictionary *value;
-    NSString *string;
     
     NSDictionary *jsonRoutes = [jsonDict objectForKey:@"routes"];
-    
-    NSEnumerator *routesEnum = [jsonRoutes objectEnumerator];
-    
-    while ((value = [routesEnum nextObject])) {
+    for (NSDictionary *value in jsonRoutes) {
         Route *route = nil;
         
         NSNumber *routeId = [value objectForKey:@"id"];
@@ -133,12 +130,9 @@
         }
     }
     
-    NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
-    
-    NSEnumerator *stopsEnum = [jsonStops objectEnumerator];
     int stopNum = 0;
-    
-    while ((value = [stopsEnum nextObject])) {
+    NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
+    for (NSDictionary *value in jsonStops) {
         Stop *stop = nil;
         
         NSString *stopName = [value objectForKey:@"name"];
@@ -251,14 +245,20 @@
 //  Parse the shuttle data we will get for the shuttle positions
 //  Note: parseShuttles and parseEtas are very similar
 - (BOOL)parseShuttlesFromJson:(NSString *)jsonString {
-    NSError *theError = nil;
-    NSDictionary *jsonDict = nil;
+    if ([jsonString isEqualToString:@"null"]) {
+        return NO;
+    }
     
-    if (jsonString && ![jsonString isEqualToString:@"null"]) {
-        jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
-    } else {
-        jsonDict = nil;
-        
+    NSError *theError = nil;
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    //  Use Apple's JSON parser to read the data
+    id jsonDict = [NSJSONSerialization JSONObjectWithData:data 
+                                                  options:NSJSONReadingMutableLeaves 
+                                                    error:&theError];
+    
+    if (theError != nil) {
+        NSLog(@"Error: %@", [theError description]);
         return NO;
     }
     
@@ -339,26 +339,20 @@
 //  Parse the upcoming ETAs we will get for the currently running shuttles
 //  Note: parseShuttles and parseEtas are very similar
 - (BOOL)parseEtasFromJson:(NSString *)jsonString {
+    if ([jsonString isEqualToString:@"null"]) {
+        return NO;
+    }
+    
     NSError *theError = nil;
-    NSDictionary *jsonDict = nil;
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     
-    if (jsonString  && ![jsonString isEqualToString:@"null"]) {
-        jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
-    } else {
-        jsonDict = nil;
-        
-        return NO;
-    }
+    //  Use Apple's JSON parser to read the data
+    id jsonDict = [NSJSONSerialization JSONObjectWithData:data 
+                                                  options:NSJSONReadingMutableLeaves 
+                                                    error:&theError];
     
-    if (theError) {
-        NSLog(@"Error creating JSON data dictionary from string: %@", jsonString);
-        
-        return NO;
-    }
-    
-    if (!jsonDict || [jsonDict isKindOfClass:[NSNull class]]) {
-        //			NSLog(@"Error, no jsonDict created.");
-        
+    if (theError != nil) {
+        NSLog(@"Error: %@", [theError description]);
         return NO;
     }
     
@@ -472,28 +466,20 @@
 
 
 - (BOOL)parseExtraEtasFromJson:(NSString *)jsonString {
-	NSError *theError = nil;
-    NSDictionary *jsonDict = nil;
-    
-    if (jsonString && ![jsonString isEqualToString:@"null"]) {
-        jsonDict = [NSDictionary dictionaryWithJSONString:jsonString error:&theError];
-    } else {
-        jsonDict = nil;
-        
+	if ([jsonString isEqualToString:@"null"]) {
         return NO;
     }
     
-    if (theError) {
-        NSLog(@"Error creating JSON data dictionary from string: %@", jsonString);
-        
-        return NO;
-    }
+    NSError *theError = nil;
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     
-    if (!jsonDict || [jsonDict isKindOfClass:[NSNull class]]) {
-        //			NSLog(@"Error, no jsonDict created.");
-        
-        return NO;
-    } else if ([jsonDict count] == 0) {
+    //  Use Apple's JSON parser to read the data
+    id jsonDict = [NSJSONSerialization JSONObjectWithData:data 
+                                                  options:NSJSONReadingMutableLeaves 
+                                                    error:&theError];
+    
+    if (theError != nil) {
+        NSLog(@"Error: %@", [theError description]);
         return NO;
     }
     
