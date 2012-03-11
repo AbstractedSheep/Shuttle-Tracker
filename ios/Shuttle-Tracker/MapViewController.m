@@ -353,6 +353,8 @@ typedef enum {
     NSError *error = nil;
     NSArray *dbVehicles = [self.managedObjectContext executeFetchRequest:request 
                                                                    error:&error];
+    
+    double latitude, longitude;
     if (error != nil || dbVehicles == nil)
     {
         // Deal with error...
@@ -367,7 +369,8 @@ typedef enum {
             } else {
                 if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
                     [m_vehicles removeObjectForKey:existingShuttle.name];
-                } else if ([shuttle.routeId intValue] != existingShuttle.routeNo || [shuttle.heading intValue] != existingShuttle.heading) {
+                } else if ([shuttle.routeId intValue] != existingShuttle.routeNo 
+                           || [shuttle.heading intValue] != existingShuttle.heading) {
                     //	If the shuttle switched routes, then update the image.
                     //  Also update the image if the shuttle has changed heading
                     
@@ -378,7 +381,9 @@ typedef enum {
                 } else if ([shuttle.updateTime timeIntervalSinceDate:existingShuttle.updateTime] > 0) {
                     //  If the shuttle location is out of date, update it
                     
-                    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake([shuttle.latitude doubleValue], [shuttle.longitude doubleValue]);
+                    latitude = [shuttle.latitude doubleValue];
+                    longitude = [shuttle.longitude doubleValue];
+                    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake(latitude, longitude);
                     existingShuttle.coordinate = clLoc;
                 } else {
                     existingShuttle = existingShuttle;
@@ -415,6 +420,8 @@ typedef enum {
     NSError *error = nil;
     NSArray *routePts = [self.managedObjectContext executeFetchRequest:request 
                                                                  error:&error];
+    
+    double latitude, longitude;
     if (error != nil || routePts == nil)
     {
         // Deal with error...
@@ -425,7 +432,9 @@ typedef enum {
         int counter = 0;
         for (RoutePt *point in routePts) {
             //  Get a CoreLocation coordinate from the point
-            clLoc = CLLocationCoordinate2DMake([point.latitude doubleValue], [point.longitude doubleValue]);
+            latitude = [point.latitude doubleValue];
+            longitude = [point.longitude doubleValue];
+            clLoc = CLLocationCoordinate2DMake(latitude, longitude);
             
             points[counter] = MKMapPointForCoordinate(clLoc);
             counter++;
@@ -477,9 +486,13 @@ typedef enum {
 
 - (void)addStop:(Stop *)stop {
     CLLocationCoordinate2D clLoc;
+    double latitude, longitude;
+    
+    latitude = [stop.latitude doubleValue];
+    longitude = [stop.longitude doubleValue];
     
     //  Get a CoreLocation coordinate from the point
-    clLoc = CLLocationCoordinate2DMake([stop.latitude doubleValue], [stop.longitude doubleValue]);
+    clLoc = CLLocationCoordinate2DMake(latitude, longitude);
     
     MapStop *mapStop = [[MapStop alloc] initWithLocation:clLoc];
     mapStop.name = stop.name;
@@ -490,9 +503,13 @@ typedef enum {
 
 - (MapVehicle *)addVehicle:(Shuttle *)vehicle {
     MapVehicle *newVehicle = [[MapVehicle alloc] init];
+    double latitude, longitude;
+    
+    latitude = [vehicle.latitude doubleValue];
+    longitude = [vehicle.longitude doubleValue];
     
     //  Get a CoreLocation coordinate from the point
-    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake([vehicle.latitude doubleValue], [vehicle.longitude doubleValue]);
+    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake(latitude, longitude);
     newVehicle.coordinate = clLoc;
     newVehicle.heading = [vehicle.heading intValue];
     newVehicle.routeNo = [vehicle.routeId intValue];
@@ -511,7 +528,8 @@ typedef enum {
 //  Set the vehicle's annotation view based on its current orientation
 //  and associated route.
 - (void)setVehicleAnnotationImage:(MapVehicle *)vehicle {
-    //  Use the colored image for the shuttle's current route.  A route of -1 uses the white image.
+    //  Use the colored image for the shuttle's current route.  A route
+    //  of -1 uses the white image.
     UIImage *coloredImage;
     NSMutableDictionary *shuttleDirectionImages;
     if (vehicle.heading >= 315 || vehicle.heading < 45) {
@@ -526,7 +544,8 @@ typedef enum {
         shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
     }
     
-    coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
+    NSString *routeString = [[NSNumber numberWithInt:vehicle.routeNo] stringValue];
+    coloredImage = [shuttleDirectionImages objectForKey:routeString];
     
     if (coloredImage != nil) {
         vehicle.annotationView.image = coloredImage;
@@ -537,9 +556,10 @@ typedef enum {
     }
 }
 
-//	InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
-//	settingChanged currently only handles turning on or off showing the user's location.
-//	Other objects may also do something when a setting is changed.
+//	InAppSettingsKit sends out a notification whenever a setting is changed in the
+//  settings view inside the app.  settingChanged currently only handles turning on 
+//  or off showing the user's location. Other objects may also do something when a 
+//  setting is changed.
 - (void)settingChanged:(NSNotification *)notification {
 	NSDictionary *info = [notification userInfo];
 	
@@ -605,8 +625,11 @@ typedef enum {
 			return [(MapStop *)annotation annotationView];
 		}
 		
-		MKAnnotationView *stopAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(MapStop *)annotation
-                                                                             reuseIdentifier:@"stopAnnotation"] autorelease];
+		MKAnnotationView *stopAnnotationView;
+        stopAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:(MapStop *)annotation
+                                                           reuseIdentifier:@"stopAnnotation"];
+        [stopAnnotationView autorelease];
+        
         stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
         stopAnnotationView.canShowCallout = YES;
         
@@ -626,8 +649,10 @@ typedef enum {
             
             return [vehicle annotationView];
         } else {
-            MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:vehicle
-                                                                                    reuseIdentifier:@"vehicleAnnotation"] autorelease];
+            MKAnnotationView *vehicleAnnotationView;
+            vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:vehicle
+                                                                 reuseIdentifier:@"vehicleAnnotation"];
+            [vehicleAnnotationView autorelease];
             
             [self setVehicleAnnotationImage:vehicle];
             
@@ -644,16 +669,22 @@ typedef enum {
 
 #pragma mark - Split view
 
-- (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
+- (void)splitViewController:(UISplitViewController *)splitController 
+     willHideViewController:(UIViewController *)viewController 
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem 
+       forPopoverController:(UIPopoverController *)popoverController
 {
     barButtonItem.title = NSLocalizedString(@"ETAs", @"ETAs");
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
     self.masterPopoverController = popoverController;
 }
 
-- (void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+- (void)splitViewController:(UISplitViewController *)splitController 
+     willShowViewController:(UIViewController *)viewController 
+  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
-    // Called when the view is shown again in the split view, invalidating the button and popover controller.
+    // Called when the view is shown again in the split view, invalidating the button 
+    // and popover controller.
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
     self.masterPopoverController = nil;
 }
@@ -669,7 +700,8 @@ typedef enum {
     NSScanner *scanner;
     unsigned int rgbValue;
     
-    rgbString = [rgbString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
+    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"#"];
+    rgbString = [rgbString stringByTrimmingCharactersInSet:charSet];
     
     if (rgbString) {
         scanner = [NSScanner scannerWithString:rgbString];
