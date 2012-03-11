@@ -7,9 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <MapKit/MapKit.h>
-#import <CoreData/CoreData.h>
-
 
 @interface JSONParser : NSObject <NSFetchedResultsControllerDelegate> {
 	NSDateFormatter *m_timeDisplayFormatter;
