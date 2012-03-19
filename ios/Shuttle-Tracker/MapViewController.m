@@ -148,10 +148,6 @@ typedef enum {
 
 - (id)init {
     if ( (self = [super init]) ) {
-        //  Allocate a mutable dictionary because otherwise m_vehicles
-        //  doesn't work...
-        m_dict = [NSMutableDictionary dictionary];
-        
         m_vehicles = [[NSMutableDictionary alloc] init];
         
         m_routeLines = [[NSMutableArray alloc] init];
@@ -361,6 +357,7 @@ typedef enum {
     } else if ([dbVehicles count] > 0) {
         for (Shuttle *shuttle in dbVehicles) {
             MapVehicle *existingShuttle = [m_vehicles objectForKey:shuttle.name];
+            
             if (existingShuttle == nil) {
                 //  Add the shuttle to the map view
                 if ([shuttle.updateTime timeIntervalSinceNow] > UPDATE_THRESHOLD) {
