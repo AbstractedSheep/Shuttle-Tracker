@@ -20,11 +20,17 @@ $route=$_GET["route"];
         <h1>RPI Shuttle Tracking</h1>
         <!--<a href="#" data-icon="plus" class="ui-btn-right" data-theme="c">Fav</a>-->
     </div>
-        <div data-role="content">
-            <?
-             DataService::drawExtraETA($route,$stop);
-            ?>
-        </div>
+    <div data-role="navbar">
+        <ul>                                                                                                                 
+            <li><a href="index.php" rel=external class="ui-btn-active">ETAs</a></li>
+            <li><a href="map.php" rel=external>map</a></li>
+        </ul>
+    </div>    
+    <div data-role="content">
+        <?
+         DataService::drawExtraETA($route,$stop);
+        ?>
+    </div>
     <?
     //include("footer.php");
     ?>

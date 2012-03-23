@@ -14,7 +14,7 @@
   #map_canvas { height: 100% }
 </style>
 <script type="text/javascript"
-    src="http://maps.google.com/maps/api/js?sensor=true&amp;key=ABQIAAAAOCTHylaOYOTc5g-_pCj8shSvS8Smej8DQ7j_pE7rX2KkSsk7qxQvVVhsMNeDyqo6NAc2ZwJet-r3CA">
+    src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDrctp7C-T6sKrIgzwi7WYBO7lN7ZrQfGk&sensor=false">
 </script>
 <script type="text/javascript">
   function initialize() {

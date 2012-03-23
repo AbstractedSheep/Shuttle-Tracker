@@ -1,5 +1,5 @@
 <?php
-setcookie("favs", "union:1;union:2;blitman:1");
+//setcookie("favs", "union:1;union:2;blitman:1");
 
 //RouteCoordDistances::loadDistanceTable();
 //RouteCoordDistances::calcDistances();
@@ -8,42 +8,72 @@ setcookie("favs", "union:1;union:2;blitman:1");
 include("header.php");
 
 ?>
- 
-
-<!--<div id="boxes">
- 
- 
-    <div id="dialog" class="window">
-        Are you still here?
-        <br /> 
-        <!-- close button is defined as close class 
-        <a href="#" class="close">I'm here!</a>    
+<body>
+<noscript><b>At this time, Javascript is required to use the Mobile Shuttle Tracker. Stay tuned for an HTML version.</b></noscript>
+<script type="text/javascript">
+    $(document).ready(function() {
+         
+        loadETAPage();         
         
- 
-    </div>
- 
-    <div id="mask"></div>
-</div> -->
+        function loadETAPage() {
+            jQuery.ajax({
+                url:'loadETA.php',
+                dataType: "json", /* can put parameter list here like :  action=abc&id=123   etc*/
+                success:function(obj){
+                    if(obj){
+                        if(obj.error){
+                            alert(obj.error);
+                        } else {
+                            // Change to a stop button
+                            $('#favorite')
+                                .html(obj.fav).page();
+                            $('#west')
+                                .html(obj.west).page();
+                            $('#east')
+                                .html(obj.east).page();
+                            jQuery('#eta').page("destroy").page();   
+                        }
+                    }
+                }
 
+            }); 
+        }
+
+        $("#refresh").click(function(){
+            loadETAPage();
+        });
+    }); 
+</script>
+
+<script type="text/javascript">
+//alert(cookiejar.get('fav-div'));
+</script>
 
 <div data-role="page" id="eta">
     <div data-role="header" class="ui-bar" data-inline="true"> 
-        <h1>RPI Shuttle Tracking</h1>
+        <h1>RPI Shuttles</h1>
         <a href="#" data-role="button" data-icon="refresh" data-iconpos="notext" id="refresh">Refresh</a> 
-        <!--<a href="map.php" data-role="button" id="map">map</a>-->    
     </div>
-<div data-role="content" id="etalist">
-    <div id="favorite">   
+    <div data-role="navbar">
+        <ul>                                                                                                                 
+            <li><a href="index.php" rel=external class="ui-btn-active">ETAs</a></li>
+            <li><a href="map.php" rel=external>Map</a></li>
+        </ul>
     </div>
-    <div id="west">
+    <div data-role="content" id="etalist">
+        <div data-role="collapsible-set">
+            <div id="favorite">
+            </div>
+            <div id="west">
+            </div>
+            <div id="east">
+            </div>
+        </div>
     </div>
-    <div id="east">
-    </div>
+    <? 
+    //include("footer.php"); 
+    ?>
 </div>
-<? 
-//include("footer.php"); 
-?>
-</div>
-
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 </body>
 </html>
