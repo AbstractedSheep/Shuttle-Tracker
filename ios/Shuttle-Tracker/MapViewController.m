@@ -16,8 +16,8 @@
 
 #import "IASKSettingsReader.h"
 
-//  Set shuttles updated more than 2 minute ago as "stale"
-const float UPDATE_THRESHOLD = -120.0f;
+//  Set shuttles updated more than 3 minutes ago as "stale"
+const float UPDATE_THRESHOLD = -180.0f;
 
 @interface UIImage (magentatocolor)
 
@@ -364,26 +364,33 @@ typedef enum {
                     [m_vehicles setObject:[self addVehicle:shuttle] forKey:shuttle.name];
                 }
             } else {
+                
                 if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
                     [m_vehicles removeObjectForKey:existingShuttle.name];
-                } else if ([shuttle.routeId intValue] != existingShuttle.routeNo 
-                           || [shuttle.heading intValue] != existingShuttle.heading) {
-                    //	If the shuttle switched routes, then update the image.
-                    //  Also update the image if the shuttle has changed heading
-                    
-                    existingShuttle.routeNo = [shuttle.routeId intValue];
-                    existingShuttle.heading = [shuttle.heading intValue];
-                    
-                    [self setVehicleAnnotationImage:existingShuttle];
-                } else if ([shuttle.updateTime timeIntervalSinceDate:existingShuttle.updateTime] > 0) {
-                    //  If the shuttle location is out of date, update it
-                    
-                    latitude = [shuttle.latitude doubleValue];
-                    longitude = [shuttle.longitude doubleValue];
-                    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake(latitude, longitude);
-                    existingShuttle.coordinate = clLoc;
                 } else {
-                    existingShuttle = existingShuttle;
+                    if ([shuttle.routeId intValue] != existingShuttle.routeNo 
+                        || [shuttle.heading intValue] != existingShuttle.heading) {
+                        //	If the shuttle switched routes, then update the image.
+                        //  Also update the image if the shuttle has changed heading
+                        
+                        existingShuttle.routeNo = [shuttle.routeId intValue];
+                        existingShuttle.heading = [shuttle.heading intValue];
+                        
+                        [self setVehicleAnnotationImage:existingShuttle];
+                    } else if ([shuttle.updateTime timeIntervalSinceDate:existingShuttle.updateTime] > 0) {
+                        //  If the shuttle location is out of date, update it
+                        
+                        latitude = [shuttle.latitude doubleValue];
+                        longitude = [shuttle.longitude doubleValue];
+                        CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake(latitude, longitude);
+                        existingShuttle.coordinate = clLoc;
+                    } else {
+                        //  The shuttle has not been updated, leave it be
+                    }
+                    
+                    //  Make sure the shuttle's update time is current
+                    [existingShuttle setUpdateTime:shuttle.updateTime 
+                                     withFormatter:self.dataManager.timeDisplayFormatter];
                 }
             }
         }
