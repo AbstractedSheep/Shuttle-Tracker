@@ -213,6 +213,12 @@ const BOOL makeLaunchImage = NO;
     static NSString *CellIdentifier = @"EtaCell";
     ETA *eta = nil;
     Stop *stop = nil;
+    NSArray *favStops = nil, *etas = nil, *stopsArray = nil;
+    NSError *error = nil;
+    NSEntityDescription *entityDescription = nil;
+    NSPredicate *predicate = nil;
+    NSFetchRequest *request = nil;
+    NSSortDescriptor *sortDescriptor = nil;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -225,16 +231,16 @@ const BOOL makeLaunchImage = NO;
     
     if (indexPath.section == 0) {
         FavoriteStop *favStop = nil;
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+        entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
                                                              inManagedObjectContext:self.managedObjectContext];
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        request = [[[NSFetchRequest alloc] init] autorelease];
         [request setEntity:entityDescription];
         
-        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
+        sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
         [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
         
-        NSError *error = nil;
-        NSArray *favStops = [self.managedObjectContext executeFetchRequest:request error:&error];
+        error = nil;
+        favStops = [self.managedObjectContext executeFetchRequest:request error:&error];
         if ([favStops count] > indexPath.row) {
             favStop = [favStops objectAtIndex:indexPath.row];
             stop = favStop.stop;
@@ -249,35 +255,35 @@ const BOOL makeLaunchImage = NO;
             
             [request setFetchLimit:1];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", favStop.route.routeId, favStop.stop.idTag];
+            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", favStop.route.routeId, favStop.stop.idTag];
             [request setPredicate:predicate];
             
             error = nil;
-            NSArray *etas = [self.managedObjectContext executeFetchRequest:request error:&error];
+            etas = [self.managedObjectContext executeFetchRequest:request error:&error];
             if ([etas count] > 0) {
                 eta = [etas objectAtIndex:0];
             }
         }
     } else {
-        NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             stop = [stopsArray objectAtIndex:indexPath.row];
-            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"ETA"
+            entityDescription = [NSEntityDescription entityForName:@"ETA"
                                                                  inManagedObjectContext:self.managedObjectContext];
-            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
-            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
+            sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
             [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
             
             [request setFetchLimit:1];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", [NSNumber numberWithInt:indexPath.section], stop.idTag];
+            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", [NSNumber numberWithInt:indexPath.section], stop.idTag];
             [request setPredicate:predicate];
             
-            NSError *error = nil;
-            NSArray *etas = [self.managedObjectContext executeFetchRequest:request error:&error];
+            error = nil;
+            etas = [self.managedObjectContext executeFetchRequest:request error:&error];
             if ([etas count] > 0) {
                 eta = [etas objectAtIndex:0];
             }

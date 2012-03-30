@@ -106,9 +106,11 @@
             NSLog(@"Error retrieving JSON data");
         } else {
             [m_extraEtasParser performSelectorOnMainThread:@selector(parseExtraEtasFromJson:)
-                                              withObject:jsonString
-                                           waitUntilDone:YES];
-            [self performSelectorOnMainThread:@selector(delayedTableReload) withObject:nil waitUntilDone:NO];
+                                                withObject:jsonString
+                                             waitUntilDone:YES];
+            [self performSelectorOnMainThread:@selector(delayedTableReload) 
+                                   withObject:nil 
+                                waitUntilDone:NO];
         }
 	});
 	
