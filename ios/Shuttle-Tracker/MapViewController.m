@@ -341,31 +341,36 @@ typedef enum {
 //	A notification is sent by DataManager whenever the vehicles are updated.
 - (void)vehiclesUpdated:(NSNotification *)notification {
     //  Get all vehicles
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Shuttle"
-                                                         inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entityDescription;
+    entityDescription = [NSEntityDescription entityForName:@"Shuttle"
+                                    inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
     
     NSError *error = nil;
-    NSArray *dbVehicles = [self.managedObjectContext executeFetchRequest:request 
-                                                                   error:&error];
+    NSArray *dbVehicles;
+    dbVehicles= [self.managedObjectContext executeFetchRequest:request 
+                                                         error:&error];
     
-    double latitude, longitude;
+    MapVehicle *existingShuttle;
+    double updateTimeDiff, latitude, longitude;
     if (error != nil || dbVehicles == nil)
     {
         // Deal with error...
     } else if ([dbVehicles count] > 0) {
         for (Shuttle *shuttle in dbVehicles) {
-            MapVehicle *existingShuttle = [m_vehicles objectForKey:shuttle.name];
+            existingShuttle = [m_vehicles objectForKey:shuttle.name];
+            updateTimeDiff = [shuttle.updateTime timeIntervalSinceNow];
             
             if (existingShuttle == nil) {
                 //  Add the shuttle to the map view
-                if ([shuttle.updateTime timeIntervalSinceNow] > UPDATE_THRESHOLD) {
-                    [m_vehicles setObject:[self addVehicle:shuttle] forKey:shuttle.name];
+                if (updateTimeDiff > UPDATE_THRESHOLD) {
+                    [m_vehicles setObject:[self addVehicle:shuttle] 
+                                   forKey:shuttle.name];
                 }
             } else {
                 
-                if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
+                if (updateTimeDiff < UPDATE_THRESHOLD) {
                     [m_vehicles removeObjectForKey:existingShuttle.name];
                 } else {
                     if ([shuttle.routeId intValue] != existingShuttle.routeNo 

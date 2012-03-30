@@ -257,20 +257,20 @@
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     
     //  Use Apple's JSON parser to read the data
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:data 
-                                                  options:NSJSONReadingMutableLeaves 
-                                                    error:&theError];
+    id jsonArray = [NSJSONSerialization JSONObjectWithData:data 
+                                                   options:NSJSONReadingMutableLeaves 
+                                                     error:&theError];
     
     if (theError != nil) {
         NSLog(@"Error: %@", [theError description]);
         return NO;
     }
     
-    if (jsonDict && [jsonDict isKindOfClass:[NSDictionary class]]) {
+    if (jsonArray && [jsonArray isKindOfClass:[NSArray class]]) {
         NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
-        for (NSDictionary *dict in jsonDict) {
+        for (NSDictionary *dict in jsonArray) {
             Shuttle *vehicle = nil;
             NSString *vehicleName = [dict objectForKey:@"name"];
             
@@ -355,20 +355,20 @@
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     
     //  Use Apple's JSON parser to read the data
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:data 
-                                                  options:NSJSONReadingMutableLeaves 
-                                                    error:&theError];
+    id jsonArray = [NSJSONSerialization JSONObjectWithData:data 
+                                                   options:NSJSONReadingMutableLeaves 
+                                                     error:&theError];
     
     if (theError != nil) {
         NSLog(@"Error: %@", [theError description]);
         return NO;
     }
     
-    if (jsonDict && [jsonDict isKindOfClass:[NSDictionary class]]) {
+    if (jsonArray && [jsonArray isKindOfClass:[NSDictionary class]]) {
         NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
-        for (NSDictionary *dict in jsonDict) {
+        for (NSDictionary *dict in jsonArray) {
             ETA *eta = nil;
             
             NSString *etaStopId = [dict objectForKey:@"stop_id"];
