@@ -139,7 +139,8 @@
     
     [request setFetchLimit:1];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", self.routeNum, self.stop.idTag];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+                              self.routeNum, self.stop.idTag];
     [request setPredicate:predicate];
     
     NSError *error = nil;
@@ -163,12 +164,6 @@
     self.navigationItem.rightBarButtonItem = m_favoriteButton;
 	
 	[self getExtraEtas];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewDidUnload
@@ -224,7 +219,8 @@
     
     [request setFetchLimit:1];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", self.routeNum, self.stop.idTag];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+                              self.routeNum, self.stop.idTag];
     [request setPredicate:predicate];
     
     NSError *error = nil;
@@ -237,7 +233,7 @@
     } else {
         //  Create the favorite stop
         FavoriteStop *favStop = (FavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"FavoriteStop"
-                                                                      inManagedObjectContext:self.managedObjectContext];
+                                                                              inManagedObjectContext:self.managedObjectContext];
         
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route"
                                                              inManagedObjectContext:self.managedObjectContext];
@@ -412,9 +408,10 @@
 									repeats:NO];
 }
 
-//	InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
-//	settingChanged handles switching between absolute and relative times for updates and ETAs.
-//	Other objects may also do something when a setting is changed.
+//	InAppSettingsKit sends out a notification whenever a setting is changed in the 
+//  settings view inside the app.  settingChanged handles switching between absolute 
+//  and relative times for updates and ETAs.  Other objects may also do something 
+//  when a setting is changed.
 - (void)settingChanged:(NSNotification *)notification {
 	NSDictionary *info = [notification userInfo];
 	
