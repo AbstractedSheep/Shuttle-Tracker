@@ -108,7 +108,7 @@
                 NSArray *routePts = [self.managedObjectContext executeFetchRequest:request 
                                                                              error:&error];
                 
-                if (routePts) {
+                if (routePts != nil) {
                     for (RoutePt *pt in routePts) {
                         [self.managedObjectContext deleteObject:pt];
                     }
@@ -125,11 +125,9 @@
                 route.color = string;
                 
                 NSDictionary *coordsDict = [value objectForKey:@"coords"];
-                NSEnumerator *coordsEnum = [coordsDict objectEnumerator];
-                NSDictionary *coordsValues;
                 
                 long ptCount = 0;
-                while ((coordsValues = [coordsEnum nextObject])) {
+                for (NSDictionary *coordsValues in coordsDict) {
                     RoutePt *routePt = (RoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"RoutePt"
                                                                                 inManagedObjectContext:self.managedObjectContext];
                     
@@ -220,15 +218,11 @@
                 stop.stopNum = [NSNumber numberWithInt:stopNum++];
                 
                 NSDictionary *routesDict = [value objectForKey:@"routes"];
-                NSEnumerator *routesEnum = [routesDict objectEnumerator];
-                NSDictionary *routeValues;
-                
                 NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
-                
                 NSNumber *number;
                 
                 //  Associate the stop with its routes
-                while ((routeValues = [routesEnum nextObject])) {
+                for (NSDictionary *routeValues in routesDict) {
                     number = [routeValues objectForKey:@"id"];
                     [tempRouteIds addObject:number];
                 }
