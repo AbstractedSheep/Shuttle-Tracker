@@ -80,7 +80,7 @@
             {
                 // Deal with error...
             } else if ([array count] > 0) {
-                //  The ETA for this stop on this route already exists
+                //  The route already exists
                 route = (Route *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
@@ -89,6 +89,31 @@
             }
             
             if (route) {
+                //  Remove existing points on the route first
+                NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"RoutePt"
+                                                                     inManagedObjectContext:self.managedObjectContext];
+                NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+                [request setEntity:entityDescription];
+                
+                // Set predicate and sort orderings...
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route == %@)", route];
+                [request setPredicate:predicate];
+                
+                NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber" 
+                                                                               ascending:YES];
+                [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+                [sortDescriptor release];
+                
+                NSArray *routePts = [self.managedObjectContext executeFetchRequest:request 
+                                                                             error:&error];
+                
+                if (routePts) {
+                    for (RoutePt *pt in routePts) {
+                        [self.managedObjectContext deleteObject:pt];
+                    }
+                }
+                
+                //  Now set the route using the new info
                 NSNumber *number = [value objectForKey:@"width"];
                 route.width = number;
                 
@@ -123,7 +148,9 @@
                         /*
                          Replace this implementation with code to handle the error appropriately.
                          
-                         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                         abort() causes the application to generate a crash log and terminate. 
+                         You should not use this function in a shipping application, although 
+                         it may be useful during development. 
                          */
                         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     }
@@ -230,7 +257,9 @@
                     /*
                      Replace this implementation with code to handle the error appropriately.
                      
-                     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                     abort() causes the application to generate a crash log and terminate. 
+                     You should not use this function in a shipping application, although 
+                     it may be useful during development. 
                      */
                     NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                 }
@@ -328,7 +357,9 @@
                     /*
                      Replace this implementation with code to handle the error appropriately.
                      
-                     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                     abort() causes the application to generate a crash log and terminate. 
+                     You should not use this function in a shipping application, although 
+                     it may be useful during development. 
                      */
                     NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                 }
@@ -461,7 +492,9 @@
                     /*
                      Replace this implementation with code to handle the error appropriately.
                      
-                     abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                     abort() causes the application to generate a crash log and terminate. 
+                     You should not use this function in a shipping application, although 
+                     it may be useful during development. 
                      */
                     NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                 }

@@ -411,7 +411,7 @@ typedef enum {
     CLLocationCoordinate2D clLoc;
     MKMapPoint *points;
     
-    //  Get all vehicles
+    //  Get all points on the route
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"RoutePt"
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
