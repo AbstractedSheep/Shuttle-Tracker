@@ -84,7 +84,8 @@
                 route = (Route *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                route = (Route *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" inManagedObjectContext:self.managedObjectContext];
+                route = (Route *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" 
+                                                               inManagedObjectContext:self.managedObjectContext];
                 route.routeId = routeId;
             }
             
@@ -239,7 +240,8 @@
                 
                 // Set example predicate and sort orderings...
                 predicate = [NSPredicate predicateWithFormat: @"(routeId IN $ROUTEIDLIST)"];
-                [request setPredicate:[predicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:tempRouteIds forKey:@"ROUTEIDLIST"]]];
+                [request setPredicate:[predicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:tempRouteIds 
+                                                                                                                forKey:@"ROUTEIDLIST"]]];
                 [tempRouteIds release];
                 
                 error = nil;

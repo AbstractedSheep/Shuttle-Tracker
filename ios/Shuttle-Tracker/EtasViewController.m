@@ -156,7 +156,7 @@ const BOOL makeLaunchImage = NO;
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stopNum" ascending:YES];
             
             [m_routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] 
-                          forKey:[route.routeId stringValue]];
+                            forKey:[route.routeId stringValue]];
         }
     }
 }
@@ -232,7 +232,7 @@ const BOOL makeLaunchImage = NO;
     if (indexPath.section == 0) {
         FavoriteStop *favStop = nil;
         entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
-                                                             inManagedObjectContext:self.managedObjectContext];
+                                        inManagedObjectContext:self.managedObjectContext];
         request = [[[NSFetchRequest alloc] init] autorelease];
         [request setEntity:entityDescription];
         
@@ -255,7 +255,8 @@ const BOOL makeLaunchImage = NO;
             
             [request setFetchLimit:1];
             
-            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", favStop.route.routeId, favStop.stop.idTag];
+            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+                         favStop.route.routeId, favStop.stop.idTag];
             [request setPredicate:predicate];
             
             error = nil;
@@ -270,7 +271,7 @@ const BOOL makeLaunchImage = NO;
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             stop = [stopsArray objectAtIndex:indexPath.row];
             entityDescription = [NSEntityDescription entityForName:@"ETA"
-                                                                 inManagedObjectContext:self.managedObjectContext];
+                                            inManagedObjectContext:self.managedObjectContext];
             request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
@@ -279,7 +280,8 @@ const BOOL makeLaunchImage = NO;
             
             [request setFetchLimit:1];
             
-            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", [NSNumber numberWithInt:indexPath.section], stop.idTag];
+            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+                         [NSNumber numberWithInt:indexPath.section], stop.idTag];
             [request setPredicate:predicate];
             
             error = nil;
@@ -349,7 +351,8 @@ const BOOL makeLaunchImage = NO;
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"routeId == %@", [NSNumber numberWithInt:section]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"routeId == %@", 
+                              [NSNumber numberWithInt:section]];
     [request setPredicate:predicate];
     
     NSError *error = nil;
@@ -400,7 +403,8 @@ const BOOL makeLaunchImage = NO;
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             stop = [stopsArray objectAtIndex:indexPath.row];
             
-            levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
+            levc = [[ExtraEtasViewController alloc] initWithStop:stop 
+                                                  forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
         }
     }
 	
@@ -484,7 +488,9 @@ const BOOL makeLaunchImage = NO;
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(stop.name == %@) AND (route.routeId == %@)", [[stopsArray objectAtIndex:indexPath.row] name], [NSNumber numberWithInt:indexPath.section]];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(stop.name == %@) AND (route.routeId == %@)", 
+                                      [[stopsArray objectAtIndex:indexPath.row] name], 
+                                      [NSNumber numberWithInt:indexPath.section]];
             [request setPredicate:predicate];
             
             NSError *error = nil;
