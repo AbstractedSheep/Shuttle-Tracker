@@ -110,6 +110,7 @@ typedef enum {
     
     // make a new UIImage to return
     UIImage *resultUIImage = [UIImage imageWithCGImage:image];
+    [resultUIImage retain];
     
     // we're done with image now too
     CGImageRelease(image);
@@ -148,6 +149,7 @@ typedef enum {
 
 - (id)init {
     if ( (self = [super init]) ) {
+        UIImage *magentaShuttleImage, *whiteImage;
         m_vehicles = [[NSMutableDictionary alloc] init];
         
         m_routeLines = [[NSMutableArray alloc] init];
@@ -165,11 +167,12 @@ typedef enum {
         
         //  Create east, north, west and south facing shuttle images
         //  East
-        UIImage *magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
+        magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
         [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
         
-        UIImage *whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
+        whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesEast setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
         
         //  North
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
@@ -177,6 +180,7 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesNorth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
         
         //  West
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
@@ -184,6 +188,7 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesWest setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
         
         //  South
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
@@ -191,6 +196,7 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesSouth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
         
         [m_shuttleImages setObject:shuttleImagesEast forKey:@"east"];
         [m_shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
@@ -381,7 +387,8 @@ typedef enum {
                         existingShuttle.routeNo = [shuttle.routeId intValue];
                         existingShuttle.heading = [shuttle.heading intValue];
                         
-                        [self setVehicleAnnotationImage:existingShuttle];
+                        //  Flag the vehicle to have its shuttle image updated
+                        existingShuttle.routeImageSet = NO;
                     } else if ([shuttle.updateTime timeIntervalSinceDate:existingShuttle.updateTime] > 0) {
                         //  If the shuttle location is out of date, update it
                         
@@ -635,12 +642,15 @@ typedef enum {
 		}
 		
 		MKAnnotationView *stopAnnotationView;
-        stopAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:(MapStop *)annotation
-                                                           reuseIdentifier:@"stopAnnotation"];
-        [stopAnnotationView autorelease];
+        stopAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"stopAnnotation"];
         
-        stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
-        stopAnnotationView.canShowCallout = YES;
+        if (stopAnnotationView == nil) {
+            stopAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:(MapStop *)annotation
+                                                              reuseIdentifier:@"stopAnnotation"];
+            stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
+            stopAnnotationView.canShowCallout = YES;
+            [stopAnnotationView autorelease];
+        }
         
         [(MapStop *)annotation setAnnotationView:stopAnnotationView];
 		
@@ -648,7 +658,7 @@ typedef enum {
     } else if ([annotation isKindOfClass:[MapVehicle class]]) {
         MapVehicle *vehicle = (MapVehicle *)annotation;
         
-        if ([vehicle annotationView]) {
+        if (vehicle.annotationView != nil) {
             //  Check to see if the vehicle's image is the plain shuttle image.
             //  If it is, check for a colored shuttle image for the shuttle's route.
             //  Set the shuttle's image to the colored one, if we have it.
@@ -659,15 +669,18 @@ typedef enum {
             return [vehicle annotationView];
         } else {
             MKAnnotationView *vehicleAnnotationView;
-            vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:vehicle
-                                                                 reuseIdentifier:@"vehicleAnnotation"];
-            [vehicleAnnotationView autorelease];
+            vehicleAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"vehicleAnnotation"];
+            
+            if (vehicleAnnotationView == nil) {
+                vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:vehicle
+                                                                     reuseIdentifier:@"vehicleAnnotation"];
+                vehicleAnnotationView.canShowCallout = YES;
+                [vehicleAnnotationView autorelease];
+            }
+            
+            vehicle.annotationView = vehicleAnnotationView;
             
             [self setVehicleAnnotationImage:vehicle];
-            
-            vehicleAnnotationView.canShowCallout = YES;
-            
-            [vehicle setAnnotationView:vehicleAnnotationView];
         }
 		
 		return vehicle.annotationView;
