@@ -94,13 +94,13 @@
     NSDictionary *ETAs;
     int heading;
 	NSDate *updateTime;
-    int routeNo;
+    int routeId;
 }
 
 @property (nonatomic, retain) NSDictionary *ETAs;
 @property (nonatomic) int heading;
 @property (nonatomic, retain) NSDate *updateTime;
-@property (nonatomic) int routeNo;
+@property (nonatomic) int routeId;
 @property (nonatomic) BOOL routeImageSet;
 @property (nonatomic) BOOL viewNeedsUpdate;
 
