@@ -198,10 +198,10 @@ const BOOL makeLaunchImage = NO;
             rows = numStops;
         }
     } else {
-        NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", section]];
+        NSArray *stops = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", section]];
         
-        if (stopsArray != nil) {
-            rows = [stopsArray count]; 
+        if (stops != nil) {
+            rows = [stops count];
         }
     }
     
@@ -219,6 +219,7 @@ const BOOL makeLaunchImage = NO;
     NSPredicate *predicate = nil;
     NSFetchRequest *request = nil;
     NSSortDescriptor *sortDescriptor = nil;
+    int minutesToEta = 0;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -261,8 +262,14 @@ const BOOL makeLaunchImage = NO;
             
             error = nil;
             etas = [self.managedObjectContext executeFetchRequest:request error:&error];
-            if ([etas count] > 0) {
-                eta = [etas objectAtIndex:0];
+            
+            //  Get the next ETA that is in the future
+            for (ETA *currentEta in etas) {
+                minutesToEta = (int)([currentEta.eta timeIntervalSinceNow] / 60.0f);
+                if (minutesToEta > -1) {
+                    eta = currentEta;
+                    break;
+                }
             }
         }
     } else {
@@ -286,15 +293,21 @@ const BOOL makeLaunchImage = NO;
             
             error = nil;
             etas = [self.managedObjectContext executeFetchRequest:request error:&error];
-            if ([etas count] > 0) {
-                eta = [etas objectAtIndex:0];
+            
+            //  Get the next ETA that is in the future
+            for (ETA *currentEta in etas) {
+                minutesToEta = (int)([currentEta.eta timeIntervalSinceNow] / 60.0f);
+                if (minutesToEta > -1) {
+                    eta = currentEta;
+                    break;
+                }
             }
         }
     }
     
     // Configure the cell...
     
-    //  If the EtaWrapper was found, add the stop info and the ETA
+    //  If the ETA was found, add the stop info and the ETA
     if (eta) {
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
         if (eta.stop != nil) {
@@ -304,21 +317,13 @@ const BOOL makeLaunchImage = NO;
         }
 		
 		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
-        //  Show the ETA, if it is in the future.
-        int minutesToEta = 0;
-        minutesToEta = (int)([eta.eta timeIntervalSinceNow] / 60);
+        //  The ETA is recently passed or still in the future, so show it to the user
         if (m_useRelativeTimes) {
-            
-            //  Grammar for one vs. more than one
-            if (minutesToEta >= 1) {
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%d min.", minutesToEta];
-            }
-            else if (minutesToEta < -2) {
-                //  If an ETA is long since passed, don't show anything
-                cell.detailTextLabel.text = @"————";
-            } else {
+            if (minutesToEta < 2) {
                 //  If an ETA is recently passed, let it show as imminent
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"< 1 min."];
+            } else {
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%d min.", minutesToEta];
             }
         } else {
             //  Show ETAs as timestamps
@@ -327,8 +332,8 @@ const BOOL makeLaunchImage = NO;
     } else {
         if (stop != nil) {
             cell.textLabel.text = stop.shortName;
-            cell.detailTextLabel.text = @"————";
         }
+        cell.detailTextLabel.text = @"————";
     }
     
     return cell;
@@ -398,10 +403,10 @@ const BOOL makeLaunchImage = NO;
             levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:favStop.route.routeId];
         }
     } else {
-        NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        NSArray *stops = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
-        if (stopsArray != nil && [stopsArray count] > indexPath.row) {
-            stop = [stopsArray objectAtIndex:indexPath.row];
+        if (stops != nil && [stops count] > indexPath.row) {
+            stop = [stops objectAtIndex:indexPath.row];
             
             levc = [[ExtraEtasViewController alloc] initWithStop:stop 
                                                   forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
