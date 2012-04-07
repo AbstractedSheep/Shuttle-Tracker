@@ -136,7 +136,7 @@ typedef enum {
 - (void)addStop:(Stop *)stop;
 //	Adding vehicles should only be done on the main thread.
 - (MapVehicle *)addVehicle:(Shuttle *)vehicle;
-- (void)setVehicleAnnotationImage:(MapVehicle *)vehicle;
+- (void)setAnnotationImageForVehicle:(MapVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
 
 @end
@@ -379,12 +379,12 @@ typedef enum {
                 if (updateTimeDiff < UPDATE_THRESHOLD) {
                     [m_vehicles removeObjectForKey:existingShuttle.name];
                 } else {
-                    if ([shuttle.routeId intValue] != existingShuttle.routeNo 
+                    if ([shuttle.routeId intValue] != existingShuttle.routeId 
                         || [shuttle.heading intValue] != existingShuttle.heading) {
                         //	If the shuttle switched routes, then update the image.
                         //  Also update the image if the shuttle has changed heading
                         
-                        existingShuttle.routeNo = [shuttle.routeId intValue];
+                        existingShuttle.routeId = [shuttle.routeId intValue];
                         existingShuttle.heading = [shuttle.heading intValue];
                         
                         //  Flag the vehicle to have its shuttle image updated
@@ -528,7 +528,7 @@ typedef enum {
     CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake(latitude, longitude);
     newVehicle.coordinate = clLoc;
     newVehicle.heading = [vehicle.heading intValue];
-    newVehicle.routeNo = [vehicle.routeId intValue];
+    newVehicle.routeId = [vehicle.routeId intValue];
     [newVehicle setUpdateTime:vehicle.updateTime 
                 withFormatter:self.dataManager.timeDisplayFormatter];
     newVehicle.name = vehicle.name;
@@ -543,7 +543,7 @@ typedef enum {
 
 //  Set the vehicle's annotation view based on its current orientation
 //  and associated route.
-- (void)setVehicleAnnotationImage:(MapVehicle *)vehicle {
+- (void)setAnnotationImageForVehicle:(MapVehicle *)vehicle {
     //  Use the colored image for the shuttle's current route.  A route
     //  of -1 uses the white image.
     UIImage *coloredImage;
@@ -560,7 +560,7 @@ typedef enum {
         shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
     }
     
-    NSString *routeString = [[NSNumber numberWithInt:vehicle.routeNo] stringValue];
+    NSString *routeString = [[NSNumber numberWithInt:vehicle.routeId] stringValue];
     coloredImage = [shuttleDirectionImages objectForKey:routeString];
     
     if (coloredImage != nil) {
@@ -663,10 +663,8 @@ typedef enum {
             //  If it is, check for a colored shuttle image for the shuttle's route.
             //  Set the shuttle's image to the colored one, if we have it.
             if (!vehicle.routeImageSet) {
-                [self setVehicleAnnotationImage:vehicle];
+                [self setAnnotationImageForVehicle:vehicle];
             }
-            
-            return [vehicle annotationView];
         } else {
             MKAnnotationView *vehicleAnnotationView;
             vehicleAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"vehicleAnnotation"];
@@ -680,7 +678,7 @@ typedef enum {
             
             vehicle.annotationView = vehicleAnnotationView;
             
-            [self setVehicleAnnotationImage:vehicle];
+            [self setAnnotationImageForVehicle:vehicle];
         }
 		
 		return vehicle.annotationView;
