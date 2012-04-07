@@ -355,8 +355,8 @@ typedef enum {
     
     NSError *error = nil;
     NSArray *dbVehicles;
-    dbVehicles= [self.managedObjectContext executeFetchRequest:request 
-                                                         error:&error];
+    dbVehicles = [self.managedObjectContext executeFetchRequest:request 
+                                                          error:&error];
     
     MapVehicle *existingShuttle;
     double updateTimeDiff, latitude, longitude;
@@ -417,6 +417,7 @@ typedef enum {
 - (void)addRoute:(Route *)route {
     CLLocationCoordinate2D clLoc;
     MKMapPoint *points;
+    UIImage *coloredImage;
     
     //  Get all points on the route
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"RoutePt"
@@ -442,6 +443,9 @@ typedef enum {
     {
         // Deal with error...
     } else {
+        MKPolyline *polyLine;
+        MKPolylineView *routeView;
+        
         points = malloc(sizeof(MKMapPoint) * routePts.count);
         
         //  Create an array of coordinates for the polyline which will represent the route
@@ -456,13 +460,13 @@ typedef enum {
             counter++;
         }
         
-        MKPolyline *polyLine = [MKPolyline polylineWithPoints:points 
+        polyLine = [MKPolyline polylineWithPoints:points 
                                                         count:counter];
         [m_routeLines addObject:polyLine];
         
         free(points);
         
-        MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
+        routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
         [m_routeLineViews addObject:routeView];
         [routeView release];
         
@@ -473,7 +477,6 @@ typedef enum {
         [m_mapView addOverlay:polyLine];
         
         //  Create the colored shuttle image for the route
-        UIImage *coloredImage;
         
         if (routeView.fillColor) {
             coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
@@ -501,8 +504,8 @@ typedef enum {
 
 
 - (void)addStop:(Stop *)stop {
-    CLLocationCoordinate2D clLoc;
     double latitude, longitude;
+    CLLocationCoordinate2D clLoc;
     
     latitude = [stop.latitude doubleValue];
     longitude = [stop.longitude doubleValue];
@@ -520,12 +523,13 @@ typedef enum {
 - (MapVehicle *)addVehicle:(Shuttle *)vehicle {
     MapVehicle *newVehicle = [[MapVehicle alloc] init];
     double latitude, longitude;
+    CLLocationCoordinate2D clLoc;
     
     latitude = [vehicle.latitude doubleValue];
     longitude = [vehicle.longitude doubleValue];
     
     //  Get a CoreLocation coordinate from the point
-    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake(latitude, longitude);
+    clLoc = CLLocationCoordinate2DMake(latitude, longitude);
     newVehicle.coordinate = clLoc;
     newVehicle.heading = [vehicle.heading intValue];
     newVehicle.routeId = [vehicle.routeId intValue];
@@ -548,6 +552,8 @@ typedef enum {
     //  of -1 uses the white image.
     UIImage *coloredImage;
     NSMutableDictionary *shuttleDirectionImages;
+    NSString *routeString;
+    
     if (vehicle.heading >= 315 || vehicle.heading < 45) {
         shuttleDirectionImages = [m_shuttleImages objectForKey:@"north"];
     } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
@@ -560,7 +566,7 @@ typedef enum {
         shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
     }
     
-    NSString *routeString = [[NSNumber numberWithInt:vehicle.routeId] stringValue];
+    routeString = [[NSNumber numberWithInt:vehicle.routeId] stringValue];
     coloredImage = [shuttleDirectionImages objectForKey:routeString];
     
     if (coloredImage != nil) {
