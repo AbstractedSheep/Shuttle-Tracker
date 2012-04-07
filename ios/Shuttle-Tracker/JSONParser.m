@@ -391,7 +391,7 @@
         return NO;
     }
     
-    if (jsonArray && [jsonArray isKindOfClass:[NSDictionary class]]) {
+    if (jsonArray && [jsonArray isKindOfClass:[NSArray class]]) {
         NSAutoreleasePool *smallPool = [[NSAutoreleasePool alloc] init];
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
