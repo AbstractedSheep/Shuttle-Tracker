@@ -23,6 +23,8 @@ The Android application, in the 'android/' directory, and the server application
 
 The iOS application, in the `ios/` directory, is available under the Simplified BSD License.  It also incorporates code under the MIT License.  Licenses are specified in the LICENSE\_ files in the `ios/` directory, unless otherwise specified in a file.
 
+Image licenses are detailed in IMAGES_LICENSE and GLYPHISH_ICONS_LICENSE.
+
 ## Data Processor
 Note: Certain values have been hard-coded into certain java files, such as the link to the shuttle data in JSONExtractor.java, while other values are being read in from the sts.properties file, which is designed to hold information to connect to the database.
 
