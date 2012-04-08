@@ -116,6 +116,7 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 	}
 
 	public void routesUpdated(RoutesJson routes) {
+		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).clearRoutes();
 		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).routesUpdated(routes);
 		if (routes != null) {
 			runOnUiThread(hideIndeterminateProgress);
@@ -148,5 +149,8 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 	public void showMap(String stopId) {
 		tabHost.setCurrentTab(1);
 		((TrackerMapActivity)getLocalActivityManager().getCurrentActivity()).displayStop(stopId);
+	}
+
+	public void clearRoutes() {
 	}
 }

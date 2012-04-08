@@ -33,6 +33,11 @@ public class RoutesJson {
 	private ArrayList<Route> routes;
 	private HashMap<Integer, Route> routesMap = new HashMap<Integer, RoutesJson.Route>();
 	
+	@Override
+	public int hashCode() {
+		return stops.hashCode() ^ routes.hashCode();
+	}
+	
 	public static class Stop implements Comparable<Stop> {
 		private int favoriteRoute = -1;
 		private double latitude;
@@ -106,6 +111,11 @@ public class RoutesJson {
 				this.name = name;
 			}
 			private String name;
+			
+			@Override
+			public int hashCode() {
+				return id ^ name.hashCode();
+			}
 		}
 		
 		public DirectionalOverlayItem toOverlayItem() {	
@@ -120,6 +130,11 @@ public class RoutesJson {
 				String s2 = name + another.favoriteRoute;
 				return s1.compareTo(s2);
 			}
+		}
+		
+		@Override
+		public int hashCode() {
+			return new Double(latitude).hashCode() ^ new Double(longitude).hashCode() ^ name.hashCode() ^ short_name.hashCode() ^ routes.hashCode();
 		}
 		
 		@Override
@@ -220,6 +235,16 @@ public class RoutesJson {
 				this.longitude = longitude;
 			}
 			private double longitude;
+			
+			@Override
+			public int hashCode() {
+				return new Double(latitude).hashCode() ^ new Double(longitude).hashCode();
+			}
+		}
+		
+		@Override
+		public int hashCode() {
+			return color.hashCode() ^ id ^ name.hashCode() ^ width ^ coords.hashCode();
 		}
 	}
 

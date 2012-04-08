@@ -125,9 +125,7 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 			if (etaAdapter.favoritesVisible())
 				etaListView.expandGroup(0);
 		}
-	};
-
-	
+	};	
 
 	public void routesUpdated(RoutesJson routes) {
 		if (routes != null) {
@@ -135,6 +133,8 @@ public class EtaActivity extends Activity implements IShuttleServiceCallback {
 			runOnUiThread(setRoutes);
 		}
 	}
+	
+	public void clearRoutes() { }
 
 	public void dataServiceError(int errorCode) {
 	}

@@ -50,7 +50,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.util.Xml.Encoding;
 
 public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	private ObjectMapper mapper = new ObjectMapper();
@@ -134,23 +133,31 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 			synchronized (this) {
 				RoutesJson tempRoutes;
 				DatabaseHelper db = new DatabaseHelper(ctx);
+				boolean notifiedDbRoutes = false;
+				boolean notifiedLiveRoutes = false;
 				
 				do {
-					if (db.hasRoutes()) {
+					if (!notifiedDbRoutes && db.hasRoutes()) {
 						tempRoutes = db.getRoutes();
 						routes = tempRoutes;
 						notifyRoutesUpdated(routes);
-					} else {
-						tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", RoutesJson.class);
-						if (tempRoutes != null) {
+						notifiedDbRoutes = true;
+					}
+					
+					tempRoutes = parseJson("http://shuttles.rpi.edu/displays/netlink.js", RoutesJson.class);
+					
+					if (tempRoutes != null) {
+						if (tempRoutes.hashCode() != prefs.getInt("lastRouteHash", 0)) {
 							routes = tempRoutes;
 							db.putRoutes(routes);
 							notifyRoutesUpdated(routes);
+							prefs.edit().putInt("lastRouteHash", tempRoutes.hashCode());
 						}
+						notifiedLiveRoutes = true;
 					}
 					
 					SystemClock.sleep(5000);
-				} while (tempRoutes == null);	
+				} while (!notifiedLiveRoutes);	
 				
 				db.close();
 			}	

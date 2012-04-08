@@ -32,6 +32,7 @@ public interface IShuttleServiceCallback {
 	
 	void dataUpdated(ArrayList<VehicleJson> vehicles, ArrayList<EtaJson> etas);
 	void routesUpdated(RoutesJson routes);
+	void clearRoutes();
 	void extraEtasUpdated(ExtraEtaJson etas);
 	void dataServiceError(int errorCode);
 }

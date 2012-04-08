@@ -254,6 +254,24 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 			runOnUiThread(invalidateMap);
 		}
 	}
+	
+	public void clearRoutes()
+	{
+		if (hasRoutes)
+		{
+			runOnUiThread(new Runnable() {
+				
+				public void run() {
+					map.getOverlays().remove(timestampOverlay);
+					map.getOverlays().remove(stopsOverlay);
+					map.getOverlays().remove(shuttlesOverlay);
+					for (PathOverlay p : routeOverlays.values())
+						map.getOverlays().remove(p);
+					hasRoutes = false;
+				}
+			});
+		}
+	}
 
 	public void dataServiceError(int errorCode) {
 		switch (errorCode) {
