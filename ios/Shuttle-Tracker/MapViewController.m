@@ -16,8 +16,8 @@
 
 #import "IASKSettingsReader.h"
 
-//  Set shuttles updated more than 3 minutes ago as "stale"
-const float UPDATE_THRESHOLD = -180.0f;
+const NSTimeInterval UPDATE_THRESHOLD = -180.0f;    //  3 minutes
+const NSTimeInterval CLEANUP_INTERVAL = 30.0f;      //  30 seconds
 
 @interface UIImage (magentatocolor)
 
@@ -135,7 +135,7 @@ typedef enum {
 - (void)addRoute:(Route *)route;
 - (void)addStop:(Stop *)stop;
 //	Adding vehicles should only be done on the main thread.
-- (MapVehicle *)addVehicle:(Shuttle *)vehicle;
+- (void)addVehicle:(Shuttle *)vehicle;
 - (void)setAnnotationImageForVehicle:(MapVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
 
@@ -264,11 +264,12 @@ typedef enum {
     
 	[m_dataManager loadRoutesAndStops];
     
-    m_shuttleCleanupTimer = [NSTimer timerWithTimeInterval:30 
-                                                    target:self 
-                                                  selector:@selector(vehicleCleanup) 
-                                                  userInfo:nil 
-                                                   repeats:YES];
+    [self vehicleCleanup];
+    m_shuttleCleanupTimer = [NSTimer scheduledTimerWithTimeInterval:CLEANUP_INTERVAL 
+                                                             target:self 
+                                                           selector:@selector(vehicleCleanup) 
+                                                           userInfo:nil 
+                                                            repeats:YES];
 }
 
 - (void)viewDidUnload {
@@ -279,16 +280,21 @@ typedef enum {
     [m_shuttleCleanupTimer invalidate];
 }
 
+//  Consider shuttles updated more than UPDATE_THRESHOLD ago as "stale",
+//  and remove them.
 - (void)vehicleCleanup {
     NSMutableArray *oldVehicles = [NSMutableArray array];
+    MapVehicle *vehicle;
     
-    for (MapVehicle *vehicle in m_vehicles) {
+    for (NSString *name in m_vehicles) {
+        vehicle = [m_vehicles objectForKey:name];
         if ([vehicle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
-            [oldVehicles addObject:vehicle.name];
+            [oldVehicles addObject:name];
         }
     }
     
     for (NSString *name in oldVehicles) {
+        [m_mapView removeAnnotation:[m_vehicles objectForKey:name]];
         [m_vehicles removeObjectForKey:name];
     }
 }
@@ -368,16 +374,10 @@ typedef enum {
             existingShuttle = [m_vehicles objectForKey:shuttle.name];
             updateTimeDiff = [shuttle.updateTime timeIntervalSinceNow];
             
-            if (existingShuttle == nil) {
-                //  Add the shuttle to the map view
-                if (updateTimeDiff > UPDATE_THRESHOLD) {
-                    [m_vehicles setObject:[self addVehicle:shuttle] 
-                                   forKey:shuttle.name];
-                }
-            } else {
-                
-                if (updateTimeDiff < UPDATE_THRESHOLD) {
-                    [m_vehicles removeObjectForKey:existingShuttle.name];
+            if (updateTimeDiff > UPDATE_THRESHOLD) {
+                if (existingShuttle == nil) {
+                    //  Add the shuttle to the map view and our array of active shuttles
+                    [self addVehicle:shuttle];
                 } else {
                     if ([shuttle.routeId intValue] != existingShuttle.routeId 
                         || [shuttle.heading intValue] != existingShuttle.heading) {
@@ -520,7 +520,7 @@ typedef enum {
 }
 
 
-- (MapVehicle *)addVehicle:(Shuttle *)vehicle {
+- (void)addVehicle:(Shuttle *)vehicle {
     MapVehicle *newVehicle = [[MapVehicle alloc] init];
     double latitude, longitude;
     CLLocationCoordinate2D clLoc;
@@ -540,8 +540,6 @@ typedef enum {
     [m_mapView addAnnotation:newVehicle];
     [m_vehicles setObject:newVehicle forKey:newVehicle.name];
     [newVehicle release];
-    
-    return newVehicle;
 }
 
 
@@ -643,15 +641,17 @@ typedef enum {
         return nil;
     
     if ([annotation isKindOfClass:[MapStop class]]) {
-		if ([(MapStop *)annotation annotationView]) {
-			return [(MapStop *)annotation annotationView];
+        MapStop *stop = (MapStop *)annotation;
+        
+		if ([stop annotationView]) {
+			return [stop annotationView];
 		}
 		
 		MKAnnotationView *stopAnnotationView;
         stopAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"stopAnnotation"];
         
         if (stopAnnotationView == nil) {
-            stopAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:(MapStop *)annotation
+            stopAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:stop
                                                               reuseIdentifier:@"stopAnnotation"];
             stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
             stopAnnotationView.canShowCallout = YES;
@@ -719,7 +719,7 @@ typedef enum {
 
 @implementation UIColor (stringcolor)
 
-//  Take an NSString formatted as such: RRGGBB and return a UIColor
+//  Take an NSString formatted as RRGGBB and return a UIColor
 //  Note that this removes any '#' characters from rgbString
 //  before doing anything.
 + (UIColor *)UIColorFromRGBString:(NSString *)rgbString {
