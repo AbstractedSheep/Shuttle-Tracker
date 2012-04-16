@@ -115,11 +115,11 @@ const BOOL makeLaunchImage = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    m_freshTimer = [NSTimer timerWithTimeInterval:10.0f 
-                                           target:self 
-                                         selector:@selector(delayedTableReload) 
-                                         userInfo:nil 
-                                          repeats:YES];
+    m_freshTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f 
+                                                    target:self 
+                                                  selector:@selector(delayedTableReload) 
+                                                  userInfo:nil 
+                                                   repeats:YES];
     [m_freshTimer retain];
     
     [super viewWillAppear:animated];
