@@ -17,22 +17,23 @@
 
 //	Manages all of the routes/stops/shuttles data, as well as application settings.
 @interface DataManager : NSObject {
-    NSURL *shuttleJsonUrl;
-    NSURL *etasJsonUrl;
+    NSURL               *m_shuttleJsonUrl;
+    NSURL               *m_etasJsonUrl;
     
-    JSONParser *routesStopsJsonParser;
-    JSONParser *vehiclesJsonParser;
-    JSONParser *etasJsonParser;
+    JSONParser          *m_routesStopsJsonParser;
+    JSONParser          *m_vehiclesJsonParser;
+    JSONParser          *m_etasJsonParser;
     
-	dispatch_queue_t loadVehicleJsonQueue;
-	dispatch_queue_t loadEtaJsonQueue;
+    dispatch_queue_t    m_loadMapInfoJsonQueue;
+	dispatch_queue_t    m_loadVehicleJsonQueue;
+	dispatch_queue_t    m_loadEtaJsonQueue;
 	
-	NSDateFormatter *timeDisplayFormatter;
+	NSDateFormatter     *m_timeDisplayFormatter;
 }
 
 @property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
-//	There should be exactly one retain on timeDisplayFormatter, the way
-//	that the program is currently set up.
+//	DataManager should have the onlyretain on timeDisplayFormatter, the way
+//	that the program is set up.
 
 
 - (void)loadRoutesAndStops;

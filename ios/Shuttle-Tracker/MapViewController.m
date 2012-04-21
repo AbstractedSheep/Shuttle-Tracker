@@ -16,8 +16,8 @@
 
 #import "IASKSettingsReader.h"
 
-//  Set shuttles updated more than 2 minute ago as "stale"
-const float UPDATE_THRESHOLD = -120;
+const NSTimeInterval UPDATE_THRESHOLD = -180.0f;    //  3 minutes
+const NSTimeInterval CLEANUP_INTERVAL = 30.0f;      //  30 seconds
 
 @interface UIImage (magentatocolor)
 
@@ -44,7 +44,7 @@ typedef enum {
 
 
 //  Convert the magenta pixels in an image to a new color.
-//  Returns a new image with retain count 1.
+//  Returns a new autoreleased image.
 - (UIImage *)copyMagentaImageasColor:(UIColor *)newColor {
     BOOL monochromeModel = NO;
     
@@ -135,17 +135,97 @@ typedef enum {
 - (void)addRoute:(Route *)route;
 - (void)addStop:(Stop *)stop;
 //	Adding vehicles should only be done on the main thread.
-- (MapVehicle *)addVehicle:(Shuttle *)vehicle;
-- (void)setVehicleAnnotationImage:(MapVehicle *)vehicle;
+- (void)addVehicle:(Shuttle *)vehicle;
+- (void)setAnnotationImageForVehicle:(MapVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
 
 @end
 
 @implementation MapViewController
 
-@synthesize dataManager;
+@synthesize dataManager = m_dataManager;
 @synthesize managedObjectContext = __managedObjectContext;
 @synthesize masterPopoverController = _masterPopoverController;
+
+- (id)init {
+    if ( (self = [super init]) ) {
+        UIImage *magentaShuttleImage, *whiteImage;
+        m_vehicles = [[NSMutableDictionary alloc] init];
+        
+        m_routeLines = [[NSMutableArray alloc] init];
+        m_routeLineViews = [[NSMutableArray alloc] init];
+        
+        m_shuttleImage = [UIImage imageNamed:@"shuttle"];
+        [m_shuttleImage retain];
+        
+        m_magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
+        m_shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
+        NSMutableDictionary *shuttleImagesEast = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *shuttleImagesNorth = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *shuttleImagesWest = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *shuttleImagesSouth = [[NSMutableDictionary alloc] init];
+        
+        //  Create east, north, west and south facing shuttle images
+        //  East
+        magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
+        [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
+        
+        whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
+        [shuttleImagesEast setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
+        
+        //  North
+        magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
+        [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"north"];
+        
+        whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
+        [shuttleImagesNorth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
+        
+        //  West
+        magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
+        [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"west"];
+        
+        whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
+        [shuttleImagesWest setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
+        
+        //  South
+        magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
+        [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"south"];
+        
+        whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
+        [shuttleImagesSouth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [whiteImage release];
+        
+        [m_shuttleImages setObject:shuttleImagesEast forKey:@"east"];
+        [m_shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
+        [m_shuttleImages setObject:shuttleImagesWest forKey:@"west"];
+        [m_shuttleImages setObject:shuttleImagesSouth forKey:@"south"];
+        [shuttleImagesEast release];
+        [shuttleImagesNorth release];
+        [shuttleImagesWest release];
+        [shuttleImagesSouth release];
+        
+        //	Take notice when the routes and stops are updated.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
+                                                     name:kDMRoutesandStopsLoaded
+                                                   object:nil];
+        
+        //	Take notice when vehicles are updated.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
+                                                     name:kDMVehiclesUpdated
+                                                   object:nil];
+        
+        //	Take notice when a setting is changed.
+        //	Note that this is not the only object that takes notice.
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
+                                                     name:kIASKAppSettingChanged
+                                                   object:nil];
+    }
+    
+    return self;
+}
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
@@ -153,19 +233,24 @@ typedef enum {
     
     CGRect rect = [[UIScreen mainScreen] bounds];
     
-	_mapView = [[MKMapView alloc] initWithFrame:rect];
-    _mapView.delegate = self;
-	_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+	m_mapView = [[MKMapView alloc] initWithFrame:rect];
+    m_mapView.delegate = self;
+	m_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
-	self.view = _mapView;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
+    
+    if (useLocation) {
+        //  Show the user's location on the map
+        m_mapView.showsUserLocation = YES;
+    }
+    
+	self.view = m_mapView;
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    routeLines = [[NSMutableArray alloc] init];
-    routeLineViews = [[NSMutableArray alloc] init];
     
     //  The RPI student union is at -73.6765441399,42.7302712352
     //  The center point used here is a bit south of it
@@ -175,101 +260,56 @@ typedef enum {
     region.span.latitudeDelta = 0.0200;
     region.span.longitudeDelta = 0.0132;
     
-    _mapView.region = region;
-	
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
-	
-	if (useLocation) {
-		//  Show the user's location on the map
-		_mapView.showsUserLocation = YES;
-	}
+    m_mapView.region = region;
     
-	shuttleImage = [UIImage imageNamed:@"shuttle"];
-	[shuttleImage retain];
+	[m_dataManager loadRoutesAndStops];
     
-    magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
-    
-    shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
-    NSMutableDictionary *shuttleImagesEast = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *shuttleImagesNorth = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *shuttleImagesWest = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *shuttleImagesSouth = [[NSMutableDictionary alloc] init];
-    
-    //  Create east, north, west and south shuttle images
-    //  East
-    UIImage *magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
-    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
-    
-    UIImage *whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-    [shuttleImagesEast setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-    [whiteImage release];
-    
-    //  North
-    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
-    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"north"];
-    
-    whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-    [shuttleImagesNorth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-    [whiteImage release];
-    
-    //  West
-    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
-    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"west"];
-    
-    whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-    [shuttleImagesWest setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-    [whiteImage release];
-    
-    //  South
-    magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
-    [magentaShuttleImages setObject:magentaShuttleImage forKey:@"south"];
-    
-    whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-    [shuttleImagesSouth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
-    [whiteImage release];
-    
-    [shuttleImages setObject:shuttleImagesEast forKey:@"east"];
-    [shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
-    [shuttleImages setObject:shuttleImagesWest forKey:@"west"];
-    [shuttleImages setObject:shuttleImagesSouth forKey:@"south"];
-    [shuttleImagesEast release];
-    [shuttleImagesNorth release];
-    [shuttleImagesWest release];
-    [shuttleImagesSouth release];
-    
-    vehicles = [[NSMutableDictionary alloc] init];
-	
-	//	Take notice when the routes and stops are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
-                                                 name:kDMRoutesandStopsLoaded
-                                               object:nil];
-	
-	[dataManager loadRoutesAndStops];
-    
-	//	Take notice when a setting is changed.
-	//	Note that this is not the only object that takes notice.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
-                                                 name:kIASKAppSettingChanged
-                                               object:nil];
-	
-	//	Take notice when vehicles are updated.
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
-                                                 name:kDMVehiclesUpdated
-                                               object:nil];
+    [self vehicleCleanup];
+    m_shuttleCleanupTimer = [NSTimer scheduledTimerWithTimeInterval:CLEANUP_INTERVAL 
+                                                             target:self 
+                                                           selector:@selector(vehicleCleanup) 
+                                                           userInfo:nil 
+                                                            repeats:YES];
 }
 
+- (void)viewDidUnload {
+    [super viewDidUnload];
+    // Release any retained subviews of the main view.
+    // e.g. self.myOutlet = nil;
+    
+    [m_shuttleCleanupTimer invalidate];
+}
+
+//  Consider shuttles updated more than UPDATE_THRESHOLD ago as "stale",
+//  and remove them.
+- (void)vehicleCleanup {
+    NSMutableArray *oldVehicles = [NSMutableArray array];
+    MapVehicle *vehicle;
+    
+    for (NSString *name in m_vehicles) {
+        vehicle = [m_vehicles objectForKey:name];
+        if ([vehicle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
+            [oldVehicles addObject:name];
+        }
+    }
+    
+    for (NSString *name in oldVehicles) {
+        [m_mapView removeAnnotation:[m_vehicles objectForKey:name]];
+        [m_vehicles removeObjectForKey:name];
+    }
+}
 
 //  The routes and stops were loaded in the dataManager
 - (void)managedRoutesLoaded {
     //  Get all routes
     NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"Route" 
-                                                         inManagedObjectContext:self.managedObjectContext];
+                                                              inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *routeRequest = [[[NSFetchRequest alloc] init] autorelease];
     [routeRequest setEntity:routeEntityDescription];
     
     NSError *error = nil;
-    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:routeRequest error:&error];
+    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:routeRequest 
+                                                                 error:&error];
     if (dbRoutes == nil)
     {
         // Deal with error...
@@ -288,7 +328,8 @@ typedef enum {
     [stopRequest setEntity:stopEntityDescription];
     
     error = nil;
-    NSArray *dbStops = [self.managedObjectContext executeFetchRequest:stopRequest error:&error];
+    NSArray *dbStops = [self.managedObjectContext executeFetchRequest:stopRequest 
+                                                                error:&error];
     if (dbStops == nil)
     {
         // Deal with error...
@@ -304,46 +345,64 @@ typedef enum {
 //	A notification is sent by DataManager whenever the vehicles are updated.
 //	Call the work function vehiclesUpdated on the main thread.
 - (void)notifyVehiclesUpdated:(NSNotification *)notification {
-	[self performSelectorOnMainThread:@selector(vehiclesUpdated:) withObject:notification waitUntilDone:NO];
+	[self performSelectorOnMainThread:@selector(vehiclesUpdated:) 
+                           withObject:notification 
+                        waitUntilDone:NO];
 }
 
 //	A notification is sent by DataManager whenever the vehicles are updated.
 - (void)vehiclesUpdated:(NSNotification *)notification {
     //  Get all vehicles
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Shuttle"
-                                                         inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entityDescription;
+    entityDescription = [NSEntityDescription entityForName:@"Shuttle"
+                                    inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
     
     NSError *error = nil;
-    NSArray *dbVehicles = [self.managedObjectContext executeFetchRequest:request error:&error];
-    if (dbVehicles == nil)
+    NSArray *dbVehicles;
+    dbVehicles = [self.managedObjectContext executeFetchRequest:request 
+                                                          error:&error];
+    
+    MapVehicle *existingShuttle;
+    double updateTimeDiff, latitude, longitude;
+    if (error != nil || dbVehicles == nil)
     {
         // Deal with error...
     } else if ([dbVehicles count] > 0) {
         for (Shuttle *shuttle in dbVehicles) {
-            MapVehicle *existingShuttle = [vehicles objectForKey:shuttle.name];
-            if (existingShuttle == nil) {
-                //  Add the shuttle to the map view
-                if ([shuttle.updateTime timeIntervalSinceNow] > UPDATE_THRESHOLD) {
-                    [vehicles setObject:[self addVehicle:shuttle] forKey:shuttle.name];
-                }
-            } else {
-                if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
-                    [vehicles removeObjectForKey:existingShuttle.name];
-                } else if ([shuttle.routeId intValue] != existingShuttle.routeNo || [shuttle.heading intValue] != existingShuttle.heading) {
-                    //	If the shuttle switched routes, then update the image.
-                    //  Also update the image if the shuttle has changed heading
+            existingShuttle = [m_vehicles objectForKey:shuttle.name];
+            updateTimeDiff = [shuttle.updateTime timeIntervalSinceNow];
+            
+            if (updateTimeDiff > UPDATE_THRESHOLD) {
+                if (existingShuttle == nil) {
+                    //  Add the shuttle to the map view and our array of active shuttles
+                    [self addVehicle:shuttle];
+                } else {
+                    if ([shuttle.routeId intValue] != existingShuttle.routeId 
+                        || [shuttle.heading intValue] != existingShuttle.heading) {
+                        //	If the shuttle switched routes, then update the image.
+                        //  Also update the image if the shuttle has changed heading
+                        
+                        existingShuttle.routeId = [shuttle.routeId intValue];
+                        existingShuttle.heading = [shuttle.heading intValue];
+                        
+                        //  Flag the vehicle to have its shuttle image updated
+                        existingShuttle.routeImageSet = NO;
+                    } else if ([shuttle.updateTime timeIntervalSinceDate:existingShuttle.updateTime] > 0) {
+                        //  If the shuttle location is out of date, update it
+                        
+                        latitude = [shuttle.latitude doubleValue];
+                        longitude = [shuttle.longitude doubleValue];
+                        CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake(latitude, longitude);
+                        existingShuttle.coordinate = clLoc;
+                    } else {
+                        //  The shuttle has not been updated, leave it be
+                    }
                     
-                    existingShuttle.routeNo = [shuttle.routeId intValue];
-                    existingShuttle.heading = [shuttle.heading intValue];
-                    
-                    [self setVehicleAnnotationImage:existingShuttle];
-                } else if ([shuttle.updateTime timeIntervalSinceDate:existingShuttle.updateTime] > 0) {
-                    //  If the shuttle location is out of date, update it
-                    
-                    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake([shuttle.latitude doubleValue], [shuttle.longitude doubleValue]);
-                    existingShuttle.coordinate = clLoc;
+                    //  Make sure the shuttle's update time is current
+                    [existingShuttle setUpdateTime:shuttle.updateTime 
+                                     withFormatter:self.dataManager.timeDisplayFormatter];
                 }
             }
         }
@@ -358,8 +417,9 @@ typedef enum {
 - (void)addRoute:(Route *)route {
     CLLocationCoordinate2D clLoc;
     MKMapPoint *points;
+    UIImage *coloredImage;
     
-    //  Get all vehicles
+    //  Get all points on the route
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"RoutePt"
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
@@ -369,61 +429,74 @@ typedef enum {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route == %@)", route];
     [request setPredicate:predicate];
     
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber" ascending:YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber" 
+                                                                   ascending:YES];
     [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     [sortDescriptor release];
     
     NSError *error = nil;
-    NSArray *routePts = [self.managedObjectContext executeFetchRequest:request error:&error];
-    if (routePts == nil)
+    NSArray *routePts = [self.managedObjectContext executeFetchRequest:request 
+                                                                 error:&error];
+    
+    double latitude, longitude;
+    if (error != nil || routePts == nil)
     {
         // Deal with error...
     } else {
+        MKPolyline *polyLine;
+        MKPolylineView *routeView;
+        
         points = malloc(sizeof(MKMapPoint) * routePts.count);
         
         //  Create an array of coordinates for the polyline which will represent the route
         int counter = 0;
         for (RoutePt *point in routePts) {
             //  Get a CoreLocation coordinate from the point
-            clLoc = CLLocationCoordinate2DMake([point.latitude doubleValue], [point.longitude doubleValue]);
+            latitude = [point.latitude doubleValue];
+            longitude = [point.longitude doubleValue];
+            clLoc = CLLocationCoordinate2DMake(latitude, longitude);
             
             points[counter] = MKMapPointForCoordinate(clLoc);
             counter++;
         }
         
-        MKPolyline *polyLine = [MKPolyline polylineWithPoints:points count:counter];
-        [routeLines addObject:polyLine];
+        polyLine = [MKPolyline polylineWithPoints:points 
+                                                        count:counter];
+        [m_routeLines addObject:polyLine];
         
         free(points);
         
-        MKPolylineView *routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
-        [routeLineViews addObject:routeView];
+        routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
+        [m_routeLineViews addObject:routeView];
         [routeView release];
         
         routeView.lineWidth = [route.width intValue];
         routeView.fillColor = [UIColor UIColorFromRGBString:route.color];
         routeView.strokeColor = routeView.fillColor;
         
-        [_mapView addOverlay:polyLine];
+        [m_mapView addOverlay:polyLine];
         
         //  Create the colored shuttle image for the route
-        UIImage *coloredImage;
         
         if (routeView.fillColor) {
-            coloredImage = [[magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[shuttleImages objectForKey:@"east"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
+            [[m_shuttleImages objectForKey:@"east"] setValue:coloredImage 
+                                                      forKey:[route.routeId stringValue]];
             [coloredImage release];
             
-            coloredImage = [[magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
-            [[shuttleImages objectForKey:@"north"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            coloredImage = [[m_magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
+            [[m_shuttleImages objectForKey:@"north"] setValue:coloredImage 
+                                                       forKey:[route.routeId stringValue]];
             [coloredImage release];
             
-            coloredImage = [[magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[shuttleImages objectForKey:@"west"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
+            [[m_shuttleImages objectForKey:@"west"] setValue:coloredImage 
+                                                      forKey:[route.routeId stringValue]];
             [coloredImage release];
             
-            coloredImage = [[magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
-            [[shuttleImages objectForKey:@"south"] setValue:coloredImage forKey:[route.routeId stringValue]];
+            coloredImage = [[m_magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
+            [[m_shuttleImages objectForKey:@"south"] setValue:coloredImage 
+                                                       forKey:[route.routeId stringValue]];
             [coloredImage release];
         }
     }
@@ -431,77 +504,90 @@ typedef enum {
 
 
 - (void)addStop:(Stop *)stop {
+    double latitude, longitude;
     CLLocationCoordinate2D clLoc;
     
+    latitude = [stop.latitude doubleValue];
+    longitude = [stop.longitude doubleValue];
+    
     //  Get a CoreLocation coordinate from the point
-    clLoc = CLLocationCoordinate2DMake([stop.latitude doubleValue], [stop.longitude doubleValue]);
+    clLoc = CLLocationCoordinate2DMake(latitude, longitude);
     
     MapStop *mapStop = [[MapStop alloc] initWithLocation:clLoc];
     mapStop.name = stop.name;
-    [_mapView addAnnotation:mapStop];
+    [m_mapView addAnnotation:mapStop];
     [mapStop release];
 }
 
 
-- (MapVehicle *)addVehicle:(Shuttle *)vehicle {
+- (void)addVehicle:(Shuttle *)vehicle {
     MapVehicle *newVehicle = [[MapVehicle alloc] init];
+    double latitude, longitude;
+    CLLocationCoordinate2D clLoc;
+    
+    latitude = [vehicle.latitude doubleValue];
+    longitude = [vehicle.longitude doubleValue];
     
     //  Get a CoreLocation coordinate from the point
-    CLLocationCoordinate2D clLoc = CLLocationCoordinate2DMake([vehicle.latitude doubleValue], [vehicle.longitude doubleValue]);
+    clLoc = CLLocationCoordinate2DMake(latitude, longitude);
     newVehicle.coordinate = clLoc;
     newVehicle.heading = [vehicle.heading intValue];
-    newVehicle.routeNo = [vehicle.routeId intValue];
-    [newVehicle setUpdateTime:vehicle.updateTime withFormatter:self.dataManager.timeDisplayFormatter];
+    newVehicle.routeId = [vehicle.routeId intValue];
+    [newVehicle setUpdateTime:vehicle.updateTime 
+                withFormatter:self.dataManager.timeDisplayFormatter];
     newVehicle.name = vehicle.name;
     
-    [_mapView addAnnotation:newVehicle];
-    [vehicles setObject:newVehicle forKey:newVehicle.name];
+    [m_mapView addAnnotation:newVehicle];
+    [m_vehicles setObject:newVehicle forKey:newVehicle.name];
     [newVehicle release];
-    
-    return newVehicle;
 }
 
 
 //  Set the vehicle's annotation view based on its current orientation
 //  and associated route.
-- (void)setVehicleAnnotationImage:(MapVehicle *)vehicle {
-    //  Use the colored image for the shuttle's current route.  A route of -1 uses the white image.
+- (void)setAnnotationImageForVehicle:(MapVehicle *)vehicle {
+    //  Use the colored image for the shuttle's current route.  A route
+    //  of -1 uses the white image.
     UIImage *coloredImage;
     NSMutableDictionary *shuttleDirectionImages;
+    NSString *routeString;
+    
     if (vehicle.heading >= 315 || vehicle.heading < 45) {
-        shuttleDirectionImages = [shuttleImages objectForKey:@"north"];
+        shuttleDirectionImages = [m_shuttleImages objectForKey:@"north"];
     } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
-        shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
+        shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
     } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
-        shuttleDirectionImages = [shuttleImages objectForKey:@"south"];
+        shuttleDirectionImages = [m_shuttleImages objectForKey:@"south"];
     } else if (vehicle.heading >= 225 && vehicle.heading < 315) {
-        shuttleDirectionImages = [shuttleImages objectForKey:@"west"];
+        shuttleDirectionImages = [m_shuttleImages objectForKey:@"west"];
     } else {
-        shuttleDirectionImages = [shuttleImages objectForKey:@"east"];
+        shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
     }
     
-    coloredImage = [shuttleDirectionImages objectForKey:[[NSNumber numberWithInt:vehicle.routeNo] stringValue]];
+    routeString = [[NSNumber numberWithInt:vehicle.routeId] stringValue];
+    coloredImage = [shuttleDirectionImages objectForKey:routeString];
     
     if (coloredImage != nil) {
         vehicle.annotationView.image = coloredImage;
         vehicle.routeImageSet = YES;
     } else {
-        vehicle.annotationView.image = shuttleImage;
+        vehicle.annotationView.image = m_shuttleImage;
         vehicle.routeImageSet = NO;
     }
 }
 
-//	InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
-//	settingChanged currently only handles turning on or off showing the user's location.
-//	Other objects may also do something when a setting is changed.
+//	InAppSettingsKit sends out a notification whenever a setting is changed in the
+//  settings view inside the app.  settingChanged currently only handles turning on 
+//  or off showing the user's location. Other objects may also do something when a 
+//  setting is changed.
 - (void)settingChanged:(NSNotification *)notification {
 	NSDictionary *info = [notification userInfo];
 	
 	if ([[notification object] isEqualToString:@"useLocation"]) {
 		if ([[info objectForKey:@"useLocation"] boolValue]) {
-			_mapView.showsUserLocation = YES;
+			m_mapView.showsUserLocation = YES;
 		} else {
-			_mapView.showsUserLocation = NO;
+			m_mapView.showsUserLocation = NO;
 		}
 	}
 }
@@ -521,16 +607,10 @@ typedef enum {
     // Release any cached data, images, etc. that aren't in use.
 }
 
-- (void)viewDidUnload {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
 
 - (void)dealloc {
-    [_mapView release];
-	[shuttleImage release];
+    [m_mapView release];
+	[m_shuttleImage release];
     [super dealloc];
 }
 
@@ -542,9 +622,9 @@ typedef enum {
     
     int counter = 0;
     
-    for (MKPolyline *routeLine in routeLines) {
+    for (MKPolyline *routeLine in m_routeLines) {
         if (routeLine == overlay) {
-            overlayView = [routeLineViews objectAtIndex:counter];
+            overlayView = [m_routeLineViews objectAtIndex:counter];
             break;
         }
         
@@ -557,18 +637,26 @@ typedef enum {
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
     //  If the annotation is the user's location, return nil so the platform
     //  just uses the blue dot
-    if (annotation == _mapView.userLocation)
+    if (annotation == m_mapView.userLocation)
         return nil;
     
     if ([annotation isKindOfClass:[MapStop class]]) {
-		if ([(MapStop *)annotation annotationView]) {
-			return [(MapStop *)annotation annotationView];
+        MapStop *stop = (MapStop *)annotation;
+        
+		if ([stop annotationView]) {
+			return [stop annotationView];
 		}
 		
-		MKAnnotationView *stopAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:(MapStop *)annotation
-                                                                             reuseIdentifier:@"stopAnnotation"] autorelease];
-        stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
-        stopAnnotationView.canShowCallout = YES;
+		MKAnnotationView *stopAnnotationView;
+        stopAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"stopAnnotation"];
+        
+        if (stopAnnotationView == nil) {
+            stopAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:stop
+                                                              reuseIdentifier:@"stopAnnotation"];
+            stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
+            stopAnnotationView.canShowCallout = YES;
+            [stopAnnotationView autorelease];
+        }
         
         [(MapStop *)annotation setAnnotationView:stopAnnotationView];
 		
@@ -576,24 +664,27 @@ typedef enum {
     } else if ([annotation isKindOfClass:[MapVehicle class]]) {
         MapVehicle *vehicle = (MapVehicle *)annotation;
         
-        if ([vehicle annotationView]) {
+        if (vehicle.annotationView != nil) {
             //  Check to see if the vehicle's image is the plain shuttle image.
             //  If it is, check for a colored shuttle image for the shuttle's route.
             //  Set the shuttle's image to the colored one, if we have it.
             if (!vehicle.routeImageSet) {
-                [self setVehicleAnnotationImage:vehicle];
+                [self setAnnotationImageForVehicle:vehicle];
+            }
+        } else {
+            MKAnnotationView *vehicleAnnotationView;
+            vehicleAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"vehicleAnnotation"];
+            
+            if (vehicleAnnotationView == nil) {
+                vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:vehicle
+                                                                     reuseIdentifier:@"vehicleAnnotation"];
+                vehicleAnnotationView.canShowCallout = YES;
+                [vehicleAnnotationView autorelease];
             }
             
-            return [vehicle annotationView];
-        } else {
-            MKAnnotationView *vehicleAnnotationView = [[[MKAnnotationView alloc] initWithAnnotation:vehicle
-                                                                                    reuseIdentifier:@"vehicleAnnotation"] autorelease];
+            vehicle.annotationView = vehicleAnnotationView;
             
-            [self setVehicleAnnotationImage:vehicle];
-            
-            vehicleAnnotationView.canShowCallout = YES;
-            
-            [vehicle setAnnotationView:vehicleAnnotationView];
+            [self setAnnotationImageForVehicle:vehicle];
         }
 		
 		return vehicle.annotationView;
@@ -604,16 +695,22 @@ typedef enum {
 
 #pragma mark - Split view
 
-- (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController
+- (void)splitViewController:(UISplitViewController *)splitController 
+     willHideViewController:(UIViewController *)viewController 
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem 
+       forPopoverController:(UIPopoverController *)popoverController
 {
     barButtonItem.title = NSLocalizedString(@"ETAs", @"ETAs");
     [self.navigationItem setLeftBarButtonItem:barButtonItem animated:YES];
     self.masterPopoverController = popoverController;
 }
 
-- (void)splitViewController:(UISplitViewController *)splitController willShowViewController:(UIViewController *)viewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+- (void)splitViewController:(UISplitViewController *)splitController 
+     willShowViewController:(UIViewController *)viewController 
+  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
-    // Called when the view is shown again in the split view, invalidating the button and popover controller.
+    // Called when the view is shown again in the split view, invalidating the button 
+    // and popover controller.
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
     self.masterPopoverController = nil;
 }
@@ -622,14 +719,15 @@ typedef enum {
 
 @implementation UIColor (stringcolor)
 
-//  Take an NSString formatted as such: RRGGBB and return a UIColor
+//  Take an NSString formatted as RRGGBB and return a UIColor
 //  Note that this removes any '#' characters from rgbString
 //  before doing anything.
 + (UIColor *)UIColorFromRGBString:(NSString *)rgbString {
     NSScanner *scanner;
     unsigned int rgbValue;
     
-    rgbString = [rgbString stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
+    NSCharacterSet *charSet = [NSCharacterSet characterSetWithCharactersInString:@"#"];
+    rgbString = [rgbString stringByTrimmingCharactersInSet:charSet];
     
     if (rgbString) {
         scanner = [NSScanner scannerWithString:rgbString];

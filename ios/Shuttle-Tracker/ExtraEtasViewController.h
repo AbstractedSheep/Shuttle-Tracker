@@ -11,19 +11,19 @@
 @class Stop, JSONParser, DataManager, UINavigationButton;
 
 @interface ExtraEtasViewController : UITableViewController {
-	NSURL *etasUrl;
-	JSONParser *extraEtasParser;
+	NSURL               *m_etasUrl;
+	JSONParser          *m_extraEtasParser;
 	
-    NSDate *lastEtaRefresh;
-	NSArray *etas;
+    NSDate              *m_lastEtaRefresh;
+	NSArray             *m_etas;
 	
-	DataManager *dataManager;
-	NSTimer *updateTimer;
-	NSDateFormatter *timeDisplayFormatter;
+	DataManager         *m_dataManager;
+	NSTimer             *m_updateTimer;
+	NSDateFormatter     *m_timeDisplayFormatter;
     
-    UIBarButtonItem *favoriteButton;
+    UIBarButtonItem     *m_favoriteButton;
     
-    BOOL useRelativeTimes;
+    BOOL                m_useRelativeTimes;
 }
 
 - (id)initWithStop:(Stop *)stop forRouteNumber:(NSNumber *)routeNumber;

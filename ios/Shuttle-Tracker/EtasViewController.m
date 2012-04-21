@@ -17,6 +17,7 @@
 #import "Route.h"
 #import "Stop.h"
 
+const BOOL makeLaunchImage = NO;
 
 @interface EtasViewController ()
 
@@ -32,9 +33,9 @@
 @implementation EtasViewController
 
 
-@synthesize dataManager;
-@synthesize timeDisplayFormatter;
-@synthesize useRelativeTimes;
+@synthesize dataManager = m_dataManager;
+@synthesize timeDisplayFormatter = m_timeDisplayFormatter;
+@synthesize useRelativeTimes = m_useRelativeTimes;
 @synthesize managedObjectContext = __managedObjectContext;
 
 
@@ -45,9 +46,9 @@
         self.contentSizeForViewInPopover = CGSizeMake(320, 600);
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
+        m_useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
         
-        routeStops = [[NSMutableDictionary alloc] init];
+        m_routeStops = [[NSMutableDictionary alloc] init];
         
         //	Take notice when routes and stops are loaded.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyStopsUpdated:)
@@ -96,8 +97,6 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-	
 	//	Take notice when the ETAs are updated
 	[[NSNotificationCenter defaultCenter] addObserver:self 
 											 selector:@selector(delayedTableReload) 
@@ -105,6 +104,7 @@
 											   object:nil];
 
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [super viewDidLoad];
 }
 
 - (void)viewDidUnload
@@ -112,6 +112,23 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    m_freshTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f 
+                                                    target:self 
+                                                  selector:@selector(delayedTableReload) 
+                                                  userInfo:nil 
+                                                   repeats:YES];
+    [m_freshTimer retain];
+    
+    [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [m_freshTimer invalidate];
+    
+    [super viewWillDisappear:animated];
 }
 
 //	A notification is sent by DataManager whenever stops are loaded.
@@ -138,8 +155,8 @@
             //  Get all stops for that route
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stopNum" ascending:YES];
             
-            [routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] 
-                          forKey:[route.routeId stringValue]];
+            [m_routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] 
+                            forKey:[route.routeId stringValue]];
         }
     }
 }
@@ -150,12 +167,19 @@
 {
     // Return the number of sections.
     //  One section for each route (or "Loading...")
+    if (makeLaunchImage) {
+        return 1;
+    }
     
-    return [routeStops count] + 1;
+    return [m_routeStops count] + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (makeLaunchImage) {
+        return 0;
+    }
+    
     int rows = 0;
     // Return the number of rows in the section.
     if (section == 0) {
@@ -174,10 +198,10 @@
             rows = numStops;
         }
     } else {
-        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", section]];
+        NSArray *stops = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", section]];
         
-        if (stopsArray != nil) {
-            rows = [stopsArray count]; 
+        if (stops != nil) {
+            rows = [stops count];
         }
     }
     
@@ -189,6 +213,13 @@
     static NSString *CellIdentifier = @"EtaCell";
     ETA *eta = nil;
     Stop *stop = nil;
+    NSArray *favStops = nil, *etas = nil, *stopsArray = nil;
+    NSError *error = nil;
+    NSEntityDescription *entityDescription = nil;
+    NSPredicate *predicate = nil;
+    NSFetchRequest *request = nil;
+    NSSortDescriptor *sortDescriptor = nil;
+    int minutesToEta = 0;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -201,16 +232,16 @@
     
     if (indexPath.section == 0) {
         FavoriteStop *favStop = nil;
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
-                                                             inManagedObjectContext:self.managedObjectContext];
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+                                        inManagedObjectContext:self.managedObjectContext];
+        request = [[[NSFetchRequest alloc] init] autorelease];
         [request setEntity:entityDescription];
         
-        NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
+        sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
         [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
         
-        NSError *error = nil;
-        NSArray *favStops = [self.managedObjectContext executeFetchRequest:request error:&error];
+        error = nil;
+        favStops = [self.managedObjectContext executeFetchRequest:request error:&error];
         if ([favStops count] > indexPath.row) {
             favStop = [favStops objectAtIndex:indexPath.row];
             stop = favStop.stop;
@@ -225,44 +256,58 @@
             
             [request setFetchLimit:1];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", favStop.route.routeId, favStop.stop.idTag];
+            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+                         favStop.route.routeId, favStop.stop.idTag];
             [request setPredicate:predicate];
             
             error = nil;
-            NSArray *etas = [self.managedObjectContext executeFetchRequest:request error:&error];
-            if ([etas count] > 0) {
-                eta = [etas objectAtIndex:0];
+            etas = [self.managedObjectContext executeFetchRequest:request error:&error];
+            
+            //  Get the next ETA that is in the future
+            for (ETA *currentEta in etas) {
+                minutesToEta = (int)([currentEta.eta timeIntervalSinceNow] / 60.0f);
+                if (minutesToEta > -1) {
+                    eta = currentEta;
+                    break;
+                }
             }
         }
     } else {
-        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             stop = [stopsArray objectAtIndex:indexPath.row];
-            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"ETA"
-                                                                 inManagedObjectContext:self.managedObjectContext];
-            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            entityDescription = [NSEntityDescription entityForName:@"ETA"
+                                            inManagedObjectContext:self.managedObjectContext];
+            request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
-            NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
+            sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
             [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
             
             [request setFetchLimit:1];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", [NSNumber numberWithInt:indexPath.section], stop.idTag];
+            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+                         [NSNumber numberWithInt:indexPath.section], stop.idTag];
             [request setPredicate:predicate];
             
-            NSError *error = nil;
-            NSArray *etas = [self.managedObjectContext executeFetchRequest:request error:&error];
-            if ([etas count] > 0) {
-                eta = [etas objectAtIndex:0];
+            error = nil;
+            etas = [self.managedObjectContext executeFetchRequest:request error:&error];
+            
+            //  Get the next ETA that is in the future
+            for (ETA *currentEta in etas) {
+                minutesToEta = (int)([currentEta.eta timeIntervalSinceNow] / 60.0f);
+                if (minutesToEta > -1) {
+                    eta = currentEta;
+                    break;
+                }
             }
         }
     }
     
     // Configure the cell...
     
-    //  If the EtaWrapper was found, add the stop info and the ETA
+    //  If the ETA was found, add the stop info and the ETA
     if (eta) {
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
         if (eta.stop != nil) {
@@ -272,31 +317,23 @@
         }
 		
 		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
-        //  Show the ETA, if it is in the future.
-        int minutesToEta = 0;
-        minutesToEta = (int)([eta.eta timeIntervalSinceNow] / 60);
-        if (self.useRelativeTimes) {
-            
-            //  Grammar for one vs. more than one
-            if (minutesToEta >= 1) {
-                cell.detailTextLabel.text = [NSString stringWithFormat:@"%d min.", minutesToEta];
-            }
-            else if (minutesToEta < -2) {
-                //  If an ETA is long since passed, don't show anything
-                cell.detailTextLabel.text = @"————";
-            } else {
+        //  The ETA is recently passed or still in the future, so show it to the user
+        if (m_useRelativeTimes) {
+            if (minutesToEta < 2) {
                 //  If an ETA is recently passed, let it show as imminent
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"< 1 min."];
+            } else {
+                cell.detailTextLabel.text = [NSString stringWithFormat:@"%d min.", minutesToEta];
             }
         } else {
             //  Show ETAs as timestamps
-            cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:eta.eta];
+            cell.detailTextLabel.text = [m_timeDisplayFormatter stringFromDate:eta.eta];
         }
     } else {
         if (stop != nil) {
             cell.textLabel.text = stop.shortName;
-            cell.detailTextLabel.text = @"————";
         }
+        cell.detailTextLabel.text = @"————";
     }
     
     return cell;
@@ -305,6 +342,10 @@
 
 //	Use the short names of the routes, since they display better than the full names
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (makeLaunchImage) {
+        return @"Loading...";
+    }
+    
     if (section == 0) {
         return @"Favorites";
     }
@@ -315,7 +356,8 @@
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"routeId == %@", [NSNumber numberWithInt:section]];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"routeId == %@", 
+                              [NSNumber numberWithInt:section]];
     [request setPredicate:predicate];
     
     NSError *error = nil;
@@ -361,18 +403,19 @@
             levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:favStop.route.routeId];
         }
     } else {
-        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        NSArray *stops = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
-        if (stopsArray != nil && [stopsArray count] > indexPath.row) {
-            stop = [stopsArray objectAtIndex:indexPath.row];
+        if (stops != nil && [stops count] > indexPath.row) {
+            stop = [stops objectAtIndex:indexPath.row];
             
-            levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
+            levc = [[ExtraEtasViewController alloc] initWithStop:stop 
+                                                  forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
         }
     }
 	
     levc.managedObjectContext = self.managedObjectContext;
-	levc.dataManager = dataManager;
-	levc.timeDisplayFormatter = timeDisplayFormatter;
+	levc.dataManager = m_dataManager;
+	levc.timeDisplayFormatter = m_timeDisplayFormatter;
 	
 	// Pass the selected object to the new view controller.
 	[self.navigationController pushViewController:levc animated:YES];
@@ -442,7 +485,7 @@
 	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
 		//	Add a favorite stop then reload the table.
         FavoriteStop *favStop = nil;
-        NSArray *stopsArray = [routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
@@ -450,7 +493,9 @@
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(stop.name == %@) AND (route.routeId == %@)", [[stopsArray objectAtIndex:indexPath.row] name], [NSNumber numberWithInt:indexPath.section]];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(stop.name == %@) AND (route.routeId == %@)", 
+                                      [[stopsArray objectAtIndex:indexPath.row] name], 
+                                      [NSNumber numberWithInt:indexPath.section]];
             [request setPredicate:predicate];
             
             NSError *error = nil;
@@ -486,7 +531,9 @@
                         /*
                          Replace this implementation with code to handle the error appropriately.
                          
-                         abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                         abort() causes the application to generate a crash log and terminate. 
+                         You should not use this function in a shipping application, although 
+                         it may be useful during development. 
                          */
                         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 
@@ -543,9 +590,9 @@
 	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
 	if ([[notification object] isEqualToString:@"useRelativeTimes"]) {
 		if ([[info objectForKey:@"useRelativeTimes"] boolValue]) {
-            self.useRelativeTimes = YES;
+            m_useRelativeTimes = YES;
 		} else {
-            self.useRelativeTimes = NO;
+            m_useRelativeTimes = NO;
 		}
 	}
 }

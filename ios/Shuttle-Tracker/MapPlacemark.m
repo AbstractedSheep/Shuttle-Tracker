@@ -91,7 +91,7 @@
 @synthesize ETAs;
 @synthesize heading;
 @synthesize updateTime;
-@synthesize routeNo;
+@synthesize routeId;
 @synthesize routeImageSet;
 @synthesize viewNeedsUpdate;
 

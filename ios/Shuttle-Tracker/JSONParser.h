@@ -7,12 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <MapKit/MapKit.h>
-#import <CoreData/CoreData.h>
-
 
 @interface JSONParser : NSObject <NSFetchedResultsControllerDelegate> {
-	NSDateFormatter *timeDisplayFormatter;
+	NSDateFormatter *m_timeDisplayFormatter;
 }
 
 @property (nonatomic, retain) NSArray *routes;

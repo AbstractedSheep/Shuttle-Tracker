@@ -31,9 +31,9 @@
 @synthesize stop = _stop;
 @synthesize routeNum = _routeNum;
 @synthesize managedObjectContext = __managedObjectContext;
-@synthesize dataManager;
-@synthesize timeDisplayFormatter;
-@synthesize useRelativeTimes;
+@synthesize dataManager = m_dataManager;
+@synthesize timeDisplayFormatter = m_timeDisplayFormatter;
+@synthesize useRelativeTimes = m_useRelativeTimes;
 
 - (id)initWithStop:(Stop *)stop forRouteNumber:(NSNumber *)routeNumber {
 //	if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
@@ -42,20 +42,20 @@
         self.routeNum = routeNumber;
 		self.title = stop.shortName;
 		
-        lastEtaRefresh = nil;
+        m_lastEtaRefresh = nil;
         
-		etasUrl = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@&rt=%d&st=%@", 
+		m_etasUrl = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@&rt=%d&st=%@", 
 				   kLEExtraEtasUrl, [routeNumber intValue], stop.idTag]];
         
-        extraEtasParser = [[JSONParser alloc] init];
+        m_extraEtasParser = [[JSONParser alloc] init];
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
         
-        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+        m_favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                            target:self 
                                                                            action:@selector(toggleFavorite:)];
-        self.navigationItem.rightBarButtonItem = favoriteButton;
+        self.navigationItem.rightBarButtonItem = m_favoriteButton;
         
         //	Take notice when a setting is changed.
         //	Note that this is not the only object that takes notice.
@@ -78,8 +78,8 @@
 
 - (void)dealloc
 {
-	[etasUrl release];
-	[extraEtasParser release];
+	[m_etasUrl release];
+	[m_extraEtasParser release];
     [super dealloc];
 }
 
@@ -93,22 +93,24 @@
 
 
 - (void)getExtraEtas {
-    lastEtaRefresh = [NSDate dateWithTimeIntervalSinceNow:0];
-    [lastEtaRefresh retain];
+    m_lastEtaRefresh = [NSDate dateWithTimeIntervalSinceNow:0];
+    [m_lastEtaRefresh retain];
     
 	dispatch_queue_t extraEtasQueue = dispatch_queue_create("com.abstractedsheep.extraetasqueue", NULL);
 	dispatch_async(extraEtasQueue, ^{
         NSError *theError = nil;
-        NSString *jsonString = [NSString stringWithContentsOfURL:etasUrl 
+        NSString *jsonString = [NSString stringWithContentsOfURL:m_etasUrl 
                                                         encoding:NSUTF8StringEncoding 
                                                            error:&theError];
         if (theError) {
             NSLog(@"Error retrieving JSON data");
         } else {
-            [extraEtasParser performSelectorOnMainThread:@selector(parseExtraEtasFromJson:)
-                                              withObject:jsonString
-                                           waitUntilDone:YES];
-            [self performSelectorOnMainThread:@selector(delayedTableReload) withObject:nil waitUntilDone:NO];
+            [m_extraEtasParser performSelectorOnMainThread:@selector(parseExtraEtasFromJson:)
+                                                withObject:jsonString
+                                             waitUntilDone:YES];
+            [self performSelectorOnMainThread:@selector(delayedTableReload) 
+                                   withObject:nil 
+                                waitUntilDone:NO];
         }
 	});
 	
@@ -119,7 +121,9 @@
 
 - (void)loadView {
     CGRect rect = [[UIScreen mainScreen] bounds];
-    self.tableView = [[UITableView alloc] initWithFrame:rect style:UITableViewStyleGrouped];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:rect style:UITableViewStyleGrouped];
+    self.tableView = tableView;
+    [tableView release];
 }
 
 - (void)viewDidLoad
@@ -135,7 +139,8 @@
     
     [request setFetchLimit:1];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", self.routeNum, self.stop.idTag];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+                              self.routeNum, self.stop.idTag];
     [request setPredicate:predicate];
     
     NSError *error = nil;
@@ -144,27 +149,21 @@
         //  handle error
     }
     
-    [favoriteButton release];
+    [m_favoriteButton release];
     
     if (numStops > 0) {
-        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
+        m_favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
                                                                        target:self 
                                                                        action:@selector(toggleFavorite:)];
     } else {
-        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+        m_favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                        target:self 
                                                                        action:@selector(toggleFavorite:)];
     }
     
-    self.navigationItem.rightBarButtonItem = favoriteButton;
+    self.navigationItem.rightBarButtonItem = m_favoriteButton;
 	
 	[self getExtraEtas];
-
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
- 
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)viewDidUnload
@@ -183,17 +182,17 @@
 {
     [super viewDidAppear:animated];
     
-	updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
+	m_updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
 										selector:@selector(getExtraEtas) 
 										userInfo:nil 
 										 repeats:YES];
-	[updateTimer retain];
+	[m_updateTimer retain];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	[updateTimer invalidate];
-	[updateTimer release];
+	[m_updateTimer invalidate];
+	[m_updateTimer release];
     
     [super viewWillDisappear:animated];
 }
@@ -220,7 +219,8 @@
     
     [request setFetchLimit:1];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", self.routeNum, self.stop.idTag];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+                              self.routeNum, self.stop.idTag];
     [request setPredicate:predicate];
     
     NSError *error = nil;
@@ -233,7 +233,7 @@
     } else {
         //  Create the favorite stop
         FavoriteStop *favStop = (FavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"FavoriteStop"
-                                                                      inManagedObjectContext:self.managedObjectContext];
+                                                                              inManagedObjectContext:self.managedObjectContext];
         
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route"
                                                              inManagedObjectContext:self.managedObjectContext];
@@ -257,7 +257,9 @@
                 /*
                  Replace this implementation with code to handle the error appropriately.
                  
-                 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+                 abort() causes the application to generate a crash log and terminate. 
+                 You should not use this function in a shipping application, although 
+                 it may be useful during development. 
                  */
                 NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             }
@@ -266,19 +268,19 @@
         }
     }
     
-    [favoriteButton release];
+    [m_favoriteButton release];
     
     if (added) {
-        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
+        m_favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
                                                                        target:self 
                                                                        action:@selector(toggleFavorite:)];
     } else {
-        favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+        m_favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                        target:self 
                                                                        action:@selector(toggleFavorite:)];
     }
     
-    self.navigationItem.rightBarButtonItem = favoriteButton;
+    self.navigationItem.rightBarButtonItem = m_favoriteButton;
 }
 
 #pragma mark - Table view data source
@@ -294,7 +296,7 @@
 {
     // Return the number of rows in the section.
 	//	If there are no etas, then return a Loading... cell
-    return [etas count] ? ([etas count] > 5 ? 5 : [etas count]) : 1;
+    return [m_etas count] ? ([m_etas count] > 5 ? 5 : [m_etas count]) : 1;
 }
 
 
@@ -322,11 +324,11 @@
     
 	//	If there are no etas, then return a Loading... cell
 	
-	if ([etas count] == 0  && indexPath.section == 0 && indexPath.row == 0) {
+	if ([m_etas count] == 0  && indexPath.section == 0 && indexPath.row == 0) {
 		//	The main text label, left aligned and black in UITableViewCellStyleValue1
 		cell.textLabel.text = @"Loading...";
-	} else if (row < [etas count]) {
-		eta = [etas objectAtIndex:row];
+	} else if (row < [m_etas count]) {
+		eta = [m_etas objectAtIndex:row];
         
 		//  If the EtaWrapper was found, add the stop info and the ETA
 		if (eta) {
@@ -349,7 +351,7 @@
 			//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
             if (self.useRelativeTimes) {
                 int minutesToEta = 0;
-                NSDate *arrivalDate = [lastEtaRefresh dateByAddingTimeInterval:[eta intValue] / 1000];
+                NSDate *arrivalDate = [m_lastEtaRefresh dateByAddingTimeInterval:[eta intValue] / 1000];
                 minutesToEta = (int)([arrivalDate timeIntervalSinceNow] / 60);
                 
                 //  Grammar for one vs. more than one
@@ -362,7 +364,7 @@
                 }
             } else {
                 //  Show ETAs as timestamps
-                cell.detailTextLabel.text = [timeDisplayFormatter stringFromDate:[lastEtaRefresh dateByAddingTimeInterval:[eta intValue] / 1000]];
+                cell.detailTextLabel.text = [m_timeDisplayFormatter stringFromDate:[m_lastEtaRefresh dateByAddingTimeInterval:[eta intValue] / 1000]];
             }
 		} else {
             cell.detailTextLabel.text = @"————";
@@ -393,11 +395,11 @@
 
 //	Reload the table on a short delay, usually for a data change
 - (void)unsafeDelayedTableReload {
-	if (etas) {
-		[etas release];
+	if (m_etas) {
+		[m_etas release];
 	}
 	
-    etas = [extraEtasParser extraEtas];
+    m_etas = [m_extraEtasParser extraEtas];
 	
 	[NSTimer scheduledTimerWithTimeInterval:0.125f 
 									 target:self.tableView 
@@ -406,9 +408,10 @@
 									repeats:NO];
 }
 
-//	InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
-//	settingChanged handles switching between absolute and relative times for updates and ETAs.
-//	Other objects may also do something when a setting is changed.
+//	InAppSettingsKit sends out a notification whenever a setting is changed in the 
+//  settings view inside the app.  settingChanged handles switching between absolute 
+//  and relative times for updates and ETAs.  Other objects may also do something 
+//  when a setting is changed.
 - (void)settingChanged:(NSNotification *)notification {
 	NSDictionary *info = [notification userInfo];
 	

@@ -11,10 +11,11 @@
 
 
 @interface EtasViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
-    DataManager *dataManager;
-    NSDateFormatter *timeDisplayFormatter;
-    BOOL useRelativeTimes;
-	NSMutableDictionary *routeStops;
+    DataManager             *m_dataManager;
+    NSDateFormatter         *m_timeDisplayFormatter;
+    BOOL                    m_useRelativeTimes;
+	NSMutableDictionary     *m_routeStops;
+    NSTimer                 *m_freshTimer;
 }
 
 @property (nonatomic, assign) DataManager *dataManager;
