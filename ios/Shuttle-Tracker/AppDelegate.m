@@ -49,8 +49,8 @@
     [dataManager release];
     [self.dataManager setParserManagedObjectContext:self.managedObjectContext];
     
-    //	dataManager creates a timeDisplayFormatter in its init method, so get
-    //	a reference to it.
+    //  dataManager creates a timeDisplayFormatter in its init method, so get
+    //  a reference to it.
     self.timeDisplayFormatter = self.dataManager.timeDisplayFormatter;
     
     MapViewController *mapViewController = [[MapViewController alloc] init];
@@ -69,8 +69,8 @@
     UINavigationController *etasTableNavController = [[UINavigationController alloc] initWithRootViewController:etasViewController];
     [etasViewController release];
     
-    //	Note that this class (MainViewController) gets a reference to timeDisplayFormatter
-    //	via the class creating it.
+    //  Note that this class (MainViewController) gets a reference to timeDisplayFormatter
+    //  via the class creating it.
     etasViewController.timeDisplayFormatter = self.timeDisplayFormatter;
     
     //  Device-specific view creation
@@ -120,7 +120,7 @@
     [timeFormatter release];
     [dateArray release];
     
-    //	Create an empty array to use for the favorite ETAs
+    //  Create an empty array to use for the favorite ETAs
     NSMutableArray *favoriteEtasArray = [NSMutableArray array];
     
     // Set the application defaults
@@ -141,9 +141,9 @@
                                                  name:@"dataUpdateInterval"
                                                object:nil];
     
-	float updateInterval = [[defaults objectForKey:@"dataUpdateInterval"] floatValue];
-	
-	//	Schedule a timer to make the DataManager pull new data every 5 seconds
+    float updateInterval = [[defaults objectForKey:@"dataUpdateInterval"] floatValue];
+
+    //  Schedule a timer to make the DataManager pull new data every 5 seconds
     self.dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval 
                                                             target:self.dataManager 
                                                           selector:@selector(updateData) 
@@ -213,14 +213,14 @@
 #pragma mark - Local notification handler
 
 - (void)changeDataUpdateRate:(NSNotification *)notification {
-	//	Invalidate the timer so another can be made with a different interval.
-	[self.dataUpdateTimer invalidate];
-	
-	NSDictionary *info = [notification userInfo];
-	
-	float updateInterval = [[info objectForKey:@"dataUpdateInterval"] floatValue];
-	
-	//	Schedule a timer to make the DataManager pull new data every 5 seconds
+    //  Invalidate the timer so another can be made with a different interval.
+    [self.dataUpdateTimer invalidate];
+
+    NSDictionary *info = [notification userInfo];
+
+    float updateInterval = [[info objectForKey:@"dataUpdateInterval"] floatValue];
+
+    //  Schedule a timer to make the DataManager pull new data every 5 seconds
     self.dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self.dataManager 
                                                           selector:@selector(updateData) 
                                                           userInfo:nil 

@@ -41,7 +41,7 @@
     [colorString retain];
     
     color = [UIColor UIColorFromRGBString:colorString];
-	[color retain];
+    [color retain];
 }
 
 @end
@@ -100,37 +100,37 @@
 }
 
 - (void)setUpdateTime:(NSDate *)newUpdateTime withFormatter:(NSDateFormatter *)dateFormattter {
-	updateTime = newUpdateTime;
-	[updateTime retain];
-	
-	//	Update the vehicle's subtitle here, since it displays the last updated time
-	//  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation	
-	//	Don't update the subtitle if the displayed text will be the same
-	NSString *newSubtitle;
-	
-	if (timeDisplayFormatter) {	//	If the object got a timeDisplayFormatter, use it.
-		newSubtitle = [@"Updated: " stringByAppendingString:[timeDisplayFormatter stringFromDate:updateTime]];
-		
-		//	Check to see if the updated subtitle is the same as the existing one.
-		//	If it isn't, then update the subtitle
-		if (![newSubtitle isEqualToString:[self subtitle]]) {
-			self.description = newSubtitle;
-		}
-		
-	} else {	//	If there is no timeDisplayFormatter, just display in 12 hour format
-		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-		[dateFormatter setDateFormat:@"hh:mm a"];
-		
-		//	Check to see if the updated subtitle is the same as the existing one.
-		//	If it isn't, then update the subtitle
-		newSubtitle = [@"Updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
-		
-		if (![newSubtitle isEqualToString:self.subtitle]) {
-			self.description = newSubtitle;
-		}
-		
-		[dateFormatter release];
-	}
+    updateTime = newUpdateTime;
+    [updateTime retain];
+
+    //  Update the vehicle's subtitle here, since it displays the last updated time
+    //  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation  
+    //  Don't update the subtitle if the displayed text will be the same
+    NSString *newSubtitle;
+
+    if (timeDisplayFormatter) { //  If the object got a timeDisplayFormatter, use it.
+        newSubtitle = [@"Updated: " stringByAppendingString:[timeDisplayFormatter stringFromDate:updateTime]];
+
+        //  Check to see if the updated subtitle is the same as the existing one.
+        //  If it isn't, then update the subtitle
+        if (![newSubtitle isEqualToString:[self subtitle]]) {
+            self.description = newSubtitle;
+        }
+
+    } else {    //  If there is no timeDisplayFormatter, just display in 12 hour format
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"hh:mm a"];
+
+        //  Check to see if the updated subtitle is the same as the existing one.
+        //  If it isn't, then update the subtitle
+        newSubtitle = [@"Updated: " stringByAppendingString:[dateFormatter stringFromDate:updateTime]];
+
+        if (![newSubtitle isEqualToString:self.subtitle]) {
+            self.description = newSubtitle;
+        }
+
+        [dateFormatter release];
+    }
 }
 
 

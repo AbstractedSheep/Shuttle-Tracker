@@ -36,16 +36,16 @@
 @synthesize useRelativeTimes = m_useRelativeTimes;
 
 - (id)initWithStop:(Stop *)stop forRouteNumber:(NSNumber *)routeNumber {
-//	if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
+//  if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
     if ((self = [super init])) {
-		self.stop = stop;
+        self.stop = stop;
         self.routeNum = routeNumber;
-		self.title = stop.shortName;
-		
+        self.title = stop.shortName;
+
         m_lastEtaRefresh = nil;
         
-		m_etasUrl = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@&rt=%d&st=%@", 
-				   kLEExtraEtasUrl, [routeNumber intValue], stop.idTag]];
+        m_etasUrl = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@&rt=%d&st=%@", 
+                   kLEExtraEtasUrl, [routeNumber intValue], stop.idTag]];
         
         m_extraEtasParser = [[JSONParser alloc] init];
         
@@ -57,14 +57,14 @@
                                                                            action:@selector(toggleFavorite:)];
         self.navigationItem.rightBarButtonItem = m_favoriteButton;
         
-        //	Take notice when a setting is changed.
-        //	Note that this is not the only object that takes notice.
+        //  Take notice when a setting is changed.
+        //  Note that this is not the only object that takes notice.
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(settingChanged:)
                                                      name:kIASKAppSettingChanged object:nil];
-	}
-	
-	return self;
+    }
+
+    return self;
 }
 
 - (id)initWithStyle:(UITableViewStyle)style
@@ -78,8 +78,8 @@
 
 - (void)dealloc
 {
-	[m_etasUrl release];
-	[m_extraEtasParser release];
+    [m_etasUrl release];
+    [m_extraEtasParser release];
     [super dealloc];
 }
 
@@ -96,8 +96,8 @@
     m_lastEtaRefresh = [NSDate dateWithTimeIntervalSinceNow:0];
     [m_lastEtaRefresh retain];
     
-	dispatch_queue_t extraEtasQueue = dispatch_queue_create("com.abstractedsheep.extraetasqueue", NULL);
-	dispatch_async(extraEtasQueue, ^{
+    dispatch_queue_t extraEtasQueue = dispatch_queue_create("com.abstractedsheep.extraetasqueue", NULL);
+    dispatch_async(extraEtasQueue, ^{
         NSError *theError = nil;
         NSString *jsonString = [NSString stringWithContentsOfURL:m_etasUrl 
                                                         encoding:NSUTF8StringEncoding 
@@ -112,9 +112,9 @@
                                    withObject:nil 
                                 waitUntilDone:NO];
         }
-	});
-	
-	dispatch_release(extraEtasQueue);
+    });
+
+    dispatch_release(extraEtasQueue);
 }
 
 #pragma mark - View lifecycle
@@ -162,8 +162,8 @@
     }
     
     self.navigationItem.rightBarButtonItem = m_favoriteButton;
-	
-	[self getExtraEtas];
+
+    [self getExtraEtas];
 }
 
 - (void)viewDidUnload
@@ -182,17 +182,17 @@
 {
     [super viewDidAppear:animated];
     
-	m_updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
-										selector:@selector(getExtraEtas) 
-										userInfo:nil 
-										 repeats:YES];
-	[m_updateTimer retain];
+    m_updateTimer = [NSTimer timerWithTimeInterval:10.0f target:self 
+                                        selector:@selector(getExtraEtas) 
+                                        userInfo:nil 
+                                         repeats:YES];
+    [m_updateTimer retain];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	[m_updateTimer invalidate];
-	[m_updateTimer release];
+    [m_updateTimer invalidate];
+    [m_updateTimer release];
     
     [super viewWillDisappear:animated];
 }
@@ -208,7 +208,7 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-//	Handle the "Favorite/Unfavorite" button
+//  Handle the "Favorite/Unfavorite" button
 - (void)toggleFavorite:(id)sender {
     BOOL added = NO;
     
@@ -287,52 +287,52 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    //	Return the number of sections.
-	//	Only one section
+    //  Return the number of sections.
+    //  Only one section
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-	//	If there are no etas, then return a Loading... cell
+    //  If there are no etas, then return a Loading... cell
     return [m_etas count] ? ([m_etas count] > 5 ? 5 : [m_etas count]) : 1;
 }
 
 
-//	Use the name of the stop as the section header
+//  Use the name of the stop as the section header
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-	return self.stop.name;
+    return self.stop.name;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	static NSString *CellIdentifier = @"ExtraEtaCell";
+    static NSString *CellIdentifier = @"ExtraEtaCell";
     int row = indexPath.row;
-	
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-		//	Init the cell such that it has main text, black and left aligned, and secondary text,
-		//	blue and right aligned
+        //  Init the cell such that it has main text, black and left aligned, and secondary text,
+        //  blue and right aligned
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
-									   reuseIdentifier:CellIdentifier] autorelease];
+                                       reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Configure the cell...
     NSNumber *eta = nil;
     
-	//	If there are no etas, then return a Loading... cell
-	
-	if ([m_etas count] == 0  && indexPath.section == 0 && indexPath.row == 0) {
-		//	The main text label, left aligned and black in UITableViewCellStyleValue1
-		cell.textLabel.text = @"Loading...";
-	} else if (row < [m_etas count]) {
-		eta = [m_etas objectAtIndex:row];
+    //  If there are no etas, then return a Loading... cell
+
+    if ([m_etas count] == 0  && indexPath.section == 0 && indexPath.row == 0) {
+        //  The main text label, left aligned and black in UITableViewCellStyleValue1
+        cell.textLabel.text = @"Loading...";
+    } else if (row < [m_etas count]) {
+        eta = [m_etas objectAtIndex:row];
         
-		//  If the EtaWrapper was found, add the stop info and the ETA
-		if (eta) {
-			//	The main text label, left aligned and black in UITableViewCellStyleValue1
+        //  If the EtaWrapper was found, add the stop info and the ETA
+        if (eta) {
+            //  The main text label, left aligned and black in UITableViewCellStyleValue1
             unsigned int nthShuttle = indexPath.row + 1;
             NSString *shuttleNoString;
             
@@ -346,9 +346,9 @@
                 shuttleNoString = [NSString stringWithFormat:@"%uth", nthShuttle];
             }
             
-			cell.textLabel.text = [shuttleNoString stringByAppendingString:@" Shuttle:"];
-			
-			//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
+            cell.textLabel.text = [shuttleNoString stringByAppendingString:@" Shuttle:"];
+
+            //  The secondary text label, right aligned and blue in UITableViewCellStyleValue1
             if (self.useRelativeTimes) {
                 int minutesToEta = 0;
                 NSDate *arrivalDate = [m_lastEtaRefresh dateByAddingTimeInterval:[eta intValue] / 1000];
@@ -366,14 +366,14 @@
                 //  Show ETAs as timestamps
                 cell.detailTextLabel.text = [m_timeDisplayFormatter stringFromDate:[m_lastEtaRefresh dateByAddingTimeInterval:[eta intValue] / 1000]];
             }
-		} else {
+        } else {
             cell.detailTextLabel.text = @"————";
         }
-	}
-	
-	cell.selectionStyle = UITableViewCellSelectionStyleNone;
-	
-	return cell;
+    }
+
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+    return cell;
 }
 
 
@@ -381,50 +381,50 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    //	Navigation logic may go here. Create and push another view controller.
-    //	Do nothing
+    //  Navigation logic may go here. Create and push another view controller.
+    //  Do nothing
 }
 
 
-//	Call unsafeDelayedTableReload on the main thread
+//  Call unsafeDelayedTableReload on the main thread
 - (void)delayedTableReload {
-	[self performSelectorOnMainThread:@selector(unsafeDelayedTableReload) 
-						   withObject:nil waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(unsafeDelayedTableReload) 
+                           withObject:nil waitUntilDone:NO];
 }
 
 
-//	Reload the table on a short delay, usually for a data change
+//  Reload the table on a short delay, usually for a data change
 - (void)unsafeDelayedTableReload {
-	if (m_etas) {
-		[m_etas release];
-	}
-	
+    if (m_etas) {
+        [m_etas release];
+    }
+
     m_etas = [m_extraEtasParser extraEtas];
-	
-	[NSTimer scheduledTimerWithTimeInterval:0.125f 
-									 target:self.tableView 
-								   selector:@selector(reloadData) 
-								   userInfo:nil 
-									repeats:NO];
+
+    [NSTimer scheduledTimerWithTimeInterval:0.125f 
+                                     target:self.tableView 
+                                   selector:@selector(reloadData) 
+                                   userInfo:nil 
+                                    repeats:NO];
 }
 
-//	InAppSettingsKit sends out a notification whenever a setting is changed in the 
+//  InAppSettingsKit sends out a notification whenever a setting is changed in the 
 //  settings view inside the app.  settingChanged handles switching between absolute 
 //  and relative times for updates and ETAs.  Other objects may also do something 
 //  when a setting is changed.
 - (void)settingChanged:(NSNotification *)notification {
-	NSDictionary *info = [notification userInfo];
-	
-	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
-	if ([[notification object] isEqualToString:@"useRelativeTimes"]) {
-		if ([[info objectForKey:@"useRelativeTimes"] boolValue]) {
+    NSDictionary *info = [notification userInfo];
+
+    //  Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
+    if ([[notification object] isEqualToString:@"useRelativeTimes"]) {
+        if ([[info objectForKey:@"useRelativeTimes"] boolValue]) {
             self.useRelativeTimes = YES;
-		} else {
+        } else {
             self.useRelativeTimes = NO;
-		}
+        }
         
         [self.tableView reloadData];
-	}
+    }
 }
 
 

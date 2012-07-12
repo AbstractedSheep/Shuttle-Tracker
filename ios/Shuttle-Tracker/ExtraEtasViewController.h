@@ -11,15 +11,15 @@
 @class Stop, JSONParser, DataManager, UINavigationButton;
 
 @interface ExtraEtasViewController : UITableViewController {
-	NSURL               *m_etasUrl;
-	JSONParser          *m_extraEtasParser;
-	
+    NSURL               *m_etasUrl;
+    JSONParser          *m_extraEtasParser;
+
     NSDate              *m_lastEtaRefresh;
-	NSArray             *m_etas;
-	
-	DataManager         *m_dataManager;
-	NSTimer             *m_updateTimer;
-	NSDateFormatter     *m_timeDisplayFormatter;
+    NSArray             *m_etas;
+
+    DataManager         *m_dataManager;
+    NSTimer             *m_updateTimer;
+    NSDateFormatter     *m_timeDisplayFormatter;
     
     UIBarButtonItem     *m_favoriteButton;
     

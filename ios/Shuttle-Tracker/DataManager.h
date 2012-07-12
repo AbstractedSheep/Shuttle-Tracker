@@ -9,13 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "JSONParser.h"
 
-#define kDMRoutesandStopsLoaded				@"kDMRoutesandStopsLoaded"
-#define kDMVehiclesUpdated					@"kDMVehiclesUpdated"
-#define kDMEtasUpdated						@"kDMEtasUpdated"
+#define kDMRoutesandStopsLoaded             @"kDMRoutesandStopsLoaded"
+#define kDMVehiclesUpdated                  @"kDMVehiclesUpdated"
+#define kDMEtasUpdated                      @"kDMEtasUpdated"
 
 @class EtaWrapper;
 
-//	Manages all of the routes/stops/shuttles data, as well as application settings.
+//  Manages all of the routes/stops/shuttles data, as well as application settings.
 @interface DataManager : NSObject {
     NSURL               *m_shuttleJsonUrl;
     NSURL               *m_etasJsonUrl;
@@ -25,15 +25,15 @@
     JSONParser          *m_etasJsonParser;
     
     dispatch_queue_t    m_loadMapInfoJsonQueue;
-	dispatch_queue_t    m_loadVehicleJsonQueue;
-	dispatch_queue_t    m_loadEtaJsonQueue;
-	
-	NSDateFormatter     *m_timeDisplayFormatter;
+    dispatch_queue_t    m_loadVehicleJsonQueue;
+    dispatch_queue_t    m_loadEtaJsonQueue;
+
+    NSDateFormatter     *m_timeDisplayFormatter;
 }
 
 @property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
-//	DataManager should have the onlyretain on timeDisplayFormatter, the way
-//	that the program is set up.
+//  DataManager should have the onlyretain on timeDisplayFormatter, the way
+//  that the program is set up.
 
 
 - (void)loadRoutesAndStops;

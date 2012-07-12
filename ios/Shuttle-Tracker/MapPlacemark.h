@@ -13,11 +13,11 @@
 
 @interface MapPlacemark : NSObject {
     NSString *name;
-	NSString *idTag;
-	NSString *description;
-	NSString *styleUrl;
+    NSString *idTag;
+    NSString *description;
+    NSString *styleUrl;
     
-	PlacemarkStyle *style;
+    PlacemarkStyle *style;
 
     NSDateFormatter *timeDisplayFormatter;
 }
@@ -36,10 +36,10 @@
 
 //  Use to hold style objects, I have only seen these used for routes
 @interface PlacemarkStyle : NSObject {
-	NSString *idTag;
-	NSString *colorString;
-	UIColor *color;
-	int width;
+    NSString *idTag;
+    NSString *colorString;
+    UIColor *color;
+    int width;
 }
 
 @property (nonatomic, retain) NSString *idTag;
@@ -53,7 +53,7 @@
 //  Routes consist of a list of coordinates, so use an array for coordinates storage
 @interface MapRoute : MapPlacemark
 {
-	NSArray *lineString;
+    NSArray *lineString;
 }
 
 @property (nonatomic, retain) NSArray *lineString;
@@ -67,8 +67,8 @@
 //  Base class for objects which have a single set of coordinates, so just use one set of coordinates
 @interface MapPoint : MapPlacemark <MKAnnotation>
 {
-	CLLocationCoordinate2D coordinate;
-	MKAnnotationView *annotationView;
+    CLLocationCoordinate2D coordinate;
+    MKAnnotationView *annotationView;
 }
 
 @property (nonatomic) CLLocationCoordinate2D coordinate;
@@ -93,7 +93,7 @@
 @interface MapVehicle : MapPoint {
     NSDictionary *ETAs;
     int heading;
-	NSDate *updateTime;
+    NSDate *updateTime;
     int routeId;
 }
 

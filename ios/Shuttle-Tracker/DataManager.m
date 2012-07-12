@@ -11,7 +11,7 @@
 #import "IASKSettingsReader.h"
 #import "DataUrls.h"
 
-#define kRemoveShuttleThreshold		90.0f
+#define kRemoveShuttleThreshold     90.0f
 
 
 @interface DataManager()
@@ -29,23 +29,23 @@
 
 - (id)init {
     if ((self = [super init])) {
-		m_timeDisplayFormatter = [[NSDateFormatter alloc] init];
-		
-		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-		BOOL use24Time = [[defaults objectForKey:@"use24Time"] boolValue];
-		
-		if (use24Time) {
-			[m_timeDisplayFormatter setDateFormat:@"HH:mm"];
-		} else {
-			[m_timeDisplayFormatter setDateFormat:@"hh:mm a"];
-		}
+        m_timeDisplayFormatter = [[NSDateFormatter alloc] init];
+
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        BOOL use24Time = [[defaults objectForKey:@"use24Time"] boolValue];
+
+        if (use24Time) {
+            [m_timeDisplayFormatter setDateFormat:@"HH:mm"];
+        } else {
+            [m_timeDisplayFormatter setDateFormat:@"hh:mm a"];
+        }
         
         m_routesStopsJsonParser = [[JSONParser alloc] init];
         m_vehiclesJsonParser = [[JSONParser alloc] init];
         m_etasJsonParser = [[JSONParser alloc] init];
-		
-		m_loadVehicleJsonQueue = NULL;
-		m_loadEtaJsonQueue = NULL;
+
+        m_loadVehicleJsonQueue = NULL;
+        m_loadEtaJsonQueue = NULL;
     }
     
     return self;
@@ -63,19 +63,19 @@
     
     [m_shuttleJsonUrl release];
     [m_etasJsonUrl release];
-	
+
     if (m_loadMapInfoJsonQueue) {
-		dispatch_release(m_loadMapInfoJsonQueue);
-	}
+        dispatch_release(m_loadMapInfoJsonQueue);
+    }
     
-	if (m_loadVehicleJsonQueue) {
-		dispatch_release(m_loadVehicleJsonQueue);
-	}
+    if (m_loadVehicleJsonQueue) {
+        dispatch_release(m_loadVehicleJsonQueue);
+    }
     
-	if (m_loadEtaJsonQueue) {
-		dispatch_release(m_loadEtaJsonQueue);
-	}
-	
+    if (m_loadEtaJsonQueue) {
+        dispatch_release(m_loadEtaJsonQueue);
+    }
+
     [super dealloc];
 }
 
@@ -88,8 +88,8 @@
 
 - (void)loadFromJson {
     if (!m_loadMapInfoJsonQueue) {
-		m_loadMapInfoJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
-	}
+        m_loadMapInfoJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    }
     
     dispatch_async(m_loadMapInfoJsonQueue, ^{
         NSError *theError = nil;
@@ -104,7 +104,7 @@
             [m_routesStopsJsonParser performSelectorOnMainThread:@selector(parseRoutesandStopsFromJson:)
                                                     withObject:jsonString
                                                  waitUntilDone:YES];
-			[self performSelectorOnMainThread:@selector(routeJsonLoaded) withObject:nil waitUntilDone:NO];
+            [self performSelectorOnMainThread:@selector(routeJsonLoaded) withObject:nil waitUntilDone:NO];
         }
     });
 }
@@ -115,20 +115,20 @@
 }
 
 
-//	Update vehicle positions, ETAs, and any other data that changes frequently.
+//  Update vehicle positions, ETAs, and any other data that changes frequently.
 - (void)updateData {
     [self updateVehicleData];
     [self updateEtaData];
 }
 
 
-//	Pull updated vehicle data and posts a notification that it has done so.
-//	Note that the notification is not expected to be on the main thread.
+//  Pull updated vehicle data and posts a notification that it has done so.
+//  Note that the notification is not expected to be on the main thread.
 - (void)updateVehicleData {
     
-	if (!m_loadVehicleJsonQueue) {
-		m_loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
-	}
+    if (!m_loadVehicleJsonQueue) {
+        m_loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    }
     
     dispatch_async(m_loadVehicleJsonQueue, ^{
         NSError *theError = nil;
@@ -143,9 +143,9 @@
             [m_vehiclesJsonParser performSelectorOnMainThread:@selector(parseShuttlesFromJson:)
                                                  withObject:jsonString
                                               waitUntilDone:YES];
-			[[NSNotificationCenter defaultCenter] postNotificationName:kDMVehiclesUpdated
-																object:nil
-															  userInfo:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kDMVehiclesUpdated
+                                                                object:nil
+                                                              userInfo:nil];
         }
     });
     
@@ -153,10 +153,10 @@
 
 
 - (void)updateEtaData {
-	if (!m_loadEtaJsonQueue) {
-		m_loadEtaJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
-	}
-	
+    if (!m_loadEtaJsonQueue) {
+        m_loadEtaJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    }
+
     dispatch_async(m_loadEtaJsonQueue, ^{
         NSError *theError = nil;
         m_etasJsonUrl = [NSURL URLWithString:kDMNextEtasUrl];
@@ -170,9 +170,9 @@
             [m_vehiclesJsonParser performSelectorOnMainThread:@selector(parseEtasFromJson:)
                                                  withObject:jsonString
                                               waitUntilDone:YES];
-			[[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
-																object:nil
-															  userInfo:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
+                                                                object:nil
+                                                              userInfo:nil];
         }
     });
     
@@ -180,9 +180,9 @@
 
 
 - (void)setTimeDisplayFormatter:(NSDateFormatter *)newTimeDisplayFormatter {
-	m_timeDisplayFormatter = newTimeDisplayFormatter;
-	
-	m_vehiclesJsonParser.timeDisplayFormatter = m_timeDisplayFormatter;
+    m_timeDisplayFormatter = newTimeDisplayFormatter;
+
+    m_vehiclesJsonParser.timeDisplayFormatter = m_timeDisplayFormatter;
 }
 
 
