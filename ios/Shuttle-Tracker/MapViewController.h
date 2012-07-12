@@ -14,16 +14,16 @@
 @class JSONParser;
 
 @interface MapViewController : UIViewController <MKMapViewDelegate, UISplitViewControllerDelegate> {
-	MKMapView               *m_mapView;
+    MKMapView               *m_mapView;
     
     NSMutableDictionary     *m_vehicles;
     NSMutableArray          *m_routeLines;
     NSMutableArray          *m_routeLineViews;
-	
-	UIImage                 *m_shuttleImage;
+
+    UIImage                 *m_shuttleImage;
     NSMutableDictionary     *m_magentaShuttleImages;
     NSMutableDictionary     *m_shuttleImages;
-    
+
     DataManager             *m_dataManager;
     NSTimer                 *m_shuttleCleanupTimer;
 }

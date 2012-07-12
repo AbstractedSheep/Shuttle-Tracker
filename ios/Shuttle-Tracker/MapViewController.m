@@ -32,7 +32,7 @@ const NSTimeInterval CLEANUP_INTERVAL = 30.0f;      //  30 seconds
 
 @end
 
-//	From Stack Overflow (SO), with modifications:
+//  From Stack Overflow (SO), with modifications:
 @implementation UIImage (magentatocolor)
 
 typedef enum {
@@ -62,7 +62,7 @@ typedef enum {
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
     
     // create a context with RGBA pixels
-    CGContextRef context = CGBitmapContextCreate(pixels, width, height, 8, width * sizeof(uint32_t), colorSpace, 
+    CGContextRef context = CGBitmapContextCreate(pixels, width, height, 8, width * sizeof(uint32_t), colorSpace,
                                                  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedLast);
     
     CGColorSpaceRef space = CGColorGetColorSpace(newColor.CGColor);
@@ -73,7 +73,7 @@ typedef enum {
     }
     
     //  Get an array of the rgb values of the new color.
-    //  Note that these values are floating point values on [0,1] 
+    //  Note that these values are floating point values on [0,1]
     const CGFloat *rgb = CGColorGetComponents(newColor.CGColor);
     
     // paint the bitmap to our context which will fill in the pixels array
@@ -119,7 +119,7 @@ typedef enum {
 }
 
 @end
-//	End from SO
+//  End from SO
 
 
 @interface MapViewController()
@@ -127,14 +127,14 @@ typedef enum {
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 
 - (void)managedRoutesLoaded;
-//	notifyVehiclesUpdated may not be called on the main thread, so use it to call
-//	vehicles updated on the main thread.
+//  notifyVehiclesUpdated may not be called on the main thread, so use it to call
+//  vehicles updated on the main thread.
 - (void)notifyVehiclesUpdated:(NSNotification *)notification;
 - (void)vehiclesUpdated:(NSNotification *)notification;
-//	Adding routes and stops is not guaranteed to be done on the main thread.
+//  Adding routes and stops is not guaranteed to be done on the main thread.
 - (void)addRoute:(Route *)route;
 - (void)addStop:(Stop *)stop;
-//	Adding vehicles should only be done on the main thread.
+//  Adding vehicles should only be done on the main thread.
 - (void)addVehicle:(Shuttle *)vehicle;
 - (void)setAnnotationImageForVehicle:(MapVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
@@ -207,18 +207,18 @@ typedef enum {
         [shuttleImagesWest release];
         [shuttleImagesSouth release];
         
-        //	Take notice when the routes and stops are updated.
+        //  Take notice when the routes and stops are updated.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
                                                      name:kDMRoutesandStopsLoaded
                                                    object:nil];
-        
-        //	Take notice when vehicles are updated.
+
+        //  Take notice when vehicles are updated.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
                                                      name:kDMVehiclesUpdated
                                                    object:nil];
-        
-        //	Take notice when a setting is changed.
-        //	Note that this is not the only object that takes notice.
+
+        //  Take notice when a setting is changed.
+        //  Note that this is not the only object that takes notice.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
                                                      name:kIASKAppSettingChanged
                                                    object:nil];
@@ -233,9 +233,9 @@ typedef enum {
     
     CGRect rect = [[UIScreen mainScreen] bounds];
     
-	m_mapView = [[MKMapView alloc] initWithFrame:rect];
+    m_mapView = [[MKMapView alloc] initWithFrame:rect];
     m_mapView.delegate = self;
-	m_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    m_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
@@ -245,7 +245,7 @@ typedef enum {
         m_mapView.showsUserLocation = YES;
     }
     
-	self.view = m_mapView;
+    self.view = m_mapView;
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -262,13 +262,13 @@ typedef enum {
     
     m_mapView.region = region;
     
-	[m_dataManager loadRoutesAndStops];
+    [m_dataManager loadRoutesAndStops];
     
     [self vehicleCleanup];
-    m_shuttleCleanupTimer = [NSTimer scheduledTimerWithTimeInterval:CLEANUP_INTERVAL 
-                                                             target:self 
-                                                           selector:@selector(vehicleCleanup) 
-                                                           userInfo:nil 
+    m_shuttleCleanupTimer = [NSTimer scheduledTimerWithTimeInterval:CLEANUP_INTERVAL
+                                                             target:self
+                                                           selector:@selector(vehicleCleanup)
+                                                           userInfo:nil
                                                             repeats:YES];
 }
 
@@ -302,13 +302,13 @@ typedef enum {
 //  The routes and stops were loaded in the dataManager
 - (void)managedRoutesLoaded {
     //  Get all routes
-    NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"Route" 
+    NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"Route"
                                                               inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *routeRequest = [[[NSFetchRequest alloc] init] autorelease];
     [routeRequest setEntity:routeEntityDescription];
     
     NSError *error = nil;
-    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:routeRequest 
+    NSArray *dbRoutes = [self.managedObjectContext executeFetchRequest:routeRequest
                                                                  error:&error];
     if (dbRoutes == nil)
     {
@@ -322,13 +322,13 @@ typedef enum {
     }
     
     //  Get all stops
-    NSEntityDescription *stopEntityDescription = [NSEntityDescription entityForName:@"Stop" 
-                                                              inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *stopEntityDescription = [NSEntityDescription entityForName:@"Stop"
+                                                             inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *stopRequest = [[[NSFetchRequest alloc] init] autorelease];
     [stopRequest setEntity:stopEntityDescription];
     
     error = nil;
-    NSArray *dbStops = [self.managedObjectContext executeFetchRequest:stopRequest 
+    NSArray *dbStops = [self.managedObjectContext executeFetchRequest:stopRequest
                                                                 error:&error];
     if (dbStops == nil)
     {
@@ -342,15 +342,15 @@ typedef enum {
     }
 }
 
-//	A notification is sent by DataManager whenever the vehicles are updated.
-//	Call the work function vehiclesUpdated on the main thread.
+//  A notification is sent by DataManager whenever the vehicles are updated.
+//  Call the work function vehiclesUpdated on the main thread.
 - (void)notifyVehiclesUpdated:(NSNotification *)notification {
-	[self performSelectorOnMainThread:@selector(vehiclesUpdated:) 
-                           withObject:notification 
+    [self performSelectorOnMainThread:@selector(vehiclesUpdated:)
+                           withObject:notification
                         waitUntilDone:NO];
 }
 
-//	A notification is sent by DataManager whenever the vehicles are updated.
+//  A notification is sent by DataManager whenever the vehicles are updated.
 - (void)vehiclesUpdated:(NSNotification *)notification {
     //  Get all vehicles
     NSEntityDescription *entityDescription;
@@ -361,7 +361,7 @@ typedef enum {
     
     NSError *error = nil;
     NSArray *dbVehicles;
-    dbVehicles = [self.managedObjectContext executeFetchRequest:request 
+    dbVehicles = [self.managedObjectContext executeFetchRequest:request
                                                           error:&error];
     
     MapVehicle *existingShuttle;
@@ -379,9 +379,9 @@ typedef enum {
                     //  Add the shuttle to the map view and our array of active shuttles
                     [self addVehicle:shuttle];
                 } else {
-                    if ([shuttle.routeId intValue] != existingShuttle.routeId 
+                    if ([shuttle.routeId intValue] != existingShuttle.routeId
                         || [shuttle.heading intValue] != existingShuttle.heading) {
-                        //	If the shuttle switched routes, then update the image.
+                        //  If the shuttle switched routes, then update the image.
                         //  Also update the image if the shuttle has changed heading
                         
                         existingShuttle.routeId = [shuttle.routeId intValue];
@@ -401,7 +401,7 @@ typedef enum {
                     }
                     
                     //  Make sure the shuttle's update time is current
-                    [existingShuttle setUpdateTime:shuttle.updateTime 
+                    [existingShuttle setUpdateTime:shuttle.updateTime
                                      withFormatter:self.dataManager.timeDisplayFormatter];
                 }
             }
@@ -429,13 +429,13 @@ typedef enum {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route == %@)", route];
     [request setPredicate:predicate];
     
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber" 
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber"
                                                                    ascending:YES];
     [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
     [sortDescriptor release];
     
     NSError *error = nil;
-    NSArray *routePts = [self.managedObjectContext executeFetchRequest:request 
+    NSArray *routePts = [self.managedObjectContext executeFetchRequest:request
                                                                  error:&error];
     
     double latitude, longitude;
@@ -460,8 +460,8 @@ typedef enum {
             counter++;
         }
         
-        polyLine = [MKPolyline polylineWithPoints:points 
-                                                        count:counter];
+        polyLine = [MKPolyline polylineWithPoints:points
+                                            count:counter];
         [m_routeLines addObject:polyLine];
         
         free(points);
@@ -480,22 +480,22 @@ typedef enum {
         
         if (routeView.fillColor) {
             coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"east"] setValue:coloredImage 
+            [[m_shuttleImages objectForKey:@"east"] setValue:coloredImage
                                                       forKey:[route.routeId stringValue]];
             [coloredImage release];
             
             coloredImage = [[m_magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"north"] setValue:coloredImage 
+            [[m_shuttleImages objectForKey:@"north"] setValue:coloredImage
                                                        forKey:[route.routeId stringValue]];
             [coloredImage release];
             
             coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"west"] setValue:coloredImage 
+            [[m_shuttleImages objectForKey:@"west"] setValue:coloredImage
                                                       forKey:[route.routeId stringValue]];
             [coloredImage release];
             
             coloredImage = [[m_magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"south"] setValue:coloredImage 
+            [[m_shuttleImages objectForKey:@"south"] setValue:coloredImage
                                                        forKey:[route.routeId stringValue]];
             [coloredImage release];
         }
@@ -533,7 +533,7 @@ typedef enum {
     newVehicle.coordinate = clLoc;
     newVehicle.heading = [vehicle.heading intValue];
     newVehicle.routeId = [vehicle.routeId intValue];
-    [newVehicle setUpdateTime:vehicle.updateTime 
+    [newVehicle setUpdateTime:vehicle.updateTime
                 withFormatter:self.dataManager.timeDisplayFormatter];
     newVehicle.name = vehicle.name;
     
@@ -576,20 +576,20 @@ typedef enum {
     }
 }
 
-//	InAppSettingsKit sends out a notification whenever a setting is changed in the
-//  settings view inside the app.  settingChanged currently only handles turning on 
-//  or off showing the user's location. Other objects may also do something when a 
+//  InAppSettingsKit sends out a notification whenever a setting is changed in the
+//  settings view inside the app.  settingChanged currently only handles turning on
+//  or off showing the user's location. Other objects may also do something when a
 //  setting is changed.
 - (void)settingChanged:(NSNotification *)notification {
-	NSDictionary *info = [notification userInfo];
-	
-	if ([[notification object] isEqualToString:@"useLocation"]) {
-		if ([[info objectForKey:@"useLocation"] boolValue]) {
-			m_mapView.showsUserLocation = YES;
-		} else {
-			m_mapView.showsUserLocation = NO;
-		}
-	}
+    NSDictionary *info = [notification userInfo];
+
+    if ([[notification object] isEqualToString:@"useLocation"]) {
+        if ([[info objectForKey:@"useLocation"] boolValue]) {
+            m_mapView.showsUserLocation = YES;
+        } else {
+            m_mapView.showsUserLocation = NO;
+        }
+    }
 }
 
 
@@ -610,7 +610,7 @@ typedef enum {
 
 - (void)dealloc {
     [m_mapView release];
-	[m_shuttleImage release];
+    [m_shuttleImage release];
     [super dealloc];
 }
 
@@ -643,11 +643,11 @@ typedef enum {
     if ([annotation isKindOfClass:[MapStop class]]) {
         MapStop *stop = (MapStop *)annotation;
         
-		if ([stop annotationView]) {
-			return [stop annotationView];
-		}
-		
-		MKAnnotationView *stopAnnotationView;
+        if ([stop annotationView]) {
+            return [stop annotationView];
+        }
+
+        MKAnnotationView *stopAnnotationView;
         stopAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"stopAnnotation"];
         
         if (stopAnnotationView == nil) {
@@ -659,8 +659,8 @@ typedef enum {
         }
         
         [(MapStop *)annotation setAnnotationView:stopAnnotationView];
-		
-		return stopAnnotationView;
+
+        return stopAnnotationView;
     } else if ([annotation isKindOfClass:[MapVehicle class]]) {
         MapVehicle *vehicle = (MapVehicle *)annotation;
         
@@ -686,8 +686,8 @@ typedef enum {
             
             [self setAnnotationImageForVehicle:vehicle];
         }
-		
-		return vehicle.annotationView;
+
+        return vehicle.annotationView;
     }
     
     return nil;
@@ -695,9 +695,9 @@ typedef enum {
 
 #pragma mark - Split view
 
-- (void)splitViewController:(UISplitViewController *)splitController 
-     willHideViewController:(UIViewController *)viewController 
-          withBarButtonItem:(UIBarButtonItem *)barButtonItem 
+- (void)splitViewController:(UISplitViewController *)splitController
+     willHideViewController:(UIViewController *)viewController
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem
        forPopoverController:(UIPopoverController *)popoverController
 {
     barButtonItem.title = NSLocalizedString(@"ETAs", @"ETAs");
@@ -705,11 +705,11 @@ typedef enum {
     self.masterPopoverController = popoverController;
 }
 
-- (void)splitViewController:(UISplitViewController *)splitController 
-     willShowViewController:(UIViewController *)viewController 
+- (void)splitViewController:(UISplitViewController *)splitController
+     willShowViewController:(UIViewController *)viewController
   invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
 {
-    // Called when the view is shown again in the split view, invalidating the button 
+    // Called when the view is shown again in the split view, invalidating the button
     // and popover controller.
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
     self.masterPopoverController = nil;

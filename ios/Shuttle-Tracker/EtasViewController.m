@@ -50,18 +50,18 @@ const BOOL makeLaunchImage = NO;
         
         m_routeStops = [[NSMutableDictionary alloc] init];
         
-        //	Take notice when routes and stops are loaded.
+        //  Take notice when routes and stops are loaded.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyStopsUpdated:)
                                                      name:kDMRoutesandStopsLoaded
                                                    object:nil];
         
-        //	Take notice when a setting is changed.
-        //	Note that this is not the only object that takes notice.
+        //  Take notice when a setting is changed.
+        //  Note that this is not the only object that takes notice.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
                                                      name:kIASKAppSettingChanged
                                                    object:nil];
     }
-	
+
     return self;
 }
 
@@ -97,11 +97,11 @@ const BOOL makeLaunchImage = NO;
 
 - (void)viewDidLoad
 {
-	//	Take notice when the ETAs are updated
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(delayedTableReload) 
-												 name:kDMEtasUpdated 
-											   object:nil];
+    //  Take notice when the ETAs are updated
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(delayedTableReload) 
+                                                 name:kDMEtasUpdated 
+                                               object:nil];
 
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [super viewDidLoad];
@@ -131,13 +131,13 @@ const BOOL makeLaunchImage = NO;
     [super viewWillDisappear:animated];
 }
 
-//	A notification is sent by DataManager whenever stops are loaded.
-//	Call the work function stopsUpdated on the main thread.
+//  A notification is sent by DataManager whenever stops are loaded.
+//  Call the work function stopsUpdated on the main thread.
 - (void)notifyStopsUpdated:(NSNotification *)notification {
-	[self performSelectorOnMainThread:@selector(stopsUpdated:) withObject:notification waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(stopsUpdated:) withObject:notification waitUntilDone:NO];
 }
 
-//	A notification is sent by DataManager when the stops are loaded.
+//  A notification is sent by DataManager when the stops are loaded.
 - (void)stopsUpdated:(NSNotification *)notification {
     //  Get all routes
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route"
@@ -223,10 +223,10 @@ const BOOL makeLaunchImage = NO;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-		//	Init the cell such that it has main text, black and left aligned, and secondary text,
-		//	blue and right aligned
+        //  Init the cell such that it has main text, black and left aligned, and secondary text,
+        //  blue and right aligned
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
-									   reuseIdentifier:CellIdentifier] autorelease];
+                                       reuseIdentifier:CellIdentifier] autorelease];
         cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
@@ -309,14 +309,14 @@ const BOOL makeLaunchImage = NO;
     
     //  If the ETA was found, add the stop info and the ETA
     if (eta) {
-		//	The main text label, left aligned and black in UITableViewCellStyleValue1
+        //  The main text label, left aligned and black in UITableViewCellStyleValue1
         if (eta.stop != nil) {
             cell.textLabel.text = eta.stop.shortName;
         } else if (stop != nil) {
             cell.textLabel.text = stop.shortName;
         }
-		
-		//	The secondary text label, right aligned and blue in UITableViewCellStyleValue1
+
+        //  The secondary text label, right aligned and blue in UITableViewCellStyleValue1
         //  The ETA is recently passed or still in the future, so show it to the user
         if (m_useRelativeTimes) {
             if (minutesToEta < 2) {
@@ -340,7 +340,7 @@ const BOOL makeLaunchImage = NO;
 }
 
 
-//	Use the short names of the routes, since they display better than the full names
+//  Use the short names of the routes, since they display better than the full names
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (makeLaunchImage) {
         return @"Loading...";
@@ -412,16 +412,16 @@ const BOOL makeLaunchImage = NO;
                                                   forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
         }
     }
-	
+
     levc.managedObjectContext = self.managedObjectContext;
-	levc.dataManager = m_dataManager;
-	levc.timeDisplayFormatter = m_timeDisplayFormatter;
-	
-	// Pass the selected object to the new view controller.
-	[self.navigationController pushViewController:levc animated:YES];
-	[levc release];
-	
-	[self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+    levc.dataManager = m_dataManager;
+    levc.timeDisplayFormatter = m_timeDisplayFormatter;
+
+    // Pass the selected object to the new view controller.
+    [self.navigationController pushViewController:levc animated:YES];
+    [levc release];
+
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
@@ -436,29 +436,29 @@ const BOOL makeLaunchImage = NO;
 
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if (indexPath.section == 0) {
-		return @"Unfavorite";
-	} else {
-		return @"Favorite";
-	}
+    if (indexPath.section == 0) {
+        return @"Unfavorite";
+    } else {
+        return @"Favorite";
+    }
 }
 
 
 - (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.section == 0) {
-		return UITableViewCellEditingStyleDelete;
-	} else {
-		return UITableViewCellEditingStyleInsert;
-	}
+    if (indexPath.section == 0) {
+        return UITableViewCellEditingStyleDelete;
+    } else {
+        return UITableViewCellEditingStyleInsert;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	//	If the cell is taken action on, either using the Insert button or the
-	//	delete button, tell the data manager and update the table.
-	if (editingStyle == UITableViewCellEditingStyleDelete)
-	{
-		//	Remove a favorite stop and delete the row from the table.
+    //  If the cell is taken action on, either using the Insert button or the
+    //  delete button, tell the data manager and update the table.
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        //  Remove a favorite stop and delete the row from the table.
         
         //  First, get the favorite stop from the database, then delete it.
         FavoriteStop *favStop = nil;
@@ -482,8 +482,8 @@ const BOOL makeLaunchImage = NO;
         //  Now remove the row from display
         [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
                               withRowAnimation:UITableViewRowAnimationFade];
-	} else if (editingStyle == UITableViewCellEditingStyleInsert) {
-		//	Add a favorite stop then reload the table.
+    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        //  Add a favorite stop then reload the table.
         FavoriteStop *favStop = nil;
         NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
@@ -543,58 +543,59 @@ const BOOL makeLaunchImage = NO;
             }
         }
         
-		//	Reload the table
-		[self unsafeDelayedTableReloadForced];
-	}
+        //  Reload the table
+        [self unsafeDelayedTableReloadForced];
+    }
 }
 
 
-//	Call unsafeDelayedTableReload on the main thread.  A threadsafe
-//	way to call for a table reload.
+//  Call unsafeDelayedTableReload on the main thread.  A threadsafe
+//  way to call for a table reload.
 - (void)delayedTableReload {
-	[self performSelectorOnMainThread:@selector(unsafeDelayedTableReload) 
-						   withObject:nil waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(unsafeDelayedTableReload) 
+                           withObject:nil
+                        waitUntilDone:NO];
 }
 
 
-//	Reload the table on a short delay, usually for a data change.
-//	Do not reload if the table is in editing mode.
+//  Reload the table on a short delay, usually for a data change.
+//  Do not reload if the table is in editing mode.
 - (void)unsafeDelayedTableReload {
-	if ([self.tableView isEditing]) {
-		return;
-	} else {
-		[NSTimer scheduledTimerWithTimeInterval:0.125f 
-										 target:self.tableView 
-									   selector:@selector(reloadData) 
-									   userInfo:nil 
-										repeats:NO];
-	}
+    if ([self.tableView isEditing]) {
+        return;
+    } else {
+        [NSTimer scheduledTimerWithTimeInterval:0.125f 
+                                         target:self.tableView 
+                                       selector:@selector(reloadData) 
+                                       userInfo:nil 
+                                        repeats:NO];
+    }
 }
 
-//	Reload the table on a short delay, usually for a data change.
-//	Reload regardless of the current table mode.
+//  Reload the table on a short delay, usually for a data change.
+//  Reload regardless of the current table mode.
 - (void)unsafeDelayedTableReloadForced {
-	[NSTimer scheduledTimerWithTimeInterval:0.125f 
-									 target:self.tableView 
-								   selector:@selector(reloadData) 
-								   userInfo:nil 
-									repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:0.125f 
+                                     target:self.tableView 
+                                   selector:@selector(reloadData) 
+                                   userInfo:nil 
+                                    repeats:NO];
 }
 
-//	InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
-//	settingChanged handles switching between absolute and relative times for updates and ETAs.
-//	Other objects may also do something when a setting is changed.
+//  InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
+//  settingChanged handles switching between absolute and relative times for updates and ETAs.
+//  Other objects may also do something when a setting is changed.
 - (void)settingChanged:(NSNotification *)notification {
-	NSDictionary *info = [notification userInfo];
-	
-	//	Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
-	if ([[notification object] isEqualToString:@"useRelativeTimes"]) {
-		if ([[info objectForKey:@"useRelativeTimes"] boolValue]) {
+    NSDictionary *info = [notification userInfo];
+
+    //  Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
+    if ([[notification object] isEqualToString:@"useRelativeTimes"]) {
+        if ([[info objectForKey:@"useRelativeTimes"] boolValue]) {
             m_useRelativeTimes = YES;
-		} else {
+        } else {
             m_useRelativeTimes = NO;
-		}
-	}
+        }
+    }
 }
 
 @end

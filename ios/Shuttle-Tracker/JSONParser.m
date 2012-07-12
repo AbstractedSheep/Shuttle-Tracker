@@ -199,7 +199,7 @@
                 
                 string = stopName;
                 
-                //	Special handling for long stop names.
+                //  Special handling for long stop names.
                 if ([string isEqualToString:@"Blitman Residence Commons"]) {
                     string = @"Blitman Commons";
                 } else if ([string isEqualToString:@"Polytechnic Residence Commons"]) {
@@ -507,7 +507,7 @@
 
 
 - (BOOL)parseExtraEtasFromJson:(NSString *)jsonString {
-	if ([jsonString isEqualToString:@"null"]) {
+    if ([jsonString isEqualToString:@"null"]) {
         return NO;
     }
     
