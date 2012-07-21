@@ -4,9 +4,7 @@ A suite of applications to make community transportation more useful.
 ## About
 The Shuttle Tracker project lets users view a public or semi-public transportation system's routes and stops, and track the locations of its vehicles.  It also provides estimated times of arrival (ETAs) for each of the stops.  
 
-The project's main focus is to build mobile versions of the RPI Shuttle Tracker website at http://shuttles.rpi.edu/.  The program provides information on the RPI campus shuttles, including their current locations and when they will arrive at each stop.
-
-The applications are written generically, so adapting them to a new system is simple.
+The project's focus is mobile versions of the [RPI Shuttle Tracker](http://shuttles.rpi.edu/), but can be adapted for use with other systems.
 
 It consists of several parts: 
 
@@ -21,7 +19,7 @@ The data processor is found in the `server/` directory.  The web server is in th
 ## License
 The Android application, in the 'android/' directory, and the server applications, in the 'server/' directory, are available under the GNU GPLv3 license as specified in the COPYING file.  Files under different licenses will say so in their headers.
 
-The iOS application, in the `ios/` directory, is available under the MIT License.  It also incorporates code under the MIT License.  The license is specified in the LICENSE file in the `ios/` directory, unless otherwise specified in a file.
+The iOS application, in the `ios/` directory, is available under the MIT License.  It also incorporates other projects' code under the MIT License.  The license is specified in the LICENSE file in the `ios/` directory, unless otherwise specified in a file.
 
 Image licenses are detailed in IMAGES_LICENSE.
 
@@ -52,9 +50,6 @@ After inputting this information, run the main method located in ShuttleTrackerS
 
 ## Android
 
-### Environment Configuration
-This application is written using Eclipse. The easiest way to compile is to configure Eclipse according to the instructions at http://developer.android.com/sdk/eclipse-adt.html#installing
-
 ### Compiling
 Load the project into Eclipse using File->Import...
 Add a class called MapsApiKey to the com.abstractedsheep.shuttletracker package.
@@ -63,22 +58,11 @@ Add a static String variable to the class called MAPS_API_KEY, set to your Googl
 Build the project using Project->Build Project (If there are build errors, try Project->Clean...)
 
 ### Installing
-Create a Run configuration for the project set to launch the default activity with the target set to manual.
-Run project normally.
+Use `adb install <apk path>`.
 -OR-
-Use the adb program in android-sdk/platform-tools with the command 'adb install <apk file path>'
+Create and use a Run configuration for the project set to launch the default activity with the target set to manual.
 
-## iOS (iPhone/iPod Touch/iPad)
+## iOS
 
 ### Compiling
-Open `ios/Shuttle-Tracker.xcodeproj` in XCode and compile normally.
-
-### Installing
-Note: You must be a registered and paying iOS developer to install this way.
-With the project open in XCode, set up code signing as instructed at the iOS provisioning center, https://developer.apple.com/ios/manage/overview/index.action
-
-Connect your provisioned device and set XCode's target to your device name.  Compile and run the program, using Run or Build and Go.
-
-### Contact
-If you need help compiling or otherwise need to get in touch, brendonjustin can be found on `#rcos` on `irc.freenode.net` as bjustin
-
+Use the XCode project `ios/Shuttle-Tracker.xcodeproj`.
