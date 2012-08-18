@@ -77,7 +77,7 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         //  Make a split view, with ETAs on the left and the map on the right.
         self.splitViewController = [[[UISplitViewController alloc] init] autorelease];
-        self.splitViewController.viewControllers = [NSArray arrayWithObjects:etasTableNavController, mapNavController, nil];
+        self.splitViewController.viewControllers = @[etasTableNavController, mapNavController];
 //        self.splitViewController.view.frame = self.window.frame;
         self.splitViewController.delegate = mapViewController;
         
@@ -96,7 +96,7 @@
         //  Create a tabbed view, with a map view, ETA view, and settings view.
         self.tabBarController = [[[UITabBarController alloc] init] autorelease];
         
-        self.tabBarController.viewControllers = [NSArray arrayWithObjects:mapNavController, etasTableNavController, settingsNavController, nil];
+        self.tabBarController.viewControllers = @[mapNavController, etasTableNavController, settingsNavController];
         [settingsNavController release];
         
         self.window.rootViewController = self.tabBarController;
@@ -126,13 +126,14 @@
     // Set the application defaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *appDefaults;
-    appDefaults = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:use24Time ? @"YES" : @"NO", 
-                                                       @"NO", @"YES", [NSNumber numberWithInt:5], @"NO",
-                                                       [NSKeyedArchiver archivedDataWithRootObject:favoriteEtasArray], nil]
-                                              forKeys:[NSArray arrayWithObjects:@"use24Time", 
-                                                       @"useLocation", @"findClosestStop", 
-                                                       @"dataUpdateInterval", @"useRelativeTimes",
-                                                       @"favoritesList", nil]];
+    appDefaults = @{
+        @"use24Time" : @(use24Time),
+        @"useLocation" : @(NO),
+        @"findClosestStop" : @(YES),
+        @"dataUpdateInterval" : @5,
+        @"useRelativeTimes" : @(NO),
+        @"favoritesList" : [NSKeyedArchiver archivedDataWithRootObject:favoriteEtasArray]
+    };
     [defaults registerDefaults:appDefaults];
     [defaults synchronize];
     
@@ -276,7 +277,7 @@
     }
     
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Shuttle_Tracker.sqlite"];
-    NSDictionary *migrationOption = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+    NSDictionary *migrationOption = @{NSMigratePersistentStoresAutomaticallyOption: @(YES), NSInferMappingModelAutomaticallyOption: @(YES)};
     
     NSError *error = nil;
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];

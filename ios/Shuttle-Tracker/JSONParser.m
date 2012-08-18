@@ -102,7 +102,7 @@
                 
                 NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber" 
                                                                                ascending:YES];
-                [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+                [request setSortDescriptors:@[sortDescriptor]];
                 [sortDescriptor release];
                 
                 NSArray *routePts = [self.managedObjectContext executeFetchRequest:request 
@@ -132,14 +132,14 @@
                                                                                 inManagedObjectContext:self.managedObjectContext];
                     
                     string = [coordsValues objectForKey:@"latitude"];
-                    routePt.latitude = [NSNumber numberWithDouble:[string doubleValue]];
+                    routePt.latitude = @([string doubleValue]);
                     
                     string = [coordsValues objectForKey:@"longitude"];
-                    routePt.longitude = [NSNumber numberWithDouble:[string doubleValue]];
+                    routePt.longitude = @([string doubleValue]);
                     
                     [route addPointsObject:routePt];
                     routePt.route = route;
-                    routePt.pointNumber = [NSNumber numberWithLong:ptCount++];
+                    routePt.pointNumber = @(ptCount++);
                     
                     // Save the context.
                     error = nil;
@@ -192,10 +192,10 @@
             
             if (stop) {
                 string = [value objectForKey:@"latitude"];
-                stop.latitude = [NSNumber numberWithDouble:[string doubleValue]];
+                stop.latitude = @([string doubleValue]);
                 
                 string = [value objectForKey:@"longitude"];
-                stop.longitude = [NSNumber numberWithDouble:[string doubleValue]];
+                stop.longitude = @([string doubleValue]);
                 
                 string = stopName;
                 
@@ -215,7 +215,7 @@
                 string = [value objectForKey:@"short_name"];
                 stop.idTag = string;
                 
-                stop.stopNum = [NSNumber numberWithInt:stopNum++];
+                stop.stopNum = @(stopNum++);
                 
                 NSDictionary *routesDict = [value objectForKey:@"routes"];
                 NSMutableArray *tempRouteIds = [[NSMutableArray alloc] init];
@@ -234,8 +234,7 @@
                 
                 // Set example predicate and sort orderings...
                 predicate = [NSPredicate predicateWithFormat: @"(routeId IN $ROUTEIDLIST)"];
-                [request setPredicate:[predicate predicateWithSubstitutionVariables:[NSDictionary dictionaryWithObject:tempRouteIds 
-                                                                                                                forKey:@"ROUTEIDLIST"]]];
+                [request setPredicate:[predicate predicateWithSubstitutionVariables:@{@"ROUTEIDLIST": tempRouteIds}]];
                 [tempRouteIds release];
                 
                 error = nil;
@@ -329,13 +328,13 @@
                 //  Set the vehicle properties to the corresponding JSON values
                 for (NSString *string in dict) {
                     if ([string isEqualToString:@"latitude"]) {
-                        vehicle.latitude = [NSNumber numberWithDouble:[[dict objectForKey:string] doubleValue]];
+                        vehicle.latitude = @([[dict objectForKey:string] doubleValue]);
                     } else if ([string isEqualToString:@"longitude"]) {
-                        vehicle.longitude = [NSNumber numberWithDouble:[[dict objectForKey:string] doubleValue]];
+                        vehicle.longitude = @([[dict objectForKey:string] doubleValue]);
                     } else if ([string isEqualToString:@"heading"]) {
-                        vehicle.heading = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+                        vehicle.heading = @([[dict objectForKey:string] intValue]);
                     } else if ([string isEqualToString:@"speed"]) {
-                        vehicle.speed = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+                        vehicle.speed = @([[dict objectForKey:string] intValue]);
                     } else if ([string isEqualToString:@"update_time"]) {
                         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
                         [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
@@ -343,7 +342,7 @@
                         vehicle.updateTime = [dateFormatter dateFromString:[dict objectForKey:string]];
                         [dateFormatter release];
                     } else if ([string isEqualToString:@"route_id"]) {
-                        vehicle.routeId = [NSNumber numberWithInt:[[dict objectForKey:string] intValue]];
+                        vehicle.routeId = @([[dict objectForKey:string] intValue]);
                     }
                 }
                 
@@ -399,7 +398,7 @@
             ETA *eta = nil;
             
             NSString *etaStopId = [dict objectForKey:@"stop_id"];
-            NSNumber *etaRouteId = [NSNumber numberWithInt:[[dict objectForKey:@"route"] intValue]];
+            NSNumber *etaRouteId = @([[dict objectForKey:@"route"] intValue]);
             
             //  Find the ETA, if it exists already
             NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"ETA" 
@@ -413,7 +412,7 @@
             [request setPredicate:predicate];
             
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
-            [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+            [request setSortDescriptors:@[sortDescriptor]];
             [request setFetchLimit:1];
             
             NSError *error = nil;

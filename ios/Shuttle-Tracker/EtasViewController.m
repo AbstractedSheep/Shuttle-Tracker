@@ -155,7 +155,7 @@ const BOOL makeLaunchImage = NO;
             //  Get all stops for that route
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stopNum" ascending:YES];
             
-            [m_routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortDescriptor]] 
+            [m_routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:@[sortDescriptor]] 
                             forKey:[route.routeId stringValue]];
         }
     }
@@ -238,7 +238,7 @@ const BOOL makeLaunchImage = NO;
         [request setEntity:entityDescription];
         
         sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
-        [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+        [request setSortDescriptors:@[sortDescriptor]];
         
         error = nil;
         favStops = [self.managedObjectContext executeFetchRequest:request error:&error];
@@ -252,7 +252,7 @@ const BOOL makeLaunchImage = NO;
             [request setEntity:entityDescription];
             
             sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
-            [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+            [request setSortDescriptors:@[sortDescriptor]];
             
             [request setFetchLimit:1];
             
@@ -283,12 +283,12 @@ const BOOL makeLaunchImage = NO;
             [request setEntity:entityDescription];
             
             sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
-            [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+            [request setSortDescriptors:@[sortDescriptor]];
             
             [request setFetchLimit:1];
             
             predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
-                         [NSNumber numberWithInt:indexPath.section], stop.idTag];
+                         @(indexPath.section), stop.idTag];
             [request setPredicate:predicate];
             
             error = nil;
@@ -357,7 +357,7 @@ const BOOL makeLaunchImage = NO;
     [request setEntity:entityDescription];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"routeId == %@", 
-                              [NSNumber numberWithInt:section]];
+                              @(section)];
     [request setPredicate:predicate];
     
     NSError *error = nil;
@@ -391,7 +391,7 @@ const BOOL makeLaunchImage = NO;
         [request setEntity:entityDescription];
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
-        [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+        [request setSortDescriptors:@[sortDescriptor]];
         
         NSError *error = nil;
         NSArray *stops = [self.managedObjectContext executeFetchRequest:request error:&error];
@@ -409,7 +409,7 @@ const BOOL makeLaunchImage = NO;
             stop = [stops objectAtIndex:indexPath.row];
             
             levc = [[ExtraEtasViewController alloc] initWithStop:stop 
-                                                  forRouteNumber:[NSNumber numberWithInt:indexPath.section]];
+                                                  forRouteNumber:@(indexPath.section)];
         }
     }
 
@@ -469,7 +469,7 @@ const BOOL makeLaunchImage = NO;
         [request setEntity:entityDescription];
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
-        [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+        [request setSortDescriptors:@[sortDescriptor]];
         
         NSError *error = nil;
         NSArray *stops = [self.managedObjectContext executeFetchRequest:request error:&error];
@@ -480,7 +480,7 @@ const BOOL makeLaunchImage = NO;
         }
         
         //  Now remove the row from display
-        [self.tableView deleteRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil]
+        [self.tableView deleteRowsAtIndexPaths:@[indexPath]
                               withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         //  Add a favorite stop then reload the table.
@@ -495,7 +495,7 @@ const BOOL makeLaunchImage = NO;
             
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(stop.name == %@) AND (route.routeId == %@)", 
                                       [[stopsArray objectAtIndex:indexPath.row] name], 
-                                      [NSNumber numberWithInt:indexPath.section]];
+                                      @(indexPath.section)];
             [request setPredicate:predicate];
             
             NSError *error = nil;
@@ -515,7 +515,7 @@ const BOOL makeLaunchImage = NO;
                 
                 [request setFetchLimit:1];
                 
-                predicate = [NSPredicate predicateWithFormat:@"(routeId == %@)", [NSNumber numberWithInt:indexPath.section]];
+                predicate = [NSPredicate predicateWithFormat:@"(routeId == %@)", @(indexPath.section)];
                 [request setPredicate:predicate];
                 
                 error = nil;
