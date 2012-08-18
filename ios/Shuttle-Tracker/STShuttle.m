@@ -1,17 +1,17 @@
 //
-//  Shuttle.m
+//  STShuttle.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
 //  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
-#import "Shuttle.h"
-#import "ETA.h"
-#import "Route.h"
+#import "STShuttle.h"
+#import "STETA.h"
+#import "STRoute.h"
 
 
-@implementation Shuttle
+@implementation STShuttle
 
 @dynamic heading;
 @dynamic latitude;

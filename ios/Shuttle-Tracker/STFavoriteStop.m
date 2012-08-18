@@ -1,20 +1,19 @@
 //
-//  RoutePt.m
+//  STFavoriteStop.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
 //  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
-#import "RoutePt.h"
-#import "Route.h"
+#import "STFavoriteStop.h"
+#import "STRoute.h"
+#import "STStop.h"
 
 
-@implementation RoutePt
+@implementation STFavoriteStop
 
-@dynamic latitude;
-@dynamic longitude;
-@dynamic pointNumber;
 @dynamic route;
+@dynamic stop;
 
 @end

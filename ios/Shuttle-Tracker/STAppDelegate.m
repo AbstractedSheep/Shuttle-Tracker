@@ -1,21 +1,21 @@
 //
-//  AppDelegate.m
+//  STAppDelegate.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 10/29/11.
 //  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "STAppDelegate.h"
 
-#import "EtasViewController.h"
-#import "MapViewController.h"
+#import "STEtasViewController.h"
+#import "STMapViewController.h"
 #import "IASKAppSettingsViewController.h"
 
-#import "DataManager.h"
+#import "STDataManager.h"
 
 
-@implementation AppDelegate
+@implementation STAppDelegate
 
 @synthesize window = _window;
 @synthesize managedObjectContext = __managedObjectContext;
@@ -44,7 +44,7 @@
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
     // Override point for customization after application launch.
-    DataManager *dataManager = [[DataManager alloc] init];
+    STDataManager *dataManager = [[STDataManager alloc] init];
     self.dataManager = dataManager;
     [dataManager release];
     [self.dataManager setParserManagedObjectContext:self.managedObjectContext];
@@ -53,7 +53,7 @@
     //  a reference to it.
     self.timeDisplayFormatter = self.dataManager.timeDisplayFormatter;
     
-    MapViewController *mapViewController = [[MapViewController alloc] init];
+    STMapViewController *mapViewController = [[STMapViewController alloc] init];
     mapViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Map" image:[UIImage imageNamed:@"glyphish_map"] tag:0] autorelease];
     mapViewController.dataManager = self.dataManager;
     mapViewController.managedObjectContext = self.managedObjectContext;
@@ -61,7 +61,7 @@
     UINavigationController *mapNavController = [[UINavigationController alloc] initWithRootViewController:mapViewController];
     [mapViewController release];
     
-    EtasViewController *etasViewController = [[EtasViewController alloc] init];
+    STEtasViewController *etasViewController = [[STEtasViewController alloc] init];
     etasViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"ETAs" image:[UIImage imageNamed:@"glyphish_clock"] tag:1] autorelease];
     etasViewController.dataManager = self.dataManager;
     etasViewController.managedObjectContext = self.managedObjectContext;

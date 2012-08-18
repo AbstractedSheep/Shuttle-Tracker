@@ -1,12 +1,12 @@
 //
-//  MapPlacemark.m
+//  STMapPlacemark.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 4/8/11.
 //  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
-#import "MapPlacemark.h"
+#import "STMapPlacemark.h"
 
 
 @interface UIColor (stringcolor)
@@ -16,7 +16,7 @@
 
 @end
 
-@implementation MapPlacemark
+@implementation STMapPlacemark
 
 @synthesize name;
 @synthesize title;
@@ -29,7 +29,7 @@
 
 @end
 
-@implementation PlacemarkStyle
+@implementation STPlacemarkStyle
 
 @synthesize idTag;
 @synthesize color;
@@ -46,13 +46,13 @@
 
 @end
 
-@implementation MapRoute
+@implementation STMapRoute
 
 @synthesize lineString;
 
 @end
 
-@implementation MapPoint
+@implementation STMapPoint
 
 @synthesize coordinate;
 @synthesize annotationView;
@@ -79,14 +79,14 @@
 
 @end
 
-@implementation MapStop
+@implementation STMapStop
 
 @synthesize routeIds;
 @synthesize routeNames;
 
 @end
 
-@implementation MapVehicle
+@implementation STMapVehicle
 
 @synthesize ETAs;
 @synthesize heading;
@@ -95,7 +95,7 @@
 @synthesize routeImageSet;
 @synthesize viewNeedsUpdate;
 
-- (void)copyAttributesExceptLocation:(MapVehicle *)newVehicle {
+- (void)copyAttributesExceptLocation:(STMapVehicle *)newVehicle {
     
 }
 

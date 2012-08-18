@@ -1,5 +1,5 @@
 //
-//  Route.h
+//  STRoute.h
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ETA, FavoriteStop, RoutePt, Shuttle, Stop;
+@class STETA, STFavoriteStop, STRoutePt, STShuttle, STStop;
 
-@interface Route : NSManagedObject
+@interface STRoute : NSManagedObject
 
 @property (nonatomic, retain) NSString * color;
 @property (nonatomic, retain) NSString * name;
@@ -24,30 +24,30 @@
 @property (nonatomic, retain) NSSet *stops;
 @end
 
-@interface Route (CoreDataGeneratedAccessors)
+@interface STRoute (CoreDataGeneratedAccessors)
 
-- (void)addEtasObject:(ETA *)value;
-- (void)removeEtasObject:(ETA *)value;
+- (void)addEtasObject:(STETA *)value;
+- (void)removeEtasObject:(STETA *)value;
 - (void)addEtas:(NSSet *)values;
 - (void)removeEtas:(NSSet *)values;
 
-- (void)addFavoritesObject:(FavoriteStop *)value;
-- (void)removeFavoritesObject:(FavoriteStop *)value;
+- (void)addFavoritesObject:(STFavoriteStop *)value;
+- (void)removeFavoritesObject:(STFavoriteStop *)value;
 - (void)addFavorites:(NSSet *)values;
 - (void)removeFavorites:(NSSet *)values;
 
-- (void)addPointsObject:(RoutePt *)value;
-- (void)removePointsObject:(RoutePt *)value;
+- (void)addPointsObject:(STRoutePt *)value;
+- (void)removePointsObject:(STRoutePt *)value;
 - (void)addPoints:(NSSet *)values;
 - (void)removePoints:(NSSet *)values;
 
-- (void)addShuttlesObject:(Shuttle *)value;
-- (void)removeShuttlesObject:(Shuttle *)value;
+- (void)addShuttlesObject:(STShuttle *)value;
+- (void)removeShuttlesObject:(STShuttle *)value;
 - (void)addShuttles:(NSSet *)values;
 - (void)removeShuttles:(NSSet *)values;
 
-- (void)addStopsObject:(Stop *)value;
-- (void)removeStopsObject:(Stop *)value;
+- (void)addStopsObject:(STStop *)value;
+- (void)removeStopsObject:(STStop *)value;
 - (void)addStops:(NSSet *)values;
 - (void)removeStops:(NSSet *)values;
 

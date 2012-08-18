@@ -1,20 +1,20 @@
 //
-//  Route.m
+//  STRoute.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
 //  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
-#import "Route.h"
-#import "ETA.h"
-#import "FavoriteStop.h"
-#import "RoutePt.h"
-#import "Shuttle.h"
-#import "Stop.h"
+#import "STRoute.h"
+#import "STETA.h"
+#import "STFavoriteStop.h"
+#import "STRoutePt.h"
+#import "STShuttle.h"
+#import "STStop.h"
 
 
-@implementation Route
+@implementation STRoute
 
 @dynamic color;
 @dynamic name;

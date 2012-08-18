@@ -1,22 +1,22 @@
 //
-//  LaterEtasViewController.m
+//  STLaterEtasViewController.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 4/30/11.
 //  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
-#import "ExtraEtasViewController.h"
+#import "STExtraEtasViewController.h"
 #import "DataUrls.h"
-#import "ETA.h"
-#import "FavoriteStop.h"
-#import "Stop.h"
-#import "JSONParser.h"
-#import "DataManager.h"
+#import "STETA.h"
+#import "STFavoriteStop.h"
+#import "STStop.h"
+#import "STJSONParser.h"
+#import "STDataManager.h"
 #import "IASKSettingsReader.h"
 
 
-@interface ExtraEtasViewController ()
+@interface STExtraEtasViewController ()
 
 - (void)getExtraEtas;
 - (void)delayedTableReload;
@@ -26,7 +26,7 @@
 @end
 
 
-@implementation ExtraEtasViewController
+@implementation STExtraEtasViewController
 
 @synthesize stop = _stop;
 @synthesize routeNum = _routeNum;
@@ -35,7 +35,7 @@
 @synthesize timeDisplayFormatter = m_timeDisplayFormatter;
 @synthesize useRelativeTimes = m_useRelativeTimes;
 
-- (id)initWithStop:(Stop *)stop forRouteNumber:(NSNumber *)routeNumber {
+- (id)initWithStop:(STStop *)stop forRouteNumber:(NSNumber *)routeNumber {
 //  if ((self = [self initWithStyle:UITableViewStyleGrouped])) {
     if ((self = [super init])) {
         self.stop = stop;
@@ -45,9 +45,9 @@
         m_lastEtaRefresh = nil;
         
         m_etasUrl = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"%@&rt=%d&st=%@", 
-                   kLEExtraEtasUrl, [routeNumber intValue], stop.idTag]];
+                   kSTExtraEtasUrl, [routeNumber intValue], stop.idTag]];
         
-        m_extraEtasParser = [[JSONParser alloc] init];
+        m_extraEtasParser = [[STJSONParser alloc] init];
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
@@ -232,7 +232,7 @@
         [self.managedObjectContext deleteObject:[stops objectAtIndex:0]];
     } else {
         //  Create the favorite stop
-        FavoriteStop *favStop = (FavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"FavoriteStop"
+        STFavoriteStop *favStop = (STFavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"FavoriteStop"
                                                                               inManagedObjectContext:self.managedObjectContext];
         
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route"

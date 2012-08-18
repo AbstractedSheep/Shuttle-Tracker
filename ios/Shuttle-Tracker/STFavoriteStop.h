@@ -1,5 +1,5 @@
 //
-//  FavoriteStop.h
+//  STFavoriteStop.h
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Route, Stop;
+@class STRoute, STStop;
 
-@interface FavoriteStop : NSManagedObject
+@interface STFavoriteStop : NSManagedObject
 
-@property (nonatomic, retain) Route *route;
-@property (nonatomic, retain) Stop *stop;
+@property (nonatomic, retain) STRoute *route;
+@property (nonatomic, retain) STStop *stop;
 
 @end

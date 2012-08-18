@@ -1,23 +1,23 @@
 //
-//  JSONParser.m
+//  STJSONParser.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 2/12/11.
 //  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
-#import "JSONParser.h"
+#import "STJSONParser.h"
 #import "DataUrls.h"
-#import "MapPlacemark.h"
-#import "ETA.h"
-#import "Route.h"
-#import "RoutePt.h"
-#import "Shuttle.h"
-#import "Stop.h"
+#import "STMapPlacemark.h"
+#import "STETA.h"
+#import "STRoute.h"
+#import "STRoutePt.h"
+#import "STShuttle.h"
+#import "STStop.h"
 
 #import <CoreData/CoreData.h>
 
-@implementation JSONParser
+@implementation STJSONParser
 
 @synthesize routes;
 @synthesize stops;
@@ -59,7 +59,7 @@
         
         NSDictionary *jsonRoutes = [jsonDict objectForKey:@"routes"];
         for (NSDictionary *value in jsonRoutes) {
-            Route *route = nil;
+            STRoute *route = nil;
             
             NSNumber *routeId = [value objectForKey:@"id"];
             
@@ -81,10 +81,10 @@
                 // Deal with error...
             } else if ([array count] > 0) {
                 //  The route already exists
-                route = (Route *)[array objectAtIndex:0];
+                route = (STRoute *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                route = (Route *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" 
+                route = (STRoute *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" 
                                                                inManagedObjectContext:self.managedObjectContext];
                 route.routeId = routeId;
             }
@@ -109,7 +109,7 @@
                                                                              error:&error];
                 
                 if (routePts != nil) {
-                    for (RoutePt *pt in routePts) {
+                    for (STRoutePt *pt in routePts) {
                         [self.managedObjectContext deleteObject:pt];
                     }
                 }
@@ -128,7 +128,7 @@
                 
                 long ptCount = 0;
                 for (NSDictionary *coordsValues in coordsDict) {
-                    RoutePt *routePt = (RoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"RoutePt"
+                    STRoutePt *routePt = (STRoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"RoutePt"
                                                                                 inManagedObjectContext:self.managedObjectContext];
                     
                     string = [coordsValues objectForKey:@"latitude"];
@@ -160,7 +160,7 @@
         int stopNum = 0;
         NSDictionary *jsonStops = [jsonDict objectForKey:@"stops"];
         for (NSDictionary *value in jsonStops) {
-            Stop *stop = nil;
+            STStop *stop = nil;
             
             NSString *stopName = [value objectForKey:@"name"];
             
@@ -182,10 +182,10 @@
                 // Deal with error...
             } else if ([array count] > 0) {
                 //  The ETA for this stop on this route already exists
-                stop = (Stop *)[array objectAtIndex:0];
+                stop = (STStop *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                stop = (Stop *)[NSEntityDescription insertNewObjectForEntityForName:@"Stop"
+                stop = (STStop *)[NSEntityDescription insertNewObjectForEntityForName:@"Stop"
                                                              inManagedObjectContext:self.managedObjectContext];
                 stop.name = stopName;
             }
@@ -295,7 +295,7 @@
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonArray) {
-            Shuttle *vehicle = nil;
+            STShuttle *vehicle = nil;
             NSString *vehicleName = [dict objectForKey:@"name"];
             
             //  Find the vehicle, if it exists already
@@ -316,10 +316,10 @@
                 // Deal with error...
             } else if ([array count] > 0) {
                 //  The vehicle with name "name" already exists, so use it
-                vehicle = (Shuttle *)[array objectAtIndex:0];
+                vehicle = (STShuttle *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                vehicle = (Shuttle *)[NSEntityDescription insertNewObjectForEntityForName:@"Shuttle"
+                vehicle = (STShuttle *)[NSEntityDescription insertNewObjectForEntityForName:@"Shuttle"
                                                                    inManagedObjectContext:self.managedObjectContext];
                 vehicle.name = vehicleName;
             }
@@ -395,7 +395,7 @@
         
         //  Each dictionary corresponds to one set of curly braces ({ and })
         for (NSDictionary *dict in jsonArray) {
-            ETA *eta = nil;
+            STETA *eta = nil;
             
             NSString *etaStopId = [dict objectForKey:@"stop_id"];
             NSNumber *etaRouteId = @([[dict objectForKey:@"route"] intValue]);
@@ -422,10 +422,10 @@
                 // Deal with error...
             } else if ([array count] > 0) {
                 //  The ETA for this stop on this route already exists
-                eta = (ETA *)[array objectAtIndex:0];
+                eta = (STETA *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                eta = (ETA *)[NSEntityDescription insertNewObjectForEntityForName:@"ETA"
+                eta = (STETA *)[NSEntityDescription insertNewObjectForEntityForName:@"ETA"
                                                            inManagedObjectContext:self.managedObjectContext];
             }
             

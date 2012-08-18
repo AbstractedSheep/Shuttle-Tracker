@@ -1,5 +1,5 @@
 //
-//  EtaManager.h
+//  STDataManager.h
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 2/20/11.
@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "JSONParser.h"
+#import "STJSONParser.h"
 
 #define kDMRoutesandStopsLoaded             @"kDMRoutesandStopsLoaded"
 #define kDMVehiclesUpdated                  @"kDMVehiclesUpdated"
@@ -16,13 +16,13 @@
 @class EtaWrapper;
 
 //  Manages all of the routes/stops/shuttles data, as well as application settings.
-@interface DataManager : NSObject {
+@interface STDataManager : NSObject {
     NSURL               *m_shuttleJsonUrl;
     NSURL               *m_etasJsonUrl;
     
-    JSONParser          *m_routesStopsJsonParser;
-    JSONParser          *m_vehiclesJsonParser;
-    JSONParser          *m_etasJsonParser;
+    STJSONParser        *m_routesStopsJsonParser;
+    STJSONParser        *m_vehiclesJsonParser;
+    STJSONParser        *m_etasJsonParser;
     
     dispatch_queue_t    m_loadMapInfoJsonQueue;
     dispatch_queue_t    m_loadVehicleJsonQueue;

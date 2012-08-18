@@ -1,5 +1,5 @@
 //
-//  MapViewController.h
+//  STMapViewController.h
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 1/29/11.
@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
-#import "DataManager.h"
+#import "STDataManager.h"
 
 
-@class JSONParser;
+@class STJSONParser;
 
-@interface MapViewController : UIViewController <MKMapViewDelegate, UISplitViewControllerDelegate> {
+@interface STMapViewController : UIViewController <MKMapViewDelegate, UISplitViewControllerDelegate> {
     MKMapView               *m_mapView;
     
     NSMutableDictionary     *m_vehicles;
@@ -24,11 +24,11 @@
     NSMutableDictionary     *m_magentaShuttleImages;
     NSMutableDictionary     *m_shuttleImages;
 
-    DataManager             *m_dataManager;
+    STDataManager           *m_dataManager;
     NSTimer                 *m_shuttleCleanupTimer;
 }
 
-@property (nonatomic, assign) DataManager *dataManager;
+@property (nonatomic, assign) STDataManager *dataManager;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 

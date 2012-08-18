@@ -1,5 +1,5 @@
 //
-//  MapPlacemark.h
+//  STMapPlacemark.h
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 4/8/11.
@@ -9,15 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
-@class PlacemarkStyle;
+@class STPlacemarkStyle;
 
-@interface MapPlacemark : NSObject {
+@interface STMapPlacemark : NSObject {
     NSString *name;
     NSString *idTag;
     NSString *description;
     NSString *styleUrl;
     
-    PlacemarkStyle *style;
+    STPlacemarkStyle *style;
 
     NSDateFormatter *timeDisplayFormatter;
 }
@@ -28,14 +28,14 @@
 @property (nonatomic, retain) NSString *description;
 @property (nonatomic, readonly) NSString *subtitle;
 @property (nonatomic, retain) NSString *styleUrl;
-@property (nonatomic, retain) PlacemarkStyle *style;
+@property (nonatomic, retain) STPlacemarkStyle *style;
 @property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
 
 @end
 
 
 //  Use to hold style objects, I have only seen these used for routes
-@interface PlacemarkStyle : NSObject {
+@interface STPlacemarkStyle : NSObject {
     NSString *idTag;
     NSString *colorString;
     UIColor *color;
@@ -51,7 +51,7 @@
 
 
 //  Routes consist of a list of coordinates, so use an array for coordinates storage
-@interface MapRoute : MapPlacemark
+@interface STMapRoute : STMapPlacemark
 {
     NSArray *lineString;
 }
@@ -65,7 +65,7 @@
 #pragma mark Points
 
 //  Base class for objects which have a single set of coordinates, so just use one set of coordinates
-@interface MapPoint : MapPlacemark <MKAnnotation>
+@interface STMapPoint : STMapPlacemark <MKAnnotation>
 {
     CLLocationCoordinate2D coordinate;
     MKAnnotationView *annotationView;
@@ -79,7 +79,7 @@
 
 @end
 
-@interface MapStop : MapPoint
+@interface STMapStop : STMapPoint
 {
     NSArray *routeIds;
     NSArray *routeNames;
@@ -90,7 +90,7 @@
 
 @end
 
-@interface MapVehicle : MapPoint {
+@interface STMapVehicle : STMapPoint {
     NSDictionary *ETAs;
     int heading;
     NSDate *updateTime;
@@ -104,7 +104,7 @@
 @property (nonatomic) BOOL routeImageSet;
 @property (nonatomic) BOOL viewNeedsUpdate;
 
-- (void)copyAttributesExceptLocation:(MapVehicle *)newVehicle;
+- (void)copyAttributesExceptLocation:(STMapVehicle *)newVehicle;
 - (void)setUpdateTime:(NSDate *)updateTime withFormatter:(NSDateFormatter *)dateFormatter;
 
 @end
