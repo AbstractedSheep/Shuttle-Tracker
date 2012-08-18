@@ -1,5 +1,5 @@
 //
-//  Shuttle.h
+//  STShuttle.h
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class ETA, Route;
+@class STETA, STRoute;
 
-@interface Shuttle : NSManagedObject
+@interface STShuttle : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * heading;
 @property (nonatomic, retain) NSNumber * latitude;
@@ -21,13 +21,13 @@
 @property (nonatomic, retain) NSDate * updateTime;
 @property (nonatomic, retain) NSNumber * routeId;
 @property (nonatomic, retain) NSSet *eta;
-@property (nonatomic, retain) Route *route;
+@property (nonatomic, retain) STRoute *route;
 @end
 
-@interface Shuttle (CoreDataGeneratedAccessors)
+@interface STShuttle (CoreDataGeneratedAccessors)
 
-- (void)addEtaObject:(ETA *)value;
-- (void)removeEtaObject:(ETA *)value;
+- (void)addEtaObject:(STETA *)value;
+- (void)removeEtaObject:(STETA *)value;
 - (void)addEta:(NSSet *)values;
 - (void)removeEta:(NSSet *)values;
 

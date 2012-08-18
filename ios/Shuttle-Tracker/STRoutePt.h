@@ -1,5 +1,5 @@
 //
-//  RoutePt.h
+//  STRoutePt.h
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
@@ -9,13 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Route;
+@class STRoute;
 
-@interface RoutePt : NSManagedObject
+@interface STRoutePt : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * latitude;
 @property (nonatomic, retain) NSNumber * longitude;
 @property (nonatomic, retain) NSNumber * pointNumber;
-@property (nonatomic, retain) Route *route;
+@property (nonatomic, retain) STRoute *route;
 
 @end

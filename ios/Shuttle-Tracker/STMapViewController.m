@@ -1,18 +1,18 @@
 //
-//  MapViewController.m
+//  STMapViewController.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 1/29/11.
 //  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
-#import "MapViewController.h"
+#import "STMapViewController.h"
 
-#import "MapPlacemark.h"
-#import "Route.h"
-#import "RoutePt.h"
-#import "Shuttle.h"
-#import "Stop.h"
+#import "STMapPlacemark.h"
+#import "STRoute.h"
+#import "STRoutePt.h"
+#import "STShuttle.h"
+#import "STStop.h"
 
 #import "IASKSettingsReader.h"
 
@@ -122,7 +122,7 @@ typedef enum {
 //  End from SO
 
 
-@interface MapViewController()
+@interface STMapViewController()
 
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 
@@ -132,16 +132,16 @@ typedef enum {
 - (void)notifyVehiclesUpdated:(NSNotification *)notification;
 - (void)vehiclesUpdated:(NSNotification *)notification;
 //  Adding routes and stops is not guaranteed to be done on the main thread.
-- (void)addRoute:(Route *)route;
-- (void)addStop:(Stop *)stop;
+- (void)addRoute:(STRoute *)route;
+- (void)addStop:(STStop *)stop;
 //  Adding vehicles should only be done on the main thread.
-- (void)addVehicle:(Shuttle *)vehicle;
-- (void)setAnnotationImageForVehicle:(MapVehicle *)vehicle;
+- (void)addVehicle:(STShuttle *)vehicle;
+- (void)setAnnotationImageForVehicle:(STMapVehicle *)vehicle;
 - (void)settingChanged:(NSNotification *)notification;
 
 @end
 
-@implementation MapViewController
+@implementation STMapViewController
 
 @synthesize dataManager = m_dataManager;
 @synthesize managedObjectContext = __managedObjectContext;
@@ -284,7 +284,7 @@ typedef enum {
 //  and remove them.
 - (void)vehicleCleanup {
     NSMutableArray *oldVehicles = [NSMutableArray array];
-    MapVehicle *vehicle;
+    STMapVehicle *vehicle;
     
     for (NSString *name in m_vehicles) {
         vehicle = [m_vehicles objectForKey:name];
@@ -314,7 +314,7 @@ typedef enum {
     {
         // Deal with error...
     } else if ([dbRoutes count] > 0) {
-        for (Route *route in dbRoutes) {
+        for (STRoute *route in dbRoutes) {
             [self addRoute:route];
         }
     } else {
@@ -334,7 +334,7 @@ typedef enum {
     {
         // Deal with error...
     } else if ([dbStops count] > 0) {
-        for (Stop *stop in dbStops) {
+        for (STStop *stop in dbStops) {
             [self addStop:stop];
         }
     } else {
@@ -364,13 +364,13 @@ typedef enum {
     dbVehicles = [self.managedObjectContext executeFetchRequest:request
                                                           error:&error];
     
-    MapVehicle *existingShuttle;
+    STMapVehicle *existingShuttle;
     double updateTimeDiff, latitude, longitude;
     if (error != nil || dbVehicles == nil)
     {
         // Deal with error...
     } else if ([dbVehicles count] > 0) {
-        for (Shuttle *shuttle in dbVehicles) {
+        for (STShuttle *shuttle in dbVehicles) {
             existingShuttle = [m_vehicles objectForKey:shuttle.name];
             updateTimeDiff = [shuttle.updateTime timeIntervalSinceNow];
             
@@ -414,7 +414,7 @@ typedef enum {
 
 //  Add the overlay for the route to the map view, and create a shuttle image with
 //  a color matching the route's color
-- (void)addRoute:(Route *)route {
+- (void)addRoute:(STRoute *)route {
     CLLocationCoordinate2D clLoc;
     MKMapPoint *points;
     UIImage *coloredImage;
@@ -450,7 +450,7 @@ typedef enum {
         
         //  Create an array of coordinates for the polyline which will represent the route
         int counter = 0;
-        for (RoutePt *point in routePts) {
+        for (STRoutePt *point in routePts) {
             //  Get a CoreLocation coordinate from the point
             latitude = [point.latitude doubleValue];
             longitude = [point.longitude doubleValue];
@@ -503,7 +503,7 @@ typedef enum {
 }
 
 
-- (void)addStop:(Stop *)stop {
+- (void)addStop:(STStop *)stop {
     double latitude, longitude;
     CLLocationCoordinate2D clLoc;
     
@@ -513,15 +513,15 @@ typedef enum {
     //  Get a CoreLocation coordinate from the point
     clLoc = CLLocationCoordinate2DMake(latitude, longitude);
     
-    MapStop *mapStop = [[MapStop alloc] initWithLocation:clLoc];
+    STMapStop *mapStop = [[STMapStop alloc] initWithLocation:clLoc];
     mapStop.name = stop.name;
     [m_mapView addAnnotation:mapStop];
     [mapStop release];
 }
 
 
-- (void)addVehicle:(Shuttle *)vehicle {
-    MapVehicle *newVehicle = [[MapVehicle alloc] init];
+- (void)addVehicle:(STShuttle *)vehicle {
+    STMapVehicle *newVehicle = [[STMapVehicle alloc] init];
     double latitude, longitude;
     CLLocationCoordinate2D clLoc;
     
@@ -545,7 +545,7 @@ typedef enum {
 
 //  Set the vehicle's annotation view based on its current orientation
 //  and associated route.
-- (void)setAnnotationImageForVehicle:(MapVehicle *)vehicle {
+- (void)setAnnotationImageForVehicle:(STMapVehicle *)vehicle {
     //  Use the colored image for the shuttle's current route.  A route
     //  of -1 uses the white image.
     UIImage *coloredImage;
@@ -640,8 +640,8 @@ typedef enum {
     if (annotation == m_mapView.userLocation)
         return nil;
     
-    if ([annotation isKindOfClass:[MapStop class]]) {
-        MapStop *stop = (MapStop *)annotation;
+    if ([annotation isKindOfClass:[STMapStop class]]) {
+        STMapStop *stop = (STMapStop *)annotation;
         
         if ([stop annotationView]) {
             return [stop annotationView];
@@ -658,11 +658,11 @@ typedef enum {
             [stopAnnotationView autorelease];
         }
         
-        [(MapStop *)annotation setAnnotationView:stopAnnotationView];
+        [(STMapStop *)annotation setAnnotationView:stopAnnotationView];
 
         return stopAnnotationView;
-    } else if ([annotation isKindOfClass:[MapVehicle class]]) {
-        MapVehicle *vehicle = (MapVehicle *)annotation;
+    } else if ([annotation isKindOfClass:[STMapVehicle class]]) {
+        STMapVehicle *vehicle = (STMapVehicle *)annotation;
         
         if (vehicle.annotationView != nil) {
             //  Check to see if the vehicle's image is the plain shuttle image.

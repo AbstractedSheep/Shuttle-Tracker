@@ -1,18 +1,18 @@
 //
-//  Stop.m
+//  STStop.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
 //  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
-#import "Stop.h"
-#import "ETA.h"
-#import "FavoriteStop.h"
-#import "Route.h"
+#import "STStop.h"
+#import "STETA.h"
+#import "STFavoriteStop.h"
+#import "STRoute.h"
 
 
-@implementation Stop
+@implementation STStop
 
 @dynamic idTag;
 @dynamic latitude;

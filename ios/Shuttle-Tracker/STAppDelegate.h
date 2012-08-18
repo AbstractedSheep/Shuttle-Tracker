@@ -1,5 +1,5 @@
 //
-//  AppDelegate.h
+//  STAppDelegate.h
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 10/29/11.
@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class DataManager;
+@class STDataManager;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface STAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
@@ -25,7 +25,7 @@
 
 @property (strong, nonatomic) UISplitViewController *splitViewController;
 
-@property (strong, nonatomic) DataManager *dataManager;
+@property (strong, nonatomic) STDataManager *dataManager;
 @property (strong, nonatomic) UITabBarController *tabBarController;
 @property (strong, nonatomic) NSDateFormatter *timeDisplayFormatter;
 @property (strong, nonatomic) NSTimer *dataUpdateTimer;

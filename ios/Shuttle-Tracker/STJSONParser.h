@@ -1,5 +1,5 @@
 //
-//  JSONParser.h
+//  STJSONParser.h
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 2/12/11.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface JSONParser : NSObject <NSFetchedResultsControllerDelegate> {
+@interface STJSONParser : NSObject <NSFetchedResultsControllerDelegate> {
     NSDateFormatter *m_timeDisplayFormatter;
 }
 

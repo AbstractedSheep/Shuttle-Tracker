@@ -1,5 +1,5 @@
 //
-//  EtasViewController.m
+//  STEtasViewController.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 2/20/11.
@@ -8,18 +8,18 @@
 
 //  Consider consolidating ETA display code from this file and LaterEtasViewController
 
-#import "EtasViewController.h"
-#import "DataManager.h"
-#import "ExtraEtasViewController.h"
+#import "STEtasViewController.h"
+#import "STDataManager.h"
+#import "STExtraEtasViewController.h"
 #import "IASKSettingsReader.h"
-#import "ETA.h"
-#import "FavoriteStop.h"
-#import "Route.h"
-#import "Stop.h"
+#import "STETA.h"
+#import "STFavoriteStop.h"
+#import "STRoute.h"
+#import "STStop.h"
 
 const BOOL makeLaunchImage = NO;
 
-@interface EtasViewController ()
+@interface STEtasViewController ()
 
 - (void)delayedTableReload;
 - (void)unsafeDelayedTableReload;
@@ -30,7 +30,7 @@ const BOOL makeLaunchImage = NO;
 
 @end
 
-@implementation EtasViewController
+@implementation STEtasViewController
 
 
 @synthesize dataManager = m_dataManager;
@@ -151,7 +151,7 @@ const BOOL makeLaunchImage = NO;
     {
         // Deal with error...
     } else {
-        for (Route *route in dbRoutes) {
+        for (STRoute *route in dbRoutes) {
             //  Get all stops for that route
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stopNum" ascending:YES];
             
@@ -211,8 +211,8 @@ const BOOL makeLaunchImage = NO;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"EtaCell";
-    ETA *eta = nil;
-    Stop *stop = nil;
+    STETA *eta = nil;
+    STStop *stop = nil;
     NSArray *favStops = nil, *etas = nil, *stopsArray = nil;
     NSError *error = nil;
     NSEntityDescription *entityDescription = nil;
@@ -231,7 +231,7 @@ const BOOL makeLaunchImage = NO;
     }
     
     if (indexPath.section == 0) {
-        FavoriteStop *favStop = nil;
+        STFavoriteStop *favStop = nil;
         entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
                                         inManagedObjectContext:self.managedObjectContext];
         request = [[[NSFetchRequest alloc] init] autorelease];
@@ -264,7 +264,7 @@ const BOOL makeLaunchImage = NO;
             etas = [self.managedObjectContext executeFetchRequest:request error:&error];
             
             //  Get the next ETA that is in the future
-            for (ETA *currentEta in etas) {
+            for (STETA *currentEta in etas) {
                 minutesToEta = (int)([currentEta.eta timeIntervalSinceNow] / 60.0f);
                 if (minutesToEta > -1) {
                     eta = currentEta;
@@ -295,7 +295,7 @@ const BOOL makeLaunchImage = NO;
             etas = [self.managedObjectContext executeFetchRequest:request error:&error];
             
             //  Get the next ETA that is in the future
-            for (ETA *currentEta in etas) {
+            for (STETA *currentEta in etas) {
                 minutesToEta = (int)([currentEta.eta timeIntervalSinceNow] / 60.0f);
                 if (minutesToEta > -1) {
                     eta = currentEta;
@@ -377,12 +377,12 @@ const BOOL makeLaunchImage = NO;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    Stop *stop = nil;
-    ExtraEtasViewController *levc = nil;
+    STStop *stop = nil;
+    STExtraEtasViewController *levc = nil;
  
     //  Do nothing for favorites, for now
     if (indexPath.section == 0) {
-        FavoriteStop *favStop = nil;
+        STFavoriteStop *favStop = nil;
         
         //  Get favorite stops
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
@@ -400,7 +400,7 @@ const BOOL makeLaunchImage = NO;
             favStop = [stops objectAtIndex:indexPath.row];
             stop = favStop.stop;
             
-            levc = [[ExtraEtasViewController alloc] initWithStop:stop forRouteNumber:favStop.route.routeId];
+            levc = [[STExtraEtasViewController alloc] initWithStop:stop forRouteNumber:favStop.route.routeId];
         }
     } else {
         NSArray *stops = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
@@ -408,7 +408,7 @@ const BOOL makeLaunchImage = NO;
         if (stops != nil && [stops count] > indexPath.row) {
             stop = [stops objectAtIndex:indexPath.row];
             
-            levc = [[ExtraEtasViewController alloc] initWithStop:stop 
+            levc = [[STExtraEtasViewController alloc] initWithStop:stop
                                                   forRouteNumber:@(indexPath.section)];
         }
     }
@@ -461,7 +461,7 @@ const BOOL makeLaunchImage = NO;
         //  Remove a favorite stop and delete the row from the table.
         
         //  First, get the favorite stop from the database, then delete it.
-        FavoriteStop *favStop = nil;
+        STFavoriteStop*favStop = nil;
         
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
                                                              inManagedObjectContext:self.managedObjectContext];
@@ -484,7 +484,7 @@ const BOOL makeLaunchImage = NO;
                               withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         //  Add a favorite stop then reload the table.
-        FavoriteStop *favStop = nil;
+        STFavoriteStop *favStop = nil;
         NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
@@ -505,7 +505,7 @@ const BOOL makeLaunchImage = NO;
                 return;
             } else {
                 //  The stop is a new favorite, so add it.
-                favStop = (FavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"FavoriteStop"
+                favStop = (STFavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"FavoriteStop"
                                                                         inManagedObjectContext:self.managedObjectContext];
                 
                 entityDescription = [NSEntityDescription entityForName:@"Route"

@@ -1,22 +1,20 @@
 //
-//  ETA.m
+//  STRoutePt.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
 //  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
-#import "ETA.h"
-#import "Route.h"
-#import "Shuttle.h"
-#import "Stop.h"
+#import "STRoutePt.h"
+#import "STRoute.h"
 
 
-@implementation ETA
+@implementation STRoutePt
 
-@dynamic eta;
+@dynamic latitude;
+@dynamic longitude;
+@dynamic pointNumber;
 @dynamic route;
-@dynamic shuttle;
-@dynamic stop;
 
 @end

@@ -1,0 +1,5 @@
+#define kSTRoutesandStopsUrl @"http://shuttles.rpi.edu/displays/netlink.js"
+#define kSTShuttlesUrl @"http://shuttles.abstractedsheep.com/data_service.php?action=get_shuttle_positions"
+#define kSTAllEtasUrl @"http://shuttles.abstractedsheep.com/data_service.php?action=get_all_eta"
+#define kSTNextEtasUrl @"http://shuttles.abstractedsheep.com/data_service.php?action=get_next_eta"
+#define kSTExtraEtasUrl @"http://shuttles.abstractedsheep.com/data_service.php?action=get_all_extra_eta"

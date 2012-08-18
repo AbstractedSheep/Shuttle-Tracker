@@ -1,20 +1,20 @@
 //
-//  EtaManager.m
+//  STDataManager.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 2/20/11.
 //  Copyright 2011 Brendon Justin. All rights reserved.
 //
 
-#import "MapPlacemark.h"
-#import "DataManager.h"
+#import "STMapPlacemark.h"
+#import "STDataManager.h"
 #import "IASKSettingsReader.h"
 #import "DataUrls.h"
 
 #define kRemoveShuttleThreshold     90.0f
 
 
-@interface DataManager()
+@interface STDataManager()
 - (void)loadFromJson;
 - (void)routeJsonLoaded;
 - (void)updateVehicleData;
@@ -22,7 +22,7 @@
 
 @end
 
-@implementation DataManager
+@implementation STDataManager
 
 @synthesize timeDisplayFormatter = m_timeDisplayFormatter;
 
@@ -40,9 +40,9 @@
             [m_timeDisplayFormatter setDateFormat:@"hh:mm a"];
         }
         
-        m_routesStopsJsonParser = [[JSONParser alloc] init];
-        m_vehiclesJsonParser = [[JSONParser alloc] init];
-        m_etasJsonParser = [[JSONParser alloc] init];
+        m_routesStopsJsonParser = [[STJSONParser alloc] init];
+        m_vehiclesJsonParser = [[STJSONParser alloc] init];
+        m_etasJsonParser = [[STJSONParser alloc] init];
 
         m_loadVehicleJsonQueue = NULL;
         m_loadEtaJsonQueue = NULL;
@@ -93,7 +93,7 @@
     
     dispatch_async(m_loadMapInfoJsonQueue, ^{
         NSError *theError = nil;
-        NSURL *routesStopsUrl = [NSURL URLWithString:kDMRoutesandStopsUrl];
+        NSURL *routesStopsUrl = [NSURL URLWithString:kSTRoutesandStopsUrl];
         NSString *jsonString = [NSString stringWithContentsOfURL:routesStopsUrl 
                                                         encoding:NSUTF8StringEncoding 
                                                            error:&theError];
@@ -132,7 +132,7 @@
     
     dispatch_async(m_loadVehicleJsonQueue, ^{
         NSError *theError = nil;
-        m_shuttleJsonUrl = [NSURL URLWithString:kDMShuttlesUrl];
+        m_shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesUrl];
         NSString *jsonString = [NSString stringWithContentsOfURL:m_shuttleJsonUrl 
                                                         encoding:NSUTF8StringEncoding 
                                                            error:&theError];
@@ -159,7 +159,7 @@
 
     dispatch_async(m_loadEtaJsonQueue, ^{
         NSError *theError = nil;
-        m_etasJsonUrl = [NSURL URLWithString:kDMNextEtasUrl];
+        m_etasJsonUrl = [NSURL URLWithString:kSTNextEtasUrl];
         NSString *jsonString = [NSString stringWithContentsOfURL:m_etasJsonUrl 
                                                         encoding:NSUTF8StringEncoding 
                                                            error:&theError];

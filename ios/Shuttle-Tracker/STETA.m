@@ -1,19 +1,22 @@
 //
-//  FavoriteStop.m
+//  STETA.m
 //  Shuttle-Tracker
 //
 //  Created by Brendon Justin on 11/14/11.
 //  Copyright (c) 2011 Brendon Justin. All rights reserved.
 //
 
-#import "FavoriteStop.h"
-#import "Route.h"
-#import "Stop.h"
+#import "STETA.h"
+#import "STRoute.h"
+#import "STShuttle.h"
+#import "STStop.h"
 
 
-@implementation FavoriteStop
+@implementation STETA
 
+@dynamic eta;
 @dynamic route;
+@dynamic shuttle;
 @dynamic stop;
 
 @end
