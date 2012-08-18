@@ -171,7 +171,7 @@ typedef enum {
         [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-        [shuttleImagesEast setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [shuttleImagesEast setObject:whiteImage forKey:[@-1 stringValue]];
         [whiteImage release];
         
         //  North
@@ -179,7 +179,7 @@ typedef enum {
         [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"north"];
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-        [shuttleImagesNorth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [shuttleImagesNorth setObject:whiteImage forKey:[@-1 stringValue]];
         [whiteImage release];
         
         //  West
@@ -187,7 +187,7 @@ typedef enum {
         [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"west"];
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-        [shuttleImagesWest setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [shuttleImagesWest setObject:whiteImage forKey:[@-1 stringValue]];
         [whiteImage release];
         
         //  South
@@ -195,7 +195,7 @@ typedef enum {
         [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"south"];
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
-        [shuttleImagesSouth setObject:whiteImage forKey:[[NSNumber numberWithInt:-1] stringValue]];
+        [shuttleImagesSouth setObject:whiteImage forKey:[@-1 stringValue]];
         [whiteImage release];
         
         [m_shuttleImages setObject:shuttleImagesEast forKey:@"east"];
@@ -431,7 +431,7 @@ typedef enum {
     
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber"
                                                                    ascending:YES];
-    [request setSortDescriptors:[NSArray arrayWithObject:sortDescriptor]];
+    [request setSortDescriptors:@[sortDescriptor]];
     [sortDescriptor release];
     
     NSError *error = nil;
@@ -564,7 +564,7 @@ typedef enum {
         shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
     }
     
-    routeString = [[NSNumber numberWithInt:vehicle.routeId] stringValue];
+    routeString = [@(vehicle.routeId) stringValue];
     coloredImage = [shuttleDirectionImages objectForKey:routeString];
     
     if (coloredImage != nil) {
