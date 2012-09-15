@@ -228,7 +228,8 @@ typedef enum {
     m_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
     MKUserTrackingBarButtonItem *buttonItem = [[MKUserTrackingBarButtonItem alloc] initWithMapView:m_mapView];
-    self.navigationItem.leftBarButtonItem = buttonItem;
+    self.navigationController.toolbarHidden = NO;
+    self.toolbarItems = @[buttonItem];
     
     self.view = m_mapView;
 }
