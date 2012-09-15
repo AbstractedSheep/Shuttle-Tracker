@@ -82,10 +82,11 @@
         self.window.rootViewController = self.splitViewController;
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         //  Create a tabbed view, with a map view, ETA view, and settings view.
-        self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-        
-        self.tabBarController.viewControllers = @[mapNavController, etasTableNavController];
-        self.window.rootViewController = self.tabBarController;
+//        self.tabBarController = [[[UITabBarController alloc] init] autorelease];
+//        
+//        self.tabBarController.viewControllers = @[mapNavController, etasTableNavController];
+//        self.window.rootViewController = self.tabBarController;
+        self.window.rootViewController = mapNavController;
     }
     
     [mapNavController release];
