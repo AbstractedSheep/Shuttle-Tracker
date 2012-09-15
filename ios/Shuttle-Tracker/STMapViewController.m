@@ -235,6 +235,9 @@ typedef enum {
         m_mapView.showsUserLocation = YES;
     }
     
+    MKUserTrackingBarButtonItem *buttonItem = [[MKUserTrackingBarButtonItem alloc] initWithMapView:m_mapView];
+    self.navigationItem.leftBarButtonItem = buttonItem;
+    
     self.view = m_mapView;
 }
 
