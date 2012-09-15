@@ -117,7 +117,7 @@
 //  Update vehicle positions, ETAs, and any other data that changes frequently.
 - (void)updateData {
     [self updateVehicleData];
-    [self updateEtaData];
+//    [self updateEtaData];
 }
 
 
@@ -131,8 +131,9 @@
     
     dispatch_async(m_loadVehicleJsonQueue, ^{
         NSError *theError = nil;
-        m_shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesUrl];
-        NSString *jsonString = [NSString stringWithContentsOfURL:m_shuttleJsonUrl 
+//        m_shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesUrl];
+        m_shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesBackupUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:m_shuttleJsonUrl
                                                         encoding:NSUTF8StringEncoding 
                                                            error:&theError];
         
