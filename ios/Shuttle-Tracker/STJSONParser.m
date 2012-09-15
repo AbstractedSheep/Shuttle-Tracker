@@ -64,7 +64,7 @@
             NSNumber *routeId = [value objectForKey:@"id"];
             
             //  Find the route, if it exists already
-            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route" 
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoute" 
                                                                  inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
@@ -84,14 +84,14 @@
                 route = (STRoute *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                route = (STRoute *)[NSEntityDescription insertNewObjectForEntityForName:@"Route" 
+                route = (STRoute *)[NSEntityDescription insertNewObjectForEntityForName:@"STRoute" 
                                                                inManagedObjectContext:self.managedObjectContext];
                 route.routeId = routeId;
             }
             
             if (route) {
                 //  Remove existing points on the route first
-                NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"RoutePt"
+                NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoutePt"
                                                                      inManagedObjectContext:self.managedObjectContext];
                 NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
                 [request setEntity:entityDescription];
@@ -128,7 +128,7 @@
                 
                 long ptCount = 0;
                 for (NSDictionary *coordsValues in coordsDict) {
-                    STRoutePt *routePt = (STRoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"RoutePt"
+                    STRoutePt *routePt = (STRoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"STRoutePt"
                                                                                 inManagedObjectContext:self.managedObjectContext];
                     
                     string = [coordsValues objectForKey:@"latitude"];
@@ -165,7 +165,7 @@
             NSString *stopName = [value objectForKey:@"name"];
             
             //  Find the stop, if it exists already
-            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Stop"
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STStop"
                                                                  inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
@@ -185,7 +185,7 @@
                 stop = (STStop *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                stop = (STStop *)[NSEntityDescription insertNewObjectForEntityForName:@"Stop"
+                stop = (STStop *)[NSEntityDescription insertNewObjectForEntityForName:@"STStop"
                                                              inManagedObjectContext:self.managedObjectContext];
                 stop.name = stopName;
             }
@@ -227,7 +227,7 @@
                     [tempRouteIds addObject:number];
                 }
                 
-                entityDescription = [NSEntityDescription entityForName:@"Route"
+                entityDescription = [NSEntityDescription entityForName:@"STRoute"
                                                 inManagedObjectContext:self.managedObjectContext];
                 request = [[[NSFetchRequest alloc] init] autorelease];
                 [request setEntity:entityDescription];
@@ -299,7 +299,7 @@
             NSString *vehicleName = [dict objectForKey:@"name"];
             
             //  Find the vehicle, if it exists already
-            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Shuttle"
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STShuttle"
                                                                  inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
@@ -319,7 +319,7 @@
                 vehicle = (STShuttle *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                vehicle = (STShuttle *)[NSEntityDescription insertNewObjectForEntityForName:@"Shuttle"
+                vehicle = (STShuttle *)[NSEntityDescription insertNewObjectForEntityForName:@"STShuttle"
                                                                    inManagedObjectContext:self.managedObjectContext];
                 vehicle.name = vehicleName;
             }
@@ -401,7 +401,7 @@
             NSNumber *etaRouteId = @([[dict objectForKey:@"route"] intValue]);
             
             //  Find the ETA, if it exists already
-            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"ETA" 
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STETA" 
                                                                  inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
             [request setEntity:entityDescription];
@@ -425,7 +425,7 @@
                 eta = (STETA *)[array objectAtIndex:0];
             } else {
                 //  Create a new vehicle with this name
-                eta = (STETA *)[NSEntityDescription insertNewObjectForEntityForName:@"ETA"
+                eta = (STETA *)[NSEntityDescription insertNewObjectForEntityForName:@"STETA"
                                                            inManagedObjectContext:self.managedObjectContext];
             }
             
@@ -439,7 +439,7 @@
                 }
                 
                 //  Find the corresponding stop
-                entityDescription = [NSEntityDescription entityForName:@"Stop" 
+                entityDescription = [NSEntityDescription entityForName:@"STStop" 
                                                 inManagedObjectContext:self.managedObjectContext];
                 request = [[[NSFetchRequest alloc] init] autorelease];
                 [request setEntity:entityDescription];
@@ -461,7 +461,7 @@
                 }
                 
                 //  Find the corresponding route
-                entityDescription = [NSEntityDescription entityForName:@"Route" 
+                entityDescription = [NSEntityDescription entityForName:@"STRoute" 
                                                 inManagedObjectContext:self.managedObjectContext];
                 request = [[[NSFetchRequest alloc] init] autorelease];
                 [request setEntity:entityDescription];

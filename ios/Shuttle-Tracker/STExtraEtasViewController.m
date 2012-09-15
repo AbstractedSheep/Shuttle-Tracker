@@ -125,7 +125,7 @@
     
     //  Set the favorite/unfavorite button appearance
     //  based on the status of the view's associated stop.
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
@@ -205,7 +205,7 @@
 - (void)toggleFavorite:(id)sender {
     BOOL added = NO;
     
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"FavoriteStop"
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
@@ -225,10 +225,10 @@
         [self.managedObjectContext deleteObject:[stops objectAtIndex:0]];
     } else {
         //  Create the favorite stop
-        STFavoriteStop *favStop = (STFavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"FavoriteStop"
+        STFavoriteStop *favStop = (STFavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"STFavoriteStop"
                                                                               inManagedObjectContext:self.managedObjectContext];
         
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"Route"
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoute"
                                                              inManagedObjectContext:self.managedObjectContext];
         NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
         [request setEntity:entityDescription];

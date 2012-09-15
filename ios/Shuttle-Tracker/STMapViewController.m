@@ -294,7 +294,7 @@ typedef enum {
 //  The routes and stops were loaded in the dataManager
 - (void)managedRoutesLoaded {
     //  Get all routes
-    NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"Route"
+    NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"STRoute"
                                                               inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *routeRequest = [[[NSFetchRequest alloc] init] autorelease];
     [routeRequest setEntity:routeEntityDescription];
@@ -314,7 +314,7 @@ typedef enum {
     }
     
     //  Get all stops
-    NSEntityDescription *stopEntityDescription = [NSEntityDescription entityForName:@"Stop"
+    NSEntityDescription *stopEntityDescription = [NSEntityDescription entityForName:@"STStop"
                                                              inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *stopRequest = [[[NSFetchRequest alloc] init] autorelease];
     [stopRequest setEntity:stopEntityDescription];
@@ -346,7 +346,7 @@ typedef enum {
 - (void)vehiclesUpdated:(NSNotification *)notification {
     //  Get all vehicles
     NSEntityDescription *entityDescription;
-    entityDescription = [NSEntityDescription entityForName:@"Shuttle"
+    entityDescription = [NSEntityDescription entityForName:@"STShuttle"
                                     inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
@@ -412,7 +412,7 @@ typedef enum {
     UIImage *coloredImage;
     
     //  Get all points on the route
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"RoutePt"
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoutePt"
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     [request setEntity:entityDescription];
