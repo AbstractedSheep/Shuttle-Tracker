@@ -115,7 +115,6 @@
     NSDictionary *appDefaults;
     appDefaults = @{
         @"use24Time" : @(use24Time),
-        @"useLocation" : @(NO),
         @"findClosestStop" : @(YES),
         @"dataUpdateInterval" : @5,
         @"useRelativeTimes" : @(NO),

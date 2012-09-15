@@ -227,14 +227,6 @@ typedef enum {
     m_mapView.delegate = self;
     m_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    BOOL useLocation = [[defaults objectForKey:@"useLocation"] boolValue];
-    
-    if (useLocation) {
-        //  Show the user's location on the map
-        m_mapView.showsUserLocation = YES;
-    }
-    
     MKUserTrackingBarButtonItem *buttonItem = [[MKUserTrackingBarButtonItem alloc] initWithMapView:m_mapView];
     self.navigationItem.leftBarButtonItem = buttonItem;
     
