@@ -7,13 +7,12 @@
 //
 
 #import "STExtraEtasViewController.h"
-#import "DataUrls.h"
+#import "STDataUrls.h"
 #import "STETA.h"
 #import "STFavoriteStop.h"
 #import "STStop.h"
 #import "STJSONParser.h"
 #import "STDataManager.h"
-#import "IASKSettingsReader.h"
 
 
 @interface STExtraEtasViewController ()
@@ -56,12 +55,6 @@
                                                                            target:self 
                                                                            action:@selector(toggleFavorite:)];
         self.navigationItem.rightBarButtonItem = m_favoriteButton;
-        
-        //  Take notice when a setting is changed.
-        //  Note that this is not the only object that takes notice.
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(settingChanged:)
-                                                     name:kIASKAppSettingChanged object:nil];
     }
 
     return self;

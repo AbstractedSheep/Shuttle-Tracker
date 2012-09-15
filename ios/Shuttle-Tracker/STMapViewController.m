@@ -14,8 +14,6 @@
 #import "STShuttle.h"
 #import "STStop.h"
 
-#import "IASKSettingsReader.h"
-
 const NSTimeInterval UPDATE_THRESHOLD = -180.0f;    //  3 minutes
 const NSTimeInterval CLEANUP_INTERVAL = 30.0f;      //  30 seconds
 
@@ -215,12 +213,6 @@ typedef enum {
         //  Take notice when vehicles are updated.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
                                                      name:kDMVehiclesUpdated
-                                                   object:nil];
-
-        //  Take notice when a setting is changed.
-        //  Note that this is not the only object that takes notice.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
-                                                     name:kIASKAppSettingChanged
                                                    object:nil];
     }
     
@@ -575,23 +567,6 @@ typedef enum {
         vehicle.routeImageSet = NO;
     }
 }
-
-//  InAppSettingsKit sends out a notification whenever a setting is changed in the
-//  settings view inside the app.  settingChanged currently only handles turning on
-//  or off showing the user's location. Other objects may also do something when a
-//  setting is changed.
-- (void)settingChanged:(NSNotification *)notification {
-    NSDictionary *info = [notification userInfo];
-
-    if ([[notification object] isEqualToString:@"useLocation"]) {
-        if ([[info objectForKey:@"useLocation"] boolValue]) {
-            m_mapView.showsUserLocation = YES;
-        } else {
-            m_mapView.showsUserLocation = NO;
-        }
-    }
-}
-
 
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

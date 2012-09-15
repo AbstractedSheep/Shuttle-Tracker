@@ -7,7 +7,7 @@
 //
 
 #import "STJSONParser.h"
-#import "DataUrls.h"
+#import "STDataUrls.h"
 #import "STMapPlacemark.h"
 #import "STETA.h"
 #import "STRoute.h"

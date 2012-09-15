@@ -10,7 +10,6 @@
 
 #import "STEtasViewController.h"
 #import "STMapViewController.h"
-#import "IASKAppSettingsViewController.h"
 
 #import "STDataManager.h"
 
@@ -83,22 +82,10 @@
         
         self.window.rootViewController = self.splitViewController;
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        //  Create the settings view controller, only found on the iPhone
-        IASKAppSettingsViewController *settingsViewController = [[IASKAppSettingsViewController alloc] initWithNibName:@"IASKAppSettingsView" bundle:nil];
-        settingsViewController.title = @"Settings";
-        settingsViewController.delegate = self.dataManager;
-        settingsViewController.showDoneButton = NO;
-        
-        UINavigationController *settingsNavController = [[UINavigationController alloc] initWithRootViewController:settingsViewController];
-        [settingsViewController release];
-        settingsNavController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Settings" image:[UIImage imageNamed:@"glyphish_gear"] tag:2] autorelease];
-        
         //  Create a tabbed view, with a map view, ETA view, and settings view.
         self.tabBarController = [[[UITabBarController alloc] init] autorelease];
         
-        self.tabBarController.viewControllers = @[mapNavController, etasTableNavController, settingsNavController];
-        [settingsNavController release];
-        
+        self.tabBarController.viewControllers = @[mapNavController, etasTableNavController];
         self.window.rootViewController = self.tabBarController;
     }
     

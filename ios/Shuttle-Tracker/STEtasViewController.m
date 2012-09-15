@@ -11,7 +11,6 @@
 #import "STEtasViewController.h"
 #import "STDataManager.h"
 #import "STExtraEtasViewController.h"
-#import "IASKSettingsReader.h"
 #import "STETA.h"
 #import "STFavoriteStop.h"
 #import "STRoute.h"
@@ -53,12 +52,6 @@ const BOOL makeLaunchImage = NO;
         //  Take notice when routes and stops are loaded.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyStopsUpdated:)
                                                      name:kDMRoutesandStopsLoaded
-                                                   object:nil];
-        
-        //  Take notice when a setting is changed.
-        //  Note that this is not the only object that takes notice.
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingChanged:)
-                                                     name:kIASKAppSettingChanged
                                                    object:nil];
     }
 
@@ -580,22 +573,6 @@ const BOOL makeLaunchImage = NO;
                                    selector:@selector(reloadData) 
                                    userInfo:nil 
                                     repeats:NO];
-}
-
-//  InAppSettingsKit sends out a notification whenever a setting is changed in the settings view inside the app.
-//  settingChanged handles switching between absolute and relative times for updates and ETAs.
-//  Other objects may also do something when a setting is changed.
-- (void)settingChanged:(NSNotification *)notification {
-    NSDictionary *info = [notification userInfo];
-
-    //  Set the date format to 24 hour time if the user has set Use 24 Hour Time to true.
-    if ([[notification object] isEqualToString:@"useRelativeTimes"]) {
-        if ([[info objectForKey:@"useRelativeTimes"] boolValue]) {
-            m_useRelativeTimes = YES;
-        } else {
-            m_useRelativeTimes = NO;
-        }
-    }
 }
 
 @end
