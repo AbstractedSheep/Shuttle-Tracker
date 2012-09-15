@@ -23,7 +23,6 @@ const BOOL makeLaunchImage = NO;
 - (void)delayedTableReload;
 - (void)unsafeDelayedTableReload;
 - (void)unsafeDelayedTableReloadForced;
-- (void)settingChanged:(NSNotification *)notification;
 - (void)notifyStopsUpdated:(NSNotification *)notification;
 - (void)stopsUpdated:(NSNotification *)notification;
 

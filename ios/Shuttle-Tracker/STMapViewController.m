@@ -135,7 +135,6 @@ typedef enum {
 //  Adding vehicles should only be done on the main thread.
 - (void)addVehicle:(STShuttle *)vehicle;
 - (void)setAnnotationImageForVehicle:(STMapVehicle *)vehicle;
-- (void)settingChanged:(NSNotification *)notification;
 
 @end
 

@@ -25,7 +25,6 @@
 		5C68B553145C87EE00D9A82E /* STJSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B551145C87EE00D9A82E /* STJSONParser.m */; };
 		5C68B593145C88ED00D9A82E /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B592145C88EC00D9A82E /* MapKit.framework */; };
 		5C68B595145C892000D9A82E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B594145C892000D9A82E /* CoreLocation.framework */; };
-		5C68B5D5145C89A800D9A82E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C68B5D4145C89A800D9A82E /* MessageUI.framework */; };
 		5C68B5F8145C8C8D00D9A82E /* STEtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B5F6145C8C8D00D9A82E /* STEtasViewController.m */; };
 		5C68B5FB145C8E2000D9A82E /* STExtraEtasViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C68B5F9145C8E2000D9A82E /* STExtraEtasViewController.m */; };
 		5C68B609145C950500D9A82E /* glyphish_clock.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B5FD145C950500D9A82E /* glyphish_clock.png */; };
@@ -88,7 +87,6 @@
 		5C68B552145C87EE00D9A82E /* STJSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STJSONParser.h; sourceTree = "<group>"; };
 		5C68B592145C88EC00D9A82E /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		5C68B594145C892000D9A82E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		5C68B5D4145C89A800D9A82E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		5C68B5F6145C8C8D00D9A82E /* STEtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STEtasViewController.m; sourceTree = "<group>"; };
 		5C68B5F7145C8C8D00D9A82E /* STEtasViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STEtasViewController.h; sourceTree = "<group>"; };
 		5C68B5F9145C8E2000D9A82E /* STExtraEtasViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STExtraEtasViewController.m; sourceTree = "<group>"; };
@@ -142,7 +140,6 @@
 				5C68B516145C85AC00D9A82E /* CoreGraphics.framework in Frameworks */,
 				5C68B595145C892000D9A82E /* CoreLocation.framework in Frameworks */,
 				5C68B593145C88ED00D9A82E /* MapKit.framework in Frameworks */,
-				5C68B5D5145C89A800D9A82E /* MessageUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,7 +178,6 @@
 		5C68B510145C85AC00D9A82E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5C68B5D4145C89A800D9A82E /* MessageUI.framework */,
 				5C68B594145C892000D9A82E /* CoreLocation.framework */,
 				5C68B592145C88EC00D9A82E /* MapKit.framework */,
 				5C68B511145C85AC00D9A82E /* UIKit.framework */,
