@@ -223,9 +223,7 @@ typedef enum {
 - (void)loadView {
     self.title = NSLocalizedString(@"Shuttles", @"Shuttles");
     
-    CGRect rect = [[UIScreen mainScreen] bounds];
-    
-    m_mapView = [[MKMapView alloc] initWithFrame:rect];
+    m_mapView = [[MKMapView alloc] init];
     m_mapView.delegate = self;
     m_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
