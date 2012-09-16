@@ -99,6 +99,10 @@
 
 - (void)setUpdateTime:(NSDate *)newUpdateTime withFormatter:(NSDateFormatter *)dateFormattter {
     updateTime = newUpdateTime;
+    
+    if (!updateTime) {
+        return;
+    }
 
     //  Update the vehicle's subtitle here, since it displays the last updated time
     //  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation  

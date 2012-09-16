@@ -289,8 +289,7 @@
     
     if (jsonArray && [jsonArray isKindOfClass:[NSArray class]]) {
         @autoreleasepool {
-        
-        //  Each dictionary corresponds to one set of curly braces ({ and })
+            //  Each dictionary corresponds to one set of curly braces ({ and })
             for (NSDictionary *dict in jsonArray) {
                 STShuttle *vehicle = nil;
                 NSString *vehicleName = [dict objectForKey:@"name"];
@@ -322,6 +321,13 @@
                 }
                 
                 if (vehicle) {
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+                    
+                    //  Set some defaults in case our data source doesn't have everything
+                    vehicle.updateTime = [NSDate date];
+                    vehicle.routeId = @-1;
+                    
                     //  Set the vehicle properties to the corresponding JSON values
                     for (NSString *string in dict) {
                         if ([string isEqualToString:@"latitude"]) {
@@ -333,9 +339,6 @@
                         } else if ([string isEqualToString:@"speed"]) {
                             vehicle.speed = @([[dict objectForKey:string] intValue]);
                         } else if ([string isEqualToString:@"update_time"]) {
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-                            
                             vehicle.updateTime = [dateFormatter dateFromString:[dict objectForKey:string]];
                         } else if ([string isEqualToString:@"route_id"]) {
                             vehicle.routeId = @([[dict objectForKey:string] intValue]);
