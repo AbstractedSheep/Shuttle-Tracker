@@ -27,25 +27,14 @@
 @synthesize timeDisplayFormatter = _timeDisplayFormatter;
 @synthesize dataUpdateTimer = _dataUpdateTimer;
 
-- (void)dealloc
-{
-    [_window release];
-    [__managedObjectContext release];
-    [__managedObjectModel release];
-    [__persistentStoreCoordinator release];
-    [_navigationController release];
-    [_splitViewController release];
-    [super dealloc];
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     // Override point for customization after application launch.
     STDataManager *dataManager = [[STDataManager alloc] init];
     self.dataManager = dataManager;
-    [dataManager release];
     [self.dataManager setParserManagedObjectContext:self.managedObjectContext];
     
     //  dataManager creates a timeDisplayFormatter in its init method, so get
@@ -53,26 +42,24 @@
     self.timeDisplayFormatter = self.dataManager.timeDisplayFormatter;
     
     STMapViewController *mapViewController = [[STMapViewController alloc] init];
-    mapViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"Map"
+    mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map"
                                                                   image:[UIImage imageNamed:@"glyphish_map"]
-                                                                    tag:0] autorelease];
+                                                                    tag:0];
     mapViewController.dataManager = self.dataManager;
     mapViewController.managedObjectContext = self.managedObjectContext;
     
     UINavigationController *mapNavController = [[UINavigationController alloc]
                                                 initWithRootViewController:mapViewController];
-    [mapViewController release];
     
     STEtasViewController *etasViewController = [[STEtasViewController alloc] init];
-    etasViewController.tabBarItem = [[[UITabBarItem alloc] initWithTitle:@"ETAs"
+    etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs"
                                                                    image:[UIImage imageNamed:@"glyphish_clock"]
-                                                                     tag:1] autorelease];
+                                                                     tag:1];
     etasViewController.dataManager = self.dataManager;
     etasViewController.managedObjectContext = self.managedObjectContext;
     
     UINavigationController *etasTableNavController = [[UINavigationController alloc]
                                                       initWithRootViewController:etasViewController];
-    [etasViewController release];
     
     //  Note that this class (MainViewController) gets a reference to timeDisplayFormatter
     //  via the class creating it.
@@ -81,7 +68,7 @@
     //  Device-specific view creation
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         //  Make a split view, with ETAs on the left and the map on the right.
-        self.splitViewController = [[[UISplitViewController alloc] init] autorelease];
+        self.splitViewController = [[UISplitViewController alloc] init];
         self.splitViewController.viewControllers = @[etasTableNavController, mapNavController];
         self.splitViewController.delegate = mapViewController;
         
@@ -95,8 +82,6 @@
         self.window.rootViewController = mapNavController;
     }
     
-    [mapNavController release];
-    [etasTableNavController release];
     
     // Check if 12 or 24 hour mode
     BOOL use24Time = NO;
@@ -110,8 +95,6 @@
     if ([dateArray count] == 1) // if no am/pm extension exists
         use24Time = YES;
     
-    [timeFormatter release];
-    [dateArray release];
     
     //  Create an empty array to use for the favorite ETAs
     NSMutableArray *favoriteEtasArray = [NSMutableArray array];

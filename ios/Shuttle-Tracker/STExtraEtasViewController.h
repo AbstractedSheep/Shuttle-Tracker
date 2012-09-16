@@ -17,9 +17,9 @@
     NSDate              *m_lastEtaRefresh;
     NSArray             *m_etas;
 
-    STDataManager       *m_dataManager;
+    STDataManager       *__weak m_dataManager;
     NSTimer             *m_updateTimer;
-    NSDateFormatter     *m_timeDisplayFormatter;
+    NSDateFormatter     *__weak m_timeDisplayFormatter;
     
     UIBarButtonItem     *m_favoriteButton;
     
@@ -29,11 +29,11 @@
 - (id)initWithStop:(STStop *)stop forRouteNumber:(NSNumber *)routeNumber;
 - (void)toggleFavorite:(id)sender;
 
-@property (nonatomic, retain) STStop *stop;
-@property (nonatomic, retain) NSNumber *routeNum;
+@property (nonatomic, strong) STStop *stop;
+@property (nonatomic, strong) NSNumber *routeNum;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, assign) STDataManager *dataManager;
-@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
+@property (nonatomic, weak) STDataManager *dataManager;
+@property (nonatomic, weak) NSDateFormatter *timeDisplayFormatter;
 @property (nonatomic) BOOL useRelativeTimes;
 
 

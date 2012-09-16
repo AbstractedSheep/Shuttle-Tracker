@@ -13,9 +13,9 @@
 
 @interface STRoutePt : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * latitude;
-@property (nonatomic, retain) NSNumber * longitude;
-@property (nonatomic, retain) NSNumber * pointNumber;
-@property (nonatomic, retain) STRoute *route;
+@property (nonatomic, strong) NSNumber * latitude;
+@property (nonatomic, strong) NSNumber * longitude;
+@property (nonatomic, strong) NSNumber * pointNumber;
+@property (nonatomic, strong) STRoute *route;
 
 @end

@@ -69,12 +69,6 @@
     return self;
 }
 
-- (void)dealloc
-{
-    [m_etasUrl release];
-    [m_extraEtasParser release];
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -87,7 +81,6 @@
 
 - (void)getExtraEtas {
     m_lastEtaRefresh = [NSDate dateWithTimeIntervalSinceNow:0];
-    [m_lastEtaRefresh retain];
     
     dispatch_queue_t extraEtasQueue = dispatch_queue_create("com.abstractedsheep.extraetasqueue", NULL);
     dispatch_async(extraEtasQueue, ^{
@@ -116,7 +109,6 @@
     CGRect rect = [[UIScreen mainScreen] bounds];
     UITableView *tableView = [[UITableView alloc] initWithFrame:rect style:UITableViewStyleGrouped];
     self.tableView = tableView;
-    [tableView release];
 }
 
 - (void)viewDidLoad
@@ -127,7 +119,7 @@
     //  based on the status of the view's associated stop.
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
                                                          inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
     
     [request setFetchLimit:1];
@@ -142,7 +134,6 @@
         //  handle error
     }
     
-    [m_favoriteButton release];
     
     if (numStops > 0) {
         m_favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
@@ -179,13 +170,11 @@
                                         selector:@selector(getExtraEtas) 
                                         userInfo:nil 
                                          repeats:YES];
-    [m_updateTimer retain];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [m_updateTimer invalidate];
-    [m_updateTimer release];
     
     [super viewWillDisappear:animated];
 }
@@ -207,7 +196,7 @@
     
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
                                                          inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
     
     [request setFetchLimit:1];
@@ -230,7 +219,7 @@
         
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoute"
                                                              inManagedObjectContext:self.managedObjectContext];
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
         
         [request setFetchLimit:1];
@@ -261,7 +250,6 @@
         }
     }
     
-    [m_favoriteButton release];
     
     if (added) {
         m_favoriteButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemStop 
@@ -308,8 +296,8 @@
     if (cell == nil) {
         //  Init the cell such that it has main text, black and left aligned, and secondary text,
         //  blue and right aligned
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
-                                       reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
+                                       reuseIdentifier:CellIdentifier];
     }
     
     // Configure the cell...
@@ -388,9 +376,6 @@
 
 //  Reload the table on a short delay, usually for a data change
 - (void)unsafeDelayedTableReload {
-    if (m_etas) {
-        [m_etas release];
-    }
 
     m_etas = [m_extraEtasParser extraEtas];
 

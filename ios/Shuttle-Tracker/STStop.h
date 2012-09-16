@@ -13,15 +13,15 @@
 
 @interface STStop : NSManagedObject
 
-@property (nonatomic, retain) NSString * idTag;
-@property (nonatomic, retain) NSNumber * latitude;
-@property (nonatomic, retain) NSNumber * longitude;
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSString * shortName;
-@property (nonatomic, retain) NSNumber * stopNum;
-@property (nonatomic, retain) NSSet *etas;
-@property (nonatomic, retain) NSSet *favorites;
-@property (nonatomic, retain) NSSet *routes;
+@property (nonatomic, strong) NSString * idTag;
+@property (nonatomic, strong) NSNumber * latitude;
+@property (nonatomic, strong) NSNumber * longitude;
+@property (nonatomic, strong) NSString * name;
+@property (nonatomic, strong) NSString * shortName;
+@property (nonatomic, strong) NSNumber * stopNum;
+@property (nonatomic, strong) NSSet *etas;
+@property (nonatomic, strong) NSSet *favorites;
+@property (nonatomic, strong) NSSet *routes;
 @end
 
 @interface STStop (CoreDataGeneratedAccessors)

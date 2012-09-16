@@ -24,11 +24,11 @@
     NSMutableDictionary     *m_magentaShuttleImages;
     NSMutableDictionary     *m_shuttleImages;
 
-    STDataManager           *m_dataManager;
+    STDataManager           *__weak m_dataManager;
     NSTimer                 *m_shuttleCleanupTimer;
 }
 
-@property (nonatomic, assign) STDataManager *dataManager;
+@property (nonatomic, weak) STDataManager *dataManager;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 

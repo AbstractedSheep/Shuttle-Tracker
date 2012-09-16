@@ -38,10 +38,8 @@
 
 - (void)setColorString:(NSString *)newColorString {
     colorString = newColorString;
-    [colorString retain];
     
     color = [UIColor UIColorFromRGBString:colorString];
-    [color retain];
 }
 
 @end
@@ -101,7 +99,6 @@
 
 - (void)setUpdateTime:(NSDate *)newUpdateTime withFormatter:(NSDateFormatter *)dateFormattter {
     updateTime = newUpdateTime;
-    [updateTime retain];
 
     //  Update the vehicle's subtitle here, since it displays the last updated time
     //  Subtitle is the secondary line of text displayed in the callout of an MKAnnotation  
@@ -129,7 +126,6 @@
             self.description = newSubtitle;
         }
 
-        [dateFormatter release];
     }
 }
 

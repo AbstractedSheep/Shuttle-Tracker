@@ -13,9 +13,9 @@
 
 @interface STETA : NSManagedObject
 
-@property (nonatomic, retain) NSDate * eta;
-@property (nonatomic, retain) STRoute *route;
-@property (nonatomic, retain) STShuttle *shuttle;
-@property (nonatomic, retain) STStop *stop;
+@property (nonatomic, strong) NSDate * eta;
+@property (nonatomic, strong) STRoute *route;
+@property (nonatomic, strong) STShuttle *shuttle;
+@property (nonatomic, strong) STStop *stop;
 
 @end

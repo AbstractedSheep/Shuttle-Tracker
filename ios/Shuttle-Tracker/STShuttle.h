@@ -13,15 +13,15 @@
 
 @interface STShuttle : NSManagedObject
 
-@property (nonatomic, retain) NSNumber * heading;
-@property (nonatomic, retain) NSNumber * latitude;
-@property (nonatomic, retain) NSNumber * longitude;
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSNumber * speed;
-@property (nonatomic, retain) NSDate * updateTime;
-@property (nonatomic, retain) NSNumber * routeId;
-@property (nonatomic, retain) NSSet *eta;
-@property (nonatomic, retain) STRoute *route;
+@property (nonatomic, strong) NSNumber * heading;
+@property (nonatomic, strong) NSNumber * latitude;
+@property (nonatomic, strong) NSNumber * longitude;
+@property (nonatomic, strong) NSString * name;
+@property (nonatomic, strong) NSNumber * speed;
+@property (nonatomic, strong) NSDate * updateTime;
+@property (nonatomic, strong) NSNumber * routeId;
+@property (nonatomic, strong) NSSet *eta;
+@property (nonatomic, strong) STRoute *route;
 @end
 
 @interface STShuttle (CoreDataGeneratedAccessors)

@@ -22,14 +22,14 @@
     NSDateFormatter *timeDisplayFormatter;
 }
 
-@property (nonatomic, retain) NSString *name;
-@property (nonatomic, readonly) NSString *title;
-@property (nonatomic, retain) NSString *idTag;
-@property (nonatomic, retain) NSString *description;
-@property (nonatomic, readonly) NSString *subtitle;
-@property (nonatomic, retain) NSString *styleUrl;
-@property (nonatomic, retain) STPlacemarkStyle *style;
-@property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
+@property (nonatomic, strong) NSString *name;
+@property (weak, nonatomic, readonly) NSString *title;
+@property (nonatomic, strong) NSString *idTag;
+@property (nonatomic, strong) NSString *description;
+@property (weak, nonatomic, readonly) NSString *subtitle;
+@property (nonatomic, strong) NSString *styleUrl;
+@property (nonatomic, strong) STPlacemarkStyle *style;
+@property (nonatomic, strong) NSDateFormatter *timeDisplayFormatter;
 
 @end
 
@@ -38,13 +38,13 @@
 @interface STPlacemarkStyle : NSObject {
     NSString *idTag;
     NSString *colorString;
-    UIColor *color;
+    UIColor *__weak color;
     int width;
 }
 
-@property (nonatomic, retain) NSString *idTag;
-@property (nonatomic, retain) NSString *colorString;
-@property (nonatomic, readonly) UIColor *color;
+@property (nonatomic, strong) NSString *idTag;
+@property (nonatomic, strong) NSString *colorString;
+@property (weak, nonatomic, readonly) UIColor *color;
 @property (nonatomic) int width;
 
 @end
@@ -56,7 +56,7 @@
     NSArray *lineString;
 }
 
-@property (nonatomic, retain) NSArray *lineString;
+@property (nonatomic, strong) NSArray *lineString;
 
 
 @end
@@ -72,7 +72,7 @@
 }
 
 @property (nonatomic) CLLocationCoordinate2D coordinate;
-@property (nonatomic, retain) MKAnnotationView *annotationView;
+@property (nonatomic, strong) MKAnnotationView *annotationView;
 
 
 - (id)initWithLocation:(CLLocationCoordinate2D)coord;
@@ -85,8 +85,8 @@
     NSArray *routeNames;
 }
 
-@property (nonatomic, retain) NSArray *routeIds;
-@property (nonatomic, retain) NSArray *routeNames;
+@property (nonatomic, strong) NSArray *routeIds;
+@property (nonatomic, strong) NSArray *routeNames;
 
 @end
 
@@ -97,9 +97,9 @@
     int routeId;
 }
 
-@property (nonatomic, retain) NSDictionary *ETAs;
+@property (nonatomic, strong) NSDictionary *ETAs;
 @property (nonatomic) int heading;
-@property (nonatomic, retain) NSDate *updateTime;
+@property (nonatomic, strong) NSDate *updateTime;
 @property (nonatomic) int routeId;
 @property (nonatomic) BOOL routeImageSet;
 @property (nonatomic) BOOL viewNeedsUpdate;

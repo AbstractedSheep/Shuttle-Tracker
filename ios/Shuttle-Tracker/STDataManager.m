@@ -52,17 +52,6 @@
 
 
 - (void)dealloc {
-    if (m_vehiclesJsonParser) {
-        [m_vehiclesJsonParser release];
-    }
-    
-    if (m_etasJsonParser) {
-        [m_etasJsonParser release];
-    }
-    
-    [m_shuttleJsonUrl release];
-    [m_etasJsonUrl release];
-
     if (m_loadMapInfoJsonQueue) {
         dispatch_release(m_loadMapInfoJsonQueue);
     }
@@ -75,7 +64,6 @@
         dispatch_release(m_loadEtaJsonQueue);
     }
 
-    [super dealloc];
 }
 
 

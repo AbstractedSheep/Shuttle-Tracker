@@ -13,15 +13,15 @@
 
 @interface STRoute : NSManagedObject
 
-@property (nonatomic, retain) NSString * color;
-@property (nonatomic, retain) NSString * name;
-@property (nonatomic, retain) NSNumber * routeId;
-@property (nonatomic, retain) NSNumber * width;
-@property (nonatomic, retain) NSSet *etas;
-@property (nonatomic, retain) NSSet *favorites;
-@property (nonatomic, retain) NSSet *points;
-@property (nonatomic, retain) NSSet *shuttles;
-@property (nonatomic, retain) NSSet *stops;
+@property (nonatomic, strong) NSString * color;
+@property (nonatomic, strong) NSString * name;
+@property (nonatomic, strong) NSNumber * routeId;
+@property (nonatomic, strong) NSNumber * width;
+@property (nonatomic, strong) NSSet *etas;
+@property (nonatomic, strong) NSSet *favorites;
+@property (nonatomic, strong) NSSet *points;
+@property (nonatomic, strong) NSSet *shuttles;
+@property (nonatomic, strong) NSSet *stops;
 @end
 
 @interface STRoute (CoreDataGeneratedAccessors)

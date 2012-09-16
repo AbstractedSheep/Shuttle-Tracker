@@ -63,10 +63,6 @@ const BOOL makeLaunchImage = NO;
     return self;
 }
 
-- (void)dealloc
-{
-    [super dealloc];
-}
 
 - (void)didReceiveMemoryWarning
 {
@@ -112,7 +108,6 @@ const BOOL makeLaunchImage = NO;
                                                   selector:@selector(delayedTableReload) 
                                                   userInfo:nil 
                                                    repeats:YES];
-    [m_freshTimer retain];
     
     [super viewWillAppear:animated];
 }
@@ -134,7 +129,7 @@ const BOOL makeLaunchImage = NO;
     //  Get all routes
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoute"
                                                          inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
     
     NSError *error = nil;
@@ -178,7 +173,7 @@ const BOOL makeLaunchImage = NO;
         //  Get all favorite stops
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop" 
                                                              inManagedObjectContext:self.managedObjectContext];
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
         
         NSError *error = nil;
@@ -217,8 +212,8 @@ const BOOL makeLaunchImage = NO;
     if (cell == nil) {
         //  Init the cell such that it has main text, black and left aligned, and secondary text,
         //  blue and right aligned
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
-                                       reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
+                                       reuseIdentifier:CellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
@@ -226,7 +221,7 @@ const BOOL makeLaunchImage = NO;
         STFavoriteStop *favStop = nil;
         entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
                                         inManagedObjectContext:self.managedObjectContext];
-        request = [[[NSFetchRequest alloc] init] autorelease];
+        request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
         
         sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
@@ -240,7 +235,7 @@ const BOOL makeLaunchImage = NO;
             
             entityDescription = [NSEntityDescription entityForName:@"STETA"
                                             inManagedObjectContext:self.managedObjectContext];
-            request = [[[NSFetchRequest alloc] init] autorelease];
+            request = [[NSFetchRequest alloc] init];
             [request setEntity:entityDescription];
             
             sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
@@ -271,7 +266,7 @@ const BOOL makeLaunchImage = NO;
             stop = [stopsArray objectAtIndex:indexPath.row];
             entityDescription = [NSEntityDescription entityForName:@"STETA"
                                             inManagedObjectContext:self.managedObjectContext];
-            request = [[[NSFetchRequest alloc] init] autorelease];
+            request = [[NSFetchRequest alloc] init];
             [request setEntity:entityDescription];
             
             sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"eta" ascending:NO];
@@ -345,7 +340,7 @@ const BOOL makeLaunchImage = NO;
     //  Get all routes
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoute"
                                                          inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"routeId == %@", 
@@ -379,7 +374,7 @@ const BOOL makeLaunchImage = NO;
         //  Get favorite stops
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
                                                              inManagedObjectContext:self.managedObjectContext];
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
@@ -411,7 +406,6 @@ const BOOL makeLaunchImage = NO;
 
     // Pass the selected object to the new view controller.
     [self.navigationController pushViewController:levc animated:YES];
-    [levc release];
 
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -457,7 +451,7 @@ const BOOL makeLaunchImage = NO;
         
         NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
                                                              inManagedObjectContext:self.managedObjectContext];
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
         
         NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stop.name" ascending:NO];
@@ -482,7 +476,7 @@ const BOOL makeLaunchImage = NO;
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
                                                                  inManagedObjectContext:self.managedObjectContext];
-            NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+            NSFetchRequest *request = [[NSFetchRequest alloc] init];
             [request setEntity:entityDescription];
             
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(stop.name == %@) AND (route.routeId == %@)", 
@@ -502,7 +496,7 @@ const BOOL makeLaunchImage = NO;
                 
                 entityDescription = [NSEntityDescription entityForName:@"STRoute"
                                                 inManagedObjectContext:self.managedObjectContext];
-                request = [[[NSFetchRequest alloc] init] autorelease];
+                request = [[NSFetchRequest alloc] init];
                 [request setEntity:entityDescription];
                 
                 [request setFetchLimit:1];

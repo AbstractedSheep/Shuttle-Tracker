@@ -31,7 +31,7 @@
     NSDateFormatter     *m_timeDisplayFormatter;
 }
 
-@property (nonatomic, retain) NSDateFormatter *timeDisplayFormatter;
+@property (nonatomic, strong) NSDateFormatter *timeDisplayFormatter;
 //  DataManager should have the onlyretain on timeDisplayFormatter, the way
 //  that the program is set up.
 

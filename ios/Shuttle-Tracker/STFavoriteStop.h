@@ -13,7 +13,7 @@
 
 @interface STFavoriteStop : NSManagedObject
 
-@property (nonatomic, retain) STRoute *route;
-@property (nonatomic, retain) STStop *stop;
+@property (nonatomic, strong) STRoute *route;
+@property (nonatomic, strong) STStop *stop;
 
 @end

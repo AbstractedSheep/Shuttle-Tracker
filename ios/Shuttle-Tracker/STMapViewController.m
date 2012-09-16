@@ -108,7 +108,6 @@ typedef enum {
     
     // make a new UIImage to return
     UIImage *resultUIImage = [UIImage imageWithCGImage:image];
-    [resultUIImage retain];
     
     // we're done with image now too
     CGImageRelease(image);
@@ -153,7 +152,6 @@ typedef enum {
         m_routeLineViews = [[NSMutableArray alloc] init];
         
         m_shuttleImage = [UIImage imageNamed:@"shuttle"];
-        [m_shuttleImage retain];
         
         m_magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
         m_shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
@@ -169,7 +167,6 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesEast setObject:whiteImage forKey:[@-1 stringValue]];
-        [whiteImage release];
         
         //  North
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
@@ -177,7 +174,6 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesNorth setObject:whiteImage forKey:[@-1 stringValue]];
-        [whiteImage release];
         
         //  West
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
@@ -185,7 +181,6 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesWest setObject:whiteImage forKey:[@-1 stringValue]];
-        [whiteImage release];
         
         //  South
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
@@ -193,16 +188,11 @@ typedef enum {
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesSouth setObject:whiteImage forKey:[@-1 stringValue]];
-        [whiteImage release];
         
         [m_shuttleImages setObject:shuttleImagesEast forKey:@"east"];
         [m_shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
         [m_shuttleImages setObject:shuttleImagesWest forKey:@"west"];
         [m_shuttleImages setObject:shuttleImagesSouth forKey:@"south"];
-        [shuttleImagesEast release];
-        [shuttleImagesNorth release];
-        [shuttleImagesWest release];
-        [shuttleImagesSouth release];
         
         //  Take notice when the routes and stops are updated.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
@@ -289,7 +279,7 @@ typedef enum {
     //  Get all routes
     NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"STRoute"
                                                               inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *routeRequest = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *routeRequest = [[NSFetchRequest alloc] init];
     [routeRequest setEntity:routeEntityDescription];
     
     NSError *error = nil;
@@ -309,7 +299,7 @@ typedef enum {
     //  Get all stops
     NSEntityDescription *stopEntityDescription = [NSEntityDescription entityForName:@"STStop"
                                                              inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *stopRequest = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *stopRequest = [[NSFetchRequest alloc] init];
     [stopRequest setEntity:stopEntityDescription];
     
     error = nil;
@@ -341,7 +331,7 @@ typedef enum {
     NSEntityDescription *entityDescription;
     entityDescription = [NSEntityDescription entityForName:@"STShuttle"
                                     inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
     
     NSError *error = nil;
@@ -407,7 +397,7 @@ typedef enum {
     //  Get all points on the route
     NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoutePt"
                                                          inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
     
     // Set predicate and sort orderings...
@@ -417,7 +407,6 @@ typedef enum {
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber"
                                                                    ascending:YES];
     [request setSortDescriptors:@[sortDescriptor]];
-    [sortDescriptor release];
     
     NSError *error = nil;
     NSArray *routePts = [self.managedObjectContext executeFetchRequest:request
@@ -453,7 +442,6 @@ typedef enum {
         
         routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
         [m_routeLineViews addObject:routeView];
-        [routeView release];
         
         routeView.lineWidth = [route.width intValue];
         routeView.fillColor = [UIColor UIColorFromRGBString:route.color];
@@ -467,22 +455,18 @@ typedef enum {
             coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
             [[m_shuttleImages objectForKey:@"east"] setValue:coloredImage
                                                       forKey:[route.routeId stringValue]];
-            [coloredImage release];
             
             coloredImage = [[m_magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
             [[m_shuttleImages objectForKey:@"north"] setValue:coloredImage
                                                        forKey:[route.routeId stringValue]];
-            [coloredImage release];
             
             coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
             [[m_shuttleImages objectForKey:@"west"] setValue:coloredImage
                                                       forKey:[route.routeId stringValue]];
-            [coloredImage release];
             
             coloredImage = [[m_magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
             [[m_shuttleImages objectForKey:@"south"] setValue:coloredImage
                                                        forKey:[route.routeId stringValue]];
-            [coloredImage release];
         }
     }
 }
@@ -501,7 +485,6 @@ typedef enum {
     STMapStop *mapStop = [[STMapStop alloc] initWithLocation:clLoc];
     mapStop.name = stop.name;
     [m_mapView addAnnotation:mapStop];
-    [mapStop release];
 }
 
 
@@ -524,7 +507,6 @@ typedef enum {
     
     [m_mapView addAnnotation:newVehicle];
     [m_vehicles setObject:newVehicle forKey:newVehicle.name];
-    [newVehicle release];
 }
 
 
@@ -576,11 +558,6 @@ typedef enum {
 }
 
 
-- (void)dealloc {
-    [m_mapView release];
-    [m_shuttleImage release];
-    [super dealloc];
-}
 
 
 #pragma mark MKMapViewDelegate
@@ -623,7 +600,6 @@ typedef enum {
                                                               reuseIdentifier:@"stopAnnotation"];
             stopAnnotationView.image = [UIImage imageNamed:@"stop_marker"];
             stopAnnotationView.canShowCallout = YES;
-            [stopAnnotationView autorelease];
         }
         
         [(STMapStop *)annotation setAnnotationView:stopAnnotationView];
@@ -647,7 +623,6 @@ typedef enum {
                 vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:vehicle
                                                                      reuseIdentifier:@"vehicleAnnotation"];
                 vehicleAnnotationView.canShowCallout = YES;
-                [vehicleAnnotationView autorelease];
             }
             
             vehicle.annotationView = vehicleAnnotationView;

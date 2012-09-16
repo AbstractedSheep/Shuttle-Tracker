@@ -11,15 +11,15 @@
 
 
 @interface STEtasViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
-    STDataManager           *m_dataManager;
-    NSDateFormatter         *m_timeDisplayFormatter;
+    STDataManager           *__weak m_dataManager;
+    NSDateFormatter         *__weak m_timeDisplayFormatter;
     BOOL                    m_useRelativeTimes;
     NSMutableDictionary     *m_routeStops;
     NSTimer                 *m_freshTimer;
 }
 
-@property (nonatomic, assign) STDataManager *dataManager;
-@property (nonatomic, assign) NSDateFormatter *timeDisplayFormatter;
+@property (nonatomic, weak) STDataManager *dataManager;
+@property (nonatomic, weak) NSDateFormatter *timeDisplayFormatter;
 @property (nonatomic) BOOL useRelativeTimes;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
