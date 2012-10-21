@@ -12,6 +12,7 @@
 #import "STRoute.h"
 #import "STRoutePt.h"
 #import "STShuttle.h"
+#import "STSimpleShuttle.h"
 #import "STStop.h"
 
 const NSTimeInterval UPDATE_THRESHOLD = -180.0f;    //  3 minutes
@@ -119,7 +120,9 @@ typedef enum {
 //  End from SO
 
 
-@interface STMapViewController()
+@interface STMapViewController() {
+    NSTimer *m_simpleVehicleCleanupTimer;
+}
 
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 
@@ -127,6 +130,7 @@ typedef enum {
 //  notifyVehiclesUpdated may not be called on the main thread, so use it to call
 //  vehicles updated on the main thread.
 - (void)notifyVehiclesUpdated:(NSNotification *)notification;
+- (void)notifySimpleVehiclesUpdated:(NSNotification *)notification;
 - (void)vehiclesUpdated:(NSNotification *)notification;
 //  Adding routes and stops is not guaranteed to be done on the main thread.
 - (void)addRoute:(STRoute *)route;
@@ -134,6 +138,7 @@ typedef enum {
 //  Adding vehicles should only be done on the main thread.
 - (void)addVehicle:(STShuttle *)vehicle;
 - (void)setAnnotationImageForVehicle:(STMapVehicle *)vehicle;
+- (void)simpleVehicleCleanup;
 
 @end
 
@@ -203,6 +208,10 @@ typedef enum {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
                                                      name:kDMVehiclesUpdated
                                                    object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifySimpleVehiclesUpdated:)
+                                                     name:kDMSimpleVehiclesUpdated
+                                                   object:nil];
     }
     
     return self;
@@ -245,6 +254,13 @@ typedef enum {
                                                            selector:@selector(vehicleCleanup)
                                                            userInfo:nil
                                                             repeats:YES];
+    
+    [self simpleVehicleCleanup];
+    m_simpleVehicleCleanupTimer = [NSTimer scheduledTimerWithTimeInterval:CLEANUP_INTERVAL
+                                                                   target:self
+                                                                 selector:@selector(simpleVehicleCleanup)
+                                                                 userInfo:nil
+                                                                  repeats:YES];
 }
 
 - (void)viewDidUnload {
@@ -271,6 +287,25 @@ typedef enum {
     for (NSString *name in oldVehicles) {
         [m_mapView removeAnnotation:[m_vehicles objectForKey:name]];
         [m_vehicles removeObjectForKey:name];
+    }
+}
+
+- (void)simpleVehicleCleanup {
+    NSMutableArray *vehiclesToRemove = [NSMutableArray array];
+    STSimpleShuttle *shuttle = nil;
+    
+    for (id annotation in m_mapView.annotations) {
+        if ([annotation isKindOfClass:[STSimpleShuttle class]]) {
+            shuttle = (STSimpleShuttle *)annotation;
+            
+            if ([shuttle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
+                [vehiclesToRemove addObject:shuttle];
+            }
+        }
+    }
+    
+    for (STSimpleShuttle *shuttle in vehiclesToRemove) {
+        [m_mapView removeAnnotation:shuttle];
     }
 }
 
@@ -323,6 +358,28 @@ typedef enum {
     [self performSelectorOnMainThread:@selector(vehiclesUpdated:)
                            withObject:notification
                         waitUntilDone:NO];
+}
+
+- (void)notifySimpleVehiclesUpdated:(NSNotification *)notification {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        NSDictionary *simpleShuttles = [notification.userInfo objectForKey:@"simpleShuttles"];
+        
+        for (STSimpleShuttle *simpleShuttle in [simpleShuttles objectEnumerator]) {
+            BOOL alreadyAdded = NO;
+            for (id annotation in m_mapView.annotations) {
+                if ([annotation isKindOfClass:[STSimpleShuttle class]]) {
+                    if ([[(STSimpleShuttle *)annotation identifier] isEqualToNumber:simpleShuttle.identifier]) {
+                        alreadyAdded = YES;
+                        break;
+                    }
+                }
+            }
+            
+            if (!alreadyAdded && [simpleShuttle.updateTime timeIntervalSinceNow] > UPDATE_THRESHOLD) {
+                [m_mapView addAnnotation:simpleShuttle];
+            }
+        }
+    }];
 }
 
 //  A notification is sent by DataManager whenever the vehicles are updated.
@@ -616,8 +673,7 @@ typedef enum {
                 [self setAnnotationImageForVehicle:vehicle];
             }
         } else {
-            MKAnnotationView *vehicleAnnotationView;
-            vehicleAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"vehicleAnnotation"];
+            MKAnnotationView *vehicleAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"vehicleAnnotation"];
             
             if (vehicleAnnotationView == nil) {
                 vehicleAnnotationView = [[MKAnnotationView alloc] initWithAnnotation:vehicle
@@ -631,6 +687,32 @@ typedef enum {
         }
 
         return vehicle.annotationView;
+    } else if ([annotation isKindOfClass:[STSimpleShuttle class]]) {
+        STSimpleShuttle *shuttle = (STSimpleShuttle *)annotation;
+        MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"vehicleAnnotation"];
+        NSDictionary *shuttleDirectionImages = nil;
+        
+        if (annotationView == nil) {
+            annotationView = [[MKAnnotationView alloc] initWithAnnotation:shuttle
+                                                          reuseIdentifier:@"vehicleAnnotation"];
+            annotationView.canShowCallout = YES;
+        }
+        
+        if (shuttle.heading >= 315 || shuttle.heading < 45) {
+            shuttleDirectionImages = [m_shuttleImages objectForKey:@"north"];
+        } else if (shuttle.heading >= 45 && shuttle.heading < 135) {
+            shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
+        } else if (shuttle.heading >= 135 && shuttle.heading < 225) {
+            shuttleDirectionImages = [m_shuttleImages objectForKey:@"south"];
+        } else if (shuttle.heading >= 225 && shuttle.heading < 315) {
+            shuttleDirectionImages = [m_shuttleImages objectForKey:@"west"];
+        } else {
+            shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
+        }
+        
+        annotationView.image = [shuttleDirectionImages objectForKey:[@-1 stringValue]];
+        
+        return annotationView;
     }
     
     return nil;
