@@ -66,7 +66,7 @@ typedef enum {
     
     CGColorSpaceRef space = CGColorGetColorSpace(newColor.CGColor);
     CGColorSpaceModel model = CGColorSpaceGetModel(space);
-
+    
     if (model == kCGColorSpaceModelMonochrome) {
         monochromeModel = YES;
     }
@@ -120,10 +120,17 @@ typedef enum {
 //  End from SO
 
 
-@interface STMapViewController() {
-    NSTimer *m_simpleVehicleCleanupTimer;
-}
+@interface STMapViewController()
 
+@property (strong, nonatomic) MKMapView *mapView;
+@property (strong, nonatomic) NSMutableDictionary *vehicles;
+@property (strong, nonatomic) NSMutableArray *routeLines;
+@property (strong, nonatomic) NSMutableArray *routeLineViews;
+@property (strong, nonatomic) UIImage *shuttleImage;
+@property (strong, nonatomic) NSMutableDictionary *magentaShuttleImages;
+@property (strong, nonatomic) NSMutableDictionary *shuttleImages;
+@property (strong, nonatomic) NSTimer *shuttleCleanupTimer;
+@property (strong, nonatomic) NSTimer *simpleVehicleCleanupTimer;
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 
 - (void)managedRoutesLoaded;
@@ -144,22 +151,21 @@ typedef enum {
 
 @implementation STMapViewController
 
-@synthesize dataManager = m_dataManager;
 @synthesize managedObjectContext = __managedObjectContext;
 @synthesize masterPopoverController = _masterPopoverController;
 
 - (id)init {
     if ( (self = [super init]) ) {
         UIImage *magentaShuttleImage, *whiteImage;
-        m_vehicles = [[NSMutableDictionary alloc] init];
+        self.vehicles = [[NSMutableDictionary alloc] init];
         
-        m_routeLines = [[NSMutableArray alloc] init];
-        m_routeLineViews = [[NSMutableArray alloc] init];
+        self.routeLines = [[NSMutableArray alloc] init];
+        self.routeLineViews = [[NSMutableArray alloc] init];
         
-        m_shuttleImage = [UIImage imageNamed:@"shuttle"];
+        self.shuttleImage = [UIImage imageNamed:@"shuttle"];
         
-        m_magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
-        m_shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
+        self.magentaShuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
+        self.shuttleImages = [[NSMutableDictionary alloc] initWithCapacity:4];
         NSMutableDictionary *shuttleImagesEast = [[NSMutableDictionary alloc] init];
         NSMutableDictionary *shuttleImagesNorth = [[NSMutableDictionary alloc] init];
         NSMutableDictionary *shuttleImagesWest = [[NSMutableDictionary alloc] init];
@@ -168,42 +174,42 @@ typedef enum {
         //  Create east, north, west and south facing shuttle images
         //  East
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_east"];
-        [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
+        [self.magentaShuttleImages setObject:magentaShuttleImage forKey:@"east"];
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesEast setObject:whiteImage forKey:[@-1 stringValue]];
         
         //  North
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_north"];
-        [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"north"];
+        [self.magentaShuttleImages setObject:magentaShuttleImage forKey:@"north"];
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesNorth setObject:whiteImage forKey:[@-1 stringValue]];
         
         //  West
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_west"];
-        [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"west"];
+        [self.magentaShuttleImages setObject:magentaShuttleImage forKey:@"west"];
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesWest setObject:whiteImage forKey:[@-1 stringValue]];
         
         //  South
         magentaShuttleImage = [UIImage imageNamed:@"shuttle_color_south"];
-        [m_magentaShuttleImages setObject:magentaShuttleImage forKey:@"south"];
+        [self.magentaShuttleImages setObject:magentaShuttleImage forKey:@"south"];
         
         whiteImage = [magentaShuttleImage copyMagentaImageasColor:[UIColor whiteColor]];
         [shuttleImagesSouth setObject:whiteImage forKey:[@-1 stringValue]];
         
-        [m_shuttleImages setObject:shuttleImagesEast forKey:@"east"];
-        [m_shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
-        [m_shuttleImages setObject:shuttleImagesWest forKey:@"west"];
-        [m_shuttleImages setObject:shuttleImagesSouth forKey:@"south"];
+        [self.shuttleImages setObject:shuttleImagesEast forKey:@"east"];
+        [self.shuttleImages setObject:shuttleImagesNorth forKey:@"north"];
+        [self.shuttleImages setObject:shuttleImagesWest forKey:@"west"];
+        [self.shuttleImages setObject:shuttleImagesSouth forKey:@"south"];
         
         //  Take notice when the routes and stops are updated.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedRoutesLoaded)
                                                      name:kDMRoutesandStopsLoaded
                                                    object:nil];
-
+        
         //  Take notice when vehicles are updated.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyVehiclesUpdated:)
                                                      name:kDMVehiclesUpdated
@@ -221,15 +227,15 @@ typedef enum {
 - (void)loadView {
     self.title = NSLocalizedString(@"Shuttles", @"Shuttles");
     
-    m_mapView = [[MKMapView alloc] init];
-    m_mapView.delegate = self;
-    m_mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.mapView = [[MKMapView alloc] init];
+    self.mapView.delegate = self;
+    self.mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     
-    MKUserTrackingBarButtonItem *buttonItem = [[MKUserTrackingBarButtonItem alloc] initWithMapView:m_mapView];
+    MKUserTrackingBarButtonItem *buttonItem = [[MKUserTrackingBarButtonItem alloc] initWithMapView:self.mapView];
     self.navigationController.toolbarHidden = NO;
     self.toolbarItems = @[buttonItem];
     
-    self.view = m_mapView;
+    self.view = self.mapView;
 }
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
@@ -244,23 +250,23 @@ typedef enum {
     region.span.latitudeDelta = 0.0200;
     region.span.longitudeDelta = 0.0132;
     
-    m_mapView.region = region;
+    self.mapView.region = region;
     
-    [m_dataManager loadRoutesAndStops];
+    [self.dataManager loadRoutesAndStops];
     
     [self vehicleCleanup];
-    m_shuttleCleanupTimer = [NSTimer scheduledTimerWithTimeInterval:CLEANUP_INTERVAL
-                                                             target:self
-                                                           selector:@selector(vehicleCleanup)
-                                                           userInfo:nil
-                                                            repeats:YES];
+    self.shuttleCleanupTimer = [NSTimer scheduledTimerWithTimeInterval:CLEANUP_INTERVAL
+                                                                target:self
+                                                              selector:@selector(vehicleCleanup)
+                                                              userInfo:nil
+                                                               repeats:YES];
     
     [self simpleVehicleCleanup];
-    m_simpleVehicleCleanupTimer = [NSTimer scheduledTimerWithTimeInterval:CLEANUP_INTERVAL
-                                                                   target:self
-                                                                 selector:@selector(simpleVehicleCleanup)
-                                                                 userInfo:nil
-                                                                  repeats:YES];
+    self.simpleVehicleCleanupTimer = [NSTimer scheduledTimerWithTimeInterval:CLEANUP_INTERVAL
+                                                                      target:self
+                                                                    selector:@selector(simpleVehicleCleanup)
+                                                                    userInfo:nil
+                                                                     repeats:YES];
 }
 
 - (void)viewDidUnload {
@@ -268,7 +274,7 @@ typedef enum {
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
     
-    [m_shuttleCleanupTimer invalidate];
+    [self.shuttleCleanupTimer invalidate];
 }
 
 //  Consider shuttles updated more than UPDATE_THRESHOLD ago as "stale",
@@ -277,16 +283,16 @@ typedef enum {
     NSMutableArray *oldVehicles = [NSMutableArray array];
     STMapVehicle *vehicle;
     
-    for (NSString *name in m_vehicles) {
-        vehicle = [m_vehicles objectForKey:name];
+    for (NSString *name in self.vehicles) {
+        vehicle = [self.vehicles objectForKey:name];
         if ([vehicle.updateTime timeIntervalSinceNow] < UPDATE_THRESHOLD) {
             [oldVehicles addObject:name];
         }
     }
     
     for (NSString *name in oldVehicles) {
-        [m_mapView removeAnnotation:[m_vehicles objectForKey:name]];
-        [m_vehicles removeObjectForKey:name];
+        [self.mapView removeAnnotation:[self.vehicles objectForKey:name]];
+        [self.vehicles removeObjectForKey:name];
     }
 }
 
@@ -294,7 +300,7 @@ typedef enum {
     NSMutableArray *vehiclesToRemove = [NSMutableArray array];
     STSimpleShuttle *shuttle = nil;
     
-    for (id annotation in m_mapView.annotations) {
+    for (id annotation in self.mapView.annotations) {
         if ([annotation isKindOfClass:[STSimpleShuttle class]]) {
             shuttle = (STSimpleShuttle *)annotation;
             
@@ -305,7 +311,7 @@ typedef enum {
     }
     
     for (STSimpleShuttle *shuttle in vehiclesToRemove) {
-        [m_mapView removeAnnotation:shuttle];
+        [self.mapView removeAnnotation:shuttle];
     }
 }
 
@@ -366,7 +372,7 @@ typedef enum {
         
         for (STSimpleShuttle *simpleShuttle in [simpleShuttles objectEnumerator]) {
             BOOL alreadyAdded = NO;
-            for (id annotation in m_mapView.annotations) {
+            for (id annotation in self.mapView.annotations) {
                 if ([annotation isKindOfClass:[STSimpleShuttle class]]) {
                     if ([[(STSimpleShuttle *)annotation identifier] isEqualToNumber:simpleShuttle.identifier]) {
                         alreadyAdded = YES;
@@ -376,7 +382,7 @@ typedef enum {
             }
             
             if (!alreadyAdded && [simpleShuttle.updateTime timeIntervalSinceNow] > UPDATE_THRESHOLD) {
-                [m_mapView addAnnotation:simpleShuttle];
+                [self.mapView addAnnotation:simpleShuttle];
             }
         }
     }];
@@ -403,7 +409,7 @@ typedef enum {
         // Deal with error...
     } else if ([dbVehicles count] > 0) {
         for (STShuttle *shuttle in dbVehicles) {
-            existingShuttle = [m_vehicles objectForKey:shuttle.name];
+            existingShuttle = [self.vehicles objectForKey:shuttle.name];
             updateTimeDiff = [shuttle.updateTime timeIntervalSinceNow];
             
             if (updateTimeDiff > UPDATE_THRESHOLD) {
@@ -493,37 +499,37 @@ typedef enum {
         
         polyLine = [MKPolyline polylineWithPoints:points
                                             count:counter];
-        [m_routeLines addObject:polyLine];
+        [self.routeLines addObject:polyLine];
         
         free(points);
         
         routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
-        [m_routeLineViews addObject:routeView];
+        [self.routeLineViews addObject:routeView];
         
         routeView.lineWidth = [route.width intValue];
         routeView.fillColor = [UIColor UIColorFromRGBString:route.color];
         routeView.strokeColor = routeView.fillColor;
         
-        [m_mapView addOverlay:polyLine];
+        [self.mapView addOverlay:polyLine];
         
         //  Create the colored shuttle image for the route
         
         if (routeView.fillColor) {
-            coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"east"] setValue:coloredImage
-                                                      forKey:[route.routeId stringValue]];
+            coloredImage = [[self.magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
+            [[self.shuttleImages objectForKey:@"east"] setValue:coloredImage
+                                                         forKey:[route.routeId stringValue]];
             
-            coloredImage = [[m_magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"north"] setValue:coloredImage
-                                                       forKey:[route.routeId stringValue]];
+            coloredImage = [[self.magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
+            [[self.shuttleImages objectForKey:@"north"] setValue:coloredImage
+                                                          forKey:[route.routeId stringValue]];
             
-            coloredImage = [[m_magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"west"] setValue:coloredImage
-                                                      forKey:[route.routeId stringValue]];
+            coloredImage = [[self.magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
+            [[self.shuttleImages objectForKey:@"west"] setValue:coloredImage
+                                                         forKey:[route.routeId stringValue]];
             
-            coloredImage = [[m_magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
-            [[m_shuttleImages objectForKey:@"south"] setValue:coloredImage
-                                                       forKey:[route.routeId stringValue]];
+            coloredImage = [[self.magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
+            [[self.shuttleImages objectForKey:@"south"] setValue:coloredImage
+                                                          forKey:[route.routeId stringValue]];
         }
     }
 }
@@ -541,7 +547,7 @@ typedef enum {
     
     STMapStop *mapStop = [[STMapStop alloc] initWithLocation:clLoc];
     mapStop.name = stop.name;
-    [m_mapView addAnnotation:mapStop];
+    [self.mapView addAnnotation:mapStop];
 }
 
 
@@ -562,8 +568,8 @@ typedef enum {
                 withFormatter:self.dataManager.timeDisplayFormatter];
     newVehicle.name = vehicle.name;
     
-    [m_mapView addAnnotation:newVehicle];
-    [m_vehicles setObject:newVehicle forKey:newVehicle.name];
+    [self.mapView addAnnotation:newVehicle];
+    [self.vehicles setObject:newVehicle forKey:newVehicle.name];
 }
 
 
@@ -577,15 +583,15 @@ typedef enum {
     NSString *routeString;
     
     if (vehicle.heading >= 315 || vehicle.heading < 45) {
-        shuttleDirectionImages = [m_shuttleImages objectForKey:@"north"];
+        shuttleDirectionImages = [self.shuttleImages objectForKey:@"north"];
     } else if (vehicle.heading >= 45 && vehicle.heading < 135) {
-        shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
+        shuttleDirectionImages = [self.shuttleImages objectForKey:@"east"];
     } else if (vehicle.heading >= 135 && vehicle.heading < 225) {
-        shuttleDirectionImages = [m_shuttleImages objectForKey:@"south"];
+        shuttleDirectionImages = [self.shuttleImages objectForKey:@"south"];
     } else if (vehicle.heading >= 225 && vehicle.heading < 315) {
-        shuttleDirectionImages = [m_shuttleImages objectForKey:@"west"];
+        shuttleDirectionImages = [self.shuttleImages objectForKey:@"west"];
     } else {
-        shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
+        shuttleDirectionImages = [self.shuttleImages objectForKey:@"east"];
     }
     
     routeString = [@(vehicle.routeId) stringValue];
@@ -595,7 +601,7 @@ typedef enum {
         vehicle.annotationView.image = coloredImage;
         vehicle.routeImageSet = YES;
     } else {
-        vehicle.annotationView.image = m_shuttleImage;
+        vehicle.annotationView.image = self.shuttleImage;
         vehicle.routeImageSet = NO;
     }
 }
@@ -624,9 +630,9 @@ typedef enum {
     
     int counter = 0;
     
-    for (MKPolyline *routeLine in m_routeLines) {
+    for (MKPolyline *routeLine in self.routeLines) {
         if (routeLine == overlay) {
-            overlayView = [m_routeLineViews objectAtIndex:counter];
+            overlayView = [self.routeLineViews objectAtIndex:counter];
             break;
         }
         
@@ -639,7 +645,7 @@ typedef enum {
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
     //  If the annotation is the user's location, return nil so the platform
     //  just uses the blue dot
-    if (annotation == m_mapView.userLocation)
+    if (annotation == self.mapView.userLocation)
         return nil;
     
     if ([annotation isKindOfClass:[STMapStop class]]) {
@@ -648,7 +654,7 @@ typedef enum {
         if ([stop annotationView]) {
             return [stop annotationView];
         }
-
+        
         MKAnnotationView *stopAnnotationView;
         stopAnnotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"stopAnnotation"];
         
@@ -660,7 +666,7 @@ typedef enum {
         }
         
         [(STMapStop *)annotation setAnnotationView:stopAnnotationView];
-
+        
         return stopAnnotationView;
     } else if ([annotation isKindOfClass:[STMapVehicle class]]) {
         STMapVehicle *vehicle = (STMapVehicle *)annotation;
@@ -685,7 +691,7 @@ typedef enum {
             
             [self setAnnotationImageForVehicle:vehicle];
         }
-
+        
         return vehicle.annotationView;
     } else if ([annotation isKindOfClass:[STSimpleShuttle class]]) {
         STSimpleShuttle *shuttle = (STSimpleShuttle *)annotation;
@@ -699,15 +705,15 @@ typedef enum {
         }
         
         if (shuttle.heading >= 315 || shuttle.heading < 45) {
-            shuttleDirectionImages = [m_shuttleImages objectForKey:@"north"];
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"north"];
         } else if (shuttle.heading >= 45 && shuttle.heading < 135) {
-            shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"east"];
         } else if (shuttle.heading >= 135 && shuttle.heading < 225) {
-            shuttleDirectionImages = [m_shuttleImages objectForKey:@"south"];
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"south"];
         } else if (shuttle.heading >= 225 && shuttle.heading < 315) {
-            shuttleDirectionImages = [m_shuttleImages objectForKey:@"west"];
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"west"];
         } else {
-            shuttleDirectionImages = [m_shuttleImages objectForKey:@"east"];
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"east"];
         }
         
         annotationView.image = [shuttleDirectionImages objectForKey:[@-1 stringValue]];

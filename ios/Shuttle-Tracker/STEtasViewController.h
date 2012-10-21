@@ -10,17 +10,11 @@
 #import "STDataManager.h"
 
 
-@interface STEtasViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
-    STDataManager           *__weak m_dataManager;
-    NSDateFormatter         *__weak m_timeDisplayFormatter;
-    BOOL                    m_useRelativeTimes;
-    NSMutableDictionary     *m_routeStops;
-    NSTimer                 *m_freshTimer;
-}
+@interface STEtasViewController : UITableViewController <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, weak) STDataManager *dataManager;
 @property (nonatomic, weak) NSDateFormatter *timeDisplayFormatter;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic) BOOL useRelativeTimes;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @end

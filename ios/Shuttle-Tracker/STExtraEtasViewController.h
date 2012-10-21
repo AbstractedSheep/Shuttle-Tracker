@@ -10,28 +10,14 @@
 
 @class STStop, STJSONParser, STDataManager, UINavigationButton;
 
-@interface STExtraEtasViewController : UITableViewController {
-    NSURL               *m_etasUrl;
-    STJSONParser        *m_extraEtasParser;
-
-    NSDate              *m_lastEtaRefresh;
-    NSArray             *m_etas;
-
-    STDataManager       *__weak m_dataManager;
-    NSTimer             *m_updateTimer;
-    NSDateFormatter     *__weak m_timeDisplayFormatter;
-    
-    UIBarButtonItem     *m_favoriteButton;
-    
-    BOOL                m_useRelativeTimes;
-}
+@interface STExtraEtasViewController : UITableViewController
 
 - (id)initWithStop:(STStop *)stop forRouteNumber:(NSNumber *)routeNumber;
 - (void)toggleFavorite:(id)sender;
 
 @property (nonatomic, strong) STStop *stop;
 @property (nonatomic, strong) NSNumber *routeNum;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 @property (nonatomic, weak) STDataManager *dataManager;
 @property (nonatomic, weak) NSDateFormatter *timeDisplayFormatter;
 @property (nonatomic) BOOL useRelativeTimes;

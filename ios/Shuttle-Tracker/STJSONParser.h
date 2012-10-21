@@ -8,9 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface STJSONParser : NSObject <NSFetchedResultsControllerDelegate> {
-    NSDateFormatter *__weak m_timeDisplayFormatter;
-}
+@interface STJSONParser : NSObject <NSFetchedResultsControllerDelegate>
 
 @property (nonatomic, strong) NSArray *routes;
 @property (nonatomic, strong) NSArray *stops;

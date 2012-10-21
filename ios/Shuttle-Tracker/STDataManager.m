@@ -14,6 +14,16 @@
 
 
 @interface STDataManager()
+
+@property (nonatomic, strong) NSURL *shuttleJsonUrl;
+@property (nonatomic, strong) NSURL *etasJsonUrl;
+@property (nonatomic, strong) STJSONParser *routesStopsJsonParser;
+@property (nonatomic, strong) STJSONParser *vehiclesJsonParser;
+@property (nonatomic, strong) STJSONParser *etasJsonParser;
+@property (nonatomic) dispatch_queue_t loadMapInfoJsonQueue;
+@property (nonatomic) dispatch_queue_t loadVehicleJsonQueue;
+@property (nonatomic) dispatch_queue_t loadEtaJsonQueue;
+
 - (void)loadFromJson;
 - (void)routeJsonLoaded;
 - (void)updateVehicleData;
@@ -24,28 +34,25 @@
 
 @implementation STDataManager
 
-@synthesize timeDisplayFormatter = m_timeDisplayFormatter;
-
-
 - (id)init {
     if ((self = [super init])) {
-        m_timeDisplayFormatter = [[NSDateFormatter alloc] init];
-
+        self.timeDisplayFormatter = [[NSDateFormatter alloc] init];
+        
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         BOOL use24Time = [[defaults objectForKey:@"use24Time"] boolValue];
-
+        
         if (use24Time) {
-            [m_timeDisplayFormatter setDateFormat:@"HH:mm"];
+            [self.timeDisplayFormatter setDateFormat:@"HH:mm"];
         } else {
-            [m_timeDisplayFormatter setDateFormat:@"hh:mm a"];
+            [self.timeDisplayFormatter setDateFormat:@"hh:mm a"];
         }
         
-        m_routesStopsJsonParser = [[STJSONParser alloc] init];
-        m_vehiclesJsonParser = [[STJSONParser alloc] init];
-        m_etasJsonParser = [[STJSONParser alloc] init];
-
-        m_loadVehicleJsonQueue = NULL;
-        m_loadEtaJsonQueue = NULL;
+        self.routesStopsJsonParser = [[STJSONParser alloc] init];
+        self.vehiclesJsonParser = [[STJSONParser alloc] init];
+        self.etasJsonParser = [[STJSONParser alloc] init];
+        
+        self.loadVehicleJsonQueue = NULL;
+        self.loadEtaJsonQueue = NULL;
     }
     
     return self;
@@ -53,18 +60,18 @@
 
 
 - (void)dealloc {
-    if (m_loadMapInfoJsonQueue) {
-        dispatch_release(m_loadMapInfoJsonQueue);
+    if (self.loadMapInfoJsonQueue) {
+        dispatch_release(self.loadMapInfoJsonQueue);
     }
     
-    if (m_loadVehicleJsonQueue) {
-        dispatch_release(m_loadVehicleJsonQueue);
+    if (self.loadVehicleJsonQueue) {
+        dispatch_release(self.loadVehicleJsonQueue);
     }
     
-    if (m_loadEtaJsonQueue) {
-        dispatch_release(m_loadEtaJsonQueue);
+    if (self.loadEtaJsonQueue) {
+        dispatch_release(self.loadEtaJsonQueue);
     }
-
+    
 }
 
 
@@ -75,23 +82,23 @@
 
 
 - (void)loadFromJson {
-    if (!m_loadMapInfoJsonQueue) {
-        m_loadMapInfoJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    if (!self.loadMapInfoJsonQueue) {
+        self.loadMapInfoJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
     }
     
-    dispatch_async(m_loadMapInfoJsonQueue, ^{
+    dispatch_async(self.loadMapInfoJsonQueue, ^{
         NSError *theError = nil;
         NSURL *routesStopsUrl = [NSURL URLWithString:kSTRoutesandStopsUrl];
-        NSString *jsonString = [NSString stringWithContentsOfURL:routesStopsUrl 
-                                                        encoding:NSUTF8StringEncoding 
+        NSString *jsonString = [NSString stringWithContentsOfURL:routesStopsUrl
+                                                        encoding:NSUTF8StringEncoding
                                                            error:&theError];
         
         if (theError) {
             NSLog(@"Error retrieving JSON data: %@", theError);
         } else {
-            [m_routesStopsJsonParser performSelectorOnMainThread:@selector(parseRoutesandStopsFromJson:)
-                                                    withObject:jsonString
-                                                 waitUntilDone:YES];
+            [self.routesStopsJsonParser performSelectorOnMainThread:@selector(parseRoutesandStopsFromJson:)
+                                                         withObject:jsonString
+                                                      waitUntilDone:YES];
             [self performSelectorOnMainThread:@selector(routeJsonLoaded) withObject:nil waitUntilDone:NO];
         }
     });
@@ -105,9 +112,9 @@
 
 //  Update vehicle positions, ETAs, and any other data that changes frequently.
 - (void)updateData {
-//    [self updateVehicleData];
+    //    [self updateVehicleData];
     [self updateSimpleVehicleData];
-//    [self updateEtaData];
+    //    [self updateEtaData];
 }
 
 
@@ -115,24 +122,24 @@
 //  Note that the notification is not expected to be on the main thread.
 - (void)updateVehicleData {
     
-    if (!m_loadVehicleJsonQueue) {
-        m_loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    if (!self.loadVehicleJsonQueue) {
+        self.loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
     }
     
-    dispatch_async(m_loadVehicleJsonQueue, ^{
+    dispatch_async(self.loadVehicleJsonQueue, ^{
         NSError *theError = nil;
-//        m_shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesUrl];
-        m_shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesBackupUrl];
-        NSString *jsonString = [NSString stringWithContentsOfURL:m_shuttleJsonUrl
-                                                        encoding:NSUTF8StringEncoding 
+        //        self.shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesUrl];
+        self.shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesBackupUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:self.shuttleJsonUrl
+                                                        encoding:NSUTF8StringEncoding
                                                            error:&theError];
         
         if (theError) {
             NSLog(@"Error retrieving JSON data: %@", theError);
         } else {
-            [m_vehiclesJsonParser performSelectorOnMainThread:@selector(parseShuttlesFromJson:)
-                                                 withObject:jsonString
-                                              waitUntilDone:YES];
+            [self.vehiclesJsonParser performSelectorOnMainThread:@selector(parseShuttlesFromJson:)
+                                                      withObject:jsonString
+                                                   waitUntilDone:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:kDMVehiclesUpdated
                                                                 object:nil
                                                               userInfo:nil];
@@ -142,46 +149,46 @@
 }
 
 - (void)updateSimpleVehicleData {
-    if (!m_loadVehicleJsonQueue) {
-        m_loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    if (!self.loadVehicleJsonQueue) {
+        self.loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
     }
     
-    dispatch_async(m_loadVehicleJsonQueue, ^{
+    dispatch_async(self.loadVehicleJsonQueue, ^{
         NSError *theError = nil;
-        m_shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesBackupUrl];
-        NSString *jsonString = [NSString stringWithContentsOfURL:m_shuttleJsonUrl
+        self.shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesBackupUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:self.shuttleJsonUrl
                                                         encoding:NSUTF8StringEncoding
                                                            error:&theError];
         
         if (theError) {
             NSLog(@"Error retrieving JSON data: %@", theError);
         } else {
-            [m_vehiclesJsonParser parseSimpleShuttlesFromJson:jsonString];
+            [self.vehiclesJsonParser parseSimpleShuttlesFromJson:jsonString];
             [[NSNotificationCenter defaultCenter] postNotificationName:kDMSimpleVehiclesUpdated
                                                                 object:nil
-                                                              userInfo:@{ @"simpleShuttles" : m_vehiclesJsonParser.simpleShuttles }];
+                                                              userInfo:@{ @"simpleShuttles" : self.vehiclesJsonParser.simpleShuttles }];
         }
     });
 }
 
 - (void)updateEtaData {
-    if (!m_loadEtaJsonQueue) {
-        m_loadEtaJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    if (!self.loadEtaJsonQueue) {
+        self.loadEtaJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
     }
-
-    dispatch_async(m_loadEtaJsonQueue, ^{
+    
+    dispatch_async(self.loadEtaJsonQueue, ^{
         NSError *theError = nil;
-        m_etasJsonUrl = [NSURL URLWithString:kSTNextEtasUrl];
-        NSString *jsonString = [NSString stringWithContentsOfURL:m_etasJsonUrl 
-                                                        encoding:NSUTF8StringEncoding 
+        self.etasJsonUrl = [NSURL URLWithString:kSTNextEtasUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:self.etasJsonUrl
+                                                        encoding:NSUTF8StringEncoding
                                                            error:&theError];
         
         if (theError) {
             NSLog(@"Error retrieving JSON data: %@", theError);
         } else {
-            [m_vehiclesJsonParser performSelectorOnMainThread:@selector(parseEtasFromJson:)
-                                                 withObject:jsonString
-                                              waitUntilDone:YES];
+            [self.vehiclesJsonParser performSelectorOnMainThread:@selector(parseEtasFromJson:)
+                                                      withObject:jsonString
+                                                   waitUntilDone:YES];
             [[NSNotificationCenter defaultCenter] postNotificationName:kDMEtasUpdated
                                                                 object:nil
                                                               userInfo:nil];
@@ -192,16 +199,16 @@
 
 
 - (void)setTimeDisplayFormatter:(NSDateFormatter *)newTimeDisplayFormatter {
-    m_timeDisplayFormatter = newTimeDisplayFormatter;
-
-    m_vehiclesJsonParser.timeDisplayFormatter = m_timeDisplayFormatter;
+    _timeDisplayFormatter = newTimeDisplayFormatter;
+    
+    self.vehiclesJsonParser.timeDisplayFormatter = self.timeDisplayFormatter;
 }
 
 
 - (void)setParserManagedObjectContext:(NSManagedObjectContext *)context {
-    m_routesStopsJsonParser.managedObjectContext = context;
-    m_vehiclesJsonParser.managedObjectContext = context;
-    m_etasJsonParser.managedObjectContext = context;
+    self.routesStopsJsonParser.managedObjectContext = context;
+    self.vehiclesJsonParser.managedObjectContext = context;
+    self.etasJsonParser.managedObjectContext = context;
 }
 
 @end

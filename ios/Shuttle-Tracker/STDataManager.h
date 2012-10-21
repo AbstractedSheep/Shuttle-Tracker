@@ -17,20 +17,7 @@
 @class EtaWrapper;
 
 //  Manages all of the routes/stops/shuttles data, as well as application settings.
-@interface STDataManager : NSObject {
-    NSURL               *m_shuttleJsonUrl;
-    NSURL               *m_etasJsonUrl;
-    
-    STJSONParser        *m_routesStopsJsonParser;
-    STJSONParser        *m_vehiclesJsonParser;
-    STJSONParser        *m_etasJsonParser;
-    
-    dispatch_queue_t    m_loadMapInfoJsonQueue;
-    dispatch_queue_t    m_loadVehicleJsonQueue;
-    dispatch_queue_t    m_loadEtaJsonQueue;
-
-    NSDateFormatter     *m_timeDisplayFormatter;
-}
+@interface STDataManager : NSObject
 
 @property (nonatomic, strong) NSDateFormatter *timeDisplayFormatter;
 //  DataManager should have the onlyretain on timeDisplayFormatter, the way

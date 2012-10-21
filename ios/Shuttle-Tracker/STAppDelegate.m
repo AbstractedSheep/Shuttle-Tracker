@@ -16,16 +16,9 @@
 
 @implementation STAppDelegate
 
-@synthesize window = _window;
 @synthesize managedObjectContext = __managedObjectContext;
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
-@synthesize navigationController = _navigationController;
-@synthesize splitViewController = _splitViewController;
-@synthesize dataManager = _dataManager;
-@synthesize tabBarController = _tabBarController;
-@synthesize timeDisplayFormatter = _timeDisplayFormatter;
-@synthesize dataUpdateTimer = _dataUpdateTimer;
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -43,8 +36,8 @@
     
     STMapViewController *mapViewController = [[STMapViewController alloc] init];
     mapViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Map"
-                                                                  image:[UIImage imageNamed:@"glyphish_map"]
-                                                                    tag:0];
+                                                                 image:[UIImage imageNamed:@"glyphish_map"]
+                                                                   tag:0];
     mapViewController.dataManager = self.dataManager;
     mapViewController.managedObjectContext = self.managedObjectContext;
     
@@ -53,8 +46,8 @@
     
     STEtasViewController *etasViewController = [[STEtasViewController alloc] init];
     etasViewController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ETAs"
-                                                                   image:[UIImage imageNamed:@"glyphish_clock"]
-                                                                     tag:1];
+                                                                  image:[UIImage imageNamed:@"glyphish_clock"]
+                                                                    tag:1];
     etasViewController.dataManager = self.dataManager;
     etasViewController.managedObjectContext = self.managedObjectContext;
     
@@ -75,10 +68,10 @@
         self.window.rootViewController = self.splitViewController;
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         //  Create a tabbed view, with a map view, ETA view, and settings view.
-//        self.tabBarController = [[[UITabBarController alloc] init] autorelease];
-//        
-//        self.tabBarController.viewControllers = @[mapNavController, etasTableNavController];
-//        self.window.rootViewController = self.tabBarController;
+        //        self.tabBarController = [[[UITabBarController alloc] init] autorelease];
+        //
+        //        self.tabBarController.viewControllers = @[mapNavController, etasTableNavController];
+        //        self.window.rootViewController = self.tabBarController;
         self.window.rootViewController = mapNavController;
     }
     
@@ -112,7 +105,7 @@
     [defaults registerDefaults:appDefaults];
     [defaults synchronize];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self 
+    [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(changeDataUpdateRate:)
                                                  name:@"dataUpdateInterval"
                                                object:nil];
@@ -120,10 +113,10 @@
     float updateInterval = [[defaults objectForKey:@"dataUpdateInterval"] floatValue];
 
     //  Schedule a timer to make the DataManager pull new data every 5 seconds
-    self.dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval 
-                                                            target:self.dataManager 
-                                                          selector:@selector(updateData) 
-                                                          userInfo:nil 
+    self.dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval
+                                                            target:self.dataManager
+                                                          selector:@selector(updateData)
+                                                          userInfo:nil
                                                            repeats:YES];
     
     [self.window makeKeyAndVisible];
@@ -147,12 +140,12 @@
             /*
              Replace this implementation with code to handle the error appropriately.
              
-             abort() causes the application to generate a crash log and terminate. 
-             You should not use this function in a shipping application, although 
-             it may be useful during development. 
+             abort() causes the application to generate a crash log and terminate.
+             You should not use this function in a shipping application, although
+             it may be useful during development.
              */
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        } 
+        }
     }
 }
 
@@ -167,9 +160,9 @@
     float updateInterval = [[info objectForKey:@"dataUpdateInterval"] floatValue];
 
     //  Schedule a timer to make the DataManager pull new data every 5 seconds
-    self.dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self.dataManager 
-                                                          selector:@selector(updateData) 
-                                                          userInfo:nil 
+    self.dataUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:updateInterval target:self.dataManager
+                                                          selector:@selector(updateData)
+                                                          userInfo:nil
                                                            repeats:YES];
 }
 
@@ -223,7 +216,7 @@
     
     NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Shuttle_Tracker.sqlite"];
     NSDictionary *migrationOption = @{ NSMigratePersistentStoresAutomaticallyOption: @(YES),
-                                       NSInferMappingModelAutomaticallyOption: @(YES) };
+NSInferMappingModelAutomaticallyOption: @(YES) };
     
     NSError *error = nil;
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc]
@@ -236,7 +229,7 @@
     {
         //  TODO: Do something useful here
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-    }    
+    }
     
     return __persistentStoreCoordinator;
 }

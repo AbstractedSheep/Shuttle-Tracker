@@ -20,6 +20,9 @@ const BOOL makeLaunchImage = NO;
 
 @interface STEtasViewController ()
 
+@property (strong, nonatomic) NSMutableDictionary *routeStops;
+@property (strong, nonatomic) NSTimer *freshTimer;
+
 - (void)delayedTableReload;
 - (void)unsafeDelayedTableReload;
 - (void)unsafeDelayedTableReloadForced;
@@ -30,8 +33,6 @@ const BOOL makeLaunchImage = NO;
 
 @implementation STEtasViewController
 
-
-@synthesize dataManager = m_dataManager;
 @synthesize timeDisplayFormatter = m_timeDisplayFormatter;
 @synthesize useRelativeTimes = m_useRelativeTimes;
 @synthesize managedObjectContext = __managedObjectContext;
@@ -46,14 +47,14 @@ const BOOL makeLaunchImage = NO;
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         m_useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
         
-        m_routeStops = [[NSMutableDictionary alloc] init];
+        self.routeStops = [[NSMutableDictionary alloc] init];
         
         //  Take notice when routes and stops are loaded.
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notifyStopsUpdated:)
                                                      name:kDMRoutesandStopsLoaded
                                                    object:nil];
     }
-
+    
     return self;
 }
 
@@ -86,11 +87,11 @@ const BOOL makeLaunchImage = NO;
 - (void)viewDidLoad
 {
     //  Take notice when the ETAs are updated
-    [[NSNotificationCenter defaultCenter] addObserver:self 
-                                             selector:@selector(delayedTableReload) 
-                                                 name:kDMEtasUpdated 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(delayedTableReload)
+                                                 name:kDMEtasUpdated
                                                object:nil];
-
+    
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     [super viewDidLoad];
 }
@@ -103,17 +104,17 @@ const BOOL makeLaunchImage = NO;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    m_freshTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f 
-                                                    target:self 
-                                                  selector:@selector(delayedTableReload) 
-                                                  userInfo:nil 
-                                                   repeats:YES];
+    self.freshTimer = [NSTimer scheduledTimerWithTimeInterval:10.0f
+                                                       target:self
+                                                     selector:@selector(delayedTableReload)
+                                                     userInfo:nil
+                                                      repeats:YES];
     
     [super viewWillAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    [m_freshTimer invalidate];
+    [self.freshTimer invalidate];
     
     [super viewWillDisappear:animated];
 }
@@ -142,8 +143,8 @@ const BOOL makeLaunchImage = NO;
             //  Get all stops for that route
             NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"stopNum" ascending:YES];
             
-            [m_routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:@[sortDescriptor]] 
-                            forKey:[route.routeId stringValue]];
+            [self.routeStops setValue:[[route.stops allObjects] sortedArrayUsingDescriptors:@[sortDescriptor]]
+                               forKey:[route.routeId stringValue]];
         }
     }
 }
@@ -158,7 +159,7 @@ const BOOL makeLaunchImage = NO;
         return 1;
     }
     
-    return [m_routeStops count] + 1;
+    return [self.routeStops count] + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -171,7 +172,7 @@ const BOOL makeLaunchImage = NO;
     // Return the number of rows in the section.
     if (section == 0) {
         //  Get all favorite stops
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop" 
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
                                                              inManagedObjectContext:self.managedObjectContext];
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
@@ -185,7 +186,7 @@ const BOOL makeLaunchImage = NO;
             rows = numStops;
         }
     } else {
-        NSArray *stops = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", section]];
+        NSArray *stops = [self.routeStops objectForKey:[NSString stringWithFormat:@"%d", section]];
         
         if (stops != nil) {
             rows = [stops count];
@@ -212,8 +213,8 @@ const BOOL makeLaunchImage = NO;
     if (cell == nil) {
         //  Init the cell such that it has main text, black and left aligned, and secondary text,
         //  blue and right aligned
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 
-                                       reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1
+                                      reuseIdentifier:CellIdentifier];
         cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
     }
     
@@ -243,7 +244,7 @@ const BOOL makeLaunchImage = NO;
             
             [request setFetchLimit:1];
             
-            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)",
                          favStop.route.routeId, favStop.stop.idTag];
             [request setPredicate:predicate];
             
@@ -260,7 +261,7 @@ const BOOL makeLaunchImage = NO;
             }
         }
     } else {
-        stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        stopsArray = [self.routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             stop = [stopsArray objectAtIndex:indexPath.row];
@@ -274,7 +275,7 @@ const BOOL makeLaunchImage = NO;
             
             [request setFetchLimit:1];
             
-            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)", 
+            predicate = [NSPredicate predicateWithFormat:@"(route.routeId == %@) AND (stop.idTag == %@)",
                          @(indexPath.section), stop.idTag];
             [request setPredicate:predicate];
             
@@ -302,7 +303,7 @@ const BOOL makeLaunchImage = NO;
         } else if (stop != nil) {
             cell.textLabel.text = stop.shortName;
         }
-
+        
         //  The secondary text label, right aligned and blue in UITableViewCellStyleValue1
         //  The ETA is recently passed or still in the future, so show it to the user
         if (m_useRelativeTimes) {
@@ -343,7 +344,7 @@ const BOOL makeLaunchImage = NO;
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"routeId == %@", 
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"routeId == %@",
                               @(section)];
     [request setPredicate:predicate];
     
@@ -366,7 +367,7 @@ const BOOL makeLaunchImage = NO;
 {
     STStop *stop = nil;
     STExtraEtasViewController *levc = nil;
- 
+    
     //  Do nothing for favorites, for now
     if (indexPath.section == 0) {
         STFavoriteStop *favStop = nil;
@@ -390,23 +391,23 @@ const BOOL makeLaunchImage = NO;
             levc = [[STExtraEtasViewController alloc] initWithStop:stop forRouteNumber:favStop.route.routeId];
         }
     } else {
-        NSArray *stops = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        NSArray *stops = [self.routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stops != nil && [stops count] > indexPath.row) {
             stop = [stops objectAtIndex:indexPath.row];
             
             levc = [[STExtraEtasViewController alloc] initWithStop:stop
-                                                  forRouteNumber:@(indexPath.section)];
+                                                    forRouteNumber:@(indexPath.section)];
         }
     }
-
+    
     levc.managedObjectContext = self.managedObjectContext;
-    levc.dataManager = m_dataManager;
+    levc.dataManager = self.dataManager;
     levc.timeDisplayFormatter = m_timeDisplayFormatter;
-
+    
     // Pass the selected object to the new view controller.
     [self.navigationController pushViewController:levc animated:YES];
-
+    
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -414,7 +415,7 @@ const BOOL makeLaunchImage = NO;
     [self tableView:tableView didSelectRowAtIndexPath:indexPath];
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Return NO if you do not want the specified item to be editable.
     return YES;
@@ -471,7 +472,7 @@ const BOOL makeLaunchImage = NO;
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         //  Add a favorite stop then reload the table.
         STFavoriteStop *favStop = nil;
-        NSArray *stopsArray = [m_routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
+        NSArray *stopsArray = [self.routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
@@ -479,8 +480,8 @@ const BOOL makeLaunchImage = NO;
             NSFetchRequest *request = [[NSFetchRequest alloc] init];
             [request setEntity:entityDescription];
             
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(stop.name == %@) AND (route.routeId == %@)", 
-                                      [[stopsArray objectAtIndex:indexPath.row] name], 
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(stop.name == %@) AND (route.routeId == %@)",
+                                      [[stopsArray objectAtIndex:indexPath.row] name],
                                       @(indexPath.section)];
             [request setPredicate:predicate];
             
@@ -492,7 +493,7 @@ const BOOL makeLaunchImage = NO;
             } else {
                 //  The stop is a new favorite, so add it.
                 favStop = (STFavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"STFavoriteStop"
-                                                                        inManagedObjectContext:self.managedObjectContext];
+                                                                          inManagedObjectContext:self.managedObjectContext];
                 
                 entityDescription = [NSEntityDescription entityForName:@"STRoute"
                                                 inManagedObjectContext:self.managedObjectContext];
@@ -517,12 +518,12 @@ const BOOL makeLaunchImage = NO;
                         /*
                          Replace this implementation with code to handle the error appropriately.
                          
-                         abort() causes the application to generate a crash log and terminate. 
-                         You should not use this function in a shipping application, although 
-                         it may be useful during development. 
+                         abort() causes the application to generate a crash log and terminate.
+                         You should not use this function in a shipping application, although
+                         it may be useful during development.
                          */
                         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-
+                        
                         abort();
                     }
                 }
@@ -538,7 +539,7 @@ const BOOL makeLaunchImage = NO;
 //  Call unsafeDelayedTableReload on the main thread.  A threadsafe
 //  way to call for a table reload.
 - (void)delayedTableReload {
-    [self performSelectorOnMainThread:@selector(unsafeDelayedTableReload) 
+    [self performSelectorOnMainThread:@selector(unsafeDelayedTableReload)
                            withObject:nil
                         waitUntilDone:NO];
 }
@@ -550,10 +551,10 @@ const BOOL makeLaunchImage = NO;
     if ([self.tableView isEditing]) {
         return;
     } else {
-        [NSTimer scheduledTimerWithTimeInterval:0.125f 
-                                         target:self.tableView 
-                                       selector:@selector(reloadData) 
-                                       userInfo:nil 
+        [NSTimer scheduledTimerWithTimeInterval:0.125f
+                                         target:self.tableView
+                                       selector:@selector(reloadData)
+                                       userInfo:nil
                                         repeats:NO];
     }
 }
@@ -561,10 +562,10 @@ const BOOL makeLaunchImage = NO;
 //  Reload the table on a short delay, usually for a data change.
 //  Reload regardless of the current table mode.
 - (void)unsafeDelayedTableReloadForced {
-    [NSTimer scheduledTimerWithTimeInterval:0.125f 
-                                     target:self.tableView 
-                                   selector:@selector(reloadData) 
-                                   userInfo:nil 
+    [NSTimer scheduledTimerWithTimeInterval:0.125f
+                                     target:self.tableView
+                                   selector:@selector(reloadData)
+                                   userInfo:nil
                                     repeats:NO];
 }
 
