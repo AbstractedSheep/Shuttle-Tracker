@@ -33,7 +33,7 @@
 //  Assume a call to init is for a shuttle JSON parser
 - (id)init {
     if ((self = [super init])) {
-        
+        self.simpleShuttles = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -290,10 +290,11 @@
     if (jsonArray && [jsonArray isKindOfClass:[NSArray class]]) {
         NSMutableDictionary *shuttlesDict = [self.simpleShuttles mutableCopy];
         
-        for (NSDictionary *shuttleDictionary in jsonArray) {
+        for (NSDictionary *shuttleDict in jsonArray) {
+            NSDictionary *shuttleDictionary = [shuttleDict objectForKey:@"vehicle"];
             NSDictionary *positionDictionary = [shuttleDictionary objectForKey:@"latest_position"];
             NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-            NSString *identifier = nil;
+            NSNumber *identifier = nil;
             CGFloat latitude = 0;
             CGFloat longitude = 0;
             // RFC 3339 date format
@@ -306,17 +307,17 @@
             shuttle = [shuttlesDict objectForKey:identifier];
             if (!shuttle) {
                 shuttle = [[STSimpleShuttle alloc] init];
-                [shuttlesDict setObject:shuttle forKey:shuttle.identifier];
+                [shuttlesDict setObject:shuttle forKey:[identifier stringValue]];
             }
             
-            shuttle.identifier = [shuttleDictionary objectForKey:@"id"];
+            shuttle.identifier = identifier;
             shuttle.name = [shuttleDictionary objectForKey:@"name"];
             shuttle.heading = [[positionDictionary objectForKey:@"heading"] floatValue];
             
             formatter.numberStyle = NSNumberFormatterDecimalStyle;
             latitude = [[formatter numberFromString:[positionDictionary objectForKey:@"latitude"]] floatValue];
             longitude = [[formatter numberFromString:[positionDictionary objectForKey:@"longitude"]] floatValue];
-            shuttle.location = CLLocationCoordinate2DMake(latitude, longitude);
+            shuttle.coordinate = CLLocationCoordinate2DMake(latitude, longitude);
             
             dateFormatter.dateFormat = dateFormat;
             dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
