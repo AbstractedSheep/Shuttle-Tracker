@@ -17,6 +17,7 @@
 - (void)loadFromJson;
 - (void)routeJsonLoaded;
 - (void)updateVehicleData;
+- (void)updateSimpleVehicleData;
 - (void)updateEtaData;
 
 @end
@@ -104,7 +105,8 @@
 
 //  Update vehicle positions, ETAs, and any other data that changes frequently.
 - (void)updateData {
-    [self updateVehicleData];
+//    [self updateVehicleData];
+    [self updateSimpleVehicleData];
 //    [self updateEtaData];
 }
 
@@ -139,6 +141,28 @@
     
 }
 
+- (void)updateSimpleVehicleData {
+    if (!m_loadVehicleJsonQueue) {
+        m_loadVehicleJsonQueue = dispatch_queue_create("com.abstractedsheep.jsonqueue", NULL);
+    }
+    
+    dispatch_async(m_loadVehicleJsonQueue, ^{
+        NSError *theError = nil;
+        m_shuttleJsonUrl = [NSURL URLWithString:kSTShuttlesBackupUrl];
+        NSString *jsonString = [NSString stringWithContentsOfURL:m_shuttleJsonUrl
+                                                        encoding:NSUTF8StringEncoding
+                                                           error:&theError];
+        
+        if (theError) {
+            NSLog(@"Error retrieving JSON data: %@", theError);
+        } else {
+            [m_vehiclesJsonParser parseSimpleShuttlesFromJson:jsonString];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kDMSimpleVehiclesUpdated
+                                                                object:nil
+                                                              userInfo:@{ @"simpleShuttles" : m_vehiclesJsonParser.simpleShuttles }];
+        }
+    });
+}
 
 - (void)updateEtaData {
     if (!m_loadEtaJsonQueue) {

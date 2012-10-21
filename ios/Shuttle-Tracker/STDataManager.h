@@ -11,6 +11,7 @@
 
 #define kDMRoutesandStopsLoaded             @"kDMRoutesandStopsLoaded"
 #define kDMVehiclesUpdated                  @"kDMVehiclesUpdated"
+#define kDMSimpleVehiclesUpdated            @"kDMSimpleVehiclesUpdated"
 #define kDMEtasUpdated                      @"kDMEtasUpdated"
 
 @class EtaWrapper;
