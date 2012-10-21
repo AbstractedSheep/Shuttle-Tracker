@@ -51,6 +51,7 @@
 		5C68B628145C966100D9A82E /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5C68B627145C966100D9A82E /* Default-Landscape~ipad.png */; };
 		5CA03579145E0AD30068CA3D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 5CA03578145E0AD30068CA3D /* iTunesArtwork */; };
 		5CDE8CE11470656F006956BE /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 5CDE8CE01470656F006956BE /* Default-Portrait~ipad.png */; };
+		5CE0F117163398670082AB45 /* STSimpleShuttle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE0F116163398670082AB45 /* STSimpleShuttle.m */; };
 		5CE6249E1471835500664156 /* STRoutePt.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE6249D1471835500664156 /* STRoutePt.m */; };
 		5CE624A11471835600664156 /* STShuttle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE624A01471835600664156 /* STShuttle.m */; };
 		5CE624A41471835600664156 /* STStop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5CE624A31471835600664156 /* STStop.m */; };
@@ -115,6 +116,8 @@
 		5C68B627145C966100D9A82E /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		5CA03578145E0AD30068CA3D /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		5CDE8CE01470656F006956BE /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		5CE0F115163398670082AB45 /* STSimpleShuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSimpleShuttle.h; sourceTree = "<group>"; };
+		5CE0F116163398670082AB45 /* STSimpleShuttle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSimpleShuttle.m; sourceTree = "<group>"; };
 		5CE6249C1471835500664156 /* STRoutePt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STRoutePt.h; sourceTree = "<group>"; };
 		5CE6249D1471835500664156 /* STRoutePt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STRoutePt.m; sourceTree = "<group>"; };
 		5CE6249F1471835600664156 /* STShuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STShuttle.h; sourceTree = "<group>"; };
@@ -216,6 +219,8 @@
 				5CE6249D1471835500664156 /* STRoutePt.m */,
 				5CE6249F1471835600664156 /* STShuttle.h */,
 				5CE624A01471835600664156 /* STShuttle.m */,
+				5CE0F115163398670082AB45 /* STSimpleShuttle.h */,
+				5CE0F116163398670082AB45 /* STSimpleShuttle.m */,
 				5CE624A21471835600664156 /* STStop.h */,
 				5CE624A31471835600664156 /* STStop.m */,
 				5C68B525145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodeld */,
@@ -365,6 +370,7 @@
 				5CE624A71471835600664156 /* STRoute.m in Sources */,
 				5CE624AA1471835600664156 /* STFavoriteStop.m in Sources */,
 				5CE624AD1471835600664156 /* STETA.m in Sources */,
+				5CE0F117163398670082AB45 /* STSimpleShuttle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
