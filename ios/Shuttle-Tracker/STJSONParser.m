@@ -13,6 +13,7 @@
 #import "STRoute.h"
 #import "STRoutePt.h"
 #import "STShuttle.h"
+#import "STSimpleShuttle.h"
 #import "STStop.h"
 
 #import <CoreData/CoreData.h>
@@ -266,6 +267,70 @@
     return NO;
 }
 
+// parse shuttle data in the format that shuttles.rpi.edu uses as of 10/21/12
+- (BOOL)parseSimpleShuttlesFromJson:(NSString *)jsonString
+{
+    if ([jsonString isEqualToString:@"null"]) {
+        return NO;
+    }
+    
+    NSError *theError = nil;
+    NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    //  Use Apple's JSON parser to read the data
+    id jsonArray = [NSJSONSerialization JSONObjectWithData:data
+                                                   options:NSJSONReadingMutableLeaves
+                                                     error:&theError];
+    
+    if (theError != nil) {
+        NSLog(@"Error: %@", [theError description]);
+        return NO;
+    }
+    
+    if (jsonArray && [jsonArray isKindOfClass:[NSArray class]]) {
+        NSMutableDictionary *shuttlesDict = [self.simpleShuttles mutableCopy];
+        
+        for (NSDictionary *shuttleDictionary in jsonArray) {
+            NSDictionary *positionDictionary = [shuttleDictionary objectForKey:@"latest_position"];
+            NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+            NSString *identifier = nil;
+            CGFloat latitude = 0;
+            CGFloat longitude = 0;
+            // RFC 3339 date format
+            NSString *dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'";
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            STSimpleShuttle *shuttle = nil;
+            
+            identifier = [shuttleDictionary objectForKey:@"id"];
+            
+            shuttle = [shuttlesDict objectForKey:identifier];
+            if (!shuttle) {
+                shuttle = [[STSimpleShuttle alloc] init];
+                [shuttlesDict setObject:shuttle forKey:shuttle.identifier];
+            }
+            
+            shuttle.identifier = [shuttleDictionary objectForKey:@"id"];
+            shuttle.name = [shuttleDictionary objectForKey:@"name"];
+            shuttle.heading = [[positionDictionary objectForKey:@"heading"] floatValue];
+            
+            formatter.numberStyle = NSNumberFormatterDecimalStyle;
+            latitude = [[formatter numberFromString:[positionDictionary objectForKey:@"latitude"]] floatValue];
+            longitude = [[formatter numberFromString:[positionDictionary objectForKey:@"longitude"]] floatValue];
+            shuttle.location = CLLocationCoordinate2DMake(latitude, longitude);
+            
+            dateFormatter.dateFormat = dateFormat;
+            dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+            shuttle.updateTime = [dateFormatter dateFromString:[positionDictionary objectForKey:@"timestamp"]];
+            
+            shuttle.cardinalPoint = [positionDictionary objectForKey:@"cardinal_point"];
+            shuttle.statusMessage = [positionDictionary objectForKey:@"public_status_msg"];
+        }
+        
+        self.simpleShuttles = [NSDictionary dictionaryWithDictionary:shuttlesDict];
+    }
+    
+    return YES;
+}
 
 //  Parse the shuttle data we will get for the shuttle positions
 //  Note: parseShuttles and parseEtas are very similar

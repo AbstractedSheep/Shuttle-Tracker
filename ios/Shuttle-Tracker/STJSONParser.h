@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSArray *routes;
 @property (nonatomic, strong) NSArray *stops;
 @property (nonatomic, strong) NSMutableArray *vehicles;
+@property (nonatomic, strong) NSDictionary *simpleShuttles;
 @property (nonatomic, strong) NSMutableArray *etas;
 @property (nonatomic, strong) NSMutableArray *extraEtas;
 @property (nonatomic, weak) NSDateFormatter *timeDisplayFormatter;
@@ -22,6 +23,7 @@
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 - (BOOL)parseRoutesandStopsFromJson:(NSString *)jsonString;
+- (BOOL)parseSimpleShuttlesFromJson:(NSString *)jsonString;
 - (BOOL)parseShuttlesFromJson:(NSString *)jsonString;
 - (BOOL)parseEtasFromJson:(NSString *)jsonString;
 - (BOOL)parseExtraEtasFromJson:(NSString *)jsonString;
