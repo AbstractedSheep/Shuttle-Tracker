@@ -246,9 +246,9 @@ typedef enum {
     //  The center point used here is a bit south of it
     MKCoordinateRegion region;
     region.center.latitude = 42.7312;
-    region.center.longitude = -73.6750;
-    region.span.latitudeDelta = 0.0200;
-    region.span.longitudeDelta = 0.0132;
+    region.center.longitude = -73.6753125;
+    region.span.latitudeDelta = 0.0230;
+    region.span.longitudeDelta = 0.0274;
     
     self.mapView.region = region;
     
