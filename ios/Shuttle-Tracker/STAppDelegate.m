@@ -61,11 +61,12 @@
     //  Device-specific view creation
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         //  Make a split view, with ETAs on the left and the map on the right.
-        self.splitViewController = [[UISplitViewController alloc] init];
-        self.splitViewController.viewControllers = @[etasTableNavController, mapNavController];
-        self.splitViewController.delegate = mapViewController;
+        // self.splitViewController = [[UISplitViewController alloc] init];
+        // self.splitViewController.viewControllers = @[etasTableNavController, mapNavController];
+        // self.splitViewController.delegate = mapViewController;
         
-        self.window.rootViewController = self.splitViewController;
+        // self.window.rootViewController = self.splitViewController;
+        self.window.rootViewController = mapNavController;
     } else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         //  Create a tabbed view, with a map view, ETA view, and settings view.
         //        self.tabBarController = [[[UITabBarController alloc] init] autorelease];
