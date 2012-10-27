@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C60" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="STETA" representedClassName="STETA" syncable="YES">
+    <entity name="STETA" representedClassName="STETA" elementID="ETA" syncable="YES">
         <attribute name="eta" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="route" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STRoute" inverseName="etas" inverseEntity="STRoute" syncable="YES"/>
         <relationship name="shuttle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="STShuttle" inverseName="eta" inverseEntity="STShuttle" syncable="YES"/>
         <relationship name="stop" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STStop" inverseName="etas" inverseEntity="STStop" syncable="YES"/>
     </entity>
-    <entity name="STFavoriteStop" representedClassName="STFavoriteStop" syncable="YES">
+    <entity name="STFavoriteStop" representedClassName="STFavoriteStop" elementID="FavoriteStop" syncable="YES">
         <relationship name="route" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STRoute" inverseName="favorites" inverseEntity="STRoute" syncable="YES"/>
         <relationship name="stop" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STStop" inverseName="favorites" inverseEntity="STStop" syncable="YES"/>
     </entity>
-    <entity name="STRoute" representedClassName="STRoute" syncable="YES">
+    <entity name="STRoute" representedClassName="STRoute" elementID="Route" syncable="YES">
         <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="routeId" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
@@ -21,13 +21,13 @@
         <relationship name="shuttles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STShuttle" inverseName="route" inverseEntity="STShuttle" syncable="YES"/>
         <relationship name="stops" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STStop" inverseName="routes" inverseEntity="STStop" syncable="YES"/>
     </entity>
-    <entity name="STRoutePt" representedClassName="STRoutePt" syncable="YES">
+    <entity name="STRoutePt" representedClassName="STRoutePt" elementID="RoutePt" syncable="YES">
         <attribute name="latitude" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="pointNumber" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="route" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STRoute" inverseName="points" inverseEntity="STRoute" syncable="YES"/>
     </entity>
-    <entity name="STShuttle" representedClassName="STShuttle" syncable="YES">
+    <entity name="STShuttle" representedClassName="STShuttle" elementID="Shuttle" syncable="YES">
         <attribute name="heading" optional="YES" attributeType="Integer 16" defaultValueString="0.0" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
@@ -38,7 +38,7 @@
         <relationship name="eta" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STETA" inverseName="shuttle" inverseEntity="STETA" syncable="YES"/>
         <relationship name="route" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STRoute" inverseName="shuttles" inverseEntity="STRoute" syncable="YES"/>
     </entity>
-    <entity name="STStop" representedClassName="STStop" syncable="YES">
+    <entity name="STStop" representedClassName="STStop" elementID="Stop" syncable="YES">
         <attribute name="idTag" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
