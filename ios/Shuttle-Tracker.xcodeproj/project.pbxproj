@@ -550,7 +550,7 @@
 				5CE31A6F163CA54800EFEF86 /* Shuttle_Tracker 2.xcdatamodel */,
 				5C68B526145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodel */,
 			);
-			currentVersion = 5C68B526145C85AC00D9A82E /* Shuttle_Tracker.xcdatamodel */;
+			currentVersion = 5CE31A6F163CA54800EFEF86 /* Shuttle_Tracker 2.xcdatamodel */;
 			path = Shuttle_Tracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

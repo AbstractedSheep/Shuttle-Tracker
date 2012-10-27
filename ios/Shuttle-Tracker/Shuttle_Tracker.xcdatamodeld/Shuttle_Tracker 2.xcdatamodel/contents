@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1487" systemVersion="12A269" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C60" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="STETA" representedClassName="STETA" syncable="YES">
         <attribute name="eta" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="route" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STRoute" inverseName="etas" inverseEntity="STRoute" syncable="YES"/>
@@ -50,11 +50,11 @@
         <relationship name="routes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STRoute" inverseName="stops" inverseEntity="STRoute" syncable="YES"/>
     </entity>
     <elements>
-        <element name="STRoute" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="STETA" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="STFavoriteStop" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="STRoutePt" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="STShuttle" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="STStop" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="STETA" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="STFavoriteStop" positionX="0" positionY="0" width="128" height="75"/>
+        <element name="STRoute" positionX="0" positionY="0" width="128" height="180"/>
+        <element name="STRoutePt" positionX="0" positionY="0" width="128" height="105"/>
+        <element name="STShuttle" positionX="0" positionY="0" width="128" height="180"/>
+        <element name="STStop" positionX="0" positionY="0" width="128" height="180"/>
     </elements>
 </model>
