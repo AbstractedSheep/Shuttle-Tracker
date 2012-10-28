@@ -39,9 +39,9 @@
     NSString *string = nil;
     
     //  Use Apple's JSON parser to read the data
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:data 
-                                                options:NSJSONReadingMutableLeaves 
-                                                  error:&theError];
+    id jsonDict = [NSJSONSerialization JSONObjectWithData:data
+                                                  options:NSJSONReadingMutableLeaves
+                                                    error:&theError];
     
     if (theError != nil) {
         NSLog(@"Error: %@", [theError description]);
@@ -57,7 +57,7 @@
                 NSNumber *routeId = [value objectForKey:@"id"];
                 
                 //  Find the route, if it exists already
-                NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STRoute class]) 
+                NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STRoute class])
                                                                      inManagedObjectContext:self.managedObjectContext];
                 NSFetchRequest *request = [[NSFetchRequest alloc] init];
                 [request setEntity:entityDescription];
@@ -77,8 +77,8 @@
                     route = (STRoute *)[array objectAtIndex:0];
                 } else {
                     //  Create a new vehicle with this name
-                    route = (STRoute *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STRoute class]) 
-                                                                   inManagedObjectContext:self.managedObjectContext];
+                    route = (STRoute *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STRoute class])
+                                                                     inManagedObjectContext:self.managedObjectContext];
                     route.routeId = routeId;
                 }
                 
@@ -153,7 +153,7 @@
                 } else {
                     //  Create a new vehicle with this name
                     stop = (STStop *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STStop class])
-                                                                 inManagedObjectContext:self.managedObjectContext];
+                                                                   inManagedObjectContext:self.managedObjectContext];
                     stop.name = stopName;
                 }
                 
@@ -218,15 +218,15 @@
                         /*
                          Replace this implementation with code to handle the error appropriately.
                          
-                         abort() causes the application to generate a crash log and terminate. 
-                         You should not use this function in a shipping application, although 
-                         it may be useful during development. 
+                         abort() causes the application to generate a crash log and terminate.
+                         You should not use this function in a shipping application, although
+                         it may be useful during development.
                          */
                         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     }
                 }
             }
-        
+            
         }
         
         return YES;
@@ -312,8 +312,8 @@
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     
     //  Use Apple's JSON parser to read the data
-    id jsonArray = [NSJSONSerialization JSONObjectWithData:data 
-                                                   options:NSJSONReadingMutableLeaves 
+    id jsonArray = [NSJSONSerialization JSONObjectWithData:data
+                                                   options:NSJSONReadingMutableLeaves
                                                      error:&theError];
     
     if (theError != nil) {
@@ -350,7 +350,7 @@
                 } else {
                     //  Create a new vehicle with this name
                     vehicle = (STShuttle *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STShuttle class])
-                                                                       inManagedObjectContext:self.managedObjectContext];
+                                                                         inManagedObjectContext:self.managedObjectContext];
                     vehicle.name = vehicleName;
                 }
                 
@@ -385,15 +385,15 @@
                         /*
                          Replace this implementation with code to handle the error appropriately.
                          
-                         abort() causes the application to generate a crash log and terminate. 
-                         You should not use this function in a shipping application, although 
-                         it may be useful during development. 
+                         abort() causes the application to generate a crash log and terminate.
+                         You should not use this function in a shipping application, although
+                         it may be useful during development.
                          */
                         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     }
                 }
             }
-        
+            
         }
         
         return YES;
@@ -414,8 +414,8 @@
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     
     //  Use Apple's JSON parser to read the data
-    id jsonArray = [NSJSONSerialization JSONObjectWithData:data 
-                                                   options:NSJSONReadingMutableLeaves 
+    id jsonArray = [NSJSONSerialization JSONObjectWithData:data
+                                                   options:NSJSONReadingMutableLeaves
                                                      error:&theError];
     
     if (theError != nil) {
@@ -425,8 +425,8 @@
     
     if (jsonArray && [jsonArray isKindOfClass:[NSArray class]]) {
         @autoreleasepool {
-        
-        //  Each dictionary corresponds to one set of curly braces ({ and })
+            
+            //  Each dictionary corresponds to one set of curly braces ({ and })
             for (NSDictionary *dict in jsonArray) {
                 STETA *eta = nil;
                 
@@ -434,7 +434,7 @@
                 NSNumber *etaRouteId = @([[dict objectForKey:@"route"] intValue]);
                 
                 //  Find the ETA, if it exists already
-                NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STETA class]) 
+                NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STETA class])
                                                                      inManagedObjectContext:self.managedObjectContext];
                 NSFetchRequest *request = [[NSFetchRequest alloc] init];
                 [request setEntity:entityDescription];
@@ -459,7 +459,7 @@
                 } else {
                     //  Create a new vehicle with this name
                     eta = (STETA *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STETA class])
-                                                               inManagedObjectContext:self.managedObjectContext];
+                                                                 inManagedObjectContext:self.managedObjectContext];
                 }
                 
                 if (eta) {
@@ -472,7 +472,7 @@
                     }
                     
                     //  Find the corresponding stop
-                    entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STStop class]) 
+                    entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STStop class])
                                                     inManagedObjectContext:self.managedObjectContext];
                     request = [[NSFetchRequest alloc] init];
                     [request setEntity:entityDescription];
@@ -494,7 +494,7 @@
                     }
                     
                     //  Find the corresponding route
-                    entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STRoute class]) 
+                    entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STRoute class])
                                                     inManagedObjectContext:self.managedObjectContext];
                     request = [[NSFetchRequest alloc] init];
                     [request setEntity:entityDescription];
@@ -520,15 +520,15 @@
                         /*
                          Replace this implementation with code to handle the error appropriately.
                          
-                         abort() causes the application to generate a crash log and terminate. 
-                         You should not use this function in a shipping application, although 
-                         it may be useful during development. 
+                         abort() causes the application to generate a crash log and terminate.
+                         You should not use this function in a shipping application, although
+                         it may be useful during development.
                          */
                         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     }
                 }
             }
-    
+            
         }
         
         return YES;
@@ -547,8 +547,8 @@
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     
     //  Use Apple's JSON parser to read the data
-    id jsonDict = [NSJSONSerialization JSONObjectWithData:data 
-                                                  options:NSJSONReadingMutableLeaves 
+    id jsonDict = [NSJSONSerialization JSONObjectWithData:data
+                                                  options:NSJSONReadingMutableLeaves
                                                     error:&theError];
     
     if (theError != nil) {
