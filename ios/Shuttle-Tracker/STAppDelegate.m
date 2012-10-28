@@ -51,8 +51,8 @@
     etasViewController.dataManager = self.dataManager;
     etasViewController.managedObjectContext = self.managedObjectContext;
     
-    UINavigationController *etasTableNavController = [[UINavigationController alloc]
-                                                      initWithRootViewController:etasViewController];
+//    UINavigationController *etasTableNavController = [[UINavigationController alloc]
+//                                                      initWithRootViewController:etasViewController];
     
     //  Note that this class (MainViewController) gets a reference to timeDisplayFormatter
     //  via the class creating it.
