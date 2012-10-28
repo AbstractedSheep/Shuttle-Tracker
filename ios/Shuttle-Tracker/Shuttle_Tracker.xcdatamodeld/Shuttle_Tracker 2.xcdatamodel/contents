@@ -13,19 +13,13 @@
     <entity name="STRoute" representedClassName="STRoute" elementID="Route" syncable="YES">
         <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="pointList" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="routeId" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="width" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="etas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STETA" inverseName="route" inverseEntity="STETA" syncable="YES"/>
         <relationship name="favorites" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="STFavoriteStop" inverseName="route" inverseEntity="STFavoriteStop" syncable="YES"/>
-        <relationship name="points" toMany="YES" minCount="1" deletionRule="Cascade" destinationEntity="STRoutePt" inverseName="route" inverseEntity="STRoutePt" syncable="YES"/>
         <relationship name="shuttles" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STShuttle" inverseName="route" inverseEntity="STShuttle" syncable="YES"/>
         <relationship name="stops" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="STStop" inverseName="routes" inverseEntity="STStop" syncable="YES"/>
-    </entity>
-    <entity name="STRoutePt" representedClassName="STRoutePt" elementID="RoutePt" syncable="YES">
-        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="pointNumber" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="route" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="STRoute" inverseName="points" inverseEntity="STRoute" syncable="YES"/>
     </entity>
     <entity name="STShuttle" representedClassName="STShuttle" elementID="Shuttle" syncable="YES">
         <attribute name="heading" optional="YES" attributeType="Integer 16" defaultValueString="0.0" syncable="YES"/>
@@ -53,7 +47,6 @@
         <element name="STETA" positionX="0" positionY="0" width="128" height="105"/>
         <element name="STFavoriteStop" positionX="0" positionY="0" width="128" height="75"/>
         <element name="STRoute" positionX="0" positionY="0" width="128" height="180"/>
-        <element name="STRoutePt" positionX="0" positionY="0" width="128" height="105"/>
         <element name="STShuttle" positionX="0" positionY="0" width="128" height="180"/>
         <element name="STStop" positionX="0" positionY="0" width="128" height="180"/>
     </elements>

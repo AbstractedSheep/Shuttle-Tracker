@@ -9,7 +9,6 @@
 #import "STRoute.h"
 #import "STETA.h"
 #import "STFavoriteStop.h"
-#import "STRoutePt.h"
 #import "STShuttle.h"
 #import "STStop.h"
 
@@ -20,9 +19,9 @@
 @dynamic name;
 @dynamic routeId;
 @dynamic width;
+@dynamic pointList;
 @dynamic etas;
 @dynamic favorites;
-@dynamic points;
 @dynamic shuttles;
 @dynamic stops;
 

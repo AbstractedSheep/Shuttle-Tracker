@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class STETA, STFavoriteStop, STRoutePt, STShuttle, STStop;
+@class STETA, STFavoriteStop, STShuttle, STStop;
 
 @interface STRoute : NSManagedObject
 
@@ -17,9 +17,9 @@
 @property (nonatomic, strong) NSString * name;
 @property (nonatomic, strong) NSNumber * routeId;
 @property (nonatomic, strong) NSNumber * width;
+@property (nonatomic, strong) NSString * pointList;
 @property (nonatomic, strong) NSSet *etas;
 @property (nonatomic, strong) NSSet *favorites;
-@property (nonatomic, strong) NSSet *points;
 @property (nonatomic, strong) NSSet *shuttles;
 @property (nonatomic, strong) NSSet *stops;
 @end
@@ -35,11 +35,6 @@
 - (void)removeFavoritesObject:(STFavoriteStop *)value;
 - (void)addFavorites:(NSSet *)values;
 - (void)removeFavorites:(NSSet *)values;
-
-- (void)addPointsObject:(STRoutePt *)value;
-- (void)removePointsObject:(STRoutePt *)value;
-- (void)addPoints:(NSSet *)values;
-- (void)removePoints:(NSSet *)values;
 
 - (void)addShuttlesObject:(STShuttle *)value;
 - (void)removeShuttlesObject:(STShuttle *)value;

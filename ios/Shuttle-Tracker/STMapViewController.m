@@ -10,7 +10,6 @@
 
 #import "STMapPlacemark.h"
 #import "STRoute.h"
-#import "STRoutePt.h"
 #import "STShuttle.h"
 #import "STSimpleShuttle.h"
 #import "STStop.h"
@@ -454,83 +453,60 @@ typedef enum {
 //  a color matching the route's color
 - (void)addRoute:(STRoute *)route {
     CLLocationCoordinate2D clLoc;
-    MKMapPoint *points;
+    NSString *pointsString = route.pointList;
+    NSArray *coords = [pointsString componentsSeparatedByString:@";"];
+    NSArray *coordLatAndLong = nil;
+    
+    if (!coords || [coords count] == 0) {
+        // No points on this route, so can't add it
+        return;
+    }
+    
+    MKMapPoint points[[coords count]];
     UIImage *coloredImage;
+    NSUInteger counter = 0;
     
-    //  Get all points on the route
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoutePt"
-                                                         inManagedObjectContext:self.managedObjectContext];
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:entityDescription];
+    for (NSString *coord in coords) {
+        //  Get a CoreLocation coordinate from the point
+        coordLatAndLong = [coord componentsSeparatedByString:@","];
+        clLoc = CLLocationCoordinate2DMake([[coordLatAndLong objectAtIndex:0] doubleValue],
+                                           [[coordLatAndLong objectAtIndex:1] doubleValue]);
+        
+        points[counter] = MKMapPointForCoordinate(clLoc);
+        counter++;
+    }
     
-    // Set predicate and sort orderings...
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route == %@)", route];
-    [request setPredicate:predicate];
+    MKPolylineView *routeView;
+    MKPolyline *polyLine = [MKPolyline polylineWithPoints:points
+                                                    count:counter];
+    [self.routeLines addObject:polyLine];
     
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber"
-                                                                   ascending:YES];
-    [request setSortDescriptors:@[sortDescriptor]];
+    routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
+    [self.routeLineViews addObject:routeView];
     
-    NSError *error = nil;
-    NSArray *routePts = [self.managedObjectContext executeFetchRequest:request
-                                                                 error:&error];
+    routeView.lineWidth = [route.width intValue];
+    routeView.fillColor = [UIColor UIColorFromRGBString:route.color];
+    routeView.strokeColor = routeView.fillColor;
     
-    double latitude, longitude;
-    if (error != nil || routePts == nil)
-    {
-        // Deal with error...
-    } else {
-        MKPolyline *polyLine;
-        MKPolylineView *routeView;
+    [self.mapView addOverlay:polyLine];
+    
+    //  Create the colored shuttle image for the route
+    if (routeView.fillColor) {
+        coloredImage = [[self.magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
+        [[self.shuttleImages objectForKey:@"east"] setValue:coloredImage
+                                                     forKey:[route.routeId stringValue]];
         
-        points = malloc(sizeof(MKMapPoint) * routePts.count);
+        coloredImage = [[self.magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
+        [[self.shuttleImages objectForKey:@"north"] setValue:coloredImage
+                                                      forKey:[route.routeId stringValue]];
         
-        //  Create an array of coordinates for the polyline which will represent the route
-        int counter = 0;
-        for (STRoutePt *point in routePts) {
-            //  Get a CoreLocation coordinate from the point
-            latitude = [point.latitude doubleValue];
-            longitude = [point.longitude doubleValue];
-            clLoc = CLLocationCoordinate2DMake(latitude, longitude);
-            
-            points[counter] = MKMapPointForCoordinate(clLoc);
-            counter++;
-        }
+        coloredImage = [[self.magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
+        [[self.shuttleImages objectForKey:@"west"] setValue:coloredImage
+                                                     forKey:[route.routeId stringValue]];
         
-        polyLine = [MKPolyline polylineWithPoints:points
-                                            count:counter];
-        [self.routeLines addObject:polyLine];
-        
-        free(points);
-        
-        routeView = [[MKPolylineView alloc] initWithPolyline:polyLine];
-        [self.routeLineViews addObject:routeView];
-        
-        routeView.lineWidth = [route.width intValue];
-        routeView.fillColor = [UIColor UIColorFromRGBString:route.color];
-        routeView.strokeColor = routeView.fillColor;
-        
-        [self.mapView addOverlay:polyLine];
-        
-        //  Create the colored shuttle image for the route
-        
-        if (routeView.fillColor) {
-            coloredImage = [[self.magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[self.shuttleImages objectForKey:@"east"] setValue:coloredImage
-                                                         forKey:[route.routeId stringValue]];
-            
-            coloredImage = [[self.magentaShuttleImages objectForKey:@"north"] copyMagentaImageasColor:routeView.fillColor];
-            [[self.shuttleImages objectForKey:@"north"] setValue:coloredImage
-                                                          forKey:[route.routeId stringValue]];
-            
-            coloredImage = [[self.magentaShuttleImages objectForKey:@"west"] copyMagentaImageasColor:routeView.fillColor];
-            [[self.shuttleImages objectForKey:@"west"] setValue:coloredImage
-                                                         forKey:[route.routeId stringValue]];
-            
-            coloredImage = [[self.magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
-            [[self.shuttleImages objectForKey:@"south"] setValue:coloredImage
-                                                          forKey:[route.routeId stringValue]];
-        }
+        coloredImage = [[self.magentaShuttleImages objectForKey:@"south"] copyMagentaImageasColor:routeView.fillColor];
+        [[self.shuttleImages objectForKey:@"south"] setValue:coloredImage
+                                                      forKey:[route.routeId stringValue]];
     }
 }
 

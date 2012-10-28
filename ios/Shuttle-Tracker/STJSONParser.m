@@ -11,7 +11,6 @@
 #import "STMapPlacemark.h"
 #import "STETA.h"
 #import "STRoute.h"
-#import "STRoutePt.h"
 #import "STShuttle.h"
 #import "STSimpleShuttle.h"
 #import "STStop.h"
@@ -43,7 +42,7 @@
 - (BOOL)parseRoutesandStopsFromJson:(NSString *)jsonString {
     NSError *theError = nil;
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-    NSString *string;
+    NSString *string = nil;
     
     //  Use Apple's JSON parser to read the data
     id jsonDict = [NSJSONSerialization JSONObjectWithData:data 
@@ -90,30 +89,7 @@
                 }
                 
                 if (route) {
-                    //  Remove existing points on the route first
-                    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoutePt"
-                                                                         inManagedObjectContext:self.managedObjectContext];
-                    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-                    [request setEntity:entityDescription];
-                    
-                    // Set predicate and sort orderings...
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(route == %@)", route];
-                    [request setPredicate:predicate];
-                    
-                    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pointNumber" 
-                                                                                   ascending:YES];
-                    [request setSortDescriptors:@[sortDescriptor]];
-                    
-                    NSArray *routePts = [self.managedObjectContext executeFetchRequest:request 
-                                                                                 error:&error];
-                    
-                    if (routePts != nil) {
-                        for (STRoutePt *pt in routePts) {
-                            [self.managedObjectContext deleteObject:pt];
-                        }
-                    }
-                    
-                    //  Now set the route using the new info
+                    //  Set the route using the new info
                     NSNumber *number = [value objectForKey:@"width"];
                     route.width = number;
                     
@@ -125,33 +101,31 @@
                     
                     NSDictionary *coordsDict = [value objectForKey:@"coords"];
                     
-                    long ptCount = 0;
+                    NSMutableString *pointsString = [NSMutableString string];
                     for (NSDictionary *coordsValues in coordsDict) {
-                        STRoutePt *routePt = (STRoutePt *)[NSEntityDescription insertNewObjectForEntityForName:@"STRoutePt"
-                                                                                    inManagedObjectContext:self.managedObjectContext];
-                        
-                        string = [coordsValues objectForKey:@"latitude"];
-                        routePt.latitude = @([string doubleValue]);
-                        
-                        string = [coordsValues objectForKey:@"longitude"];
-                        routePt.longitude = @([string doubleValue]);
-                        
-                        [route addPointsObject:routePt];
-                        routePt.route = route;
-                        routePt.pointNumber = @(ptCount++);
-                        
-                        // Save the context.
-                        error = nil;
-                        if (![self.managedObjectContext save:&error]) {
-                            /*
-                             Replace this implementation with code to handle the error appropriately.
-                             
-                             abort() causes the application to generate a crash log and terminate. 
-                             You should not use this function in a shipping application, although 
-                             it may be useful during development. 
-                             */
-                            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                        }
+                        [pointsString appendFormat:@"%@,%@;",
+                         [coordsValues objectForKey:@"latitude"],
+                         [coordsValues objectForKey:@"longitude"]];
+                    }
+                    
+                    string = [NSString stringWithString:pointsString];
+                    if ([string length] > 0) {
+                        string = [string substringToIndex:[string length] - 1];
+                    }
+                    
+                    route.pointList = string;
+                    
+                    // Save the context.
+                    error = nil;
+                    if (![self.managedObjectContext save:&error]) {
+                        /*
+                         Replace this implementation with code to handle the error appropriately.
+                         
+                         abort() causes the application to generate a crash log and terminate.
+                         You should not use this function in a shipping application, although
+                         it may be useful during development.
+                         */
+                        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
                     }
                 }
             }
