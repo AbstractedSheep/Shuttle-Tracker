@@ -317,7 +317,7 @@ typedef enum {
 //  The routes and stops were loaded in the dataManager
 - (void)managedRoutesLoaded {
     //  Get all routes
-    NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:@"STRoute"
+    NSEntityDescription *routeEntityDescription = [NSEntityDescription entityForName:NSStringFromClass([STRoute class])
                                                               inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *routeRequest = [[NSFetchRequest alloc] init];
     [routeRequest setEntity:routeEntityDescription];
@@ -337,7 +337,7 @@ typedef enum {
     }
     
     //  Get all stops
-    NSEntityDescription *stopEntityDescription = [NSEntityDescription entityForName:@"STStop"
+    NSEntityDescription *stopEntityDescription = [NSEntityDescription entityForName:NSStringFromClass([STStop class])
                                                              inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *stopRequest = [[NSFetchRequest alloc] init];
     [stopRequest setEntity:stopEntityDescription];
@@ -391,7 +391,7 @@ typedef enum {
 - (void)vehiclesUpdated:(NSNotification *)notification {
     //  Get all vehicles
     NSEntityDescription *entityDescription;
-    entityDescription = [NSEntityDescription entityForName:@"STShuttle"
+    entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STShuttle class])
                                     inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];

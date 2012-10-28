@@ -10,6 +10,7 @@
 #import "STDataUrls.h"
 #import "STETA.h"
 #import "STFavoriteStop.h"
+#import "STRoute.h"
 #import "STStop.h"
 #import "STJSONParser.h"
 #import "STDataManager.h"
@@ -118,7 +119,7 @@
     
     //  Set the favorite/unfavorite button appearance
     //  based on the status of the view's associated stop.
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STFavoriteStop class])
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
@@ -195,7 +196,7 @@
 - (void)toggleFavorite:(id)sender {
     BOOL added = NO;
     
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STFavoriteStop class])
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
@@ -215,10 +216,10 @@
         [self.managedObjectContext deleteObject:[stops objectAtIndex:0]];
     } else {
         //  Create the favorite stop
-        STFavoriteStop *favStop = (STFavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"STFavoriteStop"
+        STFavoriteStop *favStop = (STFavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STFavoriteStop class])
                                                                                   inManagedObjectContext:self.managedObjectContext];
         
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoute"
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STRoute class])
                                                              inManagedObjectContext:self.managedObjectContext];
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];

@@ -126,7 +126,7 @@ const BOOL makeLaunchImage = NO;
 //  A notification is sent by DataManager when the stops are loaded.
 - (void)stopsUpdated:(NSNotification *)notification {
     //  Get all routes
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoute"
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STRoute class])
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
@@ -170,7 +170,7 @@ const BOOL makeLaunchImage = NO;
     // Return the number of rows in the section.
     if (section == 0) {
         //  Get all favorite stops
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STFavoriteStop class])
                                                              inManagedObjectContext:self.managedObjectContext];
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
@@ -218,7 +218,7 @@ const BOOL makeLaunchImage = NO;
     
     if (indexPath.section == 0) {
         STFavoriteStop *favStop = nil;
-        entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
+        entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STFavoriteStop class])
                                         inManagedObjectContext:self.managedObjectContext];
         request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
@@ -232,7 +232,7 @@ const BOOL makeLaunchImage = NO;
             favStop = [favStops objectAtIndex:indexPath.row];
             stop = favStop.stop;
             
-            entityDescription = [NSEntityDescription entityForName:@"STETA"
+            entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STETA class])
                                             inManagedObjectContext:self.managedObjectContext];
             request = [[NSFetchRequest alloc] init];
             [request setEntity:entityDescription];
@@ -263,7 +263,7 @@ const BOOL makeLaunchImage = NO;
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
             stop = [stopsArray objectAtIndex:indexPath.row];
-            entityDescription = [NSEntityDescription entityForName:@"STETA"
+            entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STETA class])
                                             inManagedObjectContext:self.managedObjectContext];
             request = [[NSFetchRequest alloc] init];
             [request setEntity:entityDescription];
@@ -337,7 +337,7 @@ const BOOL makeLaunchImage = NO;
     }
     
     //  Get all routes
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STRoute"
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STRoute class])
                                                          inManagedObjectContext:self.managedObjectContext];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     [request setEntity:entityDescription];
@@ -371,7 +371,7 @@ const BOOL makeLaunchImage = NO;
         STFavoriteStop *favStop = nil;
         
         //  Get favorite stops
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STFavoriteStop class])
                                                              inManagedObjectContext:self.managedObjectContext];
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
@@ -448,7 +448,7 @@ const BOOL makeLaunchImage = NO;
         //  First, get the favorite stop from the database, then delete it.
         STFavoriteStop*favStop = nil;
         
-        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
+        NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STFavoriteStop class])
                                                              inManagedObjectContext:self.managedObjectContext];
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         [request setEntity:entityDescription];
@@ -473,7 +473,7 @@ const BOOL makeLaunchImage = NO;
         NSArray *stopsArray = [self.routeStops objectForKey:[NSString stringWithFormat:@"%d", indexPath.section]];
         
         if (stopsArray != nil && [stopsArray count] > indexPath.row) {
-            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"STFavoriteStop"
+            NSEntityDescription *entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STFavoriteStop class])
                                                                  inManagedObjectContext:self.managedObjectContext];
             NSFetchRequest *request = [[NSFetchRequest alloc] init];
             [request setEntity:entityDescription];
@@ -490,10 +490,10 @@ const BOOL makeLaunchImage = NO;
                 return;
             } else {
                 //  The stop is a new favorite, so add it.
-                favStop = (STFavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:@"STFavoriteStop"
+                favStop = (STFavoriteStop *)[NSEntityDescription insertNewObjectForEntityForName:NSStringFromClass([STFavoriteStop class])
                                                                           inManagedObjectContext:self.managedObjectContext];
                 
-                entityDescription = [NSEntityDescription entityForName:@"STRoute"
+                entityDescription = [NSEntityDescription entityForName:NSStringFromClass([STRoute class])
                                                 inManagedObjectContext:self.managedObjectContext];
                 request = [[NSFetchRequest alloc] init];
                 [request setEntity:entityDescription];
