@@ -118,7 +118,7 @@
 		5CDE8CE01470656F006956BE /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		5CE0F115163398670082AB45 /* STSimpleShuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STSimpleShuttle.h; sourceTree = "<group>"; };
 		5CE0F116163398670082AB45 /* STSimpleShuttle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STSimpleShuttle.m; sourceTree = "<group>"; };
-		5CE31A6F163CA54800EFEF86 /* Shuttle_Tracker 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Shuttle_Tracker 2.xcdatamodel"; sourceTree = "<group>"; };
+		5CE31A6F163CA54800EFEF86 /* Shuttle_Tracker 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Shuttle_Tracker 2.xcdatamodel"; sourceTree = "<group>"; };
 		5CE6249C1471835500664156 /* STRoutePt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STRoutePt.h; sourceTree = "<group>"; };
 		5CE6249D1471835500664156 /* STRoutePt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STRoutePt.m; sourceTree = "<group>"; };
 		5CE6249F1471835600664156 /* STShuttle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STShuttle.h; sourceTree = "<group>"; };
@@ -292,7 +292,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = ST;
-				LastUpgradeCheck = 0440;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Abstracted Sheep";
 			};
 			buildConfigurationList = 5C68B507145C85AB00D9A82E /* Build configuration list for PBXProject "Shuttle-Tracker" */;
