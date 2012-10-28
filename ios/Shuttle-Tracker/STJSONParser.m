@@ -19,12 +19,6 @@
 
 @implementation STJSONParser
 
-@synthesize routes;
-@synthesize stops;
-@synthesize vehicles;
-@synthesize etas;
-@synthesize extraEtas;
-@synthesize timeDisplayFormatter = m_timeDisplayFormatter;
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;
 
@@ -565,7 +559,7 @@
     
     if (jsonDict && [jsonDict isKindOfClass:[NSDictionary class]] &&
         [jsonDict objectForKey:@"eta"] != nil) {
-        extraEtas = [jsonDict objectForKey:@"eta"];
+        self.extraEtas = [jsonDict objectForKey:@"eta"];
         
         return YES;
     }

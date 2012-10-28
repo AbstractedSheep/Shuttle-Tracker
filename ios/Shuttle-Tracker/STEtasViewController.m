@@ -33,8 +33,6 @@ const BOOL makeLaunchImage = NO;
 
 @implementation STEtasViewController
 
-@synthesize timeDisplayFormatter = m_timeDisplayFormatter;
-@synthesize useRelativeTimes = m_useRelativeTimes;
 @synthesize managedObjectContext = __managedObjectContext;
 
 
@@ -45,7 +43,7 @@ const BOOL makeLaunchImage = NO;
         self.contentSizeForViewInPopover = CGSizeMake(320, 600);
         
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        m_useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
+        self.useRelativeTimes = [[defaults objectForKey:@"useRelativeTimes"] boolValue];
         
         self.routeStops = [[NSMutableDictionary alloc] init];
         
@@ -306,7 +304,7 @@ const BOOL makeLaunchImage = NO;
         
         //  The secondary text label, right aligned and blue in UITableViewCellStyleValue1
         //  The ETA is recently passed or still in the future, so show it to the user
-        if (m_useRelativeTimes) {
+        if (self.useRelativeTimes) {
             if (minutesToEta < 2) {
                 //  If an ETA is recently passed, let it show as imminent
                 cell.detailTextLabel.text = [NSString stringWithFormat:@"< 1 min."];
@@ -315,7 +313,7 @@ const BOOL makeLaunchImage = NO;
             }
         } else {
             //  Show ETAs as timestamps
-            cell.detailTextLabel.text = [m_timeDisplayFormatter stringFromDate:eta.eta];
+            cell.detailTextLabel.text = [self.timeDisplayFormatter stringFromDate:eta.eta];
         }
     } else {
         if (stop != nil) {
@@ -403,7 +401,7 @@ const BOOL makeLaunchImage = NO;
     
     levc.managedObjectContext = self.managedObjectContext;
     levc.dataManager = self.dataManager;
-    levc.timeDisplayFormatter = m_timeDisplayFormatter;
+    levc.timeDisplayFormatter = self.timeDisplayFormatter;
     
     // Pass the selected object to the new view controller.
     [self.navigationController pushViewController:levc animated:YES];

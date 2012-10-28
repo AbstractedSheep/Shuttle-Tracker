@@ -17,8 +17,9 @@
 @property (nonatomic, strong) NSMutableArray *etas;
 @property (nonatomic, strong) NSMutableArray *extraEtas;
 @property (nonatomic, weak) NSDateFormatter *timeDisplayFormatter;
+
 @property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong) NSManagedObjectContext *managedObjectContext;
 
 - (BOOL)parseRoutesandStopsFromJson:(NSString *)jsonString;
 - (BOOL)parseSimpleShuttlesFromJson:(NSString *)jsonString;
