@@ -80,7 +80,7 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Distribution"
+      buildConfiguration = "TestFlight"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>
