@@ -145,6 +145,7 @@ typedef enum {
 - (void)addVehicle:(STShuttle *)vehicle;
 - (void)setAnnotationImageForVehicle:(STMapVehicle *)vehicle;
 - (void)simpleVehicleCleanup;
+- (void)updateImageForAnnotation:(id<MKAnnotation>)annotation;
 
 @end
 
@@ -374,6 +375,8 @@ typedef enum {
             for (id annotation in self.mapView.annotations) {
                 if ([annotation isKindOfClass:[STSimpleShuttle class]]) {
                     if ([[(STSimpleShuttle *)annotation identifier] isEqualToNumber:simpleShuttle.identifier]) {
+                        [(STSimpleShuttle *)annotation copyStatusFromShuttle:simpleShuttle];
+                        [self updateImageForAnnotation:annotation];
                         alreadyAdded = YES;
                         break;
                     }
@@ -596,7 +599,38 @@ typedef enum {
     // Release any cached data, images, etc. that aren't in use.
 }
 
-
+- (void)updateImageForAnnotation:(id<MKAnnotation>)annotation {
+    if ([annotation isKindOfClass:[STSimpleShuttle class]]) {
+        STSimpleShuttle *shuttle = (STSimpleShuttle *)annotation;
+        MKAnnotationView *annotationView = nil;
+        NSDictionary *shuttleDirectionImages = nil;
+        
+        //  Abuse if statements to try three methods of getting an annotationView if necessary
+        if (!(annotationView = [(STSimpleShuttle *)annotation annotationView])) {
+            if (!(annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:@"vehicleAnnotation"])) {
+                annotationView = [[MKAnnotationView alloc] initWithAnnotation:shuttle
+                                                              reuseIdentifier:@"vehicleAnnotation"];
+                annotationView.canShowCallout = YES;
+            }
+            
+            shuttle.annotationView = annotationView;
+        }
+        
+        if (shuttle.heading >= 315 || shuttle.heading < 45) {
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"north"];
+        } else if (shuttle.heading >= 45 && shuttle.heading < 135) {
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"east"];
+        } else if (shuttle.heading >= 135 && shuttle.heading < 225) {
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"south"];
+        } else if (shuttle.heading >= 225 && shuttle.heading < 315) {
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"west"];
+        } else {
+            shuttleDirectionImages = [self.shuttleImages objectForKey:@"east"];
+        }
+        
+        annotationView.image = [shuttleDirectionImages objectForKey:[@-1 stringValue]];
+    }
+}
 
 
 #pragma mark MKMapViewDelegate
@@ -670,31 +704,9 @@ typedef enum {
         
         return vehicle.annotationView;
     } else if ([annotation isKindOfClass:[STSimpleShuttle class]]) {
-        STSimpleShuttle *shuttle = (STSimpleShuttle *)annotation;
-        MKAnnotationView *annotationView = [mapView dequeueReusableAnnotationViewWithIdentifier:@"vehicleAnnotation"];
-        NSDictionary *shuttleDirectionImages = nil;
+        [self updateImageForAnnotation:annotation];
         
-        if (annotationView == nil) {
-            annotationView = [[MKAnnotationView alloc] initWithAnnotation:shuttle
-                                                          reuseIdentifier:@"vehicleAnnotation"];
-            annotationView.canShowCallout = YES;
-        }
-        
-        if (shuttle.heading >= 315 || shuttle.heading < 45) {
-            shuttleDirectionImages = [self.shuttleImages objectForKey:@"north"];
-        } else if (shuttle.heading >= 45 && shuttle.heading < 135) {
-            shuttleDirectionImages = [self.shuttleImages objectForKey:@"east"];
-        } else if (shuttle.heading >= 135 && shuttle.heading < 225) {
-            shuttleDirectionImages = [self.shuttleImages objectForKey:@"south"];
-        } else if (shuttle.heading >= 225 && shuttle.heading < 315) {
-            shuttleDirectionImages = [self.shuttleImages objectForKey:@"west"];
-        } else {
-            shuttleDirectionImages = [self.shuttleImages objectForKey:@"east"];
-        }
-        
-        annotationView.image = [shuttleDirectionImages objectForKey:[@-1 stringValue]];
-        
-        return annotationView;
+        return [(STSimpleShuttle *)annotation annotationView];
     }
     
     return nil;
