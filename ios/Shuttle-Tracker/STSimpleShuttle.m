@@ -14,10 +14,15 @@
     return self.name;
 }
 
-- (void)setCoordinate:(CLLocationCoordinate2D)coordinate {
-    _coordinate = coordinate;
-    
-    [self.annotationView setNeedsDisplay];
+- (void)copyStatusFromShuttle:(STSimpleShuttle *)shuttle
+{
+    self.statusMessage = shuttle.statusMessage;
+    self.cardinalPoint = shuttle.cardinalPoint;
+    self.updateTime = shuttle.updateTime;
+    self.icon = shuttle.icon;
+    self.heading = shuttle.heading;
+    self.speed = shuttle.speed;
+    self.coordinate = shuttle.coordinate;
 }
 
 @end

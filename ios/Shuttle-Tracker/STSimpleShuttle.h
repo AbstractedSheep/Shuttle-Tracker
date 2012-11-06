@@ -24,4 +24,6 @@
 
 @property (readonly, nonatomic) NSString *title;
 
+- (void)copyStatusFromShuttle:(STSimpleShuttle *)shuttle;
+
 @end
