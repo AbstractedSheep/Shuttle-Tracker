@@ -2,11 +2,11 @@
 A suite of applications to make community transportation more useful.
 
 ## About
-The Shuttle Tracker project lets users view a public or semi-public transportation system's routes and stops, and track the locations of its vehicles.  It also provides estimated times of arrival (ETAs) for each of the stops.  
+The Shuttle Tracker project lets users view a public or semi-public transportation system's routes and stops, and track the locations of its vehicles.
 
 The project's focus is mobile versions of the [RPI Shuttle Tracker](http://shuttles.rpi.edu/), but can be adapted for use with other systems.
 
-The project's useful products are Android and iOS applications.  They currently display recent shuttle positions, shuttle routes and the stops on these routes.  These applications include the code necessary to display ETAs, but require an additional service to generate ETAs such as the included Java data service.  Examples of the data expected by these applications are available in the `example data/` directory.
+The project's useful products are Android and iOS applications.  They currently display recent shuttle positions, shuttle routes and the stops on these routes.  Examples of the data expected by these applications are available in the `example data/` directory.
 
 The data processor is found in the `server/` directory.  A web server to display the data service's data is in the `webinterface/` directory, and the Android and iOS programs are found in the `android/` and `ios/` directories, respectively.
 

@@ -75,7 +75,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
     
     /** Set up the MapView with the default configuration */
     private void initMap() {
-    	map = new MapView(this, "0ccWR9O3i4bIOSp0j3u2dfDyCM9VuJ4lPHg_CDQ");
+    	map = new MapView(this, "YOUR API KEY");
     	LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, new GeoPoint(0, 0), 0);
         map.setLayoutParams(lp);
         map.getController().setZoom(DEFAULT_ZOOM);
