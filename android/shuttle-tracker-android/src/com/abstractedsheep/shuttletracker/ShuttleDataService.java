@@ -21,6 +21,10 @@
 package com.abstractedsheep.shuttletracker;
 
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -34,10 +38,11 @@ import com.abstractedsheep.shuttletrackerworld.Netlink;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONTokener;
+import org.json.JSONArray;
 
-import com.abstractedsheep.shuttletracker.json.EtaArray;
-import com.abstractedsheep.shuttletracker.json.EtaJson;
-import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
+
+import com.abstractedsheep.shuttletracker.json.MapJsonInputToArray;
 import com.abstractedsheep.shuttletracker.json.VehicleArray;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.abstractedsheep.shuttletracker.sql.DatabaseHelper;
@@ -54,13 +59,10 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final Set<IShuttleServiceCallback> callbacks = new HashSet<IShuttleServiceCallback>();
 	public final AtomicBoolean active = new AtomicBoolean(true);
-	private ArrayList<EtaJson> etas;
 	private World world;
 	private boolean informedNoConnection = false;
 	private Context ctx;
 	private final AtomicInteger updateRate = new AtomicInteger(5000);
-	private String extraEtaStopId = null;
-	private int extraEtaRouteId = -1;
 	
 	// Private constructor prevents instantiation from other classes
 	private ShuttleDataService() {
@@ -120,6 +122,61 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
     	return parsedClass;
     }
     
+    public String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+          sb.append(line);
+        }
+        is.close();
+        return sb.toString();
+      }
+    /**
+     * Uses the Jackson object mapper to read the JSON from a URL into a Java Array.
+     * 
+     * @param url The URL to retrieve the JSON from.
+     * @param generic The class type of the JSON in the form of a Java Bean.
+     * @return The parsed JSON in a new instance of the Java Array.
+     */
+    public <T> ArrayList<T> parseJsonArray(String url, Class<T> generic) {	
+    	ArrayList<T> parsedArray = new ArrayList<T>();
+	
+		try {
+			URL jsonUrl = new URL(url);
+			URLConnection jsonConnection = jsonUrl.openConnection();
+			JSONTokener tokener = new JSONTokener(convertStreamToString(jsonConnection.getInputStream()));
+			JSONArray jsonArray = new JSONArray(tokener);
+			T temp;
+			InputStream instream;
+			
+			for(int x = 0; x< jsonArray.length(); ++x){
+				instream = new ByteArrayInputStream(jsonArray.get(x).toString().getBytes());
+				temp = mapper.readValue(instream, generic);	
+				parsedArray.add(temp);
+			}
+			informedNoConnection = false;
+		} catch (JsonParseException e) {
+			Log.w("Tracker", "Error Parsing URL: " + url);
+			Log.w("Tracker", "Data type: " + generic.getName());
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			Log.w("Tracker", "Error Parsing URL: " + url);
+			Log.w("Tracker", "Data type: " + generic.getName());
+			e.printStackTrace();
+		} catch (IOException e) {
+			if (!informedNoConnection) {
+				informedNoConnection = true;
+				notifyError(IShuttleServiceCallback.NO_CONNECTION_ERROR);
+			}
+			e.printStackTrace();
+		} catch (Exception e){
+			Log.w("Tracker", e);
+		}
+  
+    	return parsedArray;
+    }
+    
     public final Runnable updateRoutes = new Runnable() {
 		public void run() {
 			synchronized (this) {
@@ -151,24 +208,15 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		public void run() {
 			while (active.get()) {
 				synchronized (this) {
-					ArrayList<VehicleJson> tempVehicles = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_shuttle_positions", VehicleArray.class);
-					for (VehicleJson v : tempVehicles) {
-                        world.addOrUpdateShuttle(v.getShuttle_id(), new Coordinate((int)(v.getLatitude() * 1e6), (int)(v.getLongitude() * 1e6)), v.getName(),
-                                v.getHeading(), v.getCardinal_point(), v.getSpeed(), v.getRoute_id());
+					ArrayList<MapJsonInputToArray> tempVehicles = parseJsonArray("http://shuttles.rpi.edu/vehicles/current.js", MapJsonInputToArray.class);
+					for (MapJsonInputToArray v : tempVehicles) {
+                        world.addOrUpdateShuttle(v.vehicle.getShuttle_id(), new Coordinate((int)(v.vehicle.getLatitude() * 1e6), 
+                        		(int)(v.vehicle.getLongitude() * 1e6)), v.vehicle.getName(), v.vehicle.getHeading(), 
+                        		v.vehicle.getCardinal_point(), v.vehicle.getSpeed(), v.vehicle.getRoute_id());
                     }
 					
-					ArrayList<EtaJson> tempEtas = parseJson("http://www.abstractedsheep.com/~ashulgach/data_service.php?action=get_all_eta", EtaArray.class);
-					if (tempEtas != null) {
-						etas = tempEtas;
-					}
-					
-					if (tempVehicles != null || tempEtas != null) {
+					if (tempVehicles != null) {
 						notifyShuttlesUpdated();
-					}
-					
-					if (extraEtaStopId != null && extraEtaRouteId != -1) {
-						ExtraEtaJson exEtas = parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_extra_eta&rt=" + extraEtaRouteId + "&st=" + extraEtaStopId, ExtraEtaJson.class);
-						notifyExtraEtasUpdated(exEtas);
 					}
 				}	
 				
@@ -177,31 +225,14 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 		}
 	};
 
-
-	public synchronized void setExtraEtaToGet(String extraEtaStopId, int extraEtaRouteId) {
-		this.extraEtaRouteId = extraEtaRouteId;
-		this.extraEtaStopId = extraEtaStopId;
-		new Thread(new Runnable() {
-			public void run() {
-				notifyExtraEtasUpdated(parseJson("http://shuttles.abstractedsheep.com/data_service.php?action=get_all_extra_eta&rt=" +
-						ShuttleDataService.this.extraEtaRouteId + "&st=" + ShuttleDataService.this.extraEtaStopId, ExtraEtaJson.class));
-			}
-		}).start();
-	}
 	
 	public World getWorld() {
 		return world;
 	}
 	
-	private synchronized void notifyExtraEtasUpdated(ExtraEtaJson etas) {
-		for (IShuttleServiceCallback c : callbacks) {
-			c.extraEtasUpdated(etas);
-		}
-	}	
-	
 	private synchronized void notifyShuttlesUpdated() {
 		for (IShuttleServiceCallback c : callbacks) {
-			c.dataUpdated(world, etas);
+			c.dataUpdated(world);
 		}
 	}
 	
@@ -219,16 +250,12 @@ public class ShuttleDataService implements OnSharedPreferenceChangeListener {
 	
 	public synchronized void registerCallback(IShuttleServiceCallback callback) {
 		callbacks.add(callback);		
-		callback.dataUpdated(world, etas);
+		callback.dataUpdated(world);
 		callback.routesUpdated(world);
 	}
 
 	public synchronized void unregisterCallback(IShuttleServiceCallback callback) {
 		callbacks.remove(callback);		
-	}
-	
-	public synchronized ArrayList<EtaJson> getCurrentEtas() {
-		return etas;
 	}
 
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

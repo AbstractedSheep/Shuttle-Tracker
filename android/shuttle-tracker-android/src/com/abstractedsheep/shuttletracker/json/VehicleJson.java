@@ -21,75 +21,70 @@
 package com.abstractedsheep.shuttletracker.json;
 
 import com.abstractedsheep.shuttletracker.mapoverlay.DirectionalOverlayItem;
+import com.abstractedsheep.shuttletracker.json.MapJsonInputToClass;
+import com.abstractedsheep.shuttletracker.json.MapJsonInputToClass2;
 import com.google.android.maps.GeoPoint;
 
+
 public class VehicleJson {
-	private int shuttle_id;
-	private int route_id;
+	private int id = 0;
+	private String name = "";
+	private MapJsonInputToClass latest_position = new MapJsonInputToClass();
 	
-	
-	private int heading;
-	private double latitude;
-	private double longitude;
-	private int speed;
-	private String update_time;
-	private String cardinal_point;
-	private String name;
-		
 	public int getRoute_id() {
-		return route_id;
+		return 0;
 	}
 	public void setRoute_id(int route_id) {
-		this.route_id = route_id;
+
 	}
 	
 	public int getHeading() {
-		return heading;
+		return latest_position.heading;
 	}
 	public void setHeading(int heading) {
-		this.heading = heading;
+		this.latest_position.heading = heading;
 	}
 	public double getLatitude() {
-		return latitude;
+		return Double.parseDouble(latest_position.latitude);
 	}
 	public void setLatitude(double latitude) {
-		this.latitude = latitude;
+		this.latest_position.latitude = Double.toString(latitude);
 	}
 	public double getLongitude() {
-		return longitude;
+		return Double.parseDouble(latest_position.longitude);
 	}
 	public void setLongitude(double longitude) {
-		this.longitude = longitude;
+		this.latest_position.longitude = Double.toString(longitude);
 	}
 	public int getSpeed() {
-		return speed;
+		return latest_position.speed;
 	}
 	public void setSpeed(int speed) {
-		this.speed = speed;
+		this.latest_position.speed = speed;
 	}
 	public String getUpdate_time() {
-		return update_time;
+		return latest_position.timestamp;
 	}
 	public void setUpdate_time(String update_time) {
-		this.update_time = update_time;
+		this.latest_position.timestamp = update_time;
 	}
 	public String getCardinal_point() {
-		return cardinal_point;
+		return latest_position.cardinal_point;
 	}
 	public void setCardinal_point(String cardinal_point) {
-		this.cardinal_point = cardinal_point;
+		this.latest_position.cardinal_point = cardinal_point;
 	}
 
 
 	public int getShuttle_id() {
-		return shuttle_id;
+		return id;
 	}
 	public void setShuttle_id(int shuttle_id) {
-		this.shuttle_id = shuttle_id;
+		this.id = shuttle_id;
 	}
 	
 	public DirectionalOverlayItem toOverlayItem() {
-		return new DirectionalOverlayItem(new GeoPoint((int)(this.latitude * 1e6), (int)(this.longitude * 1e6)), this.heading, "", "");
+		return new DirectionalOverlayItem(new GeoPoint((int)(Double.parseDouble(this.latest_position.latitude) * 1e6), (int)(Double.parseDouble(this.latest_position.longitude) * 1e6)), this.latest_position.heading, "", "");
 	}
 	public String getName() {
 		return name;

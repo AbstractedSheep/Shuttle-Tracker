@@ -23,7 +23,7 @@ package com.abstractedsheep.shuttletracker.json;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class VehicleArray extends ArrayList<VehicleJson> {
+public class VehicleArray extends ArrayList<MapJsonInputToArray> {
 	private static final long serialVersionUID = -9188505525348827268L;
 
 	public VehicleArray() {
@@ -33,7 +33,7 @@ public class VehicleArray extends ArrayList<VehicleJson> {
 		super(capacity);
 	}
 
-	public VehicleArray(Collection<? extends VehicleJson> collection) {
+	public VehicleArray(Collection<? extends MapJsonInputToArray> collection) {
 		super(collection);
 	}
 
