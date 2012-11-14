@@ -23,8 +23,7 @@ package com.abstractedsheep.shuttletracker;
 import java.util.Date;
 import java.util.ArrayList;
 
-import com.abstractedsheep.shuttletracker.json.EtaJson;
-import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
+
 import com.abstractedsheep.shuttletracker.json.Style;
 import com.abstractedsheep.shuttletracker.mapoverlay.LocationOverlay;
 import com.abstractedsheep.shuttletracker.mapoverlay.NullOverlay;
@@ -76,7 +75,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
     
     /** Set up the MapView with the default configuration */
     private void initMap() {
-    	map = new MapView(this, MapsApiKey.MAPS_API_KEY);
+    	map = new MapView(this, "0ccWR9O3i4bIOSp0j3u2dfDyCM9VuJ4lPHg_CDQ");
     	LayoutParams lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, new GeoPoint(0, 0), 0);
         map.setLayoutParams(lp);
         map.getController().setZoom(DEFAULT_ZOOM);
@@ -140,7 +139,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
     	map.invalidate();
     	
         routesUpdated(dataService.getWorld());
-    	dataUpdated(dataService.getWorld(), dataService.getCurrentEtas());
+    	dataUpdated(dataService.getWorld());
     }
     
     @Override
@@ -156,16 +155,6 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 		return hasRoutes;
 	}
 	
-	/** Calls stopsOverlay.putEtas(). For use with runOnUiThread() */
-	private class PutEtas implements Runnable {
-		private final ArrayList<EtaJson> etas;
-		public PutEtas(ArrayList<EtaJson> etas) {
-			this.etas = etas;
-		}
-		public void run() {
-			stopsOverlay.putEtas(etas);
-		}
-	}
 
 	/** Calls setWorld(). For use with runOnUiThread() */
 	private class SetWorld implements Runnable {
@@ -179,10 +168,7 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 	}
 
 
-	public void dataUpdated(World world, ArrayList<EtaJson> etas) {
-		if (etas != null && stopsOverlay != null) {
-			runOnUiThread(new PutEtas(etas));
-		}
+	public void dataUpdated(World world) {
 		
 		if (world != null && shuttlesOverlay != null && timestampOverlay != null) {
         	timestampOverlay.setLastUpdateTime(new Date());
@@ -263,8 +249,6 @@ public class TrackerMapActivity extends MapActivity implements IShuttleServiceCa
 		}
 	}
 
-	public void extraEtasUpdated(ExtraEtaJson etas) {	
-	}
 	
 	public void displayStop(String stopId) {
 		stopsOverlay.displayStop(stopId);

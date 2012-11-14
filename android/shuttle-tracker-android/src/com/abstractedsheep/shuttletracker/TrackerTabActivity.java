@@ -24,8 +24,6 @@ import java.util.ArrayList;
 
 import com.abstractedsheep.shuttletracker.R;
 import com.abstractedsheep.shuttletracker.TrackerMapActivity;
-import com.abstractedsheep.shuttletracker.json.EtaJson;
-import com.abstractedsheep.shuttletracker.json.ExtraEtaJson;
 import com.abstractedsheep.shuttletracker.json.VehicleJson;
 import com.abstractedsheep.shuttletrackerworld.Netlink;
 
@@ -76,16 +74,9 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		
 		this.tabHost = getTabHost();
 		
-		// Add the ETA activity as a tab
-		TabSpec tab = this.tabHost.newTabSpec("eta");
-		Intent i = new Intent(this, EtaActivity.class);
-		tab.setContent(i);
-		tab.setIndicator("ETA", getResources().getDrawable(R.drawable.clock));
-		this.tabHost.addTab(tab);
-		
 		// Add the map activity as a tab
-		tab = this.tabHost.newTabSpec("map");
-		i = new Intent(this, TrackerMapActivity.class);
+		TabSpec tab = this.tabHost.newTabSpec("map");
+		Intent i = new Intent(this, TrackerMapActivity.class);
 		tab.setContent(i);
 		tab.setIndicator("Map", getResources().getDrawable(R.drawable.map));
 		this.tabHost.addTab(tab);
@@ -111,8 +102,8 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		}
 	};
 
-	public void dataUpdated(World world, ArrayList<EtaJson> etas) {
-		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).dataUpdated(world, etas);
+	public void dataUpdated(World world) {
+		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).dataUpdated(world);
 		
 	}
 
@@ -142,9 +133,6 @@ public class TrackerTabActivity extends TabActivity implements IShuttleServiceCa
 		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).dataServiceError(errorCode);
 	}
 
-	public void extraEtasUpdated(ExtraEtaJson etas) {
-		((IShuttleServiceCallback)getLocalActivityManager().getCurrentActivity()).extraEtasUpdated(etas);
-	}
 	
 	public void showMap(String stopId) {
 		tabHost.setCurrentTab(1);
